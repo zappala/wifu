@@ -1,0 +1,33 @@
+Pieces of the TCP Puzzle (building blocks):
+
+This is a list of things that we will need to build TCP as defined in RFC 793.  These are likely not decomposed far enough in general; however, some objects might be decomposed too far (less likely).  I will add to this list as we deem necessary.  Mark "completed" objects with an '*' like this:
+
+* FileReader
+
+This way we can easily scan the list to see what needs to be done.  I do expect us to forget about this document and not read it all the time, so when we do, we should update it appropriately.
+
+TCPState
+Listen
+SynSent
+SynReceived
+Established
+FinWait1
+FinWait2
+CloseWait
+Closing
+LastAck
+TimeWait
+Closed
+
+Timer
+SendBuffer -- Queue?
+ReceiveBuffer -- Queue?
+SendWindow
+Packet
+Header
+UDPInterface
+Checksum
+TCP (Transmission Control Block) -- likely will be the 'context' in the state machine
+Multiplexer
+Deplexer
+Controller (as defined in the grant proposal)
