@@ -1,0 +1,10 @@
+Requirements for End-to-End Framework
+
+Phase One (Tahoe):
+
+1. Use RFC 793
+2. State Pattern
+3. Separation of Reliability and Congestion Control
+4. Unit Testing
+5. Integration/Stress Testing
+6. Component Architecture.  This is to be simple at first and progress to something more complex as we get our feet wet.  The first iteration will likely only include Reliability and Congestion Control in the Established state (or something similar).
