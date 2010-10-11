@@ -1,0 +1,12 @@
+How to send a packet.  We need to get a response from each state machine (or current state) whether or not it is okay to send a packet (of N bytes).
+
+
+
+Before the socket can pass a packet to the UDPInterface, we must get approval from all FSMs.
+This document contains Randy's ideas on how we might want to do this:
+
+A) Trylock type thing
+B) Pass in a sem that the caller waits on, then the state posts on it when it is determined that it is allowed to send the packet.
+C) Queue at each state that state reads from, sleeps otherwise
+D) Socket has counting semaphore which each state machine can post on indicating number of [bytes|packets] it can handle.  Socket takes the [min] of all these values.  Socket waits on that sem.  As a subpoint, we would likely need to redefine what a counting semaphore is so it can support waiting/posting on more than one [byte] at a time.  As a variant of this, we could loop through each FSMs send semaphore and wait on each one.
+E) Machine (state) blocks itself until it can send.
