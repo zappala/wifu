@@ -10,3 +10,23 @@ B) Pass in a sem that the caller waits on, then the state posts on it when it is
 C) Queue at each state that state reads from, sleeps otherwise
 D) Socket has counting semaphore which each state machine can post on indicating number of [bytes|packets] it can handle.  Socket takes the [min] of all these values.  Socket waits on that sem.  As a subpoint, we would likely need to redefine what a counting semaphore is so it can support waiting/posting on more than one [byte] at a time.  As a variant of this, we could loop through each FSMs send semaphore and wait on each one.
 E) Machine (state) blocks itself until it can send.
+
+
+10-11-10
+Two potential models:
+
+1) 
+SocketComponent.allow(Packet * p) simply answers the question whether we can send p.
+SocketComponent.send(Packet * p) updates the packed and updates the SocketComponent.
+
+Issues: 
+May do work twice
+
+2)
+SocketComponent.send(Packet * p) updates the packet and the SocketComponent keeping a copy of the next state.
+SocketComponent.update(Packet * p) changes the state of the SocketComponent (and the Packet) to the next state.
+
+Issues:
+Duplicate information
+Likely harder to understand/implement
+Less Modular
