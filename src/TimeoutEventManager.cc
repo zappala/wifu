@@ -43,6 +43,7 @@ void * dequeue_thread(void* arg) {
             // we timed out
             errno = 0;
             event->execute();
+            //TODO: delete the event here?
             continue;
         }
 
