@@ -1,0 +1,6 @@
+def build(bld):
+    bld(features='cxx cprogram',
+        source=bld.glob('*.cc'),
+        includes="../headers",
+        uselib='PTHREAD RT',
+        target='wifu-end')
