@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <iostream>
+#include <semaphore.h>
 
 #include "LocalSocketFullDuplex.h"
 #include "Reliability.h"
@@ -16,7 +17,9 @@
 #include "Queue.h"
 #include "PriorityQueue.h"
 #include "TimeoutEvent.h"
-#include "DeltaClock.h"
+#include "TimeoutEventManager.h"
+#include "SingletonTemplate.h"
+#include "Semaphore.h"
 
 using namespace std;
 
@@ -24,13 +27,9 @@ using namespace std;
  * 
  */
 
-
-
-
-
-
-
 int main(int argc, char** argv) {
+
+    
 
     string address("localhost");
     string socket_file("/tmp/socket_file");
@@ -60,20 +59,23 @@ int main(int argc, char** argv) {
 //        cout << queue.dequeue() << endl;
 //    }
 
+    cout << "Now tyring semaphores" << endl;
+    
+
 
     sleep(1);
 
-    DeltaClock dc;
+    TimeoutEventManager manager;
 
-    dc.enqueue(two);
-    dc.enqueue(three);
-    dc.enqueue(four);
-    dc.enqueue(one);
+    manager.enqueue(two);
+    manager.enqueue(three);
+    manager.enqueue(four);
+    manager.enqueue(one);
     
     
     
     
-    
+    sem_t semaphore;
     
     
     

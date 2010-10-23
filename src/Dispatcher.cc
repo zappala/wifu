@@ -57,4 +57,5 @@ void Dispatcher::receive(string & message) {
 
 void Dispatcher::destroy(void) {
     delete instance();
+    instance_ = NULL;
 }

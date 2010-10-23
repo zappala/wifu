@@ -11,8 +11,10 @@
 #include "Event.h"
 #include <time.h>
 #include <assert.h>
+#include <stdio.h>
+#include <iostream>
 
-#define NANOSECONDS_IN_SECONDS 1000000000
+
 
 using namespace std;
 
@@ -27,9 +29,6 @@ public:
         // Can we get better precision with real-time clock?
         // Needs to be value from epoch (not relative time)
         clock_gettime(CLOCK_REALTIME, &timer_);
-
-//        cout << "TimeoutEvent Constructor Seconds: " << timer_.tv_sec << endl;
-//        cout << "TimeoutEvent Constructor Nanoseconds: " << timer_.tv_nsec << endl;
 
         timer_.tv_nsec += nanoseconds;
         timer_.tv_sec += seconds;

@@ -9,6 +9,8 @@
 #define	_INCLUDES_H
 
 #define SIGENQUEUE 50
+#define NANOSECONDS_IN_SECONDS 1000000000
+
 
 #endif	/* _INCLUDES_H */
 

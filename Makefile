@@ -1,5 +1,5 @@
 all:
-	./waf configure --32
+	./waf configure
 	./waf build
 	./waf install
 
