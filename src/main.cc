@@ -59,9 +59,6 @@ int main(int argc, char** argv) {
 //        cout << queue.dequeue() << endl;
 //    }
 
-    cout << "Now tyring semaphores" << endl;
-    
-
 
     sleep(1);
 
@@ -71,20 +68,9 @@ int main(int argc, char** argv) {
     manager.enqueue(three);
     manager.enqueue(four);
     manager.enqueue(one);
+    manager.enqueue(oneplus);
     
     
-    
-    
-    sem_t semaphore;
-    
-    
-    
-    
-
-
-
-
-
     //    string file("/tmp/file");
     //    Reliability r(file);
     //

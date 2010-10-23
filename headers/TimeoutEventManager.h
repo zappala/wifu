@@ -25,7 +25,7 @@ using namespace std;
 
 
 // prototypes
-void * delta_clock_thread(void * arg);
+void * dequeue_thread(void * arg);
 void signal_manager(int signal);
 
 class TimeoutEventManager {

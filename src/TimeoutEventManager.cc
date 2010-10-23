@@ -12,12 +12,12 @@ TimeoutEventManager::TimeoutEventManager() {
     //make sure singleton is created
     TimeoutEventManagerSemaphore::instance();
 
-    if (pthread_create(&thread_, NULL, &delta_clock_thread, &q_) != 0) {
+    if (pthread_create(&thread_, NULL, &dequeue_thread, &q_) != 0) {
         perror("Error creating new thread");
         exit(EXIT_FAILURE);
     }
 
-    signal(SIGENQUEUE, signal_manager);
+    signal(SIG_ENQUEUE, signal_manager);
 }
 
 TimeoutEventManager::~TimeoutEventManager() {
@@ -29,10 +29,10 @@ void TimeoutEventManager::enqueue(TimeoutEvent * event) {
 }
 
 void TimeoutEventManager::cancel(TimeoutEvent* event) {
-
+    
 }
 
-void * delta_clock_thread(void* arg) {
+void * dequeue_thread(void* arg) {
     PriorityQueue<TimeoutEvent *, TimeoutEventComparator> * q =
             (PriorityQueue<TimeoutEvent *, TimeoutEventComparator> *) arg;
 
@@ -45,15 +45,17 @@ void * delta_clock_thread(void* arg) {
             event->execute();
             continue;
         }
-        // tosem was posted on
+
+        // Semaphore was posted on
         q->enqueue(event, false);
     }
 }
 
 void signal_manager(int signal) {
     switch (signal) {
-        case SIGENQUEUE:
+        case SIG_ENQUEUE:
             TimeoutEventManagerSemaphore::instance().post();
+            break;
     }
 }
 

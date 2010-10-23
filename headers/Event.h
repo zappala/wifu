@@ -8,9 +8,16 @@
 #ifndef _EVENT_H
 #define	_EVENT_H
 
-class Event {
+#include "Identifiable.h"
+
+class Event : public Identifiable {
 public:
+    Event();
+    virtual ~Event();
     virtual void execute() = 0;
+
+private:
+    
 };
 
 

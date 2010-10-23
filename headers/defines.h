@@ -8,7 +8,7 @@
 #ifndef _INCLUDES_H
 #define	_INCLUDES_H
 
-#define SIGENQUEUE 50
+#define SIG_ENQUEUE 50
 #define NANOSECONDS_IN_SECONDS 1000000000
 
 

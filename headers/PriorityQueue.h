@@ -49,10 +49,14 @@ public:
         sem_wait(&sem_);
         q_.push(obj);
         if (signal) {
-            raise(SIGENQUEUE);
+            raise(SIG_ENQUEUE);
          }
         sem_post(&sem_);
         sem_post(&counter_);
+    }
+
+    void remove(T obj) {
+
     }
 
     int size() {
