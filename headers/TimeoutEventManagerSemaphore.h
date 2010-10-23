@@ -12,18 +12,10 @@
 
 class TimeoutEventManagerSemaphore : public Semaphore {
 private:
-    TimeoutEventManagerSemaphore() : Semaphore() {
-
-    }
+    TimeoutEventManagerSemaphore();
 public:
-    virtual ~TimeoutEventManagerSemaphore() {
-
-    }
-    
-    static TimeoutEventManagerSemaphore & instance() {
-        static TimeoutEventManagerSemaphore instance_;
-        return instance_;
-    }
+    virtual ~TimeoutEventManagerSemaphore();
+    static TimeoutEventManagerSemaphore & instance();
 };
 
 
