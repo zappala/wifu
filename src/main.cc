@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 
 
     TimeoutEvent * one = new TimeoutEvent(1, 0);
-    TimeoutEvent * oneplus = new TimeoutEvent(1, 0);
+    TimeoutEvent * six = new TimeoutEvent(6, 0);
     TimeoutEvent * two = new TimeoutEvent(2, 0);
     TimeoutEvent * three = new TimeoutEvent(3, 0);
     TimeoutEvent * four = new TimeoutEvent(4, 0);
@@ -55,18 +55,18 @@ int main(int argc, char** argv) {
     TimeoutEventManager manager;
 
 
+    manager.enqueue(six);
     manager.enqueue(five);
     manager.enqueue(four);
     manager.enqueue(three);
     manager.enqueue(two);
-    manager.enqueue(oneplus);
     manager.enqueue(one);
     
     
 
     //manager.cancel(two);
     //manager.cancel(three);
-    //manager.cancel(four);
+    manager.cancel(four);
     //manager.cancel(one);
     //manager.cancel(oneplus);
 
@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
     //
     //    cout << Dispatcher::instance()->getFile() << endl;
     //
-    sleep(6);
+    sleep(7);
 
     cout << "hi" << endl;
 

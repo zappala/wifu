@@ -60,8 +60,6 @@ public:
 
     bool operator()(TimeoutEvent*& t1, TimeoutEvent*& t2) {
 
-        cout << "Counter: " << ++gc << endl;
-
         struct timespec * a = &(t1->get_timeout_time());
         struct timespec * b = &(t2->get_timeout_time());
 

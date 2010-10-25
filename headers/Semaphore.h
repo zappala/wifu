@@ -22,9 +22,10 @@ public:
 
     virtual void init(int value);
     void wait(void);
+    void try_wait(void);
     virtual void post(void);
     void timed_wait(struct timespec * ts);
-    int get_value();
+    int get_value(void);
 
 protected:
     sem_t sem_;

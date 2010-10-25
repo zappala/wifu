@@ -20,6 +20,10 @@ void Semaphore::wait() {
     sem_wait(&sem_);
 }
 
+void Semaphore::try_wait(void) {
+    sem_trywait(&sem_);
+}
+
 void Semaphore::timed_wait(timespec* ts) {
     sem_timedwait(&sem_, ts);
 }

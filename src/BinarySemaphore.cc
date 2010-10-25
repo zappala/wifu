@@ -17,6 +17,6 @@ void BinarySemaphore::init(int value) {
 }
 
 void BinarySemaphore::post() {
-    sem_trywait(&sem_);
-    sem_post(&sem_);
+    try_wait();
+    this->Semaphore::post();
 }
