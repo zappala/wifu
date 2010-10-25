@@ -1,3 +1,5 @@
+#include <errno.h>
+
 #include "Semaphore.h"
 
 Semaphore::Semaphore() {
@@ -24,8 +26,13 @@ void Semaphore::try_wait(void) {
     sem_trywait(&sem_);
 }
 
-void Semaphore::timed_wait(timespec* ts) {
+bool Semaphore::timed_wait(timespec* ts) {
     sem_timedwait(&sem_, ts);
+    bool value = errno == ETIMEDOUT;
+    if(value) {
+        errno = 0;
+    }
+    return value;
 }
 
 int Semaphore::get_value() {

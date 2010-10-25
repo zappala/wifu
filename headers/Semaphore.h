@@ -24,7 +24,7 @@ public:
     void wait(void);
     void try_wait(void);
     virtual void post(void);
-    void timed_wait(struct timespec * ts);
+    bool timed_wait(struct timespec * ts);
     int get_value(void);
 
 protected:
