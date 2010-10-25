@@ -47,7 +47,6 @@ void * dequeue_thread(void* arg) {
             continue;
         }
 
-        TimeoutManagerSemaphore.try_wait();
         TimeoutManagerSemaphore.timed_wait(&event->get_timeout_time());
         //TODO: Do we want to move the errno check inside the Semaphore class?
         if (errno == ETIMEDOUT) {

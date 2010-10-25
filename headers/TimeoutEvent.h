@@ -17,7 +17,6 @@
 
 
 using namespace std;
-static int gc;
 
 class TimeoutEvent : public Event {
 public:
