@@ -23,3 +23,9 @@ void Semaphore::wait() {
 void Semaphore::timed_wait(timespec* ts) {
     sem_timedwait(&sem_, ts);
 }
+
+int Semaphore::get_value() {
+    int value;
+    sem_getvalue(&sem_, & value);
+    return value;
+}

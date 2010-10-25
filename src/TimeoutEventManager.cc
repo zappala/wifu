@@ -18,6 +18,7 @@ TimeoutEventManager::TimeoutEventManager() {
     }
 
     signal(SIG_ENQUEUE, signal_manager);
+    signal(SIG_CANCEL, signal_manager);
 }
 
 TimeoutEventManager::~TimeoutEventManager() {
@@ -25,11 +26,15 @@ TimeoutEventManager::~TimeoutEventManager() {
 }
 
 void TimeoutEventManager::enqueue(TimeoutEvent * event) {
+    gc = 0;
+    cout << "ENQUEUED" << endl;
     q_.enqueue(event);
 }
 
 void TimeoutEventManager::cancel(TimeoutEvent * event) {
+    gc = 0;
     CanceledEvents::instance().add(event);
+    raise(SIG_CANCEL);
 }
 
 void * dequeue_thread(void* arg) {
@@ -39,22 +44,31 @@ void * dequeue_thread(void* arg) {
     while (1) {
         TimeoutEvent * event = q->dequeue();
 
+        cout << "DEQUEUED" << endl;
+
         if(CanceledEvents::instance().is_canceled(event)) {
             CanceledEvents::instance().remove(event);
+            cout << "CANCELED" << endl;
+            delete event;
             continue;
         }
 
+        cout << "ABOUT TO WAIT: "<< TimeoutManagerSemaphore.get_value() << endl;
         TimeoutManagerSemaphore.timed_wait(&event->get_timeout_time());
 
         //TODO: Do we want to move the errno check inside the Semaphore class?
         if (errno == ETIMEDOUT) {
             // we timed out
+
             errno = 0;
             event->execute();
             //TODO: delete the event here?
+            cout << "TIMEOUT" << endl;
+            delete event;
             continue;
         }
 
+        cout << "SEM POSTED ON, ENQUEUING" << endl;
         // Semaphore was posted on
         q->enqueue(event, false);
     }
@@ -63,6 +77,7 @@ void * dequeue_thread(void* arg) {
 void signal_manager(int signal) {
     switch (signal) {
         case SIG_ENQUEUE:
+        case SIG_CANCEL:
             TimeoutManagerSemaphore.post();
             break;
     }

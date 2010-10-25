@@ -26,7 +26,6 @@
 
 using namespace std;
 
-
 // prototypes
 void * dequeue_thread(void * arg);
 void signal_manager(int signal);

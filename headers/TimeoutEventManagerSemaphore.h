@@ -8,9 +8,9 @@
 #ifndef _TIMEOUTEVENTMANAGERSEMAPHORE_H
 #define	_TIMEOUTEVENTMANAGERSEMAPHORE_H
 
-#include "Semaphore.h"
+#include "BinarySemaphore.h"
 
-class TimeoutEventManagerSemaphore : public Semaphore {
+class TimeoutEventManagerSemaphore : public BinarySemaphore {
 private:
     TimeoutEventManagerSemaphore();
 public:

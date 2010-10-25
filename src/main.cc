@@ -55,8 +55,8 @@ int main(int argc, char** argv) {
     TimeoutEventManager manager;
 
 
-    //manager.enqueue(five);
-    //manager.enqueue(four);
+    manager.enqueue(five);
+    manager.enqueue(four);
     manager.enqueue(three);
     manager.enqueue(two);
     manager.enqueue(oneplus);

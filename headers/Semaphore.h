@@ -20,12 +20,13 @@ public:
     Semaphore();
     virtual ~Semaphore();
 
-    void init(int value);
+    virtual void init(int value);
     void wait(void);
-    void post(void);
+    virtual void post(void);
     void timed_wait(struct timespec * ts);
+    int get_value();
 
-private:
+protected:
     sem_t sem_;
 };
 

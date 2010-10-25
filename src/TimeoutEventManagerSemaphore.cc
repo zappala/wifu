@@ -2,7 +2,7 @@
 
 // private
 
-TimeoutEventManagerSemaphore::TimeoutEventManagerSemaphore() : Semaphore() {
+TimeoutEventManagerSemaphore::TimeoutEventManagerSemaphore() : BinarySemaphore() {
     init(0);
 
 }

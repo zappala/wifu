@@ -17,6 +17,7 @@
 
 
 using namespace std;
+static int gc;
 
 class TimeoutEvent : public Event {
 public:
@@ -54,13 +55,12 @@ private:
     struct timespec timer_;
 };
 
-static int i = 0;
 class TimeoutEventComparator {
 public:
 
     bool operator()(TimeoutEvent*& t1, TimeoutEvent*& t2) {
 
-        cout << "Compare: " << ++i << endl;
+        cout << "Counter: " << ++gc << endl;
 
         struct timespec * a = &(t1->get_timeout_time());
         struct timespec * b = &(t2->get_timeout_time());
