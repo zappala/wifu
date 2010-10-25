@@ -3,6 +3,7 @@
 // private
 
 TimeoutEventManagerSemaphore::TimeoutEventManagerSemaphore() : Semaphore() {
+    init(0);
 
 }
 

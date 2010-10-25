@@ -9,6 +9,7 @@
 #define	_INCLUDES_H
 
 #define SIG_ENQUEUE 50
+#define SIG_CANCEL 51
 #define NANOSECONDS_IN_SECONDS 1000000000
 
 

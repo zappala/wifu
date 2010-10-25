@@ -7,7 +7,6 @@
 
 #include <stdlib.h>
 #include <iostream>
-#include <semaphore.h>
 
 #include "LocalSocketFullDuplex.h"
 #include "Reliability.h"
@@ -43,39 +42,33 @@ int main(int argc, char** argv) {
 //    cout << q.size() << endl;
 //    cout << q.dequeue() << endl;
 
-    PriorityQueue<TimeoutEvent *, TimeoutEventComparator> queue;
 
     TimeoutEvent * one = new TimeoutEvent(1, 0);
     TimeoutEvent * oneplus = new TimeoutEvent(1, 0);
     TimeoutEvent * two = new TimeoutEvent(2, 0);
     TimeoutEvent * three = new TimeoutEvent(3, 0);
     TimeoutEvent * four = new TimeoutEvent(4, 0);
-
-//    queue.enqueue(four);
-//    queue.enqueue(one);
-//    queue.enqueue(three);
-//    queue.enqueue(two);
-//
-//    while(!queue.isEmpty()) {
-//        cout << queue.dequeue() << endl;
-//    }
-
+    TimeoutEvent * five = new TimeoutEvent(5, 0);
 
     sleep(1);
 
     TimeoutEventManager manager;
 
-    manager.enqueue(two);
-    manager.enqueue(three);
-    manager.enqueue(four);
-    manager.enqueue(one);
-    manager.enqueue(oneplus);
 
-    manager.cancel(two);
+    //manager.enqueue(five);
+    //manager.enqueue(four);
+    manager.enqueue(three);
+    manager.enqueue(two);
+    manager.enqueue(oneplus);
+    manager.enqueue(one);
+    
+    
+
+    //manager.cancel(two);
     //manager.cancel(three);
-    manager.cancel(four);
+    //manager.cancel(four);
     //manager.cancel(one);
-    manager.cancel(oneplus);
+    //manager.cancel(oneplus);
 
     
     
@@ -94,7 +87,7 @@ int main(int argc, char** argv) {
     //
     //    cout << Dispatcher::instance()->getFile() << endl;
     //
-    sleep(5);
+    sleep(6);
 
     cout << "hi" << endl;
 

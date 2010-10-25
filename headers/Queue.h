@@ -10,8 +10,9 @@
 
 
 #include <queue>
-#include <semaphore.h>
 #include <typeinfo>
+
+#include "Semaphore.h"
 
 using namespace std;
 
@@ -21,8 +22,8 @@ template<class T>
 class Queue {
 public:
     Queue() {
-        sem_init(&sem_, 0, 1);
-        sem_init(&counter_, 0, 0);
+        sem_.init(1);
+        counter_.init(0);
     }
 
     ~Queue() {
@@ -31,25 +32,25 @@ public:
 
     // do we want to do a timed wait? if so use: sem_timedwait() see the sem_wait man page
     T dequeue() {
-        sem_wait(&counter_);
-        sem_wait(&sem_);
+        counter_.wait();
+        sem_.wait();
         T value = q_.front();
         q_.pop();
-        sem_post(&sem_);
+        sem_.post();
         return value;
     }
 
     void enqueue(T obj) {
-        sem_wait(&sem_);
+        sem_.wait();
         q_.push(obj);
-        sem_post(&sem_);
-        sem_post(&counter_);
+        sem_.post();
+        counter_.post();
     }
 
     int size() {
-        sem_wait(&sem_);
+        sem_.wait();
         int value = q_.size();
-        sem_post(&sem_);
+        sem_.post();
         return value;
     }
 
@@ -59,8 +60,8 @@ public:
     }
     
 private:
-    sem_t sem_;
-    sem_t counter_;
+    Semaphore sem_;
+    Semaphore counter_;
 
     queue<T> q_;
 };

@@ -4,8 +4,7 @@
 //private
 
 CanceledEvents::CanceledEvents() {
-    // Set sem to 1
-    sem_.post();
+    sem_.init(1);
 }
 
 CanceledEvents::CanceledEvents(CanceledEvents const& other) {

@@ -17,10 +17,10 @@ using namespace std;
 class Semaphore {
 public:
 
-    Semaphore(int value);
     Semaphore();
     virtual ~Semaphore();
 
+    void init(int value);
     void wait(void);
     void post(void);
     void timed_wait(struct timespec * ts);

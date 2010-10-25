@@ -54,10 +54,13 @@ private:
     struct timespec timer_;
 };
 
+static int i = 0;
 class TimeoutEventComparator {
 public:
 
     bool operator()(TimeoutEvent*& t1, TimeoutEvent*& t2) {
+
+        cout << "Compare: " << ++i << endl;
 
         struct timespec * a = &(t1->get_timeout_time());
         struct timespec * b = &(t2->get_timeout_time());
@@ -65,7 +68,7 @@ public:
         if (a->tv_sec > b->tv_sec) return true;
         if (a->tv_sec == b->tv_sec && a->tv_nsec > b->tv_nsec) return true;
         return false;
-    }
+    } 
 };
 
 #endif	/* _TIMEOUTEVENT_H */
