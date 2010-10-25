@@ -50,11 +50,8 @@ void * dequeue_thread(void* arg) {
         bool timedout = TimeoutManagerSemaphore.timed_wait(&event->get_timeout_time());
 
         if (timedout) {
-            // we timed out
-
             errno = 0;
             event->execute();
-            //TODO: delete the event here?
             delete event;
             continue;
         }
