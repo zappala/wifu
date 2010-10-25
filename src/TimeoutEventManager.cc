@@ -10,7 +10,7 @@
 TimeoutEventManager::TimeoutEventManager() {
 
     //make sure singleton is created
-    TimeoutEventManagerSemaphore::instance();
+    TimeoutManagerSemaphore;
 
     if (pthread_create(&thread_, NULL, &dequeue_thread, &q_) != 0) {
         perror("Error creating new thread");
@@ -29,7 +29,7 @@ void TimeoutEventManager::enqueue(TimeoutEvent * event) {
 }
 
 void TimeoutEventManager::cancel(TimeoutEvent* event) {
-    
+    CanceledEvents::instance().add(event);
 }
 
 void * dequeue_thread(void* arg) {
@@ -38,7 +38,15 @@ void * dequeue_thread(void* arg) {
 
     while (1) {
         TimeoutEvent * event = q->dequeue();
-        TimeoutEventManagerSemaphore::instance().timed_wait(&event->get_timeout_time());
+
+        if(CanceledEvents::instance().is_canceled(event)) {
+            CanceledEvents::instance().remove(event);
+            continue;
+        }
+        cout << "Wating on event" << endl;
+        TimeoutManagerSemaphore.timed_wait(&event->get_timeout_time());
+
+        //TODO: Do we want to move the errno check inside the Semaphore class?
         if (errno == ETIMEDOUT) {
             // we timed out
             errno = 0;
@@ -55,7 +63,7 @@ void * dequeue_thread(void* arg) {
 void signal_manager(int signal) {
     switch (signal) {
         case SIG_ENQUEUE:
-            TimeoutEventManagerSemaphore::instance().post();
+            TimeoutManagerSemaphore.post();
             break;
     }
 }

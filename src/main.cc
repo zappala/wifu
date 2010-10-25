@@ -20,6 +20,7 @@
 #include "TimeoutEventManager.h"
 #include "SingletonTemplate.h"
 #include "Semaphore.h"
+#include "CanceledEvents.h"
 
 using namespace std;
 
@@ -69,6 +70,13 @@ int main(int argc, char** argv) {
     manager.enqueue(four);
     manager.enqueue(one);
     manager.enqueue(oneplus);
+
+    manager.cancel(two);
+    //manager.cancel(three);
+    manager.cancel(four);
+    //manager.cancel(one);
+    manager.cancel(oneplus);
+
     
     
     //    string file("/tmp/file");

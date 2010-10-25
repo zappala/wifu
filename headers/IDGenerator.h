@@ -10,15 +10,15 @@
 
 #include <tr1/unordered_set>
 #include <cstdlib>
+#include <time.h>
 
 using namespace std;
-using namespace tr1;
 
 class IDGenerator {
 private:
     IDGenerator();
     
-    unordered_set<int> ids_;
+    tr1::unordered_set<int> ids_;
 
 
 public:

@@ -12,6 +12,7 @@
 #include "TimeoutEvent.h"
 #include "defines.h"
 #include "TimeoutEventManagerSemaphore.h"
+#include "CanceledEvents.h"
 
 #include <pthread.h>
 #include <stdlib.h>
@@ -19,6 +20,8 @@
 #include <time.h>
 #include <signal.h>
 #include <errno.h>
+
+#define TimeoutManagerSemaphore TimeoutEventManagerSemaphore::instance()
 
 
 using namespace std;

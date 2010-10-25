@@ -3,7 +3,8 @@
 // private
 
 IDGenerator::IDGenerator() {
-
+    // Initialize random seed
+    srand(time(NULL));
 }
 
 // public
