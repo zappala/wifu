@@ -28,7 +28,7 @@ void TimeoutEventManager::enqueue(TimeoutEvent * event) {
     q_.enqueue(event);
 }
 
-void TimeoutEventManager::cancel(TimeoutEvent* event) {
+void TimeoutEventManager::cancel(TimeoutEvent * event) {
     CanceledEvents::instance().add(event);
 }
 
@@ -43,7 +43,7 @@ void * dequeue_thread(void* arg) {
             CanceledEvents::instance().remove(event);
             continue;
         }
-        cout << "Wating on event" << endl;
+
         TimeoutManagerSemaphore.timed_wait(&event->get_timeout_time());
 
         //TODO: Do we want to move the errno check inside the Semaphore class?
