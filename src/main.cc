@@ -31,17 +31,18 @@ int main(int argc, char** argv) {
 
 
 
-    string address("localhost");
-    string socket_file("/tmp/socket_file");
-    Socket s(socket_file);
-
-    s.connect(address);
+//    string address("localhost");
+//    string socket_file("/tmp/socket_file");
+//    Socket s(socket_file);
+//
+//    s.connect(address);
 
     //    Queue<int> q;
     //    q.enqueue(9);
     //    cout << q.size() << endl;
     //    cout << q.dequeue() << endl;
 
+    int sleep_time = 7;
 
     TimeoutEvent * one = new TimeoutEvent(1, 0);
     TimeoutEvent * six = new TimeoutEvent(6, 0);
@@ -50,44 +51,45 @@ int main(int argc, char** argv) {
     TimeoutEvent * four = new TimeoutEvent(4, 0);
     TimeoutEvent * five = new TimeoutEvent(5, 0);
 
-    sleep(1);
-
     TimeoutEventManager manager;
-
-
-    manager.enqueue(six);
-    manager.enqueue(five);
-    manager.enqueue(four);
-    manager.enqueue(three);
-    manager.enqueue(two);
+    manager.start();
+    
+//
+////    sleep(1);
+//
+//    manager.enqueue(six);
+//    manager.enqueue(five);
+//    manager.enqueue(four);
+//    manager.enqueue(three);
+//    manager.enqueue(two);
     manager.enqueue(one);
 
 
 
     //manager.cancel(two);
     //manager.cancel(three);
-    manager.cancel(four);
+//    manager.cancel(four);
     //manager.cancel(one);
     //manager.cancel(oneplus);
 
 
 
-    string file("/tmp/file");
-    Reliability r(file);
-
-    string message("123456789");
-    r.send_to(file, message);
-    r.send_to(file, file);
-
-    string manager_file("/tmp/manager_file");
-    ConnectionManager cmanager(manager_file);
-
-    string manager_message("FromManager");
-    cmanager.send_to(file, manager_message);
-
-    cout << Dispatcher::instance().getFile() << endl;
+//    string file("/tmp/file");
+//    Reliability r(file);
+//
+//    string message("123456789");
+//    r.send_to(file, message);
+//    r.send_to(file, file);
+//
+//    string manager_file("/tmp/manager_file");
+//    ConnectionManager cmanager(manager_file);
+//
+//    string manager_message("FromManager");
+//    cmanager.send_to(file, manager_message);
+//
+//    cout << Dispatcher::instance().getFile() << endl;
     //
-    sleep(7);
+    sleep(sleep_time);
 
     cout << "hi" << endl;
 
