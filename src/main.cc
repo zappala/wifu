@@ -45,6 +45,7 @@ int main(int argc, char** argv) {
     int sleep_time = 7;
 
     TimeoutEvent * one = new TimeoutEvent(1, 0);
+    TimeoutEvent * oneplus = new TimeoutEvent(1, 0);
     TimeoutEvent * six = new TimeoutEvent(6, 0);
     TimeoutEvent * two = new TimeoutEvent(2, 0);
     TimeoutEvent * three = new TimeoutEvent(3, 0);
@@ -57,17 +58,18 @@ int main(int argc, char** argv) {
 //
 ////    sleep(1);
 //
-//    manager.enqueue(six);
-//    manager.enqueue(five);
-//    manager.enqueue(four);
-//    manager.enqueue(three);
-//    manager.enqueue(two);
+    manager.enqueue(six);
+    manager.enqueue(five);
+    manager.enqueue(four);
+    manager.enqueue(three);
+    manager.enqueue(two);
     manager.enqueue(one);
+    manager.enqueue(oneplus);
 
 
 
-    //manager.cancel(two);
-    //manager.cancel(three);
+    manager.cancel(two);
+    manager.cancel(three);
 //    manager.cancel(four);
     //manager.cancel(one);
     //manager.cancel(oneplus);

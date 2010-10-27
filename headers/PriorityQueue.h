@@ -30,7 +30,6 @@ public:
     PriorityQueue() : IQueue<T>() {
         sem_.init(1);
         counter_.init(0);
-        cout << "Priority Queue Created" << endl;
     }
 
     virtual ~PriorityQueue() {
