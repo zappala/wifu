@@ -29,7 +29,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
-    
+
 
     string address("localhost");
     string socket_file("/tmp/socket_file");
@@ -37,10 +37,10 @@ int main(int argc, char** argv) {
 
     s.connect(address);
 
-//    Queue<int> q;
-//    q.enqueue(9);
-//    cout << q.size() << endl;
-//    cout << q.dequeue() << endl;
+    //    Queue<int> q;
+    //    q.enqueue(9);
+    //    cout << q.size() << endl;
+    //    cout << q.dequeue() << endl;
 
 
     TimeoutEvent * one = new TimeoutEvent(1, 0);
@@ -61,8 +61,8 @@ int main(int argc, char** argv) {
     manager.enqueue(three);
     manager.enqueue(two);
     manager.enqueue(one);
-    
-    
+
+
 
     //manager.cancel(two);
     //manager.cancel(three);
@@ -70,22 +70,22 @@ int main(int argc, char** argv) {
     //manager.cancel(one);
     //manager.cancel(oneplus);
 
-    
-    
-        string file("/tmp/file");
-        Reliability r(file);
-    
-        string message("123456789");
-        r.send_to(file, message);
-        r.send_to(file, file);
-    
-        string manager_file("/tmp/manager_file");
-        ConnectionManager cmanager(manager_file);
-    
-        string manager_message("FromManager");
-        cmanager.send_to(file, manager_message);
-    
-        cout << Dispatcher::instance().getFile() << endl;
+
+
+    string file("/tmp/file");
+    Reliability r(file);
+
+    string message("123456789");
+    r.send_to(file, message);
+    r.send_to(file, file);
+
+    string manager_file("/tmp/manager_file");
+    ConnectionManager cmanager(manager_file);
+
+    string manager_message("FromManager");
+    cmanager.send_to(file, manager_message);
+
+    cout << Dispatcher::instance().getFile() << endl;
     //
     sleep(7);
 
