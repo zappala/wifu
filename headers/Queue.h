@@ -29,7 +29,7 @@ public:
         counter_.init(0);
     }
 
-    ~Queue() {
+    virtual ~Queue() {
 
     }
 
@@ -51,6 +51,10 @@ public:
         }
         sem_.post();
         counter_.post();
+    }
+
+    void enqueue_and_signal(T obj) {
+        enqueue(obj, true);
     }
 
     int size() {

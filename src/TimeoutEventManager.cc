@@ -8,7 +8,7 @@
 #include "TimeoutEventManager.h"
 
 TimeoutEventManager::TimeoutEventManager() 
- : QueueProcessor<TimeoutEvent*>(&queue_, this) {
+    : QueueProcessor<TimeoutEvent*>(&queue_) {
 
     //make sure singleton is created
     TimeoutManagerSemaphore;
@@ -42,7 +42,7 @@ void TimeoutEventManager::process(TimeoutEvent* event) {
     }
 
     // Semaphore was posted on
-    enqueue(event, false);
+    enqueue(event);
 }
 
 void signal_manager(int signal) {

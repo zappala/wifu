@@ -53,19 +53,18 @@ int main(int argc, char** argv) {
     TimeoutEvent * five = new TimeoutEvent(5, 0);
 
     TimeoutEventManager manager;
-    manager.start();
+    manager.start_processing();
     
 //
 ////    sleep(1);
 //
-    manager.enqueue(six);
-    manager.enqueue(five);
-    manager.enqueue(four);
-    manager.enqueue(three);
-    manager.enqueue(two);
-    manager.enqueue(one);
-    manager.enqueue(oneplus);
-
+    manager.enqueue_and_signal(six);
+    manager.enqueue_and_signal(five);
+    manager.enqueue_and_signal(four);
+    manager.enqueue_and_signal(three);
+    manager.enqueue_and_signal(two);
+    manager.enqueue_and_signal(one);
+    manager.enqueue_and_signal(oneplus);
 
 
     manager.cancel(two);

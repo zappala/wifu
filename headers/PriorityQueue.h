@@ -47,7 +47,7 @@ public:
         return value;
     }
 
-    void enqueue(T obj, bool signal = true) {
+    void enqueue(T obj, bool signal = false) {
         sem_.wait();
         q_.push(obj);
         if (signal) {
@@ -55,6 +55,10 @@ public:
         }
         sem_.post();
         counter_.post();
+    }
+
+    void enqueue_and_signal(T obj) {
+        enqueue(obj, true);
     }
 
     int size() {

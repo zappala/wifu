@@ -42,18 +42,16 @@ void * thread(void * arg) {
 }
 
 template<class T>
-class QueueProcessor {
+class QueueProcessor : public DequeueCallback<T> {
 public:
 
-    QueueProcessor(IQueue<T>* queue, DequeueCallback<T>* callback)
-        : queue_(queue), callback_(callback) {
+    QueueProcessor(IQueue<T>* queue = new Queue<T>()) : DequeueCallback<T>(), queue_(queue) {
 
         sem_.init(0);
         start_.init(0);
 
-
         struct QueueProcessorStruct<T> obj;
-        obj.callback = callback_;
+        obj.callback = this;
         obj.queue = queue_;
         obj.sem = &sem_;
         obj.start = &start_;
@@ -68,23 +66,36 @@ public:
     }
 
     virtual ~QueueProcessor() {
+        cout << "Q ptr " << typeid(*queue_).name() << endl;
+        cout << "Q " << typeid(Queue<T>).name() << endl;
+        if(typeid(*queue_) == typeid(Queue<T>)) {
+            delete queue_;
+        }
+    }
+
+    void enqueue_and_signal(T object) {
+        enqueue(object, true);
+    }
+
+    void enqueue(T object, bool signal = false) {
+        if (signal) {
+            queue_->enqueue_and_signal(object);
+        } else {
+            queue_->enqueue(object);
+        }
 
     }
 
-    void enqueue(T object, bool signal = true) {
-        queue_->enqueue(object, signal);
-    }
-
-    void start() {
+    void start_processing() {
         start_.post();
     }
 
 private:
     IQueue<T>* queue_;
-    DequeueCallback<T>* callback_;
     pthread_t thread_;
     Semaphore sem_;
     Semaphore start_;
+    bool delete_queue_;
 };
 
 

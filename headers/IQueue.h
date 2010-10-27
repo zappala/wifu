@@ -15,7 +15,8 @@ public:
     virtual ~IQueue() {}
     
     virtual T dequeue() = 0;
-    virtual void enqueue(T obj, bool signal) = 0;
+    virtual void enqueue(T obj, bool signal = false) = 0;
+    virtual void enqueue_and_signal(T obj) = 0;
     virtual int size() = 0;
     virtual bool isEmpty() = 0;
 };
