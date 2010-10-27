@@ -16,6 +16,7 @@
 #include "defines.h"
 #include "TimeoutEvent.h"
 #include "Semaphore.h"
+#include "IQueue.h"
 
 using namespace std;
 
@@ -23,15 +24,15 @@ using namespace std;
 // do we want to make this like a python Queue object?  Only a few more functions to go...
 
 template<class T, class Comparator>
-class PriorityQueue {
+class PriorityQueue : public IQueue<T> {
 public:
 
-    PriorityQueue() {
+    PriorityQueue() : IQueue<T>() {
         sem_.init(1);
         counter_.init(0);
     }
 
-    ~PriorityQueue() {
+    virtual ~PriorityQueue() {
 
     }
 
@@ -54,10 +55,6 @@ public:
         }
         sem_.post();
         counter_.post();
-    }
-
-    void remove(T obj) {
-
     }
 
     int size() {

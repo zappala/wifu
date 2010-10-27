@@ -11,17 +11,20 @@
 
 #include <queue>
 #include <typeinfo>
+#include <signal.h>
 
 #include "Semaphore.h"
+#include "IQueue.h"
+#include "defines.h"
 
 using namespace std;
 
 
 // do we want to make this like a python Queue object?  Only a few more functions to go...
 template<class T>
-class Queue {
+class Queue : public IQueue<T> {
 public:
-    Queue() {
+    Queue() : IQueue<T>() {
         sem_.init(1);
         counter_.init(0);
     }
@@ -40,9 +43,12 @@ public:
         return value;
     }
 
-    void enqueue(T obj) {
+    void enqueue(T obj, bool signal = false) {
         sem_.wait();
         q_.push(obj);
+        if(signal) {
+            raise(SIG_ENQUEUE_EVENT);
+        }
         sem_.post();
         counter_.post();
     }

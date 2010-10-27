@@ -10,9 +10,10 @@
 
 #include "Event.h"
 
+template<class T>
 class DequeueCallback {
 public:
-    virtual void process(Event * event) = 0;
+    virtual void process(T object) = 0;
 };
 
 #endif	/* _DEQUEUECALLBACK_H */
