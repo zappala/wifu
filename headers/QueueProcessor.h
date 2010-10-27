@@ -59,7 +59,7 @@ public:
         obj.start = &start_;
 
 
-        if (pthread_create(&thread_, NULL, &(thread<T>), &obj) != 0) {
+        if (pthread_create(&thread_, NULL, &thread<T>, &obj) != 0) {
             perror("Error creating new thread");
             exit(EXIT_FAILURE);
         }
