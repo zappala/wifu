@@ -7,7 +7,7 @@ Semaphore::Semaphore() {
 }
 
 Semaphore::~Semaphore() {
-
+    sem_destroy(&sem_);
 }
 
 void Semaphore::init(int value) {

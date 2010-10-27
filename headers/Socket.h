@@ -24,7 +24,7 @@ public:
     }
 
     void connect(string & address) {
-        string dispatcher = Dispatcher::instance()->getFile();
+        string dispatcher = Dispatcher::instance().getFile();
         string message("<connect> ");
         message.append(address);
         send_to(dispatcher, message);

@@ -1,7 +1,5 @@
 #include "Dispatcher.h"
 
-Dispatcher * Dispatcher::instance_ = NULL;
-
 // private
 Dispatcher::Dispatcher(string & file) : LocalSocketFullDuplex(file) {
     string connection_manager("/tmp/connection_manager_file");
@@ -33,11 +31,9 @@ Dispatcher::~Dispatcher() {
     }
 }
 
-Dispatcher * Dispatcher::instance() {
-    if(!instance_) {
-        string filename("/tmp/dispatcher");
-        instance_ = new Dispatcher(filename);
-    }
+Dispatcher & Dispatcher::instance() {
+    string filename("/tmp/dispatcher");
+    static Dispatcher instance_(filename);
     return instance_;
 }
 
@@ -53,9 +49,4 @@ void Dispatcher::receive(string & message) {
             modules_.at(i)->data(message);
         }
     }
-}
-
-void Dispatcher::destroy(void) {
-    delete instance();
-    instance_ = NULL;
 }

@@ -72,26 +72,24 @@ int main(int argc, char** argv) {
 
     
     
-    //    string file("/tmp/file");
-    //    Reliability r(file);
-    //
-    //    string message("123456789");
-    //    r.send_to(file, message);
-    //    r.send_to(file, file);
-    //
-    //    string manager_file("/tmp/manager_file");
-    //    ConnectionManager manager(manager_file);
-    //
-    //    string manager_message("FromManager");
-    //    manager.send_to(file, manager_message);
-    //
-    //    cout << Dispatcher::instance()->getFile() << endl;
+        string file("/tmp/file");
+        Reliability r(file);
+    
+        string message("123456789");
+        r.send_to(file, message);
+        r.send_to(file, file);
+    
+        string manager_file("/tmp/manager_file");
+        ConnectionManager cmanager(manager_file);
+    
+        string manager_message("FromManager");
+        cmanager.send_to(file, manager_message);
+    
+        cout << Dispatcher::instance().getFile() << endl;
     //
     sleep(7);
 
     cout << "hi" << endl;
-
-    Dispatcher::instance()->destroy();
 
     return (EXIT_SUCCESS);
 }

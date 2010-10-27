@@ -17,8 +17,8 @@ TimeoutEventManager::TimeoutEventManager() {
         exit(EXIT_FAILURE);
     }
 
-    signal(SIG_ENQUEUE, signal_manager);
-    signal(SIG_CANCEL, signal_manager);
+    signal(SIG_ENQUEUE_EVENT, signal_manager);
+    signal(SIG_CANCEL_EVENT, signal_manager);
 }
 
 TimeoutEventManager::~TimeoutEventManager() {
@@ -31,7 +31,7 @@ void TimeoutEventManager::enqueue(TimeoutEvent * event) {
 
 void TimeoutEventManager::cancel(TimeoutEvent * event) {
     CanceledEvents::instance().add(event);
-    raise(SIG_CANCEL);
+    raise(SIG_CANCEL_EVENT);
 }
 
 void * dequeue_thread(void* arg) {
@@ -50,7 +50,6 @@ void * dequeue_thread(void* arg) {
         bool timedout = TimeoutManagerSemaphore.timed_wait(&event->get_timeout_time());
 
         if (timedout) {
-            errno = 0;
             event->execute();
             delete event;
             continue;
@@ -63,8 +62,8 @@ void * dequeue_thread(void* arg) {
 
 void signal_manager(int signal) {
     switch (signal) {
-        case SIG_ENQUEUE:
-        case SIG_CANCEL:
+        case SIG_ENQUEUE_EVENT:
+        case SIG_CANCEL_EVENT:
             TimeoutManagerSemaphore.post();
             break;
     }

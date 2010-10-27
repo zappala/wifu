@@ -22,16 +22,14 @@ using namespace std;
 
 class Dispatcher : public LocalSocketFullDuplex {
 private:
-    static Dispatcher * instance_;
     Dispatcher(string & file);
     Dispatcher(Dispatcher const&);
     Dispatcher& operator=(Dispatcher const&);
 
 public:
     ~Dispatcher();
-    static Dispatcher * instance();
+    static Dispatcher & instance();
     void receive(string & message);
-    void destroy(void);
 
     vector<IModule *> modules_;
 

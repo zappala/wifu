@@ -38,7 +38,7 @@ void UDPInterface::receive(string & message) {
     if(message.find("<connect>", 0) != string::npos) {
         sleep(2);
         string reply("<connected> localhost");
-        send_to(Dispatcher::instance()->getFile(),reply);
+        send_to(Dispatcher::instance().getFile(),reply);
     }
 }
 

@@ -50,7 +50,7 @@ public:
         sem_.wait();
         q_.push(obj);
         if (signal) {
-            raise(SIG_ENQUEUE);
+            raise(SIG_ENQUEUE_EVENT);
         }
         sem_.post();
         counter_.post();
