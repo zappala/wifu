@@ -31,7 +31,7 @@ using namespace std;
 // prototypes
 void signal_manager(int signal);
 
-class TimeoutEventManager : public DequeueCallback<TimeoutEvent*>, public QueueProcessor<TimeoutEvent*> {
+class TimeoutEventManager : public QueueProcessor<TimeoutEvent*> {
 public:
 
     TimeoutEventManager();

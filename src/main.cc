@@ -20,6 +20,7 @@
 #include "SingletonTemplate.h"
 #include "Semaphore.h"
 #include "CanceledEvents.h"
+#include "QDispatcher.h"
 
 using namespace std;
 
@@ -61,6 +62,10 @@ int main(int argc, char** argv) {
 
     cout << "Ints: " << typeid(ints).name() << endl;
     cout << "Doubles: " << typeid(doubles).name() << endl;
+
+    QDispatcher q;
+
+    //QDispatcher qd;
     //
 
 ////    sleep(1);

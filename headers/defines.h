@@ -11,7 +11,7 @@
 #define SIG_ENQUEUE_EVENT 50
 #define SIG_CANCEL_EVENT 51
 #define NANOSECONDS_IN_SECONDS 1000000000
-
+typedef const char * event_name;
 
 #endif	/* _INCLUDES_H */
 
