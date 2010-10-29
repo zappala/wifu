@@ -45,7 +45,7 @@ template<class T>
 class QueueProcessor : public DequeueCallback<T> {
 public:
 
-    QueueProcessor(IQueue<T>* queue = new Queue<T>()) : DequeueCallback<T>(), queue_(queue) {
+    QueueProcessor(IQueue<T>* queue) : DequeueCallback<T>(), queue_(queue) {
 
         sem_.init(0);
         start_.init(0);
@@ -66,24 +66,15 @@ public:
     }
 
     virtual ~QueueProcessor() {
-        cout << "Q ptr " << typeid(*queue_).name() << endl;
-        cout << "Q " << typeid(Queue<T>).name() << endl;
-        if(typeid(*queue_) == typeid(Queue<T>)) {
-            delete queue_;
-        }
-    }
 
-    void enqueue_and_signal(T object) {
-        enqueue(object, true);
     }
 
     void enqueue(T object, bool signal = false) {
         if (signal) {
-            queue_->enqueue_and_signal(object);
+            queue_->enqueue(object, true);
         } else {
             queue_->enqueue(object);
         }
-
     }
 
     void start_processing() {

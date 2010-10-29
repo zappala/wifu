@@ -53,10 +53,6 @@ public:
         counter_.post();
     }
 
-    void enqueue_and_signal(T obj) {
-        enqueue(obj, true);
-    }
-
     int size() {
         sem_.wait();
         int value = q_.size();

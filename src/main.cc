@@ -54,17 +54,24 @@ int main(int argc, char** argv) {
 
     TimeoutEventManager manager;
     manager.start_processing();
-    
-//
+
+
+    Queue<int> ints;
+    Queue<double> doubles;
+
+    cout << "Ints: " << typeid(ints).name() << endl;
+    cout << "Doubles: " << typeid(doubles).name() << endl;
+    //
+
 ////    sleep(1);
 //
-    manager.enqueue_and_signal(six);
-    manager.enqueue_and_signal(five);
-    manager.enqueue_and_signal(four);
-    manager.enqueue_and_signal(three);
-    manager.enqueue_and_signal(two);
-    manager.enqueue_and_signal(one);
-    manager.enqueue_and_signal(oneplus);
+    manager.enqueue(six, true);
+    manager.enqueue(five, true);
+    manager.enqueue(four, true);
+    manager.enqueue(three, true);
+    manager.enqueue(two, true);
+    manager.enqueue(one, true);
+    manager.enqueue(oneplus, true);
 
 
     manager.cancel(two);

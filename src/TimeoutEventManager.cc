@@ -7,8 +7,7 @@
 
 #include "TimeoutEventManager.h"
 
-TimeoutEventManager::TimeoutEventManager() 
-    : QueueProcessor<TimeoutEvent*>(&queue_) {
+TimeoutEventManager::TimeoutEventManager() : QueueProcessor<TimeoutEvent*>(&queue_) {
 
     //make sure singleton is created
     TimeoutManagerSemaphore;
