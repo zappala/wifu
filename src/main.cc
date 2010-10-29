@@ -21,6 +21,8 @@
 #include "Semaphore.h"
 #include "CanceledEvents.h"
 #include "QDispatcher.h"
+#include "QConnectionManager.h"
+#include "ConnectEvent.h"
 
 using namespace std;
 
@@ -64,6 +66,14 @@ int main(int argc, char** argv) {
     cout << "Doubles: " << typeid(doubles).name() << endl;
 
     QDispatcher q;
+    q.start_processing();
+
+    IQModule* connect_module = new QConnnectionManager();
+    q.map_event(typeid(ConnectEvent).name(), connect_module);
+
+    Event* connect_event = new ConnectEvent();
+    q.enqueue(connect_event);
+    
 
     //QDispatcher qd;
     //

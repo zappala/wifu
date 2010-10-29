@@ -35,7 +35,7 @@ void TimeoutEventManager::process(TimeoutEvent* event) {
     bool timedout = TimeoutManagerSemaphore.timed_wait(&event->get_timeout_time());
 
     if (timedout) {
-        event->execute();
+        event->execute(NULL);
         delete event;
         return;
     }

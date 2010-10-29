@@ -9,12 +9,15 @@
 #define	_EVENT_H
 
 #include "Identifiable.h"
+#include "IQModule.h"
+
+class IQModule;
 
 class Event : public Identifiable {
 public:
     Event();
     virtual ~Event();
-    virtual void execute() = 0;
+    virtual void execute(IQModule * m) = 0;
 
 private:
     
