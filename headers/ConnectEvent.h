@@ -10,12 +10,14 @@
 
 #include "Event.h"
 #include "ISocketModule.h"
+#include "AddressPort.h"
 
 
-class ConnectEvent : public Event {
+class ConnectEvent : public Event, public AddressPort {
 
 public:
-    ConnectEvent(int socket, string & address) : Event(socket), address_(address) {
+    ConnectEvent(int socket, string & address, string & port)
+        : Event(socket), AddressPort(address, port) {
 
     }
 
@@ -23,13 +25,6 @@ public:
         cout << "Connect Execute" << endl;
         m->connect(this);
     }
-
-    string & get_address() {
-        return address_;
-    }
-
-private:
-    string address_;
 };
 
 #endif	/* _CONNECTEVENT_H */

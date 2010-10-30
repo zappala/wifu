@@ -23,8 +23,8 @@ public:
 
     }
 
-    void connect(string & address) {
-        Event* connect_event = new ConnectEvent(get_socket(), address);
+    void connect(string & address, string & port) {
+        Event* connect_event = new ConnectEvent(get_socket(), address, port);
         dispatch(connect_event);
     }
 

@@ -11,6 +11,7 @@
 #include "Module.h"
 #include "SocketConnectionManager.h"
 #include "ConnectEvent.h"
+#include "SendSynEvent.h"
 
 class ConnnectionManager : public Module {
 public:
@@ -25,7 +26,9 @@ public:
 
     void connect(Event* e) {
         ConnectEvent* c = (ConnectEvent*) e;
-        cout << "Connection Manager Connect: " << c->get_address() << endl;
+        cout << "Connection Manager Connect: " << c->get_address() << " " << c->get_port() << endl;
+
+        Dispatcher::instance().enqueue(new SendSynEvent(c->get_socket(), c->get_address(), c->get_port()));
     }
 
     void data(Event* e) {

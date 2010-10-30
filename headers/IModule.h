@@ -27,6 +27,7 @@ public:
     }
     
     virtual void connect(Event* e) {}
+    virtual void udp_send(Event* e) {}
     virtual void data(Event* e) {};
 
 };

@@ -24,6 +24,7 @@
 #include "ConnectionManager.h"
 #include "ConnectEvent.h"
 #include "Socket.h"
+#include "UDPInterface.h"
 
 using namespace std;
 
@@ -36,6 +37,7 @@ int main(int argc, char** argv) {
 
 
     string address("localhost");
+    string port("5000");
 //    string socket_file("/tmp/socket_file");
 //    SocketSocket s(socket_file);
 //
@@ -75,12 +77,15 @@ int main(int argc, char** argv) {
 
     // Load Modules
     ConnnectionManager manager;
+    UDPInterface interface;
     Dispatcher::instance().map_event(typeid (ConnectEvent).name(), &manager);
+    Dispatcher::instance().map_event(typeid (SendSynEvent).name(), &interface);
+    
 
 
     // Try Events through Socket
     Socket s;
-    s.connect(address);
+    s.connect(address, port);
 
 
     //QDispatcher qd;

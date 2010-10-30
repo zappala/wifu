@@ -9,6 +9,7 @@
 #define	_UDPINTERFACE_H
 
 #include "Module.h"
+#include "AddressPort.h"
 
 
 class UDPInterface : public Module {
@@ -21,13 +22,11 @@ public:
 
     }
 
-    void process(Event* e) {
-
-    }
-
-    
-
-    
+    void udp_send(Event* e) {
+        SendSynEvent* event = (SendSynEvent*)e;
+        cout << "UDPInterface udp_send: " << event->get_address() << " " << event->get_port() << endl;
+        
+    }    
 };
 
 #endif	/* _UDPINTERFACE_H */
