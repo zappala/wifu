@@ -26,8 +26,8 @@ public:
 
     }
     
-    virtual void connect(Event* e) = 0;
-    virtual void data(Event* e) = 0;
+    virtual void connect(Event* e) {}
+    virtual void data(Event* e) {};
 
 };
 

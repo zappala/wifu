@@ -21,6 +21,11 @@ public:
 
     }
 
+    virtual void process(Event* e) {
+        cout << "Module Process" << endl;
+        e->execute(this);
+    }
+
 private:
     Queue<Event*> queue_;
 };

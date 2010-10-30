@@ -16,33 +16,22 @@ class ConnnectionManager : public Module {
 public:
 
     ConnnectionManager() : Module() {
-        s_ = "Connection Manager blah";
+
     }
 
     virtual ~ConnnectionManager() {
 
     }
 
-    void process(Event* e) {
-        e->execute(this);
-    }
-
     void connect(Event* e) {
         ConnectEvent* c = (ConnectEvent*) e;
-        cout << "Socket: " << c->get_socket() << endl;
-        cout << get_string() << endl;
+        cout << "Connection Manager Connect: " << c->get_address() << endl;
     }
 
     void data(Event* e) {
 
     }
 
-    string & get_string() {
-        return s_;
-    }
-
-private:
-    string s_;
 };
 
 

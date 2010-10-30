@@ -48,6 +48,10 @@ public:
     void process(Event * e) {
         vector<Module*>* modules = map_[typeid(*e).name()];
 
+        if(modules == NULL) {
+            return;
+        }
+        
         for(int i = 0; i < modules->size(); i++) {
             modules->at(i)->enqueue(e);
         }
