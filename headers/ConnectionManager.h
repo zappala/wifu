@@ -1,39 +1,48 @@
 /* 
- * File:   ConnectionManager.h
+ * File:   QConnectionManager.h
  * Author: rbuck
  *
- * Created on October 20, 2010, 11:18 AM
+ * Created on October 29, 2010, 2:12 PM
  */
 
 #ifndef _CONNECTIONMANAGER_H
 #define	_CONNECTIONMANAGER_H
 
-#include "LocalSocketFullDuplex.h"
-#include "IModule.h"
-#include "UDPInterface.h"
+#include "Module.h"
+#include "SocketConnectionManager.h"
+#include "ConnectEvent.h"
 
-class ConnectionManager : public LocalSocketFullDuplex, public IModule {
+class ConnnectionManager : public Module {
 public:
-    ConnectionManager(string & file) : LocalSocketFullDuplex(file){
+
+    ConnnectionManager() : Module() {
+        s_ = "Connection Manager blah";
+    }
+
+    virtual ~ConnnectionManager() {
 
     }
 
-    ~ConnectionManager() {
-        
+    void process(Event* e) {
+        e->execute(this);
     }
 
-    void receive(string & message) {
-        cout << "Connection manager Receive: " << message << endl;
+    void connect(Event* e) {
+        ConnectEvent* c = (ConnectEvent*) e;
+        cout << "Socket: " << c->get_socket() << endl;
+        cout << get_string() << endl;
     }
 
-    void connect(string & message) {
-        cout << "Connection manager connect: " << message << endl;
-        send_to(UDPInterface::instance()->getFile(), message);
+    void data(Event* e) {
+
     }
 
-    void data(string & message) {
-        cout << "Connection manager data: " << message << endl;
+    string & get_string() {
+        return s_;
     }
+
+private:
+    string s_;
 };
 
 

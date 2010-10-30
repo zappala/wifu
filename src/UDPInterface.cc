@@ -1,48 +1,48 @@
-#include "UDPInterface.h"
-#include "Dispatcher.h"
+#include "SocketUDPInterface.h"
+#include "SocketDispatcher.h"
 
 
-UDPInterface * UDPInterface::instance_ = NULL;
+SocketUDPInterface * SocketUDPInterface::instance_ = NULL;
 
 // private
 
-UDPInterface::UDPInterface(string & file) : LocalSocketFullDuplex(file) {
+SocketUDPInterface::SocketUDPInterface(string & file) : LocalSocketFullDuplex(file) {
 
 
 }
 
-UDPInterface::UDPInterface(UDPInterface const&) : LocalSocketFullDuplex(getFile()) {
+SocketUDPInterface::SocketUDPInterface(SocketUDPInterface const&) : LocalSocketFullDuplex(getFile()) {
 
 }
 
-UDPInterface & UDPInterface::operator=(UDPInterface const&) {
+SocketUDPInterface & SocketUDPInterface::operator=(SocketUDPInterface const&) {
 
 }
 
 // public
 
-UDPInterface::~UDPInterface() {
+SocketUDPInterface::~SocketUDPInterface() {
 
 }
 
-UDPInterface * UDPInterface::instance() {
+SocketUDPInterface * SocketUDPInterface::instance() {
     if (!instance_) {
         string filename("/tmp/udpinterface");
-        instance_ = new UDPInterface(filename);
+        instance_ = new SocketUDPInterface(filename);
     }
     return instance_;
 }
 
-void UDPInterface::receive(string & message) {
+void SocketUDPInterface::receive(string & message) {
     cout << "UDPInterface Receive: " << message << endl;
     if(message.find("<connect>", 0) != string::npos) {
         sleep(2);
         string reply("<connected> localhost");
-        send_to(Dispatcher::instance().getFile(),reply);
+        send_to(SocketDispatcher::instance().getFile(),reply);
     }
 }
 
-void UDPInterface::destroy(void) {
+void SocketUDPInterface::destroy(void) {
     delete instance();
 }
 

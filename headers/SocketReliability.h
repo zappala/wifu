@@ -5,19 +5,19 @@
  * Created on October 18, 2010, 2:26 PM
  */
 
-#ifndef _RELIABILITY_H
-#define	_RELIABILITY_H
+#ifndef _SOCKETRELIABILITY_H
+#define	_SOCKETRELIABILITY_H
 
 #include <iostream>
 
 #include "LocalSocketFullDuplex.h"
-#include "IModule.h"
+#include "ISocketModule.h"
 
 
-class Reliability : public LocalSocketFullDuplex, public IModule {
+class SocketReliability : public LocalSocketFullDuplex, public ISocketModule {
 public:
-    Reliability(string & file);
-    virtual ~Reliability();
+    SocketReliability(string & file);
+    virtual ~SocketReliability();
 
     void receive(string &  message);
 
@@ -26,5 +26,5 @@ public:
 };
 
 
-#endif	/* _RELIABILITY_H */
+#endif	/* _SOCKETRELIABILITY_H */
 

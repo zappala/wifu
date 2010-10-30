@@ -1,24 +1,24 @@
 /* 
- * File:   CongestionControl.h
+ * File:   SocketCongestionControl.h
  * Author: rbuck
  *
  * Created on October 20, 2010, 11:47 AM
  */
 
-#ifndef _CONGESTIONCONTROL_H
-#define	_CONGESTIONCONTROL_H
+#ifndef _SOCKETCONGESTIONCONTROL_H
+#define	_SOCKETCONGESTIONCONTROL_H
 
 #include "LocalSocketFullDuplex.h"
-#include "IModule.h"
+#include "ISocketModule.h"
 
-class CongestionControl : public LocalSocketFullDuplex, public IModule {
+class SocketCongestionControl : public LocalSocketFullDuplex, public ISocketModule {
 public:
 
-    CongestionControl(string & file) : LocalSocketFullDuplex(file) {
+    SocketCongestionControl(string & file) : LocalSocketFullDuplex(file) {
 
     }
 
-    ~CongestionControl() {
+    ~SocketCongestionControl() {
 
     }
 
@@ -35,5 +35,5 @@ public:
     }
 };
 
-#endif	/* _CONGESTIONCONTROL_H */
+#endif	/* _SOCKETCONGESTIONCONTROL_H */
 

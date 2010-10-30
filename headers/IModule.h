@@ -8,18 +8,27 @@
 #ifndef _IMODULE_H
 #define	_IMODULE_H
 
-#include <string>
+#include "QueueProcessor.h"
+#include "Queue.h"
+#include "Event.h"
+
+class Event;
 
 using namespace std;
 
 class IModule {
 public:
-    virtual ~IModule() {
-        
+    IModule() {
+
     }
-    virtual void connect(string & message) = 0;
-    virtual void data(string & message) = 0;
+
+    virtual ~IModule(){
+
+    }
     
+    virtual void connect(Event* e) = 0;
+    virtual void data(Event* e) = 0;
+
 };
 
 #endif	/* _IMODULE_H */

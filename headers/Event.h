@@ -9,17 +9,18 @@
 #define	_EVENT_H
 
 #include "Identifiable.h"
-#include "IQModule.h"
+#include "IModule.h"
 
-class IQModule;
+class IModule;
 
 class Event : public Identifiable {
 public:
-    Event();
+    Event(int socket);
     virtual ~Event();
-    virtual void execute(IQModule * m) = 0;
-
+    virtual void execute(IModule * m) = 0;
+    int & get_socket();
 private:
+    int socket_;
     
 };
 

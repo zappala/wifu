@@ -9,11 +9,17 @@
 #define	_CONNECTEVENT_H
 
 #include "Event.h"
-#include "IModule.h"
+#include "ISocketModule.h"
 
 
 class ConnectEvent : public Event {
-    void execute(IQModule* m) {
+
+public:
+    ConnectEvent(int socket) : Event(socket) {
+
+    }
+
+    void execute(IModule* m) {
         m->connect(this);
     }
 };
