@@ -69,7 +69,7 @@ public:
 
     }
 
-    void enqueue(T object, bool signal = false) {
+    virtual void enqueue(T object, bool signal = false) {
         if (signal) {
             queue_->enqueue(object, true);
         } else {

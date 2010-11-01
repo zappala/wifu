@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 //    cout << q.size() << endl;
 //    cout << q.dequeue() << endl;
 
-    int sleep_time = 1;
+    int sleep_time = 3;
 
     int socket = 0;
 
@@ -78,8 +78,11 @@ int main(int argc, char** argv) {
     // Load Modules
     ConnnectionManager manager;
     UDPInterface interface;
+    TimeoutEventManager tomanager;
     Dispatcher::instance().map_event(typeid (ConnectEvent).name(), &manager);
     Dispatcher::instance().map_event(typeid (SendSynEvent).name(), &interface);
+    Dispatcher::instance().map_event(typeid (TimeoutEvent).name(), &tomanager);
+
     
 
 

@@ -39,6 +39,7 @@ public:
     void cancel(TimeoutEvent * event);
 
     void process(TimeoutEvent * event);
+    virtual void enqueue(Event* e, bool signal = true);
 
 
 private:

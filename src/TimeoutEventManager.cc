@@ -41,7 +41,12 @@ void TimeoutEventManager::process(TimeoutEvent* event) {
     }
 
     // Semaphore was posted on
-    enqueue(event);
+    enqueue(event, false);
+}
+
+void TimeoutEventManager::enqueue(Event* e, bool signal) {
+    TimeoutEvent* event = (TimeoutEvent*)e;
+    this->QueueProcessor<TimeoutEvent*>::enqueue(event, signal);
 }
 
 void signal_manager(int signal) {
