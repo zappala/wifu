@@ -25,7 +25,7 @@ void TimeoutEventManager::cancel(Event * event) {
     raise(SIG_CANCEL_EVENT);
 }
 
-void TimeoutEventManager::process(Event* e) {
+void TimeoutEventManager::timeout(Event* e) {
     TimeoutEvent* event = (TimeoutEvent*) e;
 
     if (CanceledEvents::instance().is_canceled(event)) {
@@ -37,8 +37,11 @@ void TimeoutEventManager::process(Event* e) {
     bool timedout = TimeoutManagerSemaphore.timed_wait(&event->get_timeout_time());
 
     if (timedout) {
-        event->execute(NULL);
-        delete event;
+        //event->execute(this);
+        cout << "Timed out" << endl;
+        cout << event->get_timeout_time().tv_sec << endl;
+        cout << event->get_timeout_time().tv_nsec << endl;
+
         return;
     }
 
@@ -47,8 +50,7 @@ void TimeoutEventManager::process(Event* e) {
 }
 
 void TimeoutEventManager::enqueue(Event* e, bool signal) {
-    cout << "TimeoutManagerEnqueue " << endl;
-    TimeoutEvent* event = (TimeoutEvent*)e;
+    TimeoutEvent* event = (TimeoutEvent*) e;
     this->QueueProcessor<Event*>::enqueue(event, signal);
 }
 

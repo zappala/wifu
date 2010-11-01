@@ -76,12 +76,12 @@ int main(int argc, char** argv) {
     Dispatcher::instance().start_processing();
 
     // Load Modules
-    ConnnectionManager cmanager;
-    UDPInterface interface;
+    //ConnnectionManager cmanager;
+    //UDPInterface interface;
     TimeoutEventManager tomanager;
 
-    Dispatcher::instance().map_event(typeid (ConnectEvent).name(), &cmanager);
-    Dispatcher::instance().map_event(typeid (SendSynEvent).name(), &interface);
+    //Dispatcher::instance().map_event(typeid (ConnectEvent).name(), &cmanager);
+    //Dispatcher::instance().map_event(typeid (SendSynEvent).name(), &interface);
     Dispatcher::instance().map_event(typeid (TimeoutEvent).name(), &tomanager);
 
     

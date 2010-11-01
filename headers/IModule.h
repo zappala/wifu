@@ -25,7 +25,8 @@ public:
     virtual ~IModule(){
 
     }
-    
+
+    virtual void timeout(Event* e) {}
     virtual void connect(Event* e) {}
     virtual void udp_send(Event* e) {}
     virtual void data(Event* e) {};

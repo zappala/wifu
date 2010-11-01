@@ -22,7 +22,6 @@ public:
     }
 
     void execute(IModule* m) {
-        cout << "Connect Execute" << endl;
         m->connect(this);
     }
 };

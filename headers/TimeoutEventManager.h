@@ -38,13 +38,12 @@ public:
     virtual ~TimeoutEventManager();
     void cancel(Event * event);
 
-    void process(Event * event);
     virtual void enqueue(Event* e, bool signal = true);
+    virtual void timeout(Event* e);
 
 
 private:
     PriorityQueue<Event*, EventComparator> queue_;
-    pthread_t thread_;
 
 };
 
