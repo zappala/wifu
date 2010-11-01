@@ -27,7 +27,7 @@ public:
     void udp_send(Event* e) {
         SendSynEvent* event = (SendSynEvent*)e;
         cout << "UDPInterface udp_send: " << event->get_address() << " " << event->get_port() << endl;
-        Dispatcher::instance().enqueue(new TimeoutEvent(event->get_socket(), 2, 0), false);
+        Dispatcher::instance().enqueue(new TimeoutEvent(event->get_socket(), 2, 0));
     }    
 };
 

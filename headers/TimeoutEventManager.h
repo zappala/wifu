@@ -13,8 +13,8 @@
 #include "defines.h"
 #include "TimeoutEventManagerSemaphore.h"
 #include "CanceledEvents.h"
-#include "QueueProcessor.h"
 #include "DequeueCallback.h"
+#include "Module.h"
 
 #include <pthread.h>
 #include <stdlib.h>
@@ -31,19 +31,19 @@ using namespace std;
 // prototypes
 void signal_manager(int signal);
 
-class TimeoutEventManager : public QueueProcessor<TimeoutEvent*> {
+class TimeoutEventManager : public Module {
 public:
 
     TimeoutEventManager();
     virtual ~TimeoutEventManager();
-    void cancel(TimeoutEvent * event);
+    void cancel(Event * event);
 
-    void process(TimeoutEvent * event);
+    void process(Event * event);
     virtual void enqueue(Event* e, bool signal = true);
 
 
 private:
-    PriorityQueue<TimeoutEvent *, TimeoutEventComparator> queue_;
+    PriorityQueue<Event*, EventComparator> queue_;
     pthread_t thread_;
 
 };

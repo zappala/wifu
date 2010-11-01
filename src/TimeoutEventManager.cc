@@ -7,7 +7,7 @@
 
 #include "TimeoutEventManager.h"
 
-TimeoutEventManager::TimeoutEventManager() : QueueProcessor<TimeoutEvent*>(&queue_) {
+TimeoutEventManager::TimeoutEventManager() : Module(&queue_) {
 
     //make sure singleton is created
     TimeoutManagerSemaphore;
@@ -20,12 +20,14 @@ TimeoutEventManager::~TimeoutEventManager() {
 
 }
 
-void TimeoutEventManager::cancel(TimeoutEvent * event) {
+void TimeoutEventManager::cancel(Event * event) {
     CanceledEvents::instance().add(event);
     raise(SIG_CANCEL_EVENT);
 }
 
-void TimeoutEventManager::process(TimeoutEvent* event) {
+void TimeoutEventManager::process(Event* e) {
+    TimeoutEvent* event = (TimeoutEvent*) e;
+
     if (CanceledEvents::instance().is_canceled(event)) {
         CanceledEvents::instance().remove(event);
         delete event;
@@ -45,8 +47,9 @@ void TimeoutEventManager::process(TimeoutEvent* event) {
 }
 
 void TimeoutEventManager::enqueue(Event* e, bool signal) {
+    cout << "TimeoutManagerEnqueue " << endl;
     TimeoutEvent* event = (TimeoutEvent*)e;
-    this->QueueProcessor<TimeoutEvent*>::enqueue(event, signal);
+    this->QueueProcessor<Event*>::enqueue(event, signal);
 }
 
 void signal_manager(int signal) {

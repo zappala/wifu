@@ -21,7 +21,7 @@ public:
     }
 
     virtual ~ConnnectionManager() {
-
+        cout << "";
     }
 
     void connect(Event* e) {

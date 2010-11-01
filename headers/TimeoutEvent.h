@@ -33,7 +33,7 @@ public:
         timer_.tv_nsec += nanoseconds;
         timer_.tv_sec += seconds;
 
-        while(timer_.tv_nsec >= NANOSECONDS_IN_SECONDS) {
+        while (timer_.tv_nsec >= NANOSECONDS_IN_SECONDS) {
             timer_.tv_sec += 1;
             timer_.tv_nsec -= NANOSECONDS_IN_SECONDS;
         }
@@ -41,6 +41,17 @@ public:
 
     struct timespec & get_timeout_time() {
         return timer_;
+    }
+
+    virtual bool less_than(Event* e) {
+        TimeoutEvent* rhs = (TimeoutEvent*) e;
+        
+        struct timespec * a = &(get_timeout_time());
+        struct timespec * b = &(rhs->get_timeout_time());
+
+        if (a->tv_sec > b->tv_sec) return true;
+        if (a->tv_sec == b->tv_sec && a->tv_nsec > b->tv_nsec) return true;
+        return false;
     }
 
     void execute(IModule* m) {
@@ -54,19 +65,7 @@ private:
     struct timespec timer_;
 };
 
-class TimeoutEventComparator {
-public:
 
-    bool operator()(TimeoutEvent*& t1, TimeoutEvent*& t2) {
-
-        struct timespec * a = &(t1->get_timeout_time());
-        struct timespec * b = &(t2->get_timeout_time());
-
-        if (a->tv_sec > b->tv_sec) return true;
-        if (a->tv_sec == b->tv_sec && a->tv_nsec > b->tv_nsec) return true;
-        return false;
-    } 
-};
 
 #endif	/* _TIMEOUTEVENT_H */
 

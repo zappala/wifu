@@ -70,11 +70,7 @@ public:
     }
 
     virtual void enqueue(T object, bool signal = false) {
-        if (signal) {
-            queue_->enqueue(object, true);
-        } else {
-            queue_->enqueue(object);
-        }
+        queue_->enqueue(object, signal);
     }
 
     void start_processing() {

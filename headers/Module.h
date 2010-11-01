@@ -17,8 +17,13 @@ public:
     Module() : IModule(), QueueProcessor<Event*>(&queue_) {
 
     }
-    virtual ~Module() {
 
+    Module(IQueue<Event*>* queue) : IModule(), QueueProcessor<Event*>(queue) {
+
+    }
+
+    virtual ~Module() {
+        
     }
 
     virtual void process(Event* e) {
