@@ -27,7 +27,6 @@ private:
 
 class EventComparator {
 public:
-
     bool operator()(Event*& t1, Event*& t2) {
         return t1->less_than(t2);
     }

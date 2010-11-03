@@ -11,6 +11,7 @@
 #include <semaphore.h>
 #include <time.h>
 #include <iostream>
+#include <errno.h>
 
 using namespace std;
 

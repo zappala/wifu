@@ -9,6 +9,8 @@
 #define	_TIMEOUTEVENT_H
 
 #include "Event.h"
+#include "IModule.h"
+
 #include <time.h>
 #include <assert.h>
 #include <stdio.h>
@@ -58,9 +60,10 @@ public:
         m->timeout(this);
     }
 
+
 private:
-    int timeout_;
     struct timespec timer_;
+
 };
 
 

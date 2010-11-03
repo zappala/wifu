@@ -8,11 +8,6 @@
 #include <stdlib.h>
 #include <iostream>
 
-#include "LocalSocketFullDuplex.h"
-#include "SocketReliability.h"
-#include "SocketConnectionManager.h"
-#include "SocketDispatcher.h"
-#include "SocketSocket.h"
 #include "Queue.h"
 #include "PriorityQueue.h"
 #include "TimeoutEvent.h"
@@ -25,6 +20,7 @@
 #include "ConnectEvent.h"
 #include "Socket.h"
 #include "UDPInterface.h"
+#include "ConnectionManager.h"
 
 using namespace std;
 
@@ -32,8 +28,13 @@ using namespace std;
  * 
  */
 
-int main(int argc, char** argv) {
+template<class Type>
+class Temp{
+    
+};
 
+
+int main(int argc, char** argv) {
 
 
     string address("localhost");
@@ -52,16 +53,6 @@ int main(int argc, char** argv) {
 
     int socket = 0;
 
-    TimeoutEvent * one = new TimeoutEvent(socket, 1, 0);
-    TimeoutEvent * oneplus = new TimeoutEvent(socket, 1, 0);
-    TimeoutEvent * six = new TimeoutEvent(socket, 6, 0);
-    TimeoutEvent * two = new TimeoutEvent(socket, 2, 0);
-    TimeoutEvent * three = new TimeoutEvent(socket, 3, 0);
-    TimeoutEvent * four = new TimeoutEvent(socket, 4, 0);
-    TimeoutEvent * five = new TimeoutEvent(socket, 5, 0);
-
-    TimeoutEventManager manager;
-    manager.start_processing();
 
 
 //    Queue<int> ints;
@@ -71,23 +62,32 @@ int main(int argc, char** argv) {
 //    cout << "Doubles: " << typeid (doubles).name() << endl;
 
 
-
     // Start Dispatcher
     Dispatcher::instance().start_processing();
 
     // Load Modules
-    //ConnnectionManager cmanager;
-    //UDPInterface interface;
+    ConnnectionManager cmanager;
+    UDPInterface interface;
     TimeoutEventManager tomanager;
 
-    //Dispatcher::instance().map_event(typeid (ConnectEvent).name(), &cmanager);
-    //Dispatcher::instance().map_event(typeid (SendSynEvent).name(), &interface);
+    Dispatcher::instance().map_event(typeid (SendSynEvent).name(), &cmanager);
+    Dispatcher::instance().map_event(typeid (ConnectEvent).name(), &cmanager);
+    
+    Dispatcher::instance().map_event(typeid (SendSynEvent).name(), &interface);
+
     Dispatcher::instance().map_event(typeid (TimeoutEvent).name(), &tomanager);
 
     
     // Try Events through Socket
 //    Socket s;
 //    s.connect(address, port);
+    TimeoutEvent * one = new TimeoutEvent(socket, 1, 0);
+    TimeoutEvent * oneplus = new TimeoutEvent(socket, 1, 0);
+    TimeoutEvent * six = new TimeoutEvent(socket, 6, 0);
+    TimeoutEvent * two = new TimeoutEvent(socket, 2, 0);
+    TimeoutEvent * three = new TimeoutEvent(socket, 3, 0);
+    TimeoutEvent * four = new TimeoutEvent(socket, 4, 0);
+    TimeoutEvent * five = new TimeoutEvent(socket, 5, 0);
 
 
 
@@ -101,8 +101,8 @@ int main(int argc, char** argv) {
     
 ////
 ////
-    manager.cancel(two);
-    manager.cancel(three);
+    tomanager.cancel(two);
+//    manager.cancel(three);
     //    manager.cancel(four);
     //manager.cancel(one);
     //manager.cancel(oneplus);

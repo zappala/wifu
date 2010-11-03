@@ -15,8 +15,6 @@
 
 #include <tr1/unordered_map>
 
-
-
 using namespace std;
 
 class Dispatcher : public QueueProcessor<Event*> {

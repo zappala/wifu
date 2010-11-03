@@ -10,7 +10,11 @@
 
 #include <string>
 
-#include "QueueProcessor.h"
+#include "Event.h"
+#include "ConnectEvent.h"
+#include "Dispatcher.h"
+#include "Identifiable.h"
+
 using namespace std;
 
 class Socket : public Identifiable {

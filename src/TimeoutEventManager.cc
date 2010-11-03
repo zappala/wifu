@@ -28,7 +28,7 @@ void TimeoutEventManager::cancel(Event * event) {
 void TimeoutEventManager::timeout(Event* e) {
     TimeoutEvent* event = (TimeoutEvent*) e;
 
-    if (CanceledEvents::instance().is_canceled(event)) {
+    if (CanceledEvents::instance().contains(event)) {
         CanceledEvents::instance().remove(event);
         delete event;
         return;

@@ -8,8 +8,6 @@
 #ifndef _DEQUEUECALLBACK_H
 #define	_DEQUEUECALLBACK_H
 
-#include "Event.h"
-
 template<class T>
 class DequeueCallback {
 public:

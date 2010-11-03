@@ -9,7 +9,6 @@
 #define	_UDPINTERFACE_H
 
 #include "Module.h"
-#include "AddressPort.h"
 #include "Dispatcher.h"
 #include "TimeoutEvent.h"
 

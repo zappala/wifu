@@ -14,7 +14,6 @@
 #include <signal.h>
 
 #include "defines.h"
-#include "TimeoutEvent.h"
 #include "Semaphore.h"
 #include "IQueue.h"
 

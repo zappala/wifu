@@ -11,7 +11,7 @@
 #include <pthread.h>
 #include <stdio.h>
 
-#include "Queue.h"
+#include "IQueue.h"
 #include "DequeueCallback.h"
 #include "Semaphore.h"
 

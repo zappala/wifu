@@ -8,8 +8,6 @@
 #ifndef _IMODULE_H
 #define	_IMODULE_H
 
-#include "QueueProcessor.h"
-#include "Queue.h"
 #include "Event.h"
 
 class Event;
@@ -27,9 +25,10 @@ public:
     }
 
     virtual void timeout(Event* e) {}
+    virtual void timer_fired(Event* e) {}
     virtual void connect(Event* e) {}
     virtual void udp_send(Event* e) {}
-    virtual void data(Event* e) {};
+    virtual void data(Event* e) {}
 
 };
 

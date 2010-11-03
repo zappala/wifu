@@ -9,7 +9,6 @@
 #define	_CONNECTEVENT_H
 
 #include "Event.h"
-#include "ISocketModule.h"
 #include "AddressPort.h"
 
 

@@ -9,7 +9,6 @@
 #define	_CONNECTIONMANAGER_H
 
 #include "Module.h"
-#include "SocketConnectionManager.h"
 #include "ConnectEvent.h"
 #include "SendSynEvent.h"
 
@@ -32,6 +31,11 @@ public:
     }
 
     void data(Event* e) {
+
+    }
+
+    void timer_fired(Event* e) {
+        //TimerFiredEvent<ConnectionManager>* event = (TimerFiredEvent<ConnectionManager>*)e;
 
     }
 

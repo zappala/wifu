@@ -13,7 +13,6 @@
 #include "defines.h"
 #include "TimeoutEventManagerSemaphore.h"
 #include "CanceledEvents.h"
-#include "DequeueCallback.h"
 #include "Module.h"
 
 #include <pthread.h>

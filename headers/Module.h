@@ -8,9 +8,10 @@
 #ifndef _MODULE_H
 #define	_MODULE_H
 
+
 #include "QueueProcessor.h"
 #include "IModule.h"
-
+#include "Queue.h"
 
 class Module : public IModule, public QueueProcessor<Event*> {
 public:

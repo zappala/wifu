@@ -12,6 +12,7 @@
 
 #include "LocalSocketSender.h"
 #include "LocalSocketReceiver.h"
+#include "LocalSocketReceiverCallback.h"
 
 using namespace std;
 
