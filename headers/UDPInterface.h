@@ -11,7 +11,7 @@
 #include "Module.h"
 #include "Dispatcher.h"
 #include "TimeoutEvent.h"
-
+#include "PacketReceivedEvent.h"
 
 class UDPInterface : public Module {
 public:
@@ -24,9 +24,16 @@ public:
     }
 
     void udp_send(Event* e) {
-        SendSynEvent* event = (SendSynEvent*)e;
+        SendPacketEvent* event = (SendPacketEvent*)e;
+
         cout << "UDPInterface udp_send: " << event->get_address() << " " << event->get_port() << endl;
-        Dispatcher::instance().enqueue(new TimeoutEvent(event->get_socket(), 2, 0));
+        
+        if(e->get_socket() % 2 == 0) {
+            // emulate a response
+            usleep(100);
+            dispatch(new PacketReceivedEvent(e->get_socket()));
+            return;
+        }
     }    
 };
 

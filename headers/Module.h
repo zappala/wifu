@@ -39,6 +39,10 @@ public:
             my_timer_fired(event);
         }
     }
+
+    virtual void dispatch(Event* e) {
+        Dispatcher::instance().enqueue(e);
+    }
     
 private:
     Queue<Event*> queue_;

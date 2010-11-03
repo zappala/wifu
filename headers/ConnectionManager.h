@@ -10,7 +10,7 @@
 
 #include "Module.h"
 #include "ConnectEvent.h"
-#include "SendSynEvent.h"
+#include "SendPacketEvent.h"
 #include "TimeoutEvent.h"
 
 class ConnnectionManager : public Module {
@@ -27,12 +27,20 @@ public:
     void connect(Event* e) {
         ConnectEvent* c = (ConnectEvent*) e;
         cout << "Connection Manager Connect: " << c->get_address() << " " << c->get_port() << endl;
+        dispatch(new SendPacketEvent(c->get_socket(), c->get_address(), c->get_port()));
 
-        Dispatcher::instance().enqueue(new SendSynEvent(c->get_socket(), c->get_address(), c->get_port()));
+        // Timeout in 1 sec
+        timer_ = new TimeoutEvent(e->get_socket(), 1, 0);
+        dispatch_timeout(timer_);
     }
 
     void data(Event* e) {
 
+    }
+
+    void receive(Event* e) {
+        cout << "Received Response" << endl;
+        cancel_timeout(timer_);
     }
 
     void my_timer_fired(Event* e) {
@@ -62,6 +70,8 @@ public:
 
         cancel_timeout(two);
     }
+private:
+    TimeoutEvent* timer_;
 };
 
 

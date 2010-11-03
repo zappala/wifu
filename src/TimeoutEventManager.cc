@@ -38,13 +38,7 @@ void TimeoutEventManager::timeout(Event* e) {
     bool timedout = TimeoutManagerSemaphore.timed_wait(&event->get_timeout_time());
 
     if (timedout) {
-        //event->execute(this);
-        cout << "Timed out" << endl;
-        cout << event->get_timeout_time().tv_sec << endl;
-        cout << event->get_timeout_time().tv_nsec << endl;
-
         Dispatcher::instance().enqueue(new TimerFiredEvent(event));
-
         return;
     }
 

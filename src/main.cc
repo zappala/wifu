@@ -22,6 +22,7 @@
 #include "UDPInterface.h"
 #include "ConnectionManager.h"
 #include "defines.h"
+#include "PacketReceivedEvent.h"
 
 using namespace std;
 
@@ -71,30 +72,22 @@ int main(int argc, char** argv) {
     UDPInterface interface;
     TimeoutEventManager tomanager;
 
-    Dispatcher::instance().map_event(type_name(SendSynEvent), &cmanager);
+    Dispatcher::instance().map_event(type_name(SendPacketEvent), &cmanager);
     Dispatcher::instance().map_event(type_name(ConnectEvent), &cmanager);
+    Dispatcher::instance().map_event(type_name(PacketReceivedEvent), &cmanager);
     
-    Dispatcher::instance().map_event(type_name(SendSynEvent), &interface);
+    Dispatcher::instance().map_event(type_name(SendPacketEvent), &interface);
 
     Dispatcher::instance().map_event(type_name(TimeoutEvent), &tomanager);
     Dispatcher::instance().map_event(type_name(CancelTimerEvent), &tomanager);
     Dispatcher::instance().map_event(type_name(TimerFiredEvent), &cmanager);
 
-    cmanager.test();
+    //cmanager.test();
 
     
 //     Try Events through Socket
-//    Socket s;
-//    s.connect(address, port);
-    
-    
-//
-//
-    
-//    manager.cancel(three);
-    //    manager.cancel(four);
-    //manager.cancel(one);
-    //manager.cancel(oneplus);
+    Socket s;
+    s.connect(address, port);
 
 
 

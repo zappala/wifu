@@ -32,6 +32,7 @@ public:
     virtual void connect(Event* e) {}
     virtual void udp_send(Event* e) {}
     virtual void data(Event* e) {}
+    virtual void receive(Event* e) {}
 
 protected:
     virtual void my_timer_fired(Event* e) {}
