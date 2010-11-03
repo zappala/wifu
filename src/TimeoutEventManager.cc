@@ -14,16 +14,15 @@ TimeoutEventManager::TimeoutEventManager() : Module(&queue_) {
 
     signal(SIG_ENQUEUE_EVENT, signal_manager);
     signal(SIG_CANCEL_EVENT, signal_manager);
-
-    cout << "Timeout Event Manager Constructor" << endl;
 }
 
 TimeoutEventManager::~TimeoutEventManager() {
 
 }
 
-void TimeoutEventManager::cancel(Event * event) {
-    CanceledEvents::instance().add(event);
+void TimeoutEventManager::cancel_timer(Event * e) {
+    CancelTimerEvent* event = (CancelTimerEvent*) e;
+    CanceledEvents::instance().add(event->get_timeout_event());
     raise(SIG_CANCEL_EVENT);
 }
 
@@ -43,6 +42,8 @@ void TimeoutEventManager::timeout(Event* e) {
         cout << "Timed out" << endl;
         cout << event->get_timeout_time().tv_sec << endl;
         cout << event->get_timeout_time().tv_nsec << endl;
+
+        Dispatcher::instance().enqueue(new TimerFiredEvent(event));
 
         return;
     }

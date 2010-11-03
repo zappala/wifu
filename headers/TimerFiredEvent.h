@@ -8,13 +8,12 @@
 #ifndef _TIMERFIREDEVENT_H
 #define	_TIMERFIREDEVENT_H
 
-#include "Event.h"
-#include "TimeoutEvent.h"
+#include "TimerEvent.h"
 
-
-class TimerFiredEvent : public Event {
+class TimerFiredEvent : public TimerEvent {
 public:
-    TimerFiredEvent(int socket, TimeoutEvent* timeout_event) : Event(socket), timeout_event_(timeout_event) {
+
+    TimerFiredEvent(TimeoutEvent* timeout_event) : TimerEvent(timeout_event) {
 
     }
 
@@ -22,16 +21,9 @@ public:
 
     }
 
-    TimeoutEvent* get_timeout_event() {
-        return timeout_event_;
-    }
-
     void execute(IModule* m) {
         m->timer_fired(this);
     }
-
-private:
-    TimeoutEvent* timeout_event_;
 };
 
 #endif	/* _TIMERFIREDEVENT_H */

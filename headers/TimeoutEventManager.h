@@ -14,6 +14,7 @@
 #include "TimeoutEventManagerSemaphore.h"
 #include "CanceledEvents.h"
 #include "Module.h"
+#include "CancelTimerEvent.h"
 
 #include <pthread.h>
 #include <stdlib.h>
@@ -35,10 +36,10 @@ public:
 
     TimeoutEventManager();
     virtual ~TimeoutEventManager();
-    void cancel(Event * event);
 
     virtual void enqueue(Event* e, bool signal = true);
     virtual void timeout(Event* e);
+    virtual void cancel_timer(Event* e);
 
 
 private:

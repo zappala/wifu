@@ -16,7 +16,7 @@
 class UDPInterface : public Module {
 public:
     UDPInterface() : Module() {
-        cout << "UDP Interface Constructor" << endl;
+
     }
 
     virtual ~UDPInterface() {

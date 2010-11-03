@@ -12,17 +12,15 @@
 #include "QueueProcessor.h"
 #include "IModule.h"
 #include "Queue.h"
+#include "TimeoutHelper.h"
 
-class Module : public IModule, public QueueProcessor<Event*> {
+class Module : public IModule, public QueueProcessor<Event*>, public TimeoutHelper {
 public:
-    Module() : IModule(), QueueProcessor<Event*>(&queue_) {
-        cout << "Queue Size: " << queue_.size() << endl;
-
+    Module() : IModule(), QueueProcessor<Event*>(&queue_), TimeoutHelper() {
         start_processing();
     }
 
-    Module(IQueue<Event*>* queue) : IModule(), QueueProcessor<Event*>(queue) {
-        cout << "Queue Size: " << queue_.size() << endl;
+    Module(IQueue<Event*>* queue) : IModule(), QueueProcessor<Event*>(queue), TimeoutHelper() {
         start_processing();
     }
 
@@ -34,6 +32,14 @@ public:
         e->execute(this);
     }
 
+    virtual void timer_fired(Event* e) {
+        TimerFiredEvent* event = (TimerFiredEvent*) e;
+        
+        if(is_my_timeout(event)) {
+            my_timer_fired(event);
+        }
+    }
+    
 private:
     Queue<Event*> queue_;
 };

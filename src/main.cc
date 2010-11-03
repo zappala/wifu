@@ -21,6 +21,7 @@
 #include "Socket.h"
 #include "UDPInterface.h"
 #include "ConnectionManager.h"
+#include "defines.h"
 
 using namespace std;
 
@@ -70,37 +71,26 @@ int main(int argc, char** argv) {
     UDPInterface interface;
     TimeoutEventManager tomanager;
 
-    Dispatcher::instance().map_event(typeid (SendSynEvent).name(), &cmanager);
-    Dispatcher::instance().map_event(typeid (ConnectEvent).name(), &cmanager);
+    Dispatcher::instance().map_event(type_name(SendSynEvent), &cmanager);
+    Dispatcher::instance().map_event(type_name(ConnectEvent), &cmanager);
     
-    Dispatcher::instance().map_event(typeid (SendSynEvent).name(), &interface);
+    Dispatcher::instance().map_event(type_name(SendSynEvent), &interface);
 
-    Dispatcher::instance().map_event(typeid (TimeoutEvent).name(), &tomanager);
+    Dispatcher::instance().map_event(type_name(TimeoutEvent), &tomanager);
+    Dispatcher::instance().map_event(type_name(CancelTimerEvent), &tomanager);
+    Dispatcher::instance().map_event(type_name(TimerFiredEvent), &cmanager);
+
+    cmanager.test();
 
     
 //     Try Events through Socket
 //    Socket s;
 //    s.connect(address, port);
-    TimeoutEvent * one = new TimeoutEvent(socket, 1, 0);
-    TimeoutEvent * oneplus = new TimeoutEvent(socket, 1, 0);
-    TimeoutEvent * six = new TimeoutEvent(socket, 6, 0);
-    TimeoutEvent * two = new TimeoutEvent(socket, 2, 0);
-    TimeoutEvent * three = new TimeoutEvent(socket, 3, 0);
-    TimeoutEvent * four = new TimeoutEvent(socket, 4, 0);
-    TimeoutEvent * five = new TimeoutEvent(socket, 5, 0);
-
-
-    Dispatcher::instance().enqueue(oneplus);
-    Dispatcher::instance().enqueue(four);
-    Dispatcher::instance().enqueue(two);
-    Dispatcher::instance().enqueue(six);
-    Dispatcher::instance().enqueue(five);
-    Dispatcher::instance().enqueue(three);
-    Dispatcher::instance().enqueue(one);
+    
     
 //
 //
-    tomanager.cancel(two);
+    
 //    manager.cancel(three);
     //    manager.cancel(four);
     //manager.cancel(one);
