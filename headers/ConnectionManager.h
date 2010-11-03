@@ -16,7 +16,7 @@ class ConnnectionManager : public Module {
 public:
 
     ConnnectionManager() : Module() {
-
+        cout << "Connection Manager Constructor" << endl;
     }
 
     virtual ~ConnnectionManager() {

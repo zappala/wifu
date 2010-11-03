@@ -8,7 +8,6 @@
 #ifndef _DISPATCHER_H
 #define	_DISPATCHER_H
 
-#include "Module.h"
 #include "Event.h"
 #include "QueueProcessor.h"
 #include "defines.h"
@@ -26,37 +25,34 @@ public:
     }
 
     ~Dispatcher() {
-        tr1::unordered_map<event_name, vector<Module*>*>::iterator itr = map_.begin();
+        tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*>::iterator itr = map_.begin();
         for (; itr != map_.end(); ++itr) {
-            vector<Module*>* v = itr->second;
+            vector<QueueProcessor<Event*>*>* v = itr->second;
             delete v;
         }
     }
 
-    void map_event(event_name name, Module * m) {
+    void map_event(event_name name, QueueProcessor<Event*>* q) {
         if (map_[name] == NULL) {
-            map_[name] = new vector<Module *>;
+            map_[name] = new vector<QueueProcessor<Event*>*>;
         }
-        map_[name]->push_back(m);
-
-        // turn on module's thread
-        m->start_processing();
+        map_[name]->push_back(q);
     }
 
     void process(Event * e) {
-        vector<Module*>* modules = map_[typeid(*e).name()];
+        vector<QueueProcessor<Event*>*>* queue_processors = map_[typeid(*e).name()];
 
-        if(modules == NULL) {
+        if(queue_processors == NULL) {
             return;
         }
         
-        for(int i = 0; i < modules->size(); i++) {
-            modules->at(i)->enqueue(e);
+        for(int i = 0; i < queue_processors->size(); i++) {
+            queue_processors->at(i)->enqueue(e);
         }
     }
 
 private:
-    tr1::unordered_map<event_name, vector<Module*>*> map_;
+    tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*> map_;
     Queue<Event*> events_;
 
 

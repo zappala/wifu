@@ -14,6 +14,8 @@ TimeoutEventManager::TimeoutEventManager() : Module(&queue_) {
 
     signal(SIG_ENQUEUE_EVENT, signal_manager);
     signal(SIG_CANCEL_EVENT, signal_manager);
+
+    cout << "Timeout Event Manager Constructor" << endl;
 }
 
 TimeoutEventManager::~TimeoutEventManager() {

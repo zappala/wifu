@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
     Dispatcher::instance().map_event(typeid (TimeoutEvent).name(), &tomanager);
 
     
-    // Try Events through Socket
+//     Try Events through Socket
 //    Socket s;
 //    s.connect(address, port);
     TimeoutEvent * one = new TimeoutEvent(socket, 1, 0);
@@ -90,7 +90,6 @@ int main(int argc, char** argv) {
     TimeoutEvent * five = new TimeoutEvent(socket, 5, 0);
 
 
-
     Dispatcher::instance().enqueue(oneplus);
     Dispatcher::instance().enqueue(four);
     Dispatcher::instance().enqueue(two);
@@ -99,8 +98,8 @@ int main(int argc, char** argv) {
     Dispatcher::instance().enqueue(three);
     Dispatcher::instance().enqueue(one);
     
-////
-////
+//
+//
     tomanager.cancel(two);
 //    manager.cancel(three);
     //    manager.cancel(four);

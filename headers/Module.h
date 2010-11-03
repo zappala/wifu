@@ -16,11 +16,14 @@
 class Module : public IModule, public QueueProcessor<Event*> {
 public:
     Module() : IModule(), QueueProcessor<Event*>(&queue_) {
+        cout << "Queue Size: " << queue_.size() << endl;
 
+        start_processing();
     }
 
     Module(IQueue<Event*>* queue) : IModule(), QueueProcessor<Event*>(queue) {
-
+        cout << "Queue Size: " << queue_.size() << endl;
+        start_processing();
     }
 
     virtual ~Module() {
