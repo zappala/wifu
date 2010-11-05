@@ -28,7 +28,7 @@ int IDGenerator::next_id() {
     return random;
 }
 
-void IDGenerator::remove_id(int id) {
+void IDGenerator::remove_id(int& id) {
     ids_.erase(id);
 }
 

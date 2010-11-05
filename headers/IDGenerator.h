@@ -26,7 +26,7 @@ public:
     static IDGenerator & instance();
 
     int next_id(void);
-    void remove_id(int id);
+    void remove_id(int& id);
 };
 
 

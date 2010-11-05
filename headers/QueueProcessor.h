@@ -84,7 +84,6 @@ private:
     pthread_t thread_;
     Semaphore sem_;
     Semaphore start_;
-    bool delete_queue_;
 };
 
 
