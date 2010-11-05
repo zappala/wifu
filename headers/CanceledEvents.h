@@ -12,15 +12,36 @@
 
 using namespace std;
 
+/**
+ * Singleton class used by TimeoutEventManager to keep track of canceled TimeoutEvent objects.
+ */
 class CanceledEvents : public EventSet {
 private:
+    /**
+     * Constructs a CanceledEvents object.
+     */
     CanceledEvents();
+
+    /**
+     * Currently not implemented.
+     */
     CanceledEvents(CanceledEvents const&);
+
+    /**
+     * Currently not implemented.
+     */
     CanceledEvents& operator=(CanceledEvents const&);
 
 public:
+    /**
+     * Cleans up a CanceledEvents object.
+     */
     ~CanceledEvents();
-    static CanceledEvents & instance();
+
+    /**
+     * @return A reference to the static instance of this CanceledEvents object.
+     */
+    static CanceledEvents& instance();
     
 };
 

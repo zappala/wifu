@@ -11,6 +11,12 @@
 template<class T>
 class DequeueCallback {
 public:
+
+    /**
+     * Callback method called when the thread in QueueProcessor dequeues a T.
+     *
+     * @param object Object dequeued in QueueProcessor's dequeue thread.
+     */
     virtual void process(T object) = 0;
 };
 

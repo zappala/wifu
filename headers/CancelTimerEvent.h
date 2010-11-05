@@ -35,7 +35,7 @@ public:
      * Will call cancel_timer(this) on m.
      *
      * @param m The module which to call cancel_timer() on.
-     * @see cancel_timer()
+     * @see IModule::cancel_timer()
      */
     void execute(IModule* m) {
         m->cancel_timer(this);

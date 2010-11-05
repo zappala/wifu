@@ -13,17 +13,33 @@
 #include "SendPacketEvent.h"
 #include "TimeoutEvent.h"
 
+/**
+ * Manages all connections and provides state for every Socket.
+ * Possible functionality includes implementing the IModule::connect() to establish a connection,
+ * responding to queries regarding whether a Socket is open or not, etc.
+ */
 class ConnnectionManager : public Module {
 public:
 
+    /**
+     * Creates a new ConnectionManager.
+     */
     ConnnectionManager() : Module() {
 
     }
 
+    /**
+     * Cleans up a ConnectionManager.
+     */
     virtual ~ConnnectionManager() {
         cout << "";
     }
 
+    /**
+     * Performs the following actions:
+     * 1. Sends SendPacketEvent() to the Dispatcher.
+     * 2. Sends a TimeoutEvent() to the Dispatcher.
+     */
     void connect(Event* e) {
         ConnectEvent* c = (ConnectEvent*) e;
         cout << "Connection Manager Connect: " << c->get_address() << " " << c->get_port() << endl;
@@ -34,21 +50,28 @@ public:
         dispatch_timeout(timer_);
     }
 
-    void data(Event* e) {
-
-    }
-
+    /**
+     * Performs the following action(s):
+     * 1. Cancels the timer on e's socket.
+     */
     void receive(Event* e) {
         cout << "Received Response" << endl;
         cancel_timeout(timer_);
     }
 
+    /**
+     * Receives TimerEvent's only for this Module.
+     * @see IModule::timer_fired()
+     */
     void my_timer_fired(Event* e) {
         TimerFiredEvent* event = (TimerFiredEvent*) e;
         cout << "Timer Fired: Seconds: " << event->get_timeout_event()->get_timeout_time().tv_sec;
         cout << " Nanoseconds: " << event->get_timeout_event()->get_timeout_time().tv_nsec << endl;
     }
 
+    /**
+     * Testing purposes only.
+     */
     void test() {
         int socket = 1;
         TimeoutEvent * one = new TimeoutEvent(socket, 1, 0);
