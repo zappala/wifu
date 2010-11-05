@@ -26,10 +26,6 @@ public:
         return timeout_event_;
     }
 
-    void execute(IModule* m) {
-        m->cancel_timer(this);
-    }
-
 private:
     TimeoutEvent* timeout_event_;
 };
