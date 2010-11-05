@@ -13,6 +13,7 @@
 
 /**
  * Event which represents a connect event.
+ * @see Event
  */
 class ConnectEvent : public Event, public AddressPort {
 

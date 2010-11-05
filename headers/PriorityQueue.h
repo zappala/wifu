@@ -19,24 +19,37 @@
 
 using namespace std;
 
-
-// do we want to make this like a python Queue object?  Only a few more functions to go...
-
+/**
+ * Queue which gives priority to its elements based on Comparator.
+ * This object is thread safe.
+ * @see IQueue
+ * @see Queue
+ */
 template<class T, class Comparator>
 class PriorityQueue : public IQueue<T> {
 public:
 
+    /**
+     * Constructs a PriorityQueue object.
+     */
     PriorityQueue() : IQueue<T>() {
         sem_.init(1);
         counter_.init(0);
     }
 
+    /**
+     * Cleans up this PriorityQueue object.
+     */
     virtual ~PriorityQueue() {
 
     }
 
-    // do we want to do a timed wait? if so use: sem_timedwait() see the sem_wait man page
-
+    /**
+     * Dequeues and returns the next element in the queue.
+     * This is a blocking method and will wait indefinately if there is nothing to dequeue.
+     *
+     * @return The next element in the queue.
+     */
     T dequeue() {
         counter_.wait();
         sem_.wait();
@@ -46,6 +59,12 @@ public:
         return value;
     }
 
+    /**
+     * Enqueues obj into this object.  If signal is true, raises a SIG_ENQUEUE_EVENT signal.
+     *
+     * @param obj The element to put into this PriorityQueue.
+     * @param signal If true, raises a SIG_ENQUEUE_EVENT signal.
+     */
     void enqueue(T obj, bool signal = false) {
         sem_.wait();
         q_.push(obj);
@@ -56,6 +75,9 @@ public:
         counter_.post();
     }
 
+    /**
+     * @return The number of elements in this PriorityQueue.
+     */
     int size() {
         sem_.wait();
         int value = q_.size();
@@ -63,6 +85,9 @@ public:
         return value;
     }
 
+    /**
+     * @return True if there are no elements in this PriorityQueue, false otherwise.
+     */
     bool isEmpty() {
         // protection is done in size()
         return size() == 0;

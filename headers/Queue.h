@@ -19,21 +19,37 @@
 
 using namespace std;
 
-
-// do we want to make this like a python Queue object?  Only a few more functions to go...
+/**
+ * FIFO queue.
+ * This object is thread safe.
+ * @see IQueue
+ * @see PriorityQueue
+ */
 template<class T>
 class Queue : public IQueue<T> {
 public:
+
+    /**
+     * Constructs a Queue object.
+     */
     Queue() : IQueue<T>() {
         sem_.init(1);
         counter_.init(0);
     }
 
+    /**
+     * Cleans up this Queue object.
+     */
     virtual ~Queue() {
 
     }
 
-    // do we want to do a timed wait? if so use: sem_timedwait() see the sem_wait man page
+    /**
+     * Dequeues and returns the next element in the queue.
+     * This is a blocking method and will wait indefinately if there is nothing to dequeue.
+     *
+     * @return The next element in the queue.
+     */
     T dequeue() {
         counter_.wait();
         sem_.wait();
@@ -43,16 +59,25 @@ public:
         return value;
     }
 
+    /**
+     * Enqueues obj into this object.  If signal is true, raises a SIG_ENQUEUE_EVENT signal.
+     *
+     * @param obj The element to put into this Queue.
+     * @param signal If true, raises a SIG_ENQUEUE_EVENT signal.
+     */
     void enqueue(T obj, bool signal = false) {
         sem_.wait();
         q_.push(obj);
-        if(signal) {
+        if (signal) {
             raise(SIG_ENQUEUE_EVENT);
         }
         sem_.post();
         counter_.post();
     }
 
+    /**
+     * @return The number of elements in this Queue.
+     */
     int size() {
         sem_.wait();
         int value = q_.size();
@@ -60,11 +85,14 @@ public:
         return value;
     }
 
+    /**
+     * @return True if there are no elements in this Queue, false otherwise.
+     */
     bool isEmpty() {
         // protection is done in size()
         return size() == 0;
     }
-    
+
 private:
     Semaphore sem_;
     Semaphore counter_;

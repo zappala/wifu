@@ -12,6 +12,9 @@
 
 /**
  * Event which represents the idea of canceling a timer.
+ *
+ * @see TimerEvent
+ * @see Event
  */
 class CancelTimerEvent : public TimerEvent {
 public:

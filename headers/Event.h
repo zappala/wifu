@@ -56,9 +56,20 @@ private:
 
 };
 
+/**
+ * Comparator used to compare two Event pointers.
+ */
 class EventComparator {
 public:
 
+    /**
+     * Compares two Event pointers (actually references to Event pointers).
+     * Will return t1 < t2.
+     *
+     * @param t1 The RHS of the expression t1 < t2
+     * @param t2 the LHS of the expression t1 < t1
+     * @return True if t1 < t2, false otherwise.
+     */
     bool operator()(Event*& t1, Event*& t2) {
         return t1->less_than(t2);
     }
