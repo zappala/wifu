@@ -12,21 +12,40 @@
 
 using namespace std;
 
+/**
+ * Represents an Address-Port combination.
+ */
 class AddressPort {
 public:
-    AddressPort(string & address, string & port) : address_(address), port_(port) {
+
+    /**
+     * Constructor: Stores address and port.
+     *
+     * @param address Address to store
+     * @param port Port to store
+     */
+    AddressPort(string& address, string& port) : address_(address), port_(port) {
 
     }
 
+    /**
+     * Destructor
+     */
     virtual ~AddressPort() {
 
     }
 
-    string & get_address() {
+    /**
+     * @return A reference to the address
+     */
+    string& get_address() {
         return address_;
     }
 
-    string & get_port() {
+    /**
+     * @return A reference to the port
+     */
+    string& get_port() {
         return port_;
     }
 
