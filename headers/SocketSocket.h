@@ -16,6 +16,9 @@
 
 using namespace std;
 
+/*
+ * @depricated This class uses Unix sockets; we are now using Events instead.
+ */
 class SocketSocket : public LocalSocketFullDuplex {
 public:
 

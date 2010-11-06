@@ -20,9 +20,20 @@
 
 using namespace std;
 
+/**
+ * Event which represents a timeout at some point in the future.
+ */
 class TimeoutEvent : public Event {
 public:
 
+    /**
+     * Constructs a TimeoutEvent.
+     * The timeout time will be set to the time this object is created plus seconds and nanoseconds.
+     *
+     * @param socket The id of the socket to which this TimeoutEvent will be associated.
+     * @param seconds The number of seconds in the future in which to timeout.
+     * @param nanoseconds The number nanoseconds in the future in which to timeout.
+     */
     TimeoutEvent(int socket, int seconds, long int nanoseconds) : Event(socket) {
 
         assert(seconds >= 0);
@@ -41,13 +52,22 @@ public:
         }
     }
 
+    /**
+     * @return A reference to the timespec holding the absolute time this TimeoutEvent is due to timeout.
+     */
     struct timespec & get_timeout_time() {
         return timer_;
     }
 
+    /**
+     * Determines of this TimeoutEvent's absolute timeout time is earlier than e's.
+     *
+     * @param e The (Timeout)Event to compare this TimeoutEvent to.
+     * @return True if this TimeoutEvent is less than e's, false otherwise.
+     */
     virtual bool less_than(Event* e) {
         TimeoutEvent* rhs = (TimeoutEvent*) e;
-        
+
         struct timespec * a = &(get_timeout_time());
         struct timespec * b = &(rhs->get_timeout_time());
 
@@ -56,6 +76,12 @@ public:
         return false;
     }
 
+    /**
+     * Will call timeout() on m.
+     *
+     * @param m The IModule which to call timeout() on.
+     * @see IModule::timeout()
+     */
     void execute(IModule* m) {
         m->timeout(this);
     }

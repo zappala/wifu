@@ -12,6 +12,9 @@
 #include "ISocketModule.h"
 #include "SocketUDPInterface.h"
 
+/*
+ * @depricated This class uses Unix sockets; we are now using Events instead.
+ */
 class SocketConnectionManager : public LocalSocketFullDuplex, public ISocketModule {
 public:
     SocketConnectionManager(string & file) : LocalSocketFullDuplex(file){

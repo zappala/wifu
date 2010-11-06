@@ -13,7 +13,9 @@
 #include "LocalSocketFullDuplex.h"
 #include "ISocketModule.h"
 
-
+/*
+ * @depricated This class uses Unix sockets; we are now using Events instead.
+ */
 class SocketReliability : public LocalSocketFullDuplex, public ISocketModule {
 public:
     SocketReliability(string & file);

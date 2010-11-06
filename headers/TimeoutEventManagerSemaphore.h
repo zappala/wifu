@@ -10,11 +10,26 @@
 
 #include "BinarySemaphore.h"
 
+/**
+ * Singleton class which internally is really a BinarySemaphore.
+ */
 class TimeoutEventManagerSemaphore : public BinarySemaphore {
 private:
+
+    /**
+     * Create a TimeoutEventManagerSemaphore object.
+     */
     TimeoutEventManagerSemaphore();
 public:
+
+    /**
+     * Clean up this TimeoutEventManagerSemaphore object.
+     */
     virtual ~TimeoutEventManagerSemaphore();
+
+    /**
+     * @return A reference to the static instance of this TimeoutEventManagerSemaphore object.
+     */
     static TimeoutEventManagerSemaphore & instance();
 };
 
