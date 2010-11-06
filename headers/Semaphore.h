@@ -15,17 +15,62 @@
 
 using namespace std;
 
+/**
+ * This is a counting semaphore.  This class simply wraps a a sem_t object.
+ */
 class Semaphore {
 public:
 
+    /**
+     * Creates a Semaphore object.  Does not initialize the count; call init() to do so.
+     */
     Semaphore();
+
+    /**
+     * Cleans up this Semaphore object.
+     */
     virtual ~Semaphore();
 
+    /**
+     * Initializes the internal semaphore count to be value.
+     *
+     * @param value The initial value to set this Semaphore's internal count.
+     */
     virtual void init(int value);
+
+    /**
+     * If the internal count is greater than 0, decrements the count and returns.
+     * Otherwise, this call blocks until post() is called (which increments the internal counter).
+     *
+     * @see timed_wait()
+     */
     void wait(void);
+
+    /**
+     * If the internal count is greater than 0, decrements the count and returns.
+     * If the internal count is equal to 0, this method simply returns.
+     */
     void try_wait(void);
+
+    /**
+     * Increment the internal count by one.
+     */
     virtual void post(void);
+
+    /**
+     * Just like wait(), except that, in case of blocking,
+     * if the absolute time represented by ts occurs before
+     * post() is called, this method returns.
+     *
+     * @param ts The absolute time (in the future) which represents the latest point which this call will block.
+     * @return True if this method timed out, false if this method sucessfully decremented the internal count.
+     * @see wait()
+     */
     bool timed_wait(struct timespec * ts);
+
+    /**
+     * @return The current internal count of this Semaphore.
+     */
     int get_value(void);
 
 protected:
