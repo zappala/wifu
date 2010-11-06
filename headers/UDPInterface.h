@@ -13,16 +13,31 @@
 #include "TimeoutEvent.h"
 #include "PacketReceivedEvent.h"
 
+/**
+ * Interface to an actual socket which data will be sent and recieved.
+ */
 class UDPInterface : public Module {
 public:
+
+    /**
+     * Constructs a UDPInterface object.
+     */
     UDPInterface() : Module() {
 
     }
 
+    /**
+     * Cleans up this UDPInterface object.
+     */
     virtual ~UDPInterface() {
 
     }
 
+    /**
+     * This method is called when a SendPacketEvent is dequeued from the Dispatcher.
+     *
+     * @param e The Event which contains information needing to be sent over the wire.
+     */
     void udp_send(Event* e) {
         SendPacketEvent* event = (SendPacketEvent*)e;
 

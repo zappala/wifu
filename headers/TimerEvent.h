@@ -11,17 +11,31 @@
 #include "IModule.h"
 #include "Event.h"
 
+/**
+ * Container class which simply holds a pointer to a TimeoutEvent.
+ */
 class TimerEvent : public Event {
 public:
-    public:
+
+    /**
+     * Constructs a TimerEvent.
+     *
+     * @param timeout_event The TimeoutEvent to store.
+     */
     TimerEvent(TimeoutEvent* timeout_event) : Event(timeout_event->get_socket()), timeout_event_(timeout_event) {
 
     }
 
+    /**
+     * Cleans up this TimerEvent object.
+     */
     virtual ~TimerEvent() {
 
     }
 
+    /**
+     * @return A pointer to the TimeoutEvent stored internally to this TimerEvent.
+     */
     TimeoutEvent* get_timeout_event() {
         return timeout_event_;
     }

@@ -10,17 +10,35 @@
 
 #include "TimerEvent.h"
 
+/**
+ * Event which represents the expiration of a TimeoutEvent.
+ * @see TimeoutEvent
+ */
 class TimerFiredEvent : public TimerEvent {
 public:
 
+    /**
+     * Constructs a TimerFiredEvent object.
+     *
+     * @param timeout_event The TimeoutEvent which expired, causing the creation of this TimerFiredEvent.
+     */
     TimerFiredEvent(TimeoutEvent* timeout_event) : TimerEvent(timeout_event) {
 
     }
 
+    /**
+     * Cleans up this TimerFiredEvent object.
+     */
     virtual ~TimerFiredEvent() {
 
     }
 
+    /**
+     * Will call timer_fired() on m.
+     *
+     * @param m The IModule which to call timer_fired() on.
+     * @see IModule::timer_fired()
+     */
     void execute(IModule* m) {
         m->timer_fired(this);
     }
