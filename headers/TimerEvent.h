@@ -41,6 +41,9 @@ public:
     }
 
 private:
+    /**
+     * Pointer to an actual TimeoutEvent which this class stores.
+     */
     TimeoutEvent* timeout_event_;
 };
 

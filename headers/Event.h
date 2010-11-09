@@ -22,7 +22,7 @@ public:
     /**
      * Constructs an Event object.
      *
-     * @socket The socket to which to apply this Event to.
+     * @param socket The socket to which to apply this Event to.
      */
     Event(int socket);
 
@@ -52,6 +52,10 @@ public:
      */
     virtual bool less_than(Event* rhs);
 private:
+
+    /**
+     * ID of the Socket which is associated with this Event.
+     */
     int socket_;
 
 };

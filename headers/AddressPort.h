@@ -50,7 +50,14 @@ public:
     }
 
 private:
+    /**
+     * The (IP) address of a machine.
+     */
     string address_;
+
+    /**
+     * The port of a machine.
+     */
     string port_;
 };
 

@@ -8,6 +8,9 @@
 #ifndef _DEQUEUECALLBACK_H
 #define	_DEQUEUECALLBACK_H
 
+/**
+ * Callback interface for a QueueProcessor.
+ */
 template<class T>
 class DequeueCallback {
 public:

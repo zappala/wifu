@@ -93,7 +93,7 @@ public:
      * If signal is true, raises a SIG_ENQUEUE_EVENT to the application.
      * By default, signal is false.
      *
-     * @param obj The element to enqueue.
+     * @param object The element to enqueue.
      * @param signal If true, raises a SIG_ENQUEUE_EVENT signal.
      */
     virtual void enqueue(T object, bool signal = false) {
@@ -108,9 +108,25 @@ public:
     }
 
 private:
+    /**
+     * Pointer to an IQueue which points to either a Queue or PriorityQueue object.
+     */
     IQueue<T>* queue_;
+
+    /**
+     * Thread which dequeue's elements from queue_.
+     */
     pthread_t thread_;
+
+    /**
+     * Signaling Semaphore used to indicate to the QueueProcessor constructor
+     * that the thread has started and has copied all necessary variables which were passed to it.
+     */
     Semaphore sem_;
+
+    /**
+     * Semaphore used to indicate to thread_ that it is okay to start dequeing objects from queue_.
+     */
     Semaphore start_;
 };
 

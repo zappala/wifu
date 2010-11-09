@@ -74,6 +74,10 @@ public:
     int get_value(void);
 
 protected:
+
+    /**
+     * Actual semaphore object which this class wraps.
+     */
     sem_t sem_;
 };
 

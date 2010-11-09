@@ -94,6 +94,10 @@ public:
         cancel_timeout(two);
     }
 private:
+    /**
+     * Temporary variable, should be removed later once we figure out a better way to keep track of various connections.
+     * @todo Remove this variable.
+     */
     TimeoutEvent* timer_;
 };
 

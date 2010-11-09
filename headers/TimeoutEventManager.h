@@ -79,6 +79,10 @@ public:
 
 
 private:
+
+    /**
+     * PriorityQueue passed to the parent QueueProcessor object.
+     */
     PriorityQueue<Event*, EventComparator> queue_;
 
 };

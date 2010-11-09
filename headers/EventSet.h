@@ -72,7 +72,14 @@ public:
     }
 
 private:
+    /**
+     * Set of ints which represent the ids of many Event objects.
+     */
     tr1::unordered_set<int> ids_;
+
+    /**
+     * Semaphore which turns this class into a monitor.
+     */
     Semaphore sem_;
 };
 

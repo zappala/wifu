@@ -84,6 +84,9 @@ public:
     }
     
 private:
+    /**
+     * Default IQueue object to be used by the parent QueueProcessor.
+     */
     Queue<Event*> queue_;
 };
 

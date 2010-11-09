@@ -88,6 +88,9 @@ public:
 
 
 private:
+    /**
+     * Holds the absolute time which this TimeoutEvent should time out at.
+     */
     struct timespec timer_;
 
 };

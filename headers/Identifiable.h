@@ -36,6 +36,9 @@ public:
     int & get_id();
     
 private:
+    /**
+     * Unique id of this Identifiable object.
+     */
     int id_;
 };
 

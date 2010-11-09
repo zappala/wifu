@@ -94,9 +94,20 @@ public:
     }
 
 private:
+    /**
+     * Protective Semaphore; this semaphore makes this class thread safe.
+     */
     Semaphore sem_;
+
+    /**
+     * Semaphore which enables a producer-consumer relationship.
+     * Namely, we can block on wait().
+     */
     Semaphore counter_;
 
+    /**
+     * Acutal STL queue we use in this PriorityQueue.
+     */
     queue<T> q_;
 };
 
