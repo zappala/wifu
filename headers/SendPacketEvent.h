@@ -8,8 +8,8 @@
 #ifndef _SENDPACKETEVENT_H
 #define	_SENDPACKETEVENT_H
 
-#include "AddressPort.h"
 #include "Event.h"
+#include "Packet.h"
 
 using namespace std;
 
@@ -17,17 +17,16 @@ using namespace std;
  * Event which represents the sending of a packet.
  * @see Event
  */
-class SendPacketEvent : public Event, public AddressPort {
+class SendPacketEvent : public Event {
 public:
 
     /**
      * Constructs a SendPacketEvent.
      *
      * @param socket The socket, which represents a unique connection, to use for this Event
-     * @param address The IP address of the machine to send to.
-     * @param port The port to send to.
+     * @param packet The Packet object to send
      */
-    SendPacketEvent(int socket, string & address, string & port) : Event(socket), AddressPort(address, port) {
+    SendPacketEvent(int socket, Packet* packet) : Event(socket), packet_(packet) {
 
     }
 
@@ -40,6 +39,19 @@ public:
     void execute(IModule* m) {
         m->udp_send(this);
     }
+
+    /**
+     * @return The Packet to send
+     */
+    Packet* get_packet() {
+        return packet_;
+    }
+
+private:
+    /**
+     * Pointer to the packet to be sent
+     */
+    Packet* packet_;
 };
 
 #endif	/* _SENDSYNEVENT_H */

@@ -43,7 +43,9 @@ public:
     void connect(Event* e) {
         ConnectEvent* c = (ConnectEvent*) e;
         cout << "Connection Manager Connect: " << c->get_address() << " " << c->get_port() << endl;
-        dispatch(new SendPacketEvent(c->get_socket(), c->get_address(), c->get_port()));
+        const char* p = "Connect Packet Message";
+        dispatch(new SendPacketEvent(c->get_socket(),new Packet((unsigned char*)p, strlen(p))));
+
 
         // Timeout in 1 sec
         timer_ = new TimeoutEvent(e->get_socket(), 1, 0);

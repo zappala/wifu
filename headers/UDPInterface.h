@@ -12,6 +12,8 @@
 #include "Dispatcher.h"
 #include "TimeoutEvent.h"
 #include "PacketReceivedEvent.h"
+#include "SendPacketEvent.h"
+#include "Packet.h"
 
 /**
  * Interface to an actual socket which data will be sent and recieved.
@@ -41,7 +43,7 @@ public:
     void udp_send(Event* e) {
         SendPacketEvent* event = (SendPacketEvent*)e;
 
-        cout << "UDPInterface udp_send: " << event->get_address() << " " << event->get_port() << endl;
+        cout << "UDPInterface udp_send: " << event->get_packet()->to_bytes() << endl;
         
         if(e->get_socket() % 2 == 0) {
             // emulate a response
