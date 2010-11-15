@@ -5,22 +5,41 @@
  *      Author: erickson
  */
 
-#include "UnitTest++.h"
+
 #include <iostream>
 #include <string>
+#include <vector>
+
+#include "UnitTest++.h"
 #include "../headers/AddressPort.h"
 #include "headers/CheckMacros.h"
-#include <vector>
+
+
 
 using namespace UnitTest;
 using namespace std;
 
 int main(int argc, char** argv) {
     std::cout << "Running tests" << std::endl;
+
+
     return UnitTest::RunAllTests();
 }
 
+
+
+
 namespace {
+
+    SUITE(YourSuiteName) {
+
+        TEST(YourTestName) {
+            cout << "Hello" << endl;
+        }
+
+        TEST(YourOtherTestName) {
+        }
+    }
 
     TEST(AddresPortTest) {
         string address("address");
@@ -74,7 +93,28 @@ namespace {
         CHECK_ARRAY_CLOSE(a, a, (int) a.size(), 0.0001f);
     }
 
-    
+    struct SimpleFixture {
+
+        SimpleFixture() {
+            ++instanceCount;
+        }
+
+        ~SimpleFixture() {
+            --instanceCount;
+        }
+
+        static int instanceCount;
+    };
+
+    int SimpleFixture::instanceCount = 0;
+
+    TEST_FIXTURE(SimpleFixture, DefaultFixtureCtorIsCalled) {
+        CHECK(SimpleFixture::instanceCount > 0);
+    }
+
+    TEST_FIXTURE(SimpleFixture, OnlyOneFixtureAliveAtATime) {
+        CHECK_EQUAL(1, SimpleFixture::instanceCount);
+    }
 
     void CheckBool(const bool b) {
         CHECK(b);
