@@ -1,0 +1,16 @@
+If I were a socket, what would I want to have:
+
+//Receiver
+bind
+listen
+callback (for receive)
+receive(data)
+
+//Sender
+make non blocking
+sendto(message, address, port)
+sendto(struct sockaddr_in, message, message_len)
+
+//General
+close
+
