@@ -1,0 +1,5 @@
+def build(bld):
+    bld(features='cxx cprogram',
+        source=bld.glob('*.cpp'),
+        includes='headers',
+        target='wifu-end-test')
