@@ -12,7 +12,6 @@
 #include "PriorityQueue.h"
 #include "TimeoutEvent.h"
 #include "TimeoutEventManager.h"
-#include "SingletonTemplate.h"
 #include "Semaphore.h"
 #include "CanceledEvents.h"
 #include "Dispatcher.h"
@@ -30,14 +29,8 @@ using namespace std;
  * 
  */
 
-template<class Type>
-class Temp{
-    
-};
-
 
 int main(int argc, char** argv) {
-
 
     string address("localhost");
     string port("5000");

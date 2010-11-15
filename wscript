@@ -1,5 +1,6 @@
 import Options
 
+
 top = '.'
 out = 'build'
 
@@ -22,7 +23,9 @@ def configure(conf):
 	print('→ configuring the project')
 	# conf.check_tool('compiler_cxx')
 	conf.check_tool('gcc g++')
+	conf.env['LIBPATH'] += ['../lib']
 	conf.env['LIB_PTHREAD'] = ['pthread']
+	conf.env['STATICLIB'] += ['UnitTest++']
 	conf.env['LIB_RT'] = ['rt']
 	conf.env.PREFIX = ".."
 
@@ -36,9 +39,11 @@ def configure(conf):
 		print "Configuring with debugging symbols"
 		conf.env['CXXFLAGS'] += ['-g']
 
+def post(ctx):
+	import os
+	os.system("bin/wifu-end-test")
+
 def build(bld):
 	bld.add_subdirs('src')
-	
-
-
-
+	bld.add_subdirs('test')
+	bld.add_post_fun(post)
