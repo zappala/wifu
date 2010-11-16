@@ -14,6 +14,13 @@
 #define SIG_CANCEL_EVENT 51
 #define NANOSECONDS_IN_SECONDS 1000000000
 #define PAYLOAD_SIZE 1500
+
+// WIFU_PORT is created from the ASCII decimal values of WIFU
+// Each number in the port corresponds to one of the letters in 'WIFU'
+// by adding up the decimal values of each letter until the value is less than 10
+// For example, 'W' is ASCII value 87, 8 + 7 = 15 (which is not less than 10)
+// 1 + 5 = 6 (which is less than 10), and thus the first letter in the port number is 6.
+#define WIFU_PORT 6174
 typedef const char * event_name;
 
 #endif	/* _INCLUDES_H */

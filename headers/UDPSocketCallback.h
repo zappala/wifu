@@ -14,6 +14,15 @@ using namespace std;
 
 class UDPSocketCallback{
 public:
+
+    UDPSocketCallback () {
+
+    }
+
+    virtual ~UDPSocketCallback() {
+        
+    }
+
     virtual void receive(struct sockaddr_in* address, unsigned char* buffer, size_t length) = 0;
 };
 

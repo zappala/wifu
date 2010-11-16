@@ -1,5 +1,5 @@
 /*
- * test.cpp
+ * test.cc
  *
  *  Created on: Oct 29, 2010
  *      Author: erickson
@@ -14,20 +14,17 @@
 #include "../headers/AddressPort.h"
 #include "headers/CheckMacros.h"
 
-
+#include "UDPSocketTest.h"
+#include "../headers/UDPSocket.h"
+#include "../headers/Identifiable.h"
 
 using namespace UnitTest;
 using namespace std;
 
 int main(int argc, char** argv) {
     std::cout << "Running tests" << std::endl;
-
-
     return UnitTest::RunAllTests();
 }
-
-
-
 
 namespace {
 
@@ -48,7 +45,7 @@ namespace {
         CHECK_EQUAL(a.get_address(), address);
         CHECK_EQUAL(a.get_port(), port);
         CHECK_EQUAL(4, 4);
-
+        //Identifiable s;
     }
 
     TEST(ValidCheckSucceeds) {

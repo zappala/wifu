@@ -44,6 +44,30 @@ def post(ctx):
 	os.system("bin/wifu-end-test")
 
 def build(bld):
-	bld.add_subdirs('src')
-	bld.add_subdirs('test')
+
+	src_files = bld.glob('src/*.cc')
+
+	test_files = bld.glob('test/*.cc')
+	print src_files
+	print test_files
+
+	all_files = src_files
+	all_files += test_files
+
+	all_files.remove("src/main.cc")
+
+	#print all_files
+
+	bld(features='cxx cprogram',
+        source=bld.glob('src/*.cc'),
+        includes="headers",
+        uselib='PTHREAD RT',
+        target='wifu-end')
+
+	bld(features='cxx cprogram',
+        source=all_files,
+        includes='headers test/headers',
+        uselib='PTHREAD RT',
+		target='wifu-end-test')
+
 	bld.add_post_fun(post)

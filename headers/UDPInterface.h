@@ -14,17 +14,25 @@
 #include "PacketReceivedEvent.h"
 #include "SendPacketEvent.h"
 #include "Packet.h"
+#include "UDPSocket.h"
+#include "UDPSocketCallback.h"
 
 /**
  * Interface to an actual socket which data will be sent and recieved.
  */
-class UDPInterface : public Module {
+class UDPInterface : public Module , public UDPSocketCallback {
 public:
 
     /**
      * Constructs a UDPInterface object.
      */
-    UDPInterface() : Module() {
+    UDPInterface(string& address, int port) : Module(), UDPSocketCallback() {
+
+        // Set up the UDPSocket
+        socket_.createSocket();
+        socket_.bind_socket(address, port);
+        socket_.makeNonBlocking();
+        socket_.receive(this);
 
     }
 
@@ -32,7 +40,21 @@ public:
      * Cleans up this UDPInterface object.
      */
     virtual ~UDPInterface() {
+        socket_.closeSocket();
+    }
 
+    /**
+     * Implementation of callback funtion defined in UDPSocketCallback
+     * This method is called whenever data is received from the UDPSocket
+     *
+     * @param address Struct containing the address and port of the sending socket
+     * @param buffer The data which is being received
+     * @param length The length of buffer
+     *
+     * @see UDPSocketCallback::receive()
+     */
+    void receive(struct sockaddr_in* address, unsigned char* buffer, size_t length) {
+        //Packet p = new Packet()
     }
 
     /**
@@ -51,7 +73,10 @@ public:
             dispatch(new PacketReceivedEvent(e->get_socket()));
             return;
         }
-    }    
+    }
+
+private:
+    UDPSocket socket_;
 };
 
 #endif	/* _UDPINTERFACE_H */

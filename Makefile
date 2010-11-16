@@ -1,9 +1,9 @@
 all:
-	./waf configure
-	./waf build
-	./waf install
+	./waf configure -j2
+	./waf build -j2
+	./waf install -j2
 
 clean:
-	./waf uninstall
-	./waf clean
-	./waf distclean
+	./waf uninstall -j2
+	./waf clean -j2
+	./waf distclean -j2

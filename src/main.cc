@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
 
     // Load Modules
     ConnnectionManager cmanager;
-    UDPInterface interface;
+    UDPInterface interface(address, atoi(port.c_str()));
     TimeoutEventManager tomanager;
 
     Dispatcher::instance().map_event(type_name(SendPacketEvent), &cmanager);
