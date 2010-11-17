@@ -36,7 +36,7 @@ public:
 
         if (!inet_aton(address.c_str(), &data_.sin_addr)) {
             cout << "error converting ip address to binary" << endl;
-            //exit(EXIT_FAILURE);
+            assert(false);
         }
     }
 
