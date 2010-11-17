@@ -46,17 +46,11 @@ def post(ctx):
 def build(bld):
 
 	src_files = bld.glob('src/*.cc')
-
 	test_files = bld.glob('test/*.cc')
-	print src_files
-	print test_files
 
 	all_files = src_files
 	all_files += test_files
-
 	all_files.remove("src/main.cc")
-
-	#print all_files
 
 	bld(features='cxx cprogram',
         source=bld.glob('src/*.cc'),

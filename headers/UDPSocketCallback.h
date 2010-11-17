@@ -9,6 +9,7 @@
 #define	_UDPSOCKETCALLBACK_H
 
 #include <iostream>
+#include "AddressPort.h"
 
 using namespace std;
 
@@ -23,7 +24,7 @@ public:
         
     }
 
-    virtual void receive(struct sockaddr_in* address, unsigned char* buffer, size_t length) = 0;
+    virtual void receive(AddressPort& ap, unsigned char* buffer, size_t length) = 0;
 };
 
 

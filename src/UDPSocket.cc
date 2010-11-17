@@ -6,7 +6,7 @@
  */
 
 #include "UDPSocket.h"
-#include "Semaphore.h"
+
 
 UDPSocket::UDPSocket() {
     createSocket();
@@ -49,33 +49,23 @@ void UDPSocket::makeNonBlocking() {
     }
 }
 
-size_t UDPSocket::send(const string& address, int port, const string & message) {
-    struct sockaddr_in addr;
-    getSockAddr(address, port, &addr);
+size_t UDPSocket::send(AddressPort& ap, string& message) {
+    return send(ap.get_network_struct_ptr(), (unsigned char*)message.c_str(), message.length());
+}
 
-    return send(&addr, (unsigned char*) message.c_str(), message.length());
+size_t UDPSocket::send(AddressPort& ap, const unsigned char* message, socklen_t length) {
+    return send(ap.get_network_struct_ptr(), message, length);
 }
 
 size_t UDPSocket::send(struct sockaddr_in* address, const unsigned char* message, socklen_t length) {
-    size_t count = sendto(getSocket(), message, length, 0,
-            (struct sockaddr *) & address, sizeof (struct sockaddr));
+
+    size_t count = sendto(getSocket(), message, length, 0, (const struct sockaddr*)address, sizeof (struct sockaddr));
 
     if (count < 0) {
         perror("error in sending");
     }
 
     return count;
-}
-
-void UDPSocket::getSockAddr(const string & address, int port, struct sockaddr_in * addr) {
-    memset(addr, 0, sizeof (addr));
-    addr->sin_family = AF_INET;
-    addr->sin_port = htons(port);
-
-    if (!inet_aton(address.c_str(), &addr->sin_addr)) {
-        cout << "error converting ip address to binary" << endl;
-        exit(EXIT_FAILURE);
-    }
 }
 
 void UDPSocket::bind_socket(const string& host, int port) {
@@ -148,6 +138,8 @@ void * receive_handler(void * arg) {
         //ssize_t num = recv(socket, &buf, BUF_LENGTH, 0);
         ssize_t num = recvfrom(socket, &buf, BUF_LENGTH, 0, (struct sockaddr*) & address, &length);
         
+        AddressPort ap(&address);
+
         if (num < 0) {
             if (errno == EINTR) {
                 continue;
@@ -159,7 +151,7 @@ void * receive_handler(void * arg) {
             perror("recvfrom");
             exit(EXIT_FAILURE);
         }
-        callback->receive(&address, buf, num);
+        callback->receive(ap, buf, num);
     }
 }
 

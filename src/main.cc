@@ -33,7 +33,7 @@ using namespace std;
 int main(int argc, char** argv) {
 
     string address("localhost");
-    string port("5000");
+    int port = 5000;
 //    string socket_file("/tmp/socket_file");
 //    SocketSocket s(socket_file);
 //
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
 
     // Load Modules
     ConnnectionManager cmanager;
-    UDPInterface interface(address, atoi(port.c_str()));
+    UDPInterface interface(address, port);
     TimeoutEventManager tomanager;
 
     Dispatcher::instance().map_event(type_name(SendPacketEvent), &cmanager);

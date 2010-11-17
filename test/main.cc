@@ -31,7 +31,7 @@ namespace {
     SUITE(YourSuiteName) {
 
         TEST(YourTestName) {
-            cout << "Hello" << endl;
+
         }
 
         TEST(YourOtherTestName) {
@@ -39,8 +39,8 @@ namespace {
     }
 
     TEST(AddresPortTest) {
-        string address("address");
-        string port("port");
+        string address("127.0.0.1");
+        int port = 5000;
         AddressPort a(address, port);
         CHECK_EQUAL(a.get_address(), address);
         CHECK_EQUAL(a.get_port(), port);

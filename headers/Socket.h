@@ -43,7 +43,7 @@ public:
      * @param address The address to connect to.
      * @param port The port to connect to.
      */
-    void connect(string & address, string & port) {
+    void connect(string & address, int& port) {
         Event* connect_event = new ConnectEvent(get_socket(), address, port);
         dispatch(connect_event);
     }

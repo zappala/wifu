@@ -26,7 +26,7 @@ public:
      * @param address The IP address of the machine to connect to.
      * @param port The port on machine represented by address which is listening for a connection.
      */
-    ConnectEvent(int socket, string & address, string & port)
+    ConnectEvent(int socket, string & address, int& port)
         : Event(socket), AddressPort(address, port) {
 
     }

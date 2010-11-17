@@ -18,18 +18,74 @@
 #include "../headers/UDPSocket.h"
 
 
-namespace tester {
 
-    TEST(UDPSocketConstructor) {
-        string a, b;
-        AddressPort addressPort(a, b);
-        Packet p((unsigned char*)a.c_str(), 1);
-        UDPSocket s;
+using namespace std;
+
+class UDPSocketCallbackImpl : public UDPSocketCallback {
+public:
+    UDPSocketCallbackImpl() : UDPSocketCallback(), ap_(0) {
+
     }
 
-    TEST(UDPSocketSend) {
+    virtual ~UDPSocketCallbackImpl() {
+        if(ap_) {
+            delete ap_;
+        }
     }
 
+    void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
+        if(ap_) {
+            delete ap_;
+        }
+
+        ap_ = new AddressPort(ap.get_network_struct_ptr());
+        message_ = string((char*)buffer);
+    }
+
+    AddressPort* get_ap() {
+        return ap_;
+    }
+
+    string& get_message() {
+        return message_;
+    }
+
+private:
+    AddressPort* ap_;
+    string message_;
+};
+
+
+namespace {
+
+    TEST(UDPSocket) {
+
+        UDPSocket sender;
+        UDPSocket receiver;
+        UDPSocketCallbackImpl callback;
+
+        string address("127.0.0.1");
+        int port = 5000;
+        string message("message");
+        AddressPort ap(address, port);
+
+        receiver.bind_socket(address, port);
+        receiver.receive(&callback);
+        
+        usleep(500);
+
+        sender.makeNonBlocking();
+        size_t count = sender.send(ap, message);
+
+        usleep(500);
+
+        sender.closeSocket();
+        receiver.closeSocket();
+
+        CHECK_EQUAL(message.length(), count);
+        CHECK_EQUAL(message, callback.get_message());
+        CHECK_EQUAL(ap.get_address(), callback.get_ap()->get_address());
+    }
 }
 
 

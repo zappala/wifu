@@ -23,8 +23,10 @@
 #include <iostream>
 #include <vector>
 #include <pthread.h>
+
 #include "Semaphore.h"
 #include "UDPSocketCallback.h"
+#include "AddressPort.h"
 
 using namespace std;
 
@@ -45,13 +47,14 @@ public:
     virtual ~UDPSocket();
 
     // General Functions
-    int createSocket();
+    
     int closeSocket();
     int getSocket() const;
     void makeNonBlocking();
 
     // Sending Functions
-    size_t send(const string& address, int port, const string& message);
+    size_t send(AddressPort& ap, string& message);
+    size_t send(AddressPort& ap, const unsigned char* message, socklen_t length);
     size_t send(struct sockaddr_in* address, const unsigned char* message, socklen_t length);
 
     // Listening Functions
@@ -59,13 +62,12 @@ public:
     void set_receive_timeout(int sec);
     void receive(UDPSocketCallback* callback);
 
-    // Static Functions
-    static void getSockAddr(const string& host, int port, struct sockaddr_in* addr);
-
 private:
     pthread_t receive_thread_;
     int sock_;
     Semaphore* sem_;
+
+    int createSocket();
 };
 
 #endif	/* _UDPSOCKET_H */

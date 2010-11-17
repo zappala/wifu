@@ -16,6 +16,7 @@
 #include "Packet.h"
 #include "UDPSocket.h"
 #include "UDPSocketCallback.h"
+#include "AddressPort.h"
 
 /**
  * Interface to an actual socket which data will be sent and recieved.
@@ -29,7 +30,6 @@ public:
     UDPInterface(string& address, int port) : Module(), UDPSocketCallback() {
 
         // Set up the UDPSocket
-        socket_.createSocket();
         socket_.bind_socket(address, port);
         socket_.makeNonBlocking();
         socket_.receive(this);
@@ -47,13 +47,13 @@ public:
      * Implementation of callback funtion defined in UDPSocketCallback
      * This method is called whenever data is received from the UDPSocket
      *
-     * @param address Struct containing the address and port of the sending socket
+     * @param ap Object containing the address and port of the sending socket
      * @param buffer The data which is being received
      * @param length The length of buffer
      *
      * @see UDPSocketCallback::receive()
      */
-    void receive(struct sockaddr_in* address, unsigned char* buffer, size_t length) {
+    void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
         //Packet p = new Packet()
     }
 
