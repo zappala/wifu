@@ -41,7 +41,13 @@ def configure(conf):
 
 def post(ctx):
 	import os
-	os.system("bin/wifu-end-test")
+	val = os.system("bin/wifu-end-test")
+	val = (val >> 8)
+
+	# val now contains the number of tests which failed
+	if val > 0:
+		error = "%d error(s) encountered during tests." %(val)
+		raise Exception(error)
 
 def build(bld):
 

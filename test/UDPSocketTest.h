@@ -19,23 +19,24 @@ using namespace std;
 
 class UDPSocketCallbackImpl : public UDPSocketCallback {
 public:
+
     UDPSocketCallbackImpl() : UDPSocketCallback(), ap_(0) {
 
     }
 
     virtual ~UDPSocketCallbackImpl() {
-        if(ap_) {
+        if (ap_) {
             delete ap_;
         }
     }
 
     void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
-        if(ap_) {
+        if (ap_) {
             delete ap_;
         }
 
         ap_ = new AddressPort(ap.get_network_struct_ptr());
-        message_ = string((char*)buffer);
+        message_ = string((char*) buffer);
     }
 
     AddressPort* get_ap() {
@@ -54,33 +55,36 @@ private:
 
 namespace {
 
-    TEST(UDPSocket) {
+    SUITE(UDPSocket) {
 
-        UDPSocket sender;
-        UDPSocket receiver;
-        UDPSocketCallbackImpl callback;
+        TEST(UDPSocket) {
 
-        string address("127.0.0.1");
-        int port = 5000;
-        string message("message");
-        AddressPort ap(address, port);
+            UDPSocket sender;
+            UDPSocket receiver;
+            UDPSocketCallbackImpl callback;
 
-        receiver.bind_socket(ap);
-        receiver.receive(&callback);
+            string address("127.0.0.1");
+            int port = 5000;
+            string message("message");
+            AddressPort ap(address, port);
 
-        usleep(500);
+            receiver.bind_socket(ap);
+            receiver.receive(&callback);
 
-        sender.makeNonBlocking();
-        size_t count = sender.send(ap, message);
+            usleep(500);
 
-        usleep(500);
+            sender.makeNonBlocking();
+            size_t count = sender.send(ap, message);
 
-        sender.closeSocket();
-        receiver.closeSocket();
+            usleep(500);
 
-        CHECK_EQUAL(message.length(), count);
-        CHECK_EQUAL(message, callback.get_message());
-        CHECK_EQUAL(ap.get_address(), callback.get_ap()->get_address());
+            sender.closeSocket();
+            receiver.closeSocket();
+
+            CHECK_EQUAL(message.length(), count);
+            CHECK_EQUAL(message, callback.get_message());
+            CHECK_EQUAL(ap.get_address(), callback.get_ap()->get_address());
+        }
     }
 }
 
