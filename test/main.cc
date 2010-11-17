@@ -17,6 +17,7 @@
 #include "UDPSocketTest.h"
 #include "AddressPortTest.h"
 #include "SemaphoreTest.h"
+#include "BinarySemaphoreTest.h"
 
 
 using namespace UnitTest;

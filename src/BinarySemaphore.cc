@@ -13,7 +13,7 @@ void BinarySemaphore::init(int value) {
     if(value) {
         i = 1;
     }
-    this->Semaphore::init(value);
+    this->Semaphore::init(i);
 }
 
 void BinarySemaphore::post() {
