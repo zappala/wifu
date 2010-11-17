@@ -69,9 +69,9 @@ namespace {
         string message("message");
         AddressPort ap(address, port);
 
-        receiver.bind_socket(address, port);
+        receiver.bind_socket(ap);
         receiver.receive(&callback);
-        
+
         usleep(500);
 
         sender.makeNonBlocking();

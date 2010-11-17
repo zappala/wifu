@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 
     int socket = 0;
 
-
+    AddressPort ap(address, port);
 
 //    Queue<int> ints;
 //    Queue<double> doubles;
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
 
     // Load Modules
     ConnnectionManager cmanager;
-    UDPInterface interface(address, port);
+    UDPInterface interface(ap);
     TimeoutEventManager tomanager;
 
     Dispatcher::instance().map_event(type_name(SendPacketEvent), &cmanager);

@@ -31,13 +31,17 @@ public:
      * @param port Port to store
      */
     AddressPort(string& address, int& port) : address_(address), port_(port) {
-        data_.sin_family = AF_INET;
-        data_.sin_port = htons(port);
+        init(address.c_str(), port);
+    }
 
-        if (!inet_aton(address.c_str(), &data_.sin_addr)) {
-            cout << "error converting ip address to binary" << endl;
-            assert(false);
-        }
+    /**
+     * Constructor: Stores address and port.
+     *
+     * @param address Address to store
+     * @param port Port to store
+     */
+    AddressPort(const char* address, int& port) : address_(string(address)), port_(port) {
+        init(address, port);
     }
 
     /**
@@ -60,14 +64,14 @@ public:
     }
 
     AddressPort(const AddressPort& original) : address_(original.address_), port_(original.port_) {
-        memcpy(&data_, &original.data_, sizeof(struct sockaddr_in));
+        memcpy(&data_, &original.data_, sizeof (struct sockaddr_in));
     }
 
-    AddressPort& operator=(const AddressPort& original) {
-        if(this != &original) {
+    AddressPort & operator=(const AddressPort& original) {
+        if (this != &original) {
             address_ = original.address_;
             port_ = original.port_;
-            memcpy(&data_, &original.data_, sizeof(struct sockaddr_in));
+            memcpy(&data_, &original.data_, sizeof (struct sockaddr_in));
         }
         return *this;
     }
@@ -130,6 +134,24 @@ private:
      * Address and port in struct format
      */
     struct sockaddr_in data_;
+
+    /**
+     * Helper Constructor: Stores address and port.
+     *
+     * @param address Address to store
+     * @param port Port to store
+     */
+    void init(const char* address, int& port) {
+        data_.sin_family = AF_INET;
+        data_.sin_port = htons(port);
+
+        if (!inet_aton(address, &data_.sin_addr)) {
+            cout << "error converting ip address to binary" << endl;
+            assert(false);
+        }
+
+
+    }
 
 
 

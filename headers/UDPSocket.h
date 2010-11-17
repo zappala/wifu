@@ -58,7 +58,7 @@ public:
     size_t send(struct sockaddr_in* address, const unsigned char* message, socklen_t length);
 
     // Listening Functions
-    void bind_socket(const string& address, int port);
+    void bind_socket(AddressPort& ap);
     void set_receive_timeout(int sec);
     void receive(UDPSocketCallback* callback);
 

@@ -27,10 +27,10 @@ public:
     /**
      * Constructs a UDPInterface object.
      */
-    UDPInterface(string& address, int port) : Module(), UDPSocketCallback() {
+    UDPInterface(AddressPort& ap) : Module(), UDPSocketCallback() {
 
         // Set up the UDPSocket
-        socket_.bind_socket(address, port);
+        socket_.bind_socket(ap);
         socket_.makeNonBlocking();
         socket_.receive(this);
 

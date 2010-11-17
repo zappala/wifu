@@ -68,13 +68,13 @@ size_t UDPSocket::send(struct sockaddr_in* address, const unsigned char* message
     return count;
 }
 
-void UDPSocket::bind_socket(const string& host, int port) {
+void UDPSocket::bind_socket(AddressPort& ap) {
 
     // use DNS to get host name
-    struct hostent * host_entry = gethostbyname(host.c_str());
+    struct hostent * host_entry = gethostbyname(ap.get_address().c_str());
     if (!host_entry) {
         perror("No such host name");
-        exit(EXIT_FAILURE);
+        assert(false);
     }
 
 
@@ -82,9 +82,9 @@ void UDPSocket::bind_socket(const string& host, int port) {
     memset(&sin, 0, sizeof (sin));
 
     sin.sin_family = AF_INET;
-    sin.sin_port = htons(port);
+    sin.sin_port = htons(ap.get_port());
 
-    if (host == "any") {
+    if (ap.get_address() == "any") {
         sin.sin_addr.s_addr = INADDR_ANY;
     } else {
         memcpy(&sin.sin_addr, host_entry->h_addr_list[0], host_entry->h_length);
