@@ -9,6 +9,7 @@
 #define	_SEMAPHORETEST_H
 
 #include "../headers/Semaphore.h"
+#include "../headers/Utils.h"
 #include "../headers/defines.h"
 
 #include <iostream>
@@ -20,17 +21,6 @@
 using namespace std;
 
 namespace {
-
-    void get_timer(int nanoseconds, struct timespec* timer) {
-        clock_gettime(CLOCK_REALTIME, timer);
-
-        timer->tv_nsec += nanoseconds;
-
-        while (timer->tv_nsec >= NANOSECONDS_IN_SECONDS) {
-            timer->tv_sec += 1;
-            timer->tv_nsec -= NANOSECONDS_IN_SECONDS;
-        }
-    }
 
     SUITE(Semaphore) {
 
@@ -93,13 +83,13 @@ namespace {
             struct timespec timer;
 
             {
-                get_timer(500000, &timer);
+                Utils::get_timespec_future_time(0, 500000, &timer);
                 UNITTEST_TIME_CONSTRAINT(50);
                 bool timedout = s.timed_wait(&timer);
                 CHECK(!timedout);
             }
 
-            get_timer(500000, &timer);
+            Utils::get_timespec_future_time(0, 500000, &timer);
             bool timedout = s.timed_wait(&timer);
             CHECK(timedout);
         }

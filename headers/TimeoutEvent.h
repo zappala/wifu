@@ -10,6 +10,7 @@
 
 #include "Event.h"
 #include "IModule.h"
+#include "Utils.h"
 
 #include <time.h>
 #include <assert.h>
@@ -35,21 +36,7 @@ public:
      * @param nanoseconds The number nanoseconds in the future in which to timeout.
      */
     TimeoutEvent(int socket, int seconds, long int nanoseconds) : Event(socket) {
-
-        assert(seconds >= 0);
-        assert(nanoseconds >= 0);
-
-        // Can we get better precision with real-time clock?
-        // Needs to be value from epoch (not relative time)
-        clock_gettime(CLOCK_REALTIME, &timer_);
-
-        timer_.tv_nsec += nanoseconds;
-        timer_.tv_sec += seconds;
-
-        while (timer_.tv_nsec >= NANOSECONDS_IN_SECONDS) {
-            timer_.tv_sec += 1;
-            timer_.tv_nsec -= NANOSECONDS_IN_SECONDS;
-        }
+        Utils::get_timespec_future_time(seconds, nanoseconds, &timer_);
     }
 
     /**
