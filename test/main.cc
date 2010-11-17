@@ -15,6 +15,9 @@
 #include "headers/CheckMacros.h"
 
 #include "UDPSocketTest.h"
+#include "AddressPortTest.h"
+
+
 #include "../headers/UDPSocket.h"
 #include "../headers/Identifiable.h"
 

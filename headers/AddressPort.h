@@ -30,7 +30,7 @@ public:
      * @param address Address to store
      * @param port Port to store
      */
-    AddressPort(string& address, int& port) : address_(address), port_(port) {
+    AddressPort(string& address, int port) : address_(address), port_(port) {
         init(address.c_str(), port);
     }
 
@@ -40,7 +40,7 @@ public:
      * @param address Address to store
      * @param port Port to store
      */
-    AddressPort(const char* address, int& port) : address_(string(address)), port_(port) {
+    AddressPort(const char* address, int port) : address_(string(address)), port_(port) {
         init(address, port);
     }
 
@@ -173,12 +173,7 @@ private:
             cout << "error converting ip address to binary" << endl;
             assert(false);
         }
-
-
     }
-
-
-
 };
 
 #endif	/* _ADDRESSPORT_H */
