@@ -18,6 +18,9 @@
 #include "AddressPortTest.h"
 #include "SemaphoreTest.h"
 #include "BinarySemaphoreTest.h"
+#include "IDGeneratorTest.h"
+#include "IdentifiableTest.h"
+#include "QueueTest.h"
 
 
 using namespace UnitTest;

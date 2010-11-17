@@ -29,7 +29,6 @@ namespace {
 
         TEST(BinarySemaphoreInitTest) {
             BinarySemaphore bs;
-            CHECK_EQUAL(0, bs.get_value());
 
             bs.init(0);
             CHECK_EQUAL(0, bs.get_value());
