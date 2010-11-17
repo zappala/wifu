@@ -13,11 +13,7 @@
 
 #include "UnitTest++.h"
 #include "../headers/AddressPort.h"
-#include "../headers/Packet.h"
-#include "../headers/Queue.h"
 #include "../headers/UDPSocket.h"
-
-
 
 using namespace std;
 

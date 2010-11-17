@@ -63,10 +63,22 @@ public:
         memcpy(&data_, obj, sizeof (struct sockaddr_in));
     }
 
+    /**
+     * Copy Constructor
+     * Copies the address, port, and internal struct to the new AddressPort object
+     *
+     * @param original The AddressPort from which to copy data out of
+     */
     AddressPort(const AddressPort& original) : address_(original.address_), port_(original.port_) {
         memcpy(&data_, &original.data_, sizeof (struct sockaddr_in));
     }
 
+    /**
+     * Assignment Operator
+     * Copies the address, port, and internal struct to the new AddressPort object
+     *
+     * @param original The AddressPort from which to copy data out of
+     */
     AddressPort & operator=(const AddressPort& original) {
         if (this != &original) {
             address_ = original.address_;
@@ -76,12 +88,24 @@ public:
         return *this;
     }
 
-    bool operator==(const AddressPort& original) {
-        return address_ == original.address_ && port_ == original.port_;
+    /**
+     * Operator equals
+     *
+     * @param other The "other" Address port to compare this one with
+     * @return True if the addresses and the ports are equivialent, false otherwise
+     */
+    bool operator==(const AddressPort& other) {
+        return address_ == other.address_ && port_ == other.port_;
     }
 
-    bool operator!=(const AddressPort& original) {
-        return !operator ==(original);
+    /**
+     * Operator not equals
+     *
+     * @param other The "other" Address port to compare this one with
+     * @return True if either the addresses or ports do not match, false if addresses and ports are equivalent
+     */
+    bool operator!=(const AddressPort& other) {
+        return !operator ==(other);
     }
 
     /**
