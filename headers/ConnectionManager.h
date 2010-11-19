@@ -41,15 +41,15 @@ public:
      * 2. Sends a TimeoutEvent() to the Dispatcher.
      */
     void connect(Event* e) {
-        ConnectEvent* c = (ConnectEvent*) e;
-        cout << "Connection Manager Connect: " << c->get_address() << " " << c->get_port() << endl;
-        const char* p = "Connect Packet Message";
-        dispatch(new SendPacketEvent(c->get_socket(),new Packet((unsigned char*)p, strlen(p))));
-
-
-        // Timeout in 1 sec
-        timer_ = new TimeoutEvent(e->get_socket(), 1, 0);
-        dispatch_timeout(timer_);
+//        ConnectEvent* c = (ConnectEvent*) e;
+//        cout << "Connection Manager Connect: " << c->get_address() << " " << c->get_port() << endl;
+//        const char* p = "Connect Packet Message";
+//        dispatch(new SendPacketEvent(c->get_socket(),new Packet((unsigned char*)p, strlen(p))));
+//
+//
+//        // Timeout in 1 sec
+//        timer_ = new TimeoutEvent(e->get_socket(), 1, 0);
+//        dispatch_timeout(timer_);
     }
 
     /**
@@ -57,8 +57,8 @@ public:
      * 1. Cancels the timer on e's socket.
      */
     void receive(Event* e) {
-        cout << "Received Response" << endl;
-        cancel_timeout(timer_);
+//        cout << "Received Response" << endl;
+//        cancel_timeout(timer_);
     }
 
     /**
@@ -66,41 +66,41 @@ public:
      * @see IModule::timer_fired()
      */
     void my_timer_fired(Event* e) {
-        TimerFiredEvent* event = (TimerFiredEvent*) e;
-        cout << "Timer Fired: Seconds: " << event->get_timeout_event()->get_timeout_time().tv_sec;
-        cout << " Nanoseconds: " << event->get_timeout_event()->get_timeout_time().tv_nsec << endl;
+//        TimerFiredEvent* event = (TimerFiredEvent*) e;
+//        cout << "Timer Fired: Seconds: " << event->get_timeout_event()->get_timeout_time().tv_sec;
+//        cout << " Nanoseconds: " << event->get_timeout_event()->get_timeout_time().tv_nsec << endl;
     }
 
     /**
      * Testing purposes only.
      */
     void test() {
-        int socket = 1;
-        TimeoutEvent * one = new TimeoutEvent(socket, 1, 0);
-        TimeoutEvent * oneplus = new TimeoutEvent(socket, 1, 0);
-        TimeoutEvent * six = new TimeoutEvent(socket, 6, 0);
-        TimeoutEvent * two = new TimeoutEvent(socket, 2, 0);
-        TimeoutEvent * three = new TimeoutEvent(socket, 3, 0);
-        TimeoutEvent * four = new TimeoutEvent(socket, 4, 0);
-        TimeoutEvent * five = new TimeoutEvent(socket, 5, 0);
-
-
-        dispatch_timeout(one);
-        dispatch_timeout(oneplus);
-        dispatch_timeout(two);
-        dispatch_timeout(six);
-        dispatch_timeout(four);
-        dispatch_timeout(five);
-        dispatch_timeout(three);
-
-        cancel_timeout(two);
+//        int socket = 1;
+//        TimeoutEvent * one = new TimeoutEvent(socket, 1, 0);
+//        TimeoutEvent * oneplus = new TimeoutEvent(socket, 1, 0);
+//        TimeoutEvent * six = new TimeoutEvent(socket, 6, 0);
+//        TimeoutEvent * two = new TimeoutEvent(socket, 2, 0);
+//        TimeoutEvent * three = new TimeoutEvent(socket, 3, 0);
+//        TimeoutEvent * four = new TimeoutEvent(socket, 4, 0);
+//        TimeoutEvent * five = new TimeoutEvent(socket, 5, 0);
+//
+//
+//        dispatch_timeout(one);
+//        dispatch_timeout(oneplus);
+//        dispatch_timeout(two);
+//        dispatch_timeout(six);
+//        dispatch_timeout(four);
+//        dispatch_timeout(five);
+//        dispatch_timeout(three);
+//
+//        cancel_timeout(two);
     }
 private:
     /**
      * Temporary variable, should be removed later once we figure out a better way to keep track of various connections.
      * @todo Remove this variable.
      */
-    TimeoutEvent* timer_;
+//    TimeoutEvent* timer_;
 };
 
 

@@ -21,6 +21,7 @@
 #include "IDGeneratorTest.h"
 #include "IdentifiableTest.h"
 #include "QueueTest.h"
+#include "PacketTest.h"
 
 
 using namespace UnitTest;
