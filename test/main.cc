@@ -22,6 +22,7 @@
 #include "IdentifiableTest.h"
 #include "QueueTest.h"
 #include "PacketTest.h"
+#include "WifuEndAPITest.h"
 
 
 using namespace UnitTest;

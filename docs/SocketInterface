@@ -1,0 +1,9 @@
+API
+
+socket(TYPE) (UDP, TCP, Tahoe)
+bind(address, port)
+listen(sock_fd)
+accept
+connect
+send
+recv

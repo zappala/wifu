@@ -52,6 +52,17 @@ def post(ctx):
 
 def build(bld):
 
+	# shared library
+	api_files = bld.glob('applib/*.cc')
+
+	lib = bld(features='cxx cstaticlib',
+        source=api_files,
+        includes="applib",
+		ccflags="-c -fPIC",
+		export_incdirs="applib",
+        target='wifu-end-api')
+
+	# exe
 	src_files = bld.glob('src/*.cc')
 	test_files = bld.glob('test/*.cc')
 
@@ -59,16 +70,19 @@ def build(bld):
 	all_files += test_files
 	all_files.remove("src/main.cc")
 
-	bld(features='cxx cprogram',
+	exe = bld(features='cxx cprogram',
         source=bld.glob('src/*.cc'),
         includes="headers",
         uselib='PTHREAD RT',
         target='wifu-end')
 
-	bld(features='cxx cprogram',
+
+
+	test = bld(features='cxx cprogram',
         source=all_files,
         includes='headers test/headers',
         uselib='PTHREAD RT',
+		uselib_local='wifu-end-api',
 		target='wifu-end-test')
 
 	bld.add_post_fun(post)

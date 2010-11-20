@@ -51,6 +51,7 @@ public:
     int closeSocket();
     int getSocket() const;
     void makeNonBlocking();
+    AddressPort* get_bound_address_port();
 
     // Sending Functions
     size_t send(AddressPort& ap, string& message);
@@ -66,6 +67,7 @@ private:
     pthread_t receive_thread_;
     int sock_;
     Semaphore* sem_;
+    AddressPort* ap_;
 
     int createSocket();
 };

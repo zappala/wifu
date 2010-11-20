@@ -8,7 +8,7 @@
 #include "UDPSocket.h"
 
 
-UDPSocket::UDPSocket() {
+UDPSocket::UDPSocket() : ap_(0) {
     createSocket();
     sem_ = new Semaphore();
     sem_->init(0);
@@ -17,6 +17,9 @@ UDPSocket::UDPSocket() {
 
 UDPSocket::~UDPSocket() {
     delete sem_;
+    if(ap_) {
+        delete ap_;
+    }
 }
 
 int UDPSocket::createSocket() {
@@ -49,6 +52,11 @@ void UDPSocket::makeNonBlocking() {
     }
 }
 
+AddressPort* UDPSocket::get_bound_address_port() {
+    assert(ap_);
+    return ap_;
+}
+
 size_t UDPSocket::send(AddressPort& ap, string& message) {
     return send(ap.get_network_struct_ptr(), (unsigned char*)message.c_str(), message.length());
 }
@@ -69,6 +77,8 @@ size_t UDPSocket::send(struct sockaddr_in* address, const unsigned char* message
 }
 
 void UDPSocket::bind_socket(AddressPort& ap) {
+
+    ap_ = new AddressPort(ap);
 
     // use DNS to get host name
     struct hostent * host_entry = gethostbyname(ap.get_address().c_str());

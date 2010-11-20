@@ -12,23 +12,23 @@
 #include "Dispatcher.h"
 #include "TimeoutEvent.h"
 #include "PacketReceivedEvent.h"
-#include "SendPacketEvent.h"
+#include "UDPSendPacketEvent.h"
 #include "Packet.h"
 #include "UDPSocket.h"
 #include "UDPSocketCallback.h"
 #include "AddressPort.h"
+#include "UDPReceivePacketEvent.h"
 
 /**
  * Interface to an actual socket which data will be sent and recieved.
  */
-class UDPInterface : public Module , public UDPSocketCallback {
+class UDPInterface : public Module, public UDPSocketCallback {
 public:
 
     /**
      * Constructs a UDPInterface object.
      */
     UDPInterface(AddressPort& ap) : Module(), UDPSocketCallback() {
-
         // Set up the UDPSocket
         socket_.bind_socket(ap);
         socket_.makeNonBlocking();
@@ -54,25 +54,21 @@ public:
      * @see UDPSocketCallback::receive()
      */
     void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
-        //Packet p = new Packet()
+        Packet* p = new Packet(buffer, length, ap.get_address(), socket_.get_bound_address_port()->get_address());
+        Event* e = new UDPReceivePacketEvent(0, p);
+        Dispatcher::instance().enqueue(e);
     }
 
     /**
-     * This method is called when a SendPacketEvent is dequeued from the Dispatcher.
+     * This method is called when a UDPSendPacketEvent is dequeued from the Dispatcher.
      *
      * @param e The Event which contains information needing to be sent over the wire.
      */
     void udp_send(Event* e) {
-        SendPacketEvent* event = (SendPacketEvent*)e;
-
-        cout << "UDPInterface udp_send: " << event->get_packet()->to_bytes() << endl;
-        
-        if(e->get_socket() % 2 == 0) {
-            // emulate a response
-            usleep(100);
-            dispatch(new PacketReceivedEvent(e->get_socket()));
-            return;
-        }
+        UDPSendPacketEvent* event = (UDPSendPacketEvent*) e;
+        Packet* p = event->get_packet();
+        AddressPort destination(p->get_dest_address(), p->get_dest_port());
+        socket_.send(destination, p->to_bytes(), p->length());
     }
 
 private:

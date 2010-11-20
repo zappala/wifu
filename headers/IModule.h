@@ -75,6 +75,14 @@ public:
     virtual void udp_send(Event* e) {}
 
     /**
+     * Called when e's execute() method determines that this IModule should respond to a udp receive action.
+     *
+     * @param e The event which triggered a udp send action.
+     */
+    virtual void udp_receive(Event* e) {}
+    
+
+    /**
      * Called when e's execute() method determines that this IModule should respond to a data action.
      *
      * @param e The event which triggered a data action.
