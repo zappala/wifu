@@ -34,7 +34,7 @@ public:
         last_message_ = message;
         cout << message << endl;
     }
-    
+
     string& get_last_message() {
         return last_message_;
     }
@@ -52,7 +52,7 @@ namespace {
             cout << result << endl;
 //            CHECK(result == 0);
 
-            string file("WifuSocket1");
+            string file("WifuSocket");
             LocalSocketFullDuplexImpl localSocket(file);
             
             result = wifu_socket(0,0,0);

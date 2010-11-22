@@ -1,6 +1,6 @@
 #include "WifuEndAPI.h"
 
-string file("weapils1");
+string file("weapils");
 WifuEndAPILocalSocket weapils(file);
 
 int wifu_socket(int domain, int type, int protocol) {

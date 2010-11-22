@@ -7,7 +7,6 @@
 
 #include "UDPSocket.h"
 
-
 UDPSocket::UDPSocket() : ap_(0) {
     createSocket();
     sem_ = new Semaphore();
@@ -17,7 +16,7 @@ UDPSocket::UDPSocket() : ap_(0) {
 
 UDPSocket::~UDPSocket() {
     delete sem_;
-    if(ap_) {
+    if (ap_) {
         delete ap_;
     }
 }
@@ -58,7 +57,7 @@ AddressPort* UDPSocket::get_bound_address_port() {
 }
 
 size_t UDPSocket::send(AddressPort& ap, string& message) {
-    return send(ap.get_network_struct_ptr(), (unsigned char*)message.c_str(), message.length());
+    return send(ap.get_network_struct_ptr(), (unsigned char*) message.c_str(), message.length());
 }
 
 size_t UDPSocket::send(AddressPort& ap, const unsigned char* message, socklen_t length) {
@@ -67,7 +66,7 @@ size_t UDPSocket::send(AddressPort& ap, const unsigned char* message, socklen_t 
 
 size_t UDPSocket::send(struct sockaddr_in* address, const unsigned char* message, socklen_t length) {
 
-    size_t count = sendto(getSocket(), message, length, 0, (const struct sockaddr*)address, sizeof (struct sockaddr));
+    size_t count = sendto(getSocket(), message, length, 0, (const struct sockaddr*) address, sizeof (struct sockaddr));
 
     if (count < 0) {
         perror("error in sending");
@@ -98,6 +97,13 @@ void UDPSocket::bind_socket(AddressPort& ap) {
         sin.sin_addr.s_addr = INADDR_ANY;
     } else {
         memcpy(&sin.sin_addr, host_entry->h_addr_list[0], host_entry->h_length);
+    }
+
+    int optval = 1;
+    int value = setsockopt(getSocket(), SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval);
+    if(value) {
+        perror("setsockopt");
+        exit(EXIT_FAILURE);
     }
 
     if (bind(getSocket(), (const struct sockaddr *) & sin, sizeof (sin)) < 0) {
@@ -147,7 +153,7 @@ void * receive_handler(void * arg) {
         memset(buf, 0, BUF_LENGTH);
         //ssize_t num = recv(socket, &buf, BUF_LENGTH, 0);
         ssize_t num = recvfrom(socket, &buf, BUF_LENGTH, 0, (struct sockaddr*) & address, &length);
-        
+
         AddressPort ap(&address);
 
         if (num < 0) {

@@ -41,15 +41,18 @@ void LocalSocketReceiver::init(void) {
         exit(-1);
     }
 
-    int optval = 1;
-    setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
-
     /* ATTENTION!!! THIS ACTUALLY REMOVES A FILE FROM YOUR HARD DRIVE!!! */
     unlink(file_.c_str()); /* Remove any previous socket with the same filename. */
 
+    int optval = 1;
+    int value = setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval);
+    if(value) {
+        perror("setsockopt");
+        exit(EXIT_FAILURE);
+    }
+
     if (bind(s, (const struct sockaddr *) & server, sizeof (server)) < 0) {
-        perror("bind");
-        cout << "File: " << getFile() << endl;
+        perror("Bind");
         exit(-1);
     }
     if (listen(s, SOMAXCONN) < 0) {

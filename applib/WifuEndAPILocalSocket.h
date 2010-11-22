@@ -23,7 +23,7 @@ public:
      * @param file The file which this object listens on (other local sockets can write to this file).
      */
     WifuEndAPILocalSocket(string& file) : LocalSocketFullDuplex(file) {
-        write_file_ = "WifuSocket1";
+        write_file_ = "WifuSocket";
         sem_.init(0);
     }
 
