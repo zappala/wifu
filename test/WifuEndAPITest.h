@@ -33,6 +33,8 @@ public:
     void receive(string& message) {
         last_message_ = message;
         cout << message << endl;
+        string dest("weapils");
+        send_to(dest, message);
     }
 
     string& get_last_message() {

@@ -50,7 +50,7 @@ public:
         s << "type=";
         s << type << "&";
         s << "protocol=";
-        s << protocol << "&";
+        s << protocol;
         string data = s.str();
         send_to(write_file_, data);
 
