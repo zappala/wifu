@@ -1,11 +1,11 @@
 #include "LocalSocketReceiver.h"
 
-LocalSocketReceiver::LocalSocketReceiver(string& file, LocalSocketReceiverCallback* callback) : file_(file), callback_(callback){
+LocalSocketReceiver::LocalSocketReceiver(string& file, LocalSocketReceiverCallback* callback) : file_(file), callback_(callback) {
     init();
 }
 
 LocalSocketReceiver::~LocalSocketReceiver() {
-
+    unlink(file_.c_str());
 }
 
 string & LocalSocketReceiver::getFile() {
@@ -41,11 +41,15 @@ void LocalSocketReceiver::init(void) {
         exit(-1);
     }
 
+    int optval = 1;
+    setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
+
     /* ATTENTION!!! THIS ACTUALLY REMOVES A FILE FROM YOUR HARD DRIVE!!! */
     unlink(file_.c_str()); /* Remove any previous socket with the same filename. */
 
     if (bind(s, (const struct sockaddr *) & server, sizeof (server)) < 0) {
         perror("bind");
+        cout << "File: " << getFile() << endl;
         exit(-1);
     }
     if (listen(s, SOMAXCONN) < 0) {

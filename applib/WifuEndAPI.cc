@@ -1,8 +1,10 @@
 #include "WifuEndAPI.h"
 
+string file("weapils1");
+WifuEndAPILocalSocket weapils(file);
 
 int wifu_socket(int domain, int type, int protocol) {
-    return 0;
+    weapils.wifu_socket(domain, type, protocol);
 }
 
 int wifu_bind(int fd, const struct sockaddr* addr, socklen_t len) {

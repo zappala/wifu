@@ -9,6 +9,11 @@
 #define	_WIFUENDAPI_H
 
 #include <unistd.h>
+#include "WifuEndAPILocalSocket.h"
+
+using namespace std;
+
+
 
 
 /* Create a new socket of type TYPE in domain DOMAIN, using

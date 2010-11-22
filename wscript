@@ -52,18 +52,21 @@ def post(ctx):
 
 def build(bld):
 
+	# shared files
+	src_files = bld.glob('src/*.cc')
+
 	# shared library
 	api_files = bld.glob('applib/*.cc')
+	api_files += src_files
 
 	lib = bld(features='cxx cstaticlib',
         source=api_files,
-        includes="applib",
+        includes="applib headers",
 		ccflags="-c -fPIC",
 		export_incdirs="applib",
         target='wifu-end-api')
 
 	# exe
-	src_files = bld.glob('src/*.cc')
 	test_files = bld.glob('test/*.cc')
 
 	all_files = src_files
