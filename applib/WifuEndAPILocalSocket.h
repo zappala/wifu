@@ -56,7 +56,7 @@ public:
         s << protocol;
         string data = s.str();
         send_to(write_file_, data);
-
+        
         sem_.wait();
 
         return 0;
