@@ -4,7 +4,7 @@ string file("weapils");
 WifuEndAPILocalSocket weapils(file);
 
 int wifu_socket(int domain, int type, int protocol) {
-    weapils.wifu_socket(domain, type, protocol);
+    return weapils.wifu_socket(domain, type, protocol);
 }
 
 int wifu_bind(int fd, const struct sockaddr* addr, socklen_t len) {
