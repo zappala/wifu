@@ -46,11 +46,10 @@ public:
             response[SOCKET_STRING] = Utils::itoa(socket);
         } else if (!name.compare("wifu_bind")) {
             int r = 100;
-            response["response"] = Utils::itoa(r);
+            response[RETURN_VALUE_STRING] = Utils::itoa(r);
         }
 
         string response_message = QueryStringParser::create(name, response);
-        cout << "Response Message: " << response_message << endl;
         send_to(m[FILE_STRING], response_message);
     }
 
@@ -80,7 +79,7 @@ namespace {
             string address("127.0.0.1");
             int port = 5000;
             AddressPort ap(address, port);
-            expected = 0;
+            expected = 100;
 
             result = wifu_bind(9, (struct sockaddr*) ap.get_network_struct_ptr(), sizeof (struct sockaddr_in));
             CHECK_EQUAL(expected, result);

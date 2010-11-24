@@ -59,8 +59,6 @@ public:
             return;
         }
 
-        cout << "Socket: " << socket << endl;
-
         int value = atoi(response_[RETURN_VALUE_STRING].c_str());
         SocketData* data = sockets.get(socket);
         data->set_return_value(value);
@@ -89,7 +87,6 @@ public:
         sockets.erase_at(0);
         sockets.put(socket, data);
         
-//
         socket_mutex_.post();
         return socket;
     }
@@ -109,12 +106,10 @@ public:
         m["length"] = Utils::itoa(len);
 
         string message = QueryStringParser::create("wifu_bind", m);
-        cout << "Wifu bind: " << message << endl;
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
-
         return data->get_return_value();
     }
 
