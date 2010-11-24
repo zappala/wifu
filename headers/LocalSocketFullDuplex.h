@@ -19,6 +19,7 @@ using namespace std;
 class LocalSocketFullDuplex : public LocalSocketReceiverCallback, public LocalSocketSender, public LocalSocketReceiver {
 public:
     LocalSocketFullDuplex(string & file);
+    LocalSocketFullDuplex(const char* file);
     virtual ~LocalSocketFullDuplex();
 
 };

@@ -25,7 +25,8 @@ class LocalSocketFullDuplexImpl : public LocalSocketFullDuplex {
 public:
 
     LocalSocketFullDuplexImpl(string& file) : LocalSocketFullDuplex(file) {
-
+        socket_id_ = 10;
+        bind_return_val_ = 100;
     }
 
     virtual ~LocalSocketFullDuplexImpl() {
@@ -41,11 +42,11 @@ public:
         string name = m[NAME_STRING];
         response[SOCKET_STRING] = m[SOCKET_STRING];
 
-        if (!name.compare("wifu_socket")) {
-            int socket = 9;
+        if (!name.compare(WIFU_SOCKET_NAME)) {
+            int socket = socket_id_++;
             response[SOCKET_STRING] = Utils::itoa(socket);
-        } else if (!name.compare("wifu_bind")) {
-            int r = 100;
+        } else if (!name.compare(WIFU_BIND_NAME)) {
+            int r = bind_return_val_++;
             response[RETURN_VALUE_STRING] = Utils::itoa(r);
         }
 
@@ -59,6 +60,8 @@ public:
 
 private:
     string last_message_;
+    int socket_id_;
+    int bind_return_val_;
 };
 
 namespace {
@@ -71,7 +74,7 @@ namespace {
             LocalSocketFullDuplexImpl localSocket(file);
 
             int result = wifu_socket(0, 0, 0);
-            int expected = 9;
+            int expected = 10;
 
             CHECK_EQUAL(expected, result);
 
@@ -81,7 +84,21 @@ namespace {
             AddressPort ap(address, port);
             expected = 100;
 
-            result = wifu_bind(9, (struct sockaddr*) ap.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+            result = wifu_bind(10, (struct sockaddr*) ap.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+            CHECK_EQUAL(expected, result);
+
+
+            result = wifu_socket(0, 0, 0);
+            expected = 11;
+
+            CHECK_EQUAL(expected, result);
+
+            // wifu_bind()
+            port = 5001;
+            ap = AddressPort(address, port);
+            expected = 101;
+
+            result = wifu_bind(11, (struct sockaddr*) ap.get_network_struct_ptr(), sizeof (struct sockaddr_in));
             CHECK_EQUAL(expected, result);
         }
 

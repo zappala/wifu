@@ -50,6 +50,8 @@ struct thread_connection_handler_obj : thread_obj {
 class LocalSocketReceiver {
 public:
     LocalSocketReceiver(string & file, LocalSocketReceiverCallback * callback);
+    LocalSocketReceiver(const char* file, LocalSocketReceiverCallback * callback);
+
     virtual ~LocalSocketReceiver();
 
     string & getFile();

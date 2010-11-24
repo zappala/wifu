@@ -25,18 +25,33 @@
 #define sockets SocketMap::instance()
 
 class WifuEndAPILocalSocket : public LocalSocketFullDuplex {
-public:
+private:
 
     /**
      * Constructs a WifuEndAPILocalSocket for use in communicating with the Wifu End process
      *
      * @param file The file which this object listens on (other local sockets can write to this file).
      */
-    WifuEndAPILocalSocket(string& file) : LocalSocketFullDuplex(file) {
-        write_file_ = "WifuSocket";
-        socket_sem_.init(0);
+    WifuEndAPILocalSocket() : LocalSocketFullDuplex("LibrarySocket"), write_file_("WifuSocket") {
+        socket_signal_.init(0);
         socket_mutex_.init(1);
     }
+
+    WifuEndAPILocalSocket(WifuEndAPILocalSocket const&) : LocalSocketFullDuplex("LibrarySocket"), write_file_("WifuSocket") {
+
+    }
+
+    WifuEndAPILocalSocket& operator=(WifuEndAPILocalSocket const&) {
+        
+    }
+
+public:
+
+    static WifuEndAPILocalSocket& instance() {
+        static WifuEndAPILocalSocket instance_;
+        return instance_;
+    }
+
 
     virtual ~WifuEndAPILocalSocket() {
 
@@ -52,10 +67,10 @@ public:
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
 
-        if(!response_[NAME_STRING].compare("wifu_socket")) {
+        if(!response_[NAME_STRING].compare(WIFU_SOCKET_NAME)) {
             sockets.put(0, new SocketData());
             sockets.get(0)->set_return_value(socket);
-            socket_sem_.post();
+            socket_signal_.post();
             return;
         }
 
@@ -73,13 +88,13 @@ public:
         socket_mutex_.wait();
         map<string, string> m;
         m[FILE_STRING] = getFile();
-        m["domain"] = Utils::itoa(domain);
-        m["type"] = Utils::itoa(type);
-        m["protocol"] = Utils::itoa(protocol);
-        string message = QueryStringParser::create("wifu_socket", m);
+        m[DOMAIN_NAME] = Utils::itoa(domain);
+        m[TYPE_NAME] = Utils::itoa(type);
+        m[PROTOCOL_NAME] = Utils::itoa(protocol);
+        string message = QueryStringParser::create(WIFU_SOCKET_NAME, m);
         send_to(write_file_, message);
         
-        socket_sem_.wait();
+        socket_signal_.wait();
 
         // TODO: Ensure that we never receive a socket id of 0        
         SocketData* data = sockets.get(0);
@@ -101,11 +116,11 @@ public:
         map<string, string> m;
         m[FILE_STRING] = getFile();
         m[SOCKET_STRING] = Utils::itoa(fd);
-        m["address"] = ap.get_address();
-        m["port"] = Utils::itoa(ap.get_port());
-        m["length"] = Utils::itoa(len);
+        m[ADDRESS_NAME] = ap.get_address();
+        m[PORT_NAME] = Utils::itoa(ap.get_port());
+        m[LENGTH_NAME] = Utils::itoa(len);
 
-        string message = QueryStringParser::create("wifu_bind", m);
+        string message = QueryStringParser::create(WIFU_BIND_NAME, m);
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
@@ -117,7 +132,20 @@ public:
      * Non-blocking
      */
     int wifu_listen(int fd, int n) {
-        return 0;
+
+//        map<string, string> m;
+//        m[FILE_STRING] = getFile();
+//        m[SOCKET_STRING] = Utils::itoa(fd);
+//        m[ADDRESS_NAME] = ap.get_address();
+//        m[PORT_NAME] = Utils::itoa(ap.get_port());
+//        m[LENGTH_NAME] = Utils::itoa(len);
+//
+//        string message = QueryStringParser::create(WIFU_BIND_NAME, m);
+//        send_to(write_file_, message);
+//
+//        SocketData* data = sockets.get(fd);
+//        data->get_semaphore()->wait();
+//        return data->get_return_value();
     }
 
     /**
@@ -151,7 +179,7 @@ public:
     /**
      * Blocking
      */
-    ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr, socklen_t *__restrict addr_len) {
+    ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr,socklen_t *__restrict addr_len) {
         return 0;
     }
 
@@ -164,9 +192,10 @@ public:
 
 private:
     string write_file_;
-    BinarySemaphore socket_sem_;
+    BinarySemaphore socket_signal_;
     BinarySemaphore socket_mutex_;
     map<string, string> response_;
+
 
 };
 

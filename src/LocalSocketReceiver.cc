@@ -4,6 +4,10 @@ LocalSocketReceiver::LocalSocketReceiver(string& file, LocalSocketReceiverCallba
     init();
 }
 
+LocalSocketReceiver::LocalSocketReceiver(const char* file, LocalSocketReceiverCallback* callback) : file_(file), callback_(callback) {
+    init();
+}
+
 LocalSocketReceiver::~LocalSocketReceiver() {
     unlink(file_.c_str());
 }

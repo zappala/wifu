@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include "WifuEndAPILocalSocket.h"
 
+#define end_socket WifuEndAPILocalSocket::instance()
+
 using namespace std;
 
 

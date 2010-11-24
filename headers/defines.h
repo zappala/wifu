@@ -15,10 +15,23 @@
 #define PAYLOAD_SIZE 1500
 
 // message defines
+// method names
+#define WIFU_SOCKET_NAME "wifu_socket"
+#define WIFU_BIND_NAME "wifu_bind"
+#define WIFU_LISTEN_NAME "wifu_listen"
+
+// variable names
 #define SOCKET_STRING "socket"
 #define FILE_STRING "file"
 #define NAME_STRING "name"
 #define RETURN_VALUE_STRING "return_value"
+#define DOMAIN_NAME "domain"
+#define TYPE_NAME "type"
+#define PROTOCOL_NAME "protocol"
+#define ADDRESS_NAME "address"
+#define PORT_NAME "port"
+#define LENGTH_NAME "length"
+
 
 // WIFU_PORT is created from the ASCII decimal values of WIFU
 // Each number in the port corresponds to one of the letters in 'WIFU'
