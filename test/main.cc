@@ -23,6 +23,8 @@
 #include "QueueTest.h"
 #include "PacketTest.h"
 #include "WifuEndAPITest.h"
+#include "LocalSocketFullDuplexTest.h"
+#include "QueryStringParserTest.h"
 
 
 using namespace UnitTest;

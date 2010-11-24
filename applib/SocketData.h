@@ -8,7 +8,10 @@
 #ifndef _SOCKETDATA_H
 #define	_SOCKETDATA_H
 
+#include <string.h>
+
 #include "../headers/Semaphore.h"
+#include "../headers/defines.h"
 
 class SocketData {
 public:
@@ -33,9 +36,18 @@ public:
         this->return_value_ = new_value;
     }
 
+    void set_payload(string& payload) {
+        memcpy(payload_, payload.c_str(), payload.size());
+    }
+
+    unsigned char* get_payload() {
+        return payload_;
+    }
+
 private:
     int return_value_;
     Semaphore* sem_;
+    unsigned char payload_[PAYLOAD_SIZE + 1];
 };
 
 #endif	/* _SOCKETDATA_H */

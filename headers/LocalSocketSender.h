@@ -18,6 +18,8 @@
 #include <sys/un.h>
 #include <map>
 
+#include "Semaphore.h"
+
 using namespace std;
 
 class LocalSocketSender {
@@ -31,6 +33,9 @@ private:
     
     void send_to(int & socket, string & message);
     void create_socket(string & socket_file);
+
+    Semaphore mutex_;
+    Semaphore mutex1_;
 };
 
 #endif	/* _LOCALSOCKETSENDER_H */

@@ -10,8 +10,12 @@
 
 #include <assert.h>
 #include <time.h>
+#include <string>
+#include <stdio.h>
 
 #include "defines.h"
+
+using namespace std;
 
 class Utils {
 public:
@@ -30,6 +34,12 @@ public:
             ts->tv_sec += 1;
             ts->tv_nsec -= NANOSECONDS_IN_SECONDS;
         }
+    }
+
+    static string itoa(int i) {
+        char buf[sizeof(i)*8+1];
+        sprintf(buf, "%d", i);
+        return string(buf);
     }
 };
 

@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <unistd.h>
+#include "../headers/defines.h"
 
 #include "UnitTest++.h"
 #include "../applib/WifuEndAPI.h"
@@ -22,6 +23,7 @@ using namespace std;
 
 class LocalSocketFullDuplexImpl : public LocalSocketFullDuplex {
 public:
+
     LocalSocketFullDuplexImpl(string& file) : LocalSocketFullDuplex(file) {
 
     }
@@ -31,10 +33,21 @@ public:
     }
 
     void receive(string& message) {
-        last_message_ = message;
-        cout << message << endl;
-        string dest("weapils");
-        send_to(dest, message);
+        map<string, string> m;
+        QueryStringParser::parse(message, m);
+
+        map<string, string> response;
+        response[FILE_STRING] = getFile();
+        string name;
+
+        if (!m[NAME_STRING].compare("wifu_socket")) {
+            int socket = 9;
+            response["socket"] = Utils::itoa(socket);
+            name = "wifu_socket";
+        }
+
+        message = QueryStringParser::create(name, response);
+        send_to(m[FILE_STRING], message);
     }
 
     string& get_last_message() {
@@ -50,15 +63,13 @@ namespace {
     SUITE(WifuEndTest) {
 
         TEST(WifuEndTest) {
-            int result = wifu_sendto(0, 0, 0, 0, 0, 0);
-            cout << result << endl;
-//            CHECK(result == 0);
-
             string file("WifuSocket");
             LocalSocketFullDuplexImpl localSocket(file);
-            
-            result = wifu_socket(0,0,0);
-            
+
+            int result = wifu_socket(0, 0, 0);
+            int expected = 9;
+
+            CHECK_EQUAL(expected, result);
         }
 
     }

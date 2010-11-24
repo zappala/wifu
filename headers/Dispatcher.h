@@ -81,7 +81,7 @@ private:
      * Map of Event name to a vector of QueueProcessor objects.
      */
     tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*> map_;
-
+    
     /**
      * IQueue to be used by the parent QueueProcessor object.
      */

@@ -8,11 +8,21 @@
 #ifndef _WIFUENDAPILOCALSOCKET_H
 #define	_WIFUENDAPILOCALSOCKET_H
 
+#include "SocketData.h"
+
+
 #include <sstream>
 
+#include "../headers/QueryStringParser.h"
 #include "../headers/LocalSocketFullDuplex.h"
 #include "../headers/LocalSocketReceiverCallback.h"
-#include "../headers/Semaphore.h"
+#include "../headers/BinarySemaphore.h"
+#include "../headers/Utils.h"
+#include "../headers/AddressPort.h"
+#include "../headers/defines.h"
+#include "SocketMap.h"
+
+#define sockets SocketMap::instance()
 
 class WifuEndAPILocalSocket : public LocalSocketFullDuplex {
 public:
@@ -24,7 +34,8 @@ public:
      */
     WifuEndAPILocalSocket(string& file) : LocalSocketFullDuplex(file) {
         write_file_ = "WifuSocket";
-        sem_.init(0);
+        socket_sem_.init(0);
+        socket_mutex_.init(1);
     }
 
     virtual ~WifuEndAPILocalSocket() {
@@ -37,37 +48,67 @@ public:
      * @param message The message received
      */
     void receive(string& message) {
-        cout << message << endl;
-        sem_.post();
+        response_.clear();
+        QueryStringParser::parse(message, response_);
+        int socket = atoi(response_["socket"].c_str());
+
+        if(!response_[NAME_STRING].compare("wifu_socket")) {
+            sockets.put(0, new SocketData());
+            sockets.get(0)->set_return_value(socket);
+            socket_sem_.post();
+            return;
+        }
+
+        int value = atoi(response_[RETURN_VALUE_STRING].c_str());
+        SocketData* data = sockets.get(socket);
+        data->set_return_value(value);
+        data->get_semaphore()->post();        
     }
 
     /**
      * Non-blocking
+     *
      */
     int wifu_socket(int domain, int type, int protocol) {
-        stringstream s;
-        s << "wifu_socket?file=";
-        s << getFile() << "&";
-        s << "domain=";
-        s << domain << "&";
-        s << "type=";
-        s << type << "&";
-        s << "protocol=";
-        s << protocol;
-        string data = s.str();
-        send_to(write_file_, data);
+        socket_mutex_.wait();
+        map<string, string> m;
+        m[FILE_STRING] = getFile();
+        m["domain"] = Utils::itoa(domain);
+        m["type"] = Utils::itoa(type);
+        m["protocol"] = Utils::itoa(protocol);
+        string message = QueryStringParser::create("wifu_socket", m);
+        send_to(write_file_, message);
         
-        sem_.wait();
+        socket_sem_.wait();
 
-        return 0;
-        
+        // TODO: Ensure that we never receive a socket id of 0
+        SocketData* data = sockets.get(0);
+        int socket = data->get_return_value();
+        sockets.put(socket, data);
+        sockets.put(0, NULL);
+
+        socket_mutex_.post();
+        return socket;
     }
 
     /**
      * Non-blocking
      */
     int wifu_bind(int fd, const struct sockaddr* addr, socklen_t len) {
-        return 0;
+        assert(sizeof(struct sockaddr_in) == len);
+        AddressPort ap((struct sockaddr_in*)addr);
+
+        map<string, string> m;
+        m[FILE_STRING] = getFile();
+        m["fd"] = Utils::itoa(fd);
+        m["address"] = ap.get_address();
+        m["port"] = Utils::itoa(ap.get_port());
+        m["length"] = Utils::itoa(len);
+
+        SocketData* data = sockets.get(fd);
+        data->get_semaphore()->wait();
+
+        return data->get_return_value();
     }
 
     /**
@@ -121,7 +162,9 @@ public:
 
 private:
     string write_file_;
-    Semaphore sem_;
+    BinarySemaphore socket_sem_;
+    BinarySemaphore socket_mutex_;
+    map<string, string> response_;
 
 };
 

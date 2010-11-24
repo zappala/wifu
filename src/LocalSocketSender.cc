@@ -1,7 +1,8 @@
 #include "LocalSocketSender.h"
 
 LocalSocketSender::LocalSocketSender() {
-
+    mutex_.init(1);
+    mutex1_.init(1);
 }
 
 LocalSocketSender::~LocalSocketSender() {
@@ -9,14 +10,18 @@ LocalSocketSender::~LocalSocketSender() {
 }
 
 void LocalSocketSender::send_to(string & socket_file, string & message) {
+    mutex_.wait();
     if (!sockets_[socket_file]) {
         create_socket(socket_file);
     }
     send_to(sockets_[socket_file], message);
+    mutex_.post();
 }
 
 void LocalSocketSender::send_to(int & socket, string & message) {
+    mutex1_.wait();
     send(socket, message.c_str(), message.length(), 0);
+    mutex1_.post();
 }
 
 void LocalSocketSender::create_socket(string & socket_file) {
