@@ -13,6 +13,9 @@
 #define SIG_CANCEL_EVENT 51
 #define NANOSECONDS_IN_SECONDS 1000000000
 #define PAYLOAD_SIZE 1500
+
+// message defines
+#define SOCKET_STRING "socket"
 #define FILE_STRING "file"
 #define NAME_STRING "name"
 #define RETURN_VALUE_STRING "return_value"

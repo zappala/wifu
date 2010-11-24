@@ -8,7 +8,7 @@ int wifu_socket(int domain, int type, int protocol) {
 }
 
 int wifu_bind(int fd, const struct sockaddr* addr, socklen_t len) {
-    return 0;
+    return weapils.wifu_bind(fd, addr, len);
 }
 
 int wifu_listen(int fd, int n) {

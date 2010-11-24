@@ -10,6 +10,7 @@
 
 #include <map>
 #include "../headers/BinarySemaphore.h"
+#include "SocketData.h"
 
 using namespace std;
 
@@ -54,10 +55,28 @@ public:
         return ptr;
     }
 
-    void put(const int key, SocketData* value) {
+    void put(int key, SocketData* value) {
+
         mutex_.wait();
         data_[key] = value;
         mutex_.post();
+    }
+
+    void delete_at(const int key) {
+        mutex_.wait();
+        delete data_[key];
+        data_.erase(key);
+        mutex_.post();
+    }
+
+    void erase_at(const int key) {
+        mutex_.wait();
+        data_.erase(key);
+        mutex_.post();
+    }
+
+    int size() {
+        return data_.size();
     }
 };
 

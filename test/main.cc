@@ -22,10 +22,11 @@
 #include "IdentifiableTest.h"
 #include "QueueTest.h"
 #include "PacketTest.h"
-#include "WifuEndAPITest.h"
+
 #include "LocalSocketFullDuplexTest.h"
 #include "QueryStringParserTest.h"
-
+#include "WifuEndAPITest.h"
+#include "SocketMapTest.h"
 
 using namespace UnitTest;
 

@@ -38,16 +38,20 @@ public:
 
         map<string, string> response;
         response[FILE_STRING] = getFile();
-        string name;
+        string name = m[NAME_STRING];
+        response[SOCKET_STRING] = m[SOCKET_STRING];
 
-        if (!m[NAME_STRING].compare("wifu_socket")) {
+        if (!name.compare("wifu_socket")) {
             int socket = 9;
-            response["socket"] = Utils::itoa(socket);
-            name = "wifu_socket";
+            response[SOCKET_STRING] = Utils::itoa(socket);
+        } else if (!name.compare("wifu_bind")) {
+            int r = 100;
+            response["response"] = Utils::itoa(r);
         }
 
-        message = QueryStringParser::create(name, response);
-        send_to(m[FILE_STRING], message);
+        string response_message = QueryStringParser::create(name, response);
+        cout << "Response Message: " << response_message << endl;
+        send_to(m[FILE_STRING], response_message);
     }
 
     string& get_last_message() {
@@ -62,7 +66,8 @@ namespace {
 
     SUITE(WifuEndTest) {
 
-        TEST(WifuEndTest) {
+        TEST(WifuSocketTest) {
+            // wifu_socket()
             string file("WifuSocket");
             LocalSocketFullDuplexImpl localSocket(file);
 
@@ -70,7 +75,18 @@ namespace {
             int expected = 9;
 
             CHECK_EQUAL(expected, result);
+
+            // wifu_bind()
+            string address("127.0.0.1");
+            int port = 5000;
+            AddressPort ap(address, port);
+            expected = 0;
+
+            result = wifu_bind(9, (struct sockaddr*) ap.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+            CHECK_EQUAL(expected, result);
         }
+
+      
 
     }
 }

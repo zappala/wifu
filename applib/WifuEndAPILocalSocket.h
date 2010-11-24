@@ -50,7 +50,7 @@ public:
     void receive(string& message) {
         response_.clear();
         QueryStringParser::parse(message, response_);
-        int socket = atoi(response_["socket"].c_str());
+        int socket = atoi(response_[SOCKET_STRING].c_str());
 
         if(!response_[NAME_STRING].compare("wifu_socket")) {
             sockets.put(0, new SocketData());
@@ -59,10 +59,12 @@ public:
             return;
         }
 
+        cout << "Socket: " << socket << endl;
+
         int value = atoi(response_[RETURN_VALUE_STRING].c_str());
         SocketData* data = sockets.get(socket);
         data->set_return_value(value);
-        data->get_semaphore()->post();        
+        data->get_semaphore()->post();
     }
 
     /**
@@ -81,12 +83,13 @@ public:
         
         socket_sem_.wait();
 
-        // TODO: Ensure that we never receive a socket id of 0
+        // TODO: Ensure that we never receive a socket id of 0        
         SocketData* data = sockets.get(0);
         int socket = data->get_return_value();
+        sockets.erase_at(0);
         sockets.put(socket, data);
-        sockets.put(0, NULL);
-
+        
+//
         socket_mutex_.post();
         return socket;
     }
@@ -100,10 +103,14 @@ public:
 
         map<string, string> m;
         m[FILE_STRING] = getFile();
-        m["fd"] = Utils::itoa(fd);
+        m[SOCKET_STRING] = Utils::itoa(fd);
         m["address"] = ap.get_address();
         m["port"] = Utils::itoa(ap.get_port());
         m["length"] = Utils::itoa(len);
+
+        string message = QueryStringParser::create("wifu_bind", m);
+        cout << "Wifu bind: " << message << endl;
+        send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
