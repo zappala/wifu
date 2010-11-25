@@ -19,6 +19,11 @@
 #define WIFU_SOCKET_NAME "wifu_socket"
 #define WIFU_BIND_NAME "wifu_bind"
 #define WIFU_LISTEN_NAME "wifu_listen"
+#define WIFU_ACCEPT_NAME "wifu_accept"
+#define WIFU_SEND_NAME "wifu_send"
+#define WIFU_SENDTO_NAME "wifu_sendto"
+#define WIFU_RECV_NAME "wifu_recv"
+#define WIFU_RECVFROM_NAME "wifu_recvfrom"
 
 // variable names
 #define SOCKET_STRING "socket"
@@ -31,6 +36,10 @@
 #define ADDRESS_NAME "address"
 #define PORT_NAME "port"
 #define LENGTH_NAME "length"
+#define N_NAME "n"
+#define BUFFER_NAME "buffer"
+#define FLAGS_NAME "flags"
+
 
 
 // WIFU_PORT is created from the ASCII decimal values of WIFU

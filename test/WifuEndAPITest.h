@@ -27,6 +27,9 @@ public:
     LocalSocketFullDuplexImpl(string& file) : LocalSocketFullDuplex(file) {
         socket_id_ = 10;
         bind_return_val_ = 100;
+        listen_return_val_ = 1000;
+        accept_return_val_ = 2000;
+        recv_message_ = "This is the recv() message";
     }
 
     virtual ~LocalSocketFullDuplexImpl() {
@@ -34,6 +37,7 @@ public:
     }
 
     void receive(string& message) {
+        cout << "Request:\t" << message << endl;
         map<string, string> m;
         QueryStringParser::parse(message, m);
 
@@ -46,8 +50,35 @@ public:
             int socket = socket_id_++;
             response[SOCKET_STRING] = Utils::itoa(socket);
         } else if (!name.compare(WIFU_BIND_NAME)) {
-            int r = bind_return_val_++;
-            response[RETURN_VALUE_STRING] = Utils::itoa(r);
+            int return_val = bind_return_val_++;
+            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+        } else if (!name.compare(WIFU_LISTEN_NAME)) {
+            int return_val = listen_return_val_++;
+            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+        } else if (!name.compare(WIFU_ACCEPT_NAME)) {
+            int return_val = accept_return_val_++;
+            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+        } else if (!name.compare(WIFU_SEND_NAME)) {
+            int return_val = m[BUFFER_NAME].size();
+            last_message_ = m[BUFFER_NAME];
+            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+        } else if (!name.compare(WIFU_RECV_NAME)) {
+            if (recv_message_.empty()) {
+                response[BUFFER_NAME] = "a";
+                response[RETURN_VALUE_STRING] = Utils::itoa(-1);
+            } else {
+
+
+                int n = atoi(m[N_NAME].c_str());
+                response[BUFFER_NAME] = recv_message_.substr(0, n);
+                response[RETURN_VALUE_STRING] = Utils::itoa(response[BUFFER_NAME].size());
+
+                if (n >= recv_message_.size()) {
+                    recv_message_ = "";
+                } else {
+                    recv_message_ = recv_message_.substr(n);
+                }
+            }
         }
 
         string response_message = QueryStringParser::create(name, response);
@@ -58,10 +89,17 @@ public:
         return last_message_;
     }
 
+    string& get_recv_message() {
+        return recv_message_;
+    }
+
 private:
     string last_message_;
+    string recv_message_;
     int socket_id_;
     int bind_return_val_;
+    int listen_return_val_;
+    int accept_return_val_;
 };
 
 namespace {
@@ -73,8 +111,9 @@ namespace {
             string file("WifuSocket");
             LocalSocketFullDuplexImpl localSocket(file);
 
-            int result = wifu_socket(0, 0, 0);
+            int socket = wifu_socket(0, 0, 0);
             int expected = 10;
+            int result = socket;
 
             CHECK_EQUAL(expected, result);
 
@@ -84,26 +123,49 @@ namespace {
             AddressPort ap(address, port);
             expected = 100;
 
-            result = wifu_bind(10, (struct sockaddr*) ap.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+            result = wifu_bind(socket, (struct sockaddr*) ap.get_network_struct_ptr(), sizeof (struct sockaddr_in));
             CHECK_EQUAL(expected, result);
 
 
-            result = wifu_socket(0, 0, 0);
-            expected = 11;
-
+            // wifu listen()
+            result = wifu_listen(socket, 0);
+            expected = 1000;
             CHECK_EQUAL(expected, result);
 
-            // wifu_bind()
-            port = 5001;
-            ap = AddressPort(address, port);
-            expected = 101;
-
-            result = wifu_bind(11, (struct sockaddr*) ap.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+            // wifu_accept()
+            socklen_t len = sizeof (struct sockaddr_in);
+            result = wifu_accept(socket, (struct sockaddr*) ap.get_network_struct_ptr(), &len);
+            expected = 2000;
             CHECK_EQUAL(expected, result);
+
+            // wifu_send()
+            string message = localSocket.get_recv_message();
+            expected = localSocket.get_recv_message().size();
+
+            char buf[1];
+            string result_string = "";
+
+            int i = 200;
+
+            while (1) {
+                int num = wifu_recv(socket, &buf, i, 0);
+                if (num < 0) {
+                    break;
+                }
+
+                result += i;
+                result_string.append(buf);
+                //cout << result_string << endl;
+
+            }
+
+
+//            CHECK_EQUAL(expected, result);
+//            CHECK_EQUAL(message, result_string);
+//
+//            cout << buf << endl;
+
         }
-
-      
-
     }
 }
 

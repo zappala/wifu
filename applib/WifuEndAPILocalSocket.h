@@ -41,8 +41,8 @@ private:
 
     }
 
-    WifuEndAPILocalSocket& operator=(WifuEndAPILocalSocket const&) {
-        
+    WifuEndAPILocalSocket & operator=(WifuEndAPILocalSocket const&) {
+
     }
 
 public:
@@ -51,7 +51,6 @@ public:
         static WifuEndAPILocalSocket instance_;
         return instance_;
     }
-
 
     virtual ~WifuEndAPILocalSocket() {
 
@@ -63,15 +62,20 @@ public:
      * @param message The message received
      */
     void receive(string& message) {
+        cout << "Response:\t" << message << endl;
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
 
-        if(!response_[NAME_STRING].compare(WIFU_SOCKET_NAME)) {
+        if (!response_[NAME_STRING].compare(WIFU_SOCKET_NAME)) {
             sockets.put(0, new SocketData());
             sockets.get(0)->set_return_value(socket);
             socket_signal_.post();
             return;
+        }
+
+        if(!response_[NAME_STRING].compare(WIFU_RECV_NAME)) {
+            sockets.get(socket)->set_payload(response_[BUFFER_NAME]);
         }
 
         int value = atoi(response_[RETURN_VALUE_STRING].c_str());
@@ -93,7 +97,7 @@ public:
         m[PROTOCOL_NAME] = Utils::itoa(protocol);
         string message = QueryStringParser::create(WIFU_SOCKET_NAME, m);
         send_to(write_file_, message);
-        
+
         socket_signal_.wait();
 
         // TODO: Ensure that we never receive a socket id of 0        
@@ -101,7 +105,7 @@ public:
         int socket = data->get_return_value();
         sockets.erase_at(0);
         sockets.put(socket, data);
-        
+
         socket_mutex_.post();
         return socket;
     }
@@ -110,8 +114,8 @@ public:
      * Non-blocking
      */
     int wifu_bind(int fd, const struct sockaddr* addr, socklen_t len) {
-        assert(sizeof(struct sockaddr_in) == len);
-        AddressPort ap((struct sockaddr_in*)addr);
+        assert(sizeof (struct sockaddr_in) == len);
+        AddressPort ap((struct sockaddr_in*) addr);
 
         map<string, string> m;
         m[FILE_STRING] = getFile();
@@ -132,41 +136,83 @@ public:
      * Non-blocking
      */
     int wifu_listen(int fd, int n) {
+        map<string, string> m;
+        m[FILE_STRING] = getFile();
+        m[SOCKET_STRING] = Utils::itoa(fd);
+        m[N_NAME] = Utils::itoa(n);
 
-//        map<string, string> m;
-//        m[FILE_STRING] = getFile();
-//        m[SOCKET_STRING] = Utils::itoa(fd);
-//        m[ADDRESS_NAME] = ap.get_address();
-//        m[PORT_NAME] = Utils::itoa(ap.get_port());
-//        m[LENGTH_NAME] = Utils::itoa(len);
-//
-//        string message = QueryStringParser::create(WIFU_BIND_NAME, m);
-//        send_to(write_file_, message);
-//
-//        SocketData* data = sockets.get(fd);
-//        data->get_semaphore()->wait();
-//        return data->get_return_value();
+        string message = QueryStringParser::create(WIFU_LISTEN_NAME, m);
+        send_to(write_file_, message);
+
+        SocketData* data = sockets.get(fd);
+        data->get_semaphore()->wait();
+        return data->get_return_value();
     }
 
     /**
      * Blocking
      */
     int wifu_accept(int fd, struct sockaddr* addr, socklen_t *__restrict addr_len) {
-        return 0;
+
+        map<string, string> m;
+        m[FILE_STRING] = getFile();
+        m[SOCKET_STRING] = Utils::itoa(fd);
+
+        if (addr != NULL & addr_len != NULL) {
+            assert(sizeof (struct sockaddr_in) == *addr_len);
+            AddressPort ap((struct sockaddr_in*) addr);
+            m[ADDRESS_NAME] = ap.get_address();
+            m[PORT_NAME] = Utils::itoa(ap.get_port());
+            m[LENGTH_NAME] = Utils::itoa(*addr_len);
+        }
+
+        string message = QueryStringParser::create(WIFU_ACCEPT_NAME, m);
+        send_to(write_file_, message);
+
+        SocketData* data = sockets.get(fd);
+        data->get_semaphore()->wait();
+
+        // TODO: Fill in addr_len according to man 2 accept
+
+        return data->get_return_value();
     }
 
     /**
      * Possibly Blocking (man send 2)
      */
     ssize_t wifu_send(int fd, const void* buf, size_t n, int flags) {
-        return 0;
+        map<string, string> m;
+        m[FILE_STRING] = getFile();
+        m[SOCKET_STRING] = Utils::itoa(fd);
+        m[BUFFER_NAME] = string((const char*)buf, n);
+        m[FLAGS_NAME] = Utils::itoa(flags);
+
+        string message = QueryStringParser::create(WIFU_SEND_NAME, m);
+        send_to(write_file_, message);
+
+        SocketData* data = sockets.get(fd);
+        data->get_semaphore()->wait();
+        return data->get_return_value();
     }
 
     /**
      * Blocking
      */
     ssize_t wifu_recv(int fd, void* buf, size_t n, int flags) {
-        return 0;
+        map<string, string> m;
+        m[FILE_STRING] = getFile();
+        m[SOCKET_STRING] = Utils::itoa(fd);
+        m[N_NAME] = Utils::itoa(n);
+        m[FLAGS_NAME] = Utils::itoa(flags);
+
+        string message = QueryStringParser::create(WIFU_RECV_NAME, m);
+        send_to(write_file_, message);
+
+        SocketData* data = sockets.get(fd);
+        data->get_semaphore()->wait();
+        ssize_t ret_val = data->get_return_value();
+        memcpy(buf, data->get_payload(), ret_val);
+        return ret_val;
     }
 
     /**
@@ -179,7 +225,7 @@ public:
     /**
      * Blocking
      */
-    ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr,socklen_t *__restrict addr_len) {
+    ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr, socklen_t *__restrict addr_len) {
         return 0;
     }
 
