@@ -20,6 +20,7 @@
 #include "../headers/Utils.h"
 #include "../headers/AddressPort.h"
 #include "../headers/defines.h"
+#include "../headers/Identifiable.h"
 #include "SocketMap.h"
 
 #define sockets SocketMap::instance()
@@ -27,7 +28,7 @@
 // TODO: Go over each man page and determine what we want to support,
 // TODO: then make sure that every function in this file supports that behavior.
 
-class WifuEndAPILocalSocket : public LocalSocketFullDuplex {
+class WifuEndAPILocalSocket : public Identifiable, LocalSocketFullDuplex {
 private:
 
     /**
@@ -35,17 +36,23 @@ private:
      *
      * @param file The file which this object listens on (other local sockets can write to this file).
      */
-    WifuEndAPILocalSocket() : LocalSocketFullDuplex("LibrarySocket"), write_file_("WifuSocket") {
+    WifuEndAPILocalSocket() : Identifiable(), LocalSocketFullDuplex(get_filename().c_str()), write_file_("WifuSocket"){
         socket_signal_.init(0);
         socket_mutex_.init(1);
     }
 
-    WifuEndAPILocalSocket(WifuEndAPILocalSocket const&) : LocalSocketFullDuplex("LibrarySocket"), write_file_("WifuSocket") {
+    WifuEndAPILocalSocket(WifuEndAPILocalSocket const&) : Identifiable(), LocalSocketFullDuplex(getFile()), write_file_("WifuSocket") {
 
     }
 
     WifuEndAPILocalSocket & operator=(WifuEndAPILocalSocket const&) {
 
+    }
+
+    string get_filename() {
+        string s("LibrarySocket");
+        s.append(Utils::itoa(get_id()));
+        return s;
     }
 
 public:
