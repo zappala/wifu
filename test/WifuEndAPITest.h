@@ -58,11 +58,11 @@ public:
         } else if (!name.compare(WIFU_ACCEPT_NAME)) {
             int return_val = accept_return_val_++;
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
-        } else if (!name.compare(WIFU_SEND_NAME)) {
+        } else if (!name.compare(WIFU_SENDTO_NAME)) {
             int return_val = m[BUFFER_NAME].size();
             last_message_ = m[BUFFER_NAME];
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
-        } else if (!name.compare(WIFU_RECV_NAME)) {
+        } else if (!name.compare(WIFU_RECVFROM_NAME)) {
 
             if (recv_message_.empty()) {
                 response[BUFFER_NAME] = "EOF";
@@ -149,12 +149,18 @@ namespace {
             CHECK_EQUAL(expected, result);
             CHECK_EQUAL(send_message, localSocket.get_last_message());
 
+            // wifu_sendto()
+            len = sizeof (struct sockaddr_in);
+            result = wifu_sendto(socket, send_message.c_str(), send_message.size(), 0, (struct sockaddr*) ap.get_network_struct_ptr(), len);
+            expected = send_message.size();
+            CHECK_EQUAL(expected, result);
+            CHECK_EQUAL(send_message, localSocket.get_last_message());
+
             // wifu_recv()
             string message = localSocket.get_recv_message();
             expected = localSocket.get_recv_message().size();
-
-
-            for (int i = 1; i < 100; i++) {
+            
+            for (int i = 1; i <= 50; i++) {
                 result = 0;
                 localSocket.reset();
 
@@ -174,6 +180,30 @@ namespace {
                 CHECK_EQUAL(expected, result);
                 CHECK_EQUAL(message, result_string);
             }
+
+            // wifu_recvfrom()
+            for (int i = 1; i <= 50; i++) {
+                result = 0;
+                localSocket.reset();
+
+                char buf[i + 1];
+                string result_string = "";
+
+                while (1) {
+                    memset(buf, 0, i + 1);
+                    ssize_t num = wifu_recvfrom(socket, &buf, i, 0, (struct sockaddr*) ap.get_network_struct_ptr(), &len);
+                    if (num <= 0) {
+                        break;
+                    }
+
+                    result += num;
+                    result_string.append(buf);
+                }
+                CHECK_EQUAL(expected, result);
+                CHECK_EQUAL(message, result_string);
+            }
+
+
         }
     }
 }
