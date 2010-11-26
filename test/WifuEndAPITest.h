@@ -144,6 +144,9 @@ namespace {
             expected = 2000;
             CHECK_EQUAL(expected, result);
 
+            // Do everything on new socket
+            socket = expected;
+
 
             // wifu_send()
             string send_message = "This is the message to send";

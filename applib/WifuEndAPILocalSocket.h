@@ -177,7 +177,10 @@ public:
 
         // TODO: Fill in addr_len according to man 2 accept
 
-        return data->get_return_value();
+        int new_socket = data->get_return_value();
+        sockets.put(new_socket, new SocketData());
+
+        return new_socket;
     }
 
     /**
