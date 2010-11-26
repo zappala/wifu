@@ -62,7 +62,7 @@ public:
      * @param message The message received
      */
     void receive(string& message) {
-        cout << "Response:\t" << message << endl;
+        //cout << "Response:\t" << message << endl;
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
@@ -211,7 +211,9 @@ public:
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
         ssize_t ret_val = data->get_return_value();
-        memcpy(buf, data->get_payload(), ret_val);
+        if(ret_val > 0) {
+            memcpy(buf, data->get_payload(), ret_val);
+        }
         return ret_val;
     }
 

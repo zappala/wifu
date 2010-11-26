@@ -29,7 +29,7 @@ public:
         bind_return_val_ = 100;
         listen_return_val_ = 1000;
         accept_return_val_ = 2000;
-        recv_message_ = "This is the recv() message";
+        reset();
     }
 
     virtual ~LocalSocketFullDuplexImpl() {
@@ -37,7 +37,7 @@ public:
     }
 
     void receive(string& message) {
-        cout << "Request:\t" << message << endl;
+        //cout << "Request:\t" << message << endl;
         map<string, string> m;
         QueryStringParser::parse(message, m);
 
@@ -63,12 +63,11 @@ public:
             last_message_ = m[BUFFER_NAME];
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         } else if (!name.compare(WIFU_RECV_NAME)) {
+
             if (recv_message_.empty()) {
-                response[BUFFER_NAME] = "a";
+                response[BUFFER_NAME] = "EOF";
                 response[RETURN_VALUE_STRING] = Utils::itoa(-1);
             } else {
-
-
                 int n = atoi(m[N_NAME].c_str());
                 response[BUFFER_NAME] = recv_message_.substr(0, n);
                 response[RETURN_VALUE_STRING] = Utils::itoa(response[BUFFER_NAME].size());
@@ -91,6 +90,10 @@ public:
 
     string& get_recv_message() {
         return recv_message_;
+    }
+
+    void reset() {
+        recv_message_ = "This is the recv() message";
     }
 
 private:
@@ -138,33 +141,39 @@ namespace {
             expected = 2000;
             CHECK_EQUAL(expected, result);
 
+
             // wifu_send()
+            string send_message = "This is the message to send";
+            expected = send_message.size();
+            result = wifu_send(socket, send_message.c_str(), send_message.size(), 0);
+            CHECK_EQUAL(expected, result);
+            CHECK_EQUAL(send_message, localSocket.get_last_message());
+
+            // wifu_recv()
             string message = localSocket.get_recv_message();
             expected = localSocket.get_recv_message().size();
 
-            char buf[1];
-            string result_string = "";
 
-            int i = 200;
+            for (int i = 1; i < 100; i++) {
+                result = 0;
+                localSocket.reset();
 
-            while (1) {
-                int num = wifu_recv(socket, &buf, i, 0);
-                if (num < 0) {
-                    break;
+                char buf[i + 1];
+                string result_string = "";
+
+                while (1) {
+                    memset(buf, 0, i + 1);
+                    ssize_t num = wifu_recv(socket, &buf, i, 0);
+                    if (num <= 0) {
+                        break;
+                    }
+
+                    result += num;
+                    result_string.append(buf);
                 }
-
-                result += i;
-                result_string.append(buf);
-                //cout << result_string << endl;
-
+                CHECK_EQUAL(expected, result);
+                CHECK_EQUAL(message, result_string);
             }
-
-
-//            CHECK_EQUAL(expected, result);
-//            CHECK_EQUAL(message, result_string);
-//
-//            cout << buf << endl;
-
         }
     }
 }
