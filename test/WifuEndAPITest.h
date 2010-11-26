@@ -15,7 +15,7 @@
 #include "../headers/defines.h"
 
 #include "UnitTest++.h"
-#include "../applib/WifuEndAPI.h"
+#include "../applib/wifu_socket.h"
 
 #include "../headers/LocalSocketFullDuplex.h"
 
