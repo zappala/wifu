@@ -24,21 +24,22 @@
 #define WIFU_SENDTO_NAME "wifu_sendto"
 #define WIFU_RECV_NAME "wifu_recv"
 #define WIFU_RECVFROM_NAME "wifu_recvfrom"
+#define WIFU_CONNECT_NAME "wifu_connect"
 
 // variable names
 #define SOCKET_STRING "socket"
 #define FILE_STRING "file"
 #define NAME_STRING "name"
 #define RETURN_VALUE_STRING "return_value"
-#define DOMAIN_NAME "domain"
-#define TYPE_NAME "type"
-#define PROTOCOL_NAME "protocol"
-#define ADDRESS_NAME "address"
-#define PORT_NAME "port"
-#define LENGTH_NAME "length"
-#define N_NAME "n"
-#define BUFFER_NAME "buffer"
-#define FLAGS_NAME "flags"
+#define DOMAIN_STRING "domain"
+#define TYPE_STRING "type"
+#define PROTOCOL_STRING "protocol"
+#define ADDRESS_STRING "address"
+#define PORT_STRING "port"
+#define LENGTH_STRING "length"
+#define N_STRING "n"
+#define BUFFER_STRING "buffer"
+#define FLAGS_STRING "flags"
 
 
 

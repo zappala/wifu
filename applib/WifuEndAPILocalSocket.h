@@ -24,6 +24,9 @@
 
 #define sockets SocketMap::instance()
 
+// TODO: Go over each man page and determine what we want to support,
+// TODO: then make sure that every function in this file supports that behavior.
+
 class WifuEndAPILocalSocket : public LocalSocketFullDuplex {
 private:
 
@@ -75,7 +78,7 @@ public:
         }
 
         if (!response_[NAME_STRING].compare(WIFU_RECVFROM_NAME)) {
-            sockets.get(socket)->set_payload(response_[BUFFER_NAME]);
+            sockets.get(socket)->set_payload(response_[BUFFER_STRING]);
         }
 
         int value = atoi(response_[RETURN_VALUE_STRING].c_str());
@@ -92,9 +95,9 @@ public:
         socket_mutex_.wait();
         map<string, string> m;
         m[FILE_STRING] = getFile();
-        m[DOMAIN_NAME] = Utils::itoa(domain);
-        m[TYPE_NAME] = Utils::itoa(type);
-        m[PROTOCOL_NAME] = Utils::itoa(protocol);
+        m[DOMAIN_STRING] = Utils::itoa(domain);
+        m[TYPE_STRING] = Utils::itoa(type);
+        m[PROTOCOL_STRING] = Utils::itoa(protocol);
         string message = QueryStringParser::create(WIFU_SOCKET_NAME, m);
         send_to(write_file_, message);
 
@@ -120,9 +123,9 @@ public:
         map<string, string> m;
         m[FILE_STRING] = getFile();
         m[SOCKET_STRING] = Utils::itoa(fd);
-        m[ADDRESS_NAME] = ap.get_address();
-        m[PORT_NAME] = Utils::itoa(ap.get_port());
-        m[LENGTH_NAME] = Utils::itoa(len);
+        m[ADDRESS_STRING] = ap.get_address();
+        m[PORT_STRING] = Utils::itoa(ap.get_port());
+        m[LENGTH_STRING] = Utils::itoa(len);
 
         string message = QueryStringParser::create(WIFU_BIND_NAME, m);
         send_to(write_file_, message);
@@ -139,7 +142,7 @@ public:
         map<string, string> m;
         m[FILE_STRING] = getFile();
         m[SOCKET_STRING] = Utils::itoa(fd);
-        m[N_NAME] = Utils::itoa(n);
+        m[N_STRING] = Utils::itoa(n);
 
         string message = QueryStringParser::create(WIFU_LISTEN_NAME, m);
         send_to(write_file_, message);
@@ -161,9 +164,9 @@ public:
         if (addr != NULL && addr_len != NULL) {
             assert(sizeof (struct sockaddr_in) == *addr_len);
             AddressPort ap((struct sockaddr_in*) addr);
-            m[ADDRESS_NAME] = ap.get_address();
-            m[PORT_NAME] = Utils::itoa(ap.get_port());
-            m[LENGTH_NAME] = Utils::itoa(*addr_len);
+            m[ADDRESS_STRING] = ap.get_address();
+            m[PORT_STRING] = Utils::itoa(ap.get_port());
+            m[LENGTH_STRING] = Utils::itoa(*addr_len);
         }
 
         string message = QueryStringParser::create(WIFU_ACCEPT_NAME, m);
@@ -198,15 +201,15 @@ public:
         map<string, string> m;
         m[FILE_STRING] = getFile();
         m[SOCKET_STRING] = Utils::itoa(fd);
-        m[BUFFER_NAME] = string((const char*) buf, n);
-        m[FLAGS_NAME] = Utils::itoa(flags);
+        m[BUFFER_STRING] = string((const char*) buf, n);
+        m[FLAGS_STRING] = Utils::itoa(flags);
 
         if (addr != 0 && addr_len != 0) {
             assert(sizeof (struct sockaddr_in) == addr_len);
             AddressPort ap((struct sockaddr_in*) addr);
-            m[ADDRESS_NAME] = ap.get_address();
-            m[PORT_NAME] = Utils::itoa(ap.get_port());
-            m[LENGTH_NAME] = Utils::itoa(addr_len);
+            m[ADDRESS_STRING] = ap.get_address();
+            m[PORT_STRING] = Utils::itoa(ap.get_port());
+            m[LENGTH_STRING] = Utils::itoa(addr_len);
         }
 
         string message = QueryStringParser::create(WIFU_SENDTO_NAME, m);
@@ -224,15 +227,15 @@ public:
         map<string, string> m;
         m[FILE_STRING] = getFile();
         m[SOCKET_STRING] = Utils::itoa(fd);
-        m[N_NAME] = Utils::itoa(n);
-        m[FLAGS_NAME] = Utils::itoa(flags);
+        m[N_STRING] = Utils::itoa(n);
+        m[FLAGS_STRING] = Utils::itoa(flags);
 
         if (addr != 0 && addr_len != 0) {
             assert(sizeof (struct sockaddr_in) == *addr_len);
             AddressPort ap((struct sockaddr_in*) addr);
-            m[ADDRESS_NAME] = ap.get_address();
-            m[PORT_NAME] = Utils::itoa(ap.get_port());
-            m[LENGTH_NAME] = Utils::itoa(*addr_len);
+            m[ADDRESS_STRING] = ap.get_address();
+            m[PORT_STRING] = Utils::itoa(ap.get_port());
+            m[LENGTH_STRING] = Utils::itoa(*addr_len);
         }
 
         string message = QueryStringParser::create(WIFU_RECVFROM_NAME, m);
@@ -254,7 +257,24 @@ public:
      * Non-blocking
      */
     int wifu_connect(int fd, const struct sockaddr* addr, socklen_t len) {
-        return 0;
+        assert(addr != NULL);
+        assert(sizeof (struct sockaddr_in) == len);
+
+        map<string, string> m;
+        m[FILE_STRING] = getFile();
+        m[SOCKET_STRING] = Utils::itoa(fd);
+
+        AddressPort ap((struct sockaddr_in*) addr);        
+        m[ADDRESS_STRING] = ap.get_address();
+        m[PORT_STRING] = Utils::itoa(ap.get_port());
+        m[LENGTH_STRING] = Utils::itoa(len);
+
+        string message = QueryStringParser::create(WIFU_CONNECT_NAME, m);
+        send_to(write_file_, message);
+
+        SocketData* data = sockets.get(fd);
+        data->get_semaphore()->wait();
+        return data->get_return_value();
     }
 
 private:

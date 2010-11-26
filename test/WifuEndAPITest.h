@@ -59,18 +59,18 @@ public:
             int return_val = accept_return_val_++;
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         } else if (!name.compare(WIFU_SENDTO_NAME)) {
-            int return_val = m[BUFFER_NAME].size();
-            last_message_ = m[BUFFER_NAME];
+            int return_val = m[BUFFER_STRING].size();
+            last_message_ = m[BUFFER_STRING];
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         } else if (!name.compare(WIFU_RECVFROM_NAME)) {
 
             if (recv_message_.empty()) {
-                response[BUFFER_NAME] = "EOF";
+                response[BUFFER_STRING] = "EOF";
                 response[RETURN_VALUE_STRING] = Utils::itoa(-1);
             } else {
-                int n = atoi(m[N_NAME].c_str());
-                response[BUFFER_NAME] = recv_message_.substr(0, n);
-                response[RETURN_VALUE_STRING] = Utils::itoa(response[BUFFER_NAME].size());
+                int n = atoi(m[N_STRING].c_str());
+                response[BUFFER_STRING] = recv_message_.substr(0, n);
+                response[RETURN_VALUE_STRING] = Utils::itoa(response[BUFFER_STRING].size());
 
                 if (n >= recv_message_.size()) {
                     recv_message_ = "";
@@ -78,6 +78,9 @@ public:
                     recv_message_ = recv_message_.substr(n);
                 }
             }
+        } else if (!name.compare(WIFU_CONNECT_NAME)) {
+            int return_val = 0;
+            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         }
 
         string response_message = QueryStringParser::create(name, response);
@@ -203,6 +206,10 @@ namespace {
                 CHECK_EQUAL(message, result_string);
             }
 
+            // wifu_connect()
+            expected = 0;
+            result = wifu_connect(socket, (struct sockaddr*) ap.get_network_struct_ptr(), len);
+            CHECK_EQUAL(expected, result);
 
         }
     }
