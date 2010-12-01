@@ -10,6 +10,7 @@
 
 #include "LocalSocketFullDuplex.h"
 #include "Module.h"
+#include "QueryStringParser.h"
 
 /**
  * Translates string messages received from the front-end library into Event objects
@@ -24,7 +25,6 @@ public:
         static WifuEndBackEndLibrary instance_;
         return instance_;
     }
-
 
     virtual ~WifuEndBackEndLibrary() {
 
@@ -65,6 +65,12 @@ public:
 
 
         } else if (!name.compare(WIFU_CONNECT_NAME)) {
+            int return_val = 0;
+            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+        } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
+            int return_val = SO_BINDTODEVICE;
+            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+        } else if (!name.compare(WIFU_SETSOCKOPT_NAME)) {
             int return_val = 0;
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         }

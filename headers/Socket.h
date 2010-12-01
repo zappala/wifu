@@ -14,6 +14,7 @@
 #include "ConnectEvent.h"
 #include "Dispatcher.h"
 #include "Identifiable.h"
+#include "PortManager.h"
 
 using namespace std;
 
@@ -23,7 +24,7 @@ public:
     /**
      * Creates a Socket object.
      */
-    Socket(int protocol) : Identifiable(), protocol_(protocol), local_(0), remote_(0) {
+    Socket(int protocol, AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().next())) : Identifiable(), protocol_(protocol), local_(local), remote_(0) {
 
     }
 
@@ -52,6 +53,7 @@ public:
     }
 
     AddressPort* get_local_address_port() {
+        assert(local_);
         return local_;
     }
 

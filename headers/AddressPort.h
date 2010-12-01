@@ -31,7 +31,7 @@ public:
      * @param address Address to store
      * @param port Port to store
      */
-    AddressPort(string& address, int port) : address_(address), port_(port) {
+    AddressPort(string& address, uint16_t port) : address_(address), port_(port) {
         init(address.c_str(), port);
     }
 
@@ -41,7 +41,7 @@ public:
      * @param address Address to store
      * @param port Port to store
      */
-    AddressPort(const char* address, int port) : address_(string(address)), port_(port) {
+    AddressPort(const char* address, uint16_t port) : address_(string(address)), port_(port) {
         init(address, port);
     }
 
@@ -126,7 +126,7 @@ public:
     /**
      * @return A reference to the port
      */
-    int& get_port() {
+    uint16_t get_port() {
         return port_;
     }
 
@@ -165,7 +165,7 @@ private:
     /**
      * The port of a machine.
      */
-    int port_;
+    uint16_t port_;
 
     /**
      * Address and port in struct format
@@ -178,7 +178,7 @@ private:
      * @param address Address to store
      * @param port Port to store
      */
-    void init(const char* address, int& port) {
+    void init(const char* address, uint16_t port) {
         data_.sin_family = AF_INET;
         data_.sin_port = htons(port);
 
@@ -186,6 +186,25 @@ private:
             cout << "error converting ip address to binary" << endl;
             assert(false);
         }
+    }
+};
+
+/**
+ * Comparator used to compare two AddressPort pointers.
+ */
+class AddressPortComparator {
+public:
+
+    /**
+     * Compares two AddressPort pointers (actually references to AddressPort pointers).
+     * Will return t1 < t2.
+     *
+     * @param ap1 The LHS of the expression ap1 < ap2
+     * @param ap2 the RHS of the expression ap1 < ap2
+     * @return True if t1 < t2, false otherwise.
+     */
+    bool operator()(AddressPort*& ap1, AddressPort*& ap2) {
+        return ap1->to_s() < ap2->to_s();
     }
 };
 

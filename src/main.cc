@@ -22,6 +22,7 @@
 #include "ConnectionManager.h"
 #include "defines.h"
 #include "PacketReceivedEvent.h"
+#include "WifuEndBackEndLibrary.h"
 
 using namespace std;
 
@@ -32,7 +33,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
-    string address("localhost");
+    string address("127.0.0.1");
     int port = 5000;
     int sleep_time = 10;
 
@@ -47,6 +48,7 @@ int main(int argc, char** argv) {
     Dispatcher::instance().map_event(type_name(SendPacketEvent), &UDPInterface::instance());
     Dispatcher::instance().map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
     Dispatcher::instance().map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
+    WifuEndBackEndLibrary::instance();
 
     sleep(sleep_time);
 

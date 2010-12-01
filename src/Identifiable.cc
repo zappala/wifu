@@ -1,11 +1,11 @@
 #include "Identifiable.h"
 
-Identifiable::Identifiable() : id_(IDGenerator::instance().next_id()) {
+Identifiable::Identifiable() : id_(IDGenerator::instance().next()) {
 
 }
 
 Identifiable::~Identifiable() {
-    IDGenerator::instance().remove_id(id_);
+    IDGenerator::instance().remove(id_);
 }
 
 int& Identifiable::get_id() {
