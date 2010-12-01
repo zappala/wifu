@@ -34,70 +34,19 @@ int main(int argc, char** argv) {
 
     string address("localhost");
     int port = 5000;
-//    string socket_file("/tmp/socket_file");
-//    SocketSocket s(socket_file);
-//
-//    s.connect(address);
-//
-//    Queue<int> q;
-//    q.enqueue(9);
-//    cout << q.size() << endl;
-//    cout << q.dequeue() << endl;
-
     int sleep_time = 10;
 
-    int socket = 0;
-
     AddressPort ap(address, port);
-
-//    Queue<int> ints;
-//    Queue<double> doubles;
-//
-//    cout << "Ints: " << typeid (ints).name() << endl;
-//    cout << "Doubles: " << typeid (doubles).name() << endl;
-
 
     // Start Dispatcher
     Dispatcher::instance().start_processing();
 
     // Load Modules
-    ConnnectionManager cmanager;
-    UDPInterface interface(ap);
-    TimeoutEventManager tomanager;
+    UDPInterface::instance().start(ap);
 
-    Dispatcher::instance().map_event(type_name(SendPacketEvent), &cmanager);
-    Dispatcher::instance().map_event(type_name(ConnectEvent), &cmanager);
-    Dispatcher::instance().map_event(type_name(PacketReceivedEvent), &cmanager);
-    
-    Dispatcher::instance().map_event(type_name(SendPacketEvent), &interface);
-
-    Dispatcher::instance().map_event(type_name(TimeoutEvent), &tomanager);
-    Dispatcher::instance().map_event(type_name(CancelTimerEvent), &tomanager);
-    Dispatcher::instance().map_event(type_name(TimerFiredEvent), &cmanager);
-
-    //cmanager.test();
-
-    
-//     Try Events through Socket
-    Socket s;
-    s.connect(address, port);
-
-
-
-//    string file("/tmp/file");
-//    SocketReliability r(file);
-//
-//    string message("123456789");
-//    r.send_to(file, message);
-//    r.send_to(file, file);
-//
-//    string manager_file("/tmp/manager_file");
-//    SocketConnectionManager cmanager(manager_file);
-//
-//    string manager_message("FromManager");
-//    cmanager.send_to(file, manager_message);
-//
-//    cout << SocketDispatcher::instance().getFile() << endl;
+    Dispatcher::instance().map_event(type_name(SendPacketEvent), &UDPInterface::instance());
+    Dispatcher::instance().map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
+    Dispatcher::instance().map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
 
     sleep(sleep_time);
 

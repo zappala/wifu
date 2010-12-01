@@ -16,6 +16,11 @@ TimeoutEventManager::TimeoutEventManager() : Module(&queue_) {
     signal(SIG_CANCEL_EVENT, signal_manager);
 }
 
+TimeoutEventManager& TimeoutEventManager::instance() {
+    static TimeoutEventManager instance_;
+    return instance_;
+}
+
 TimeoutEventManager::~TimeoutEventManager() {
 
 }

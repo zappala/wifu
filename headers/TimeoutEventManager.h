@@ -45,9 +45,9 @@ class TimeoutEventManager : public Module {
 public:
 
     /**
-     * Creates a TimeoutEventManager object.
+     * Accesses the one instance of this object
      */
-    TimeoutEventManager();
+    static TimeoutEventManager& instance();
 
     /**
      * Cleans up this TimeoutEventManager object.
@@ -79,6 +79,11 @@ public:
 
 
 private:
+
+    /**
+     * Creates a TimeoutEventManager object.
+     */
+    TimeoutEventManager();
 
     /**
      * PriorityQueue passed to the parent QueueProcessor object.

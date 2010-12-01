@@ -25,16 +25,24 @@
 class UDPInterface : public Module, public UDPSocketCallback {
 public:
 
+    static UDPInterface& instance() {
+        static UDPInterface instance_;
+        return instance_;
+    }
+
     /**
-     * Constructs a UDPInterface object.
+     * Starts the UDPInterface
+     * Binds a UDP socket to the address/port specified in ap
+     *
+     * @param ap Contains the address and port which this UDPInterface will listen on
      */
-    UDPInterface(AddressPort& ap) : Module(), UDPSocketCallback() {
+    void start(AddressPort& ap) {
         // Set up the UDPSocket
         socket_.bind_socket(ap);
         socket_.makeNonBlocking();
         socket_.receive(this);
-
     }
+
 
     /**
      * Cleans up this UDPInterface object.
@@ -73,6 +81,14 @@ public:
 
 private:
     UDPSocket socket_;
+
+    /**
+     * Constructs a UDPInterface object.
+     */
+    UDPInterface() : Module(), UDPSocketCallback() {
+
+
+    }
 };
 
 #endif	/* _UDPINTERFACE_H */
