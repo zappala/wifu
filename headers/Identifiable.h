@@ -33,7 +33,7 @@ public:
     /**
      * @return The id of this object.
      */
-    int & get_id();
+    int get_id() const;
     
 private:
     /**

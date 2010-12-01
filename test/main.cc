@@ -27,6 +27,7 @@
 #include "QueryStringParserTest.h"
 #include "WifuEndAPITest.h"
 #include "SocketMapTest.h"
+#include "SocketManagerTest.h"
 
 using namespace UnitTest;
 

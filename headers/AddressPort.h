@@ -203,7 +203,7 @@ public:
      * @param ap2 the RHS of the expression ap1 < ap2
      * @return True if t1 < t2, false otherwise.
      */
-    bool operator()(AddressPort*& ap1, AddressPort*& ap2) {
+    bool operator()(AddressPort* const& ap1, AddressPort* const& ap2) {
         return ap1->to_s() < ap2->to_s();
     }
 };

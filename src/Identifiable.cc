@@ -8,6 +8,6 @@ Identifiable::~Identifiable() {
     IDGenerator::instance().remove(id_);
 }
 
-int& Identifiable::get_id() {
+int Identifiable::get_id() const {
     return id_;
 }

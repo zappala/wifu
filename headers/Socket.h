@@ -44,11 +44,11 @@ public:
     /**
      * @return The int which represents this Socket.
      */
-    int& get_socket() {
+    int get_socket() const {
         return get_id();
     }
 
-    int& get_protocol() {
+    int get_protocol() {
         return protocol_;
     }
 
@@ -67,6 +67,14 @@ public:
 
     void set_remote_address_port(AddressPort* remote) {
         remote_ = remote;
+    }
+
+    bool operator==(const Socket& other) {
+        return get_socket() == other.get_socket();
+    }
+
+    bool operator!=(const Socket& other) {
+        return !(operator ==(other));
     }
 
 private:

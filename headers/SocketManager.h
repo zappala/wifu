@@ -24,18 +24,26 @@ public:
 
     }
 
-    Socket* get(const int key) {
+    Socket* get(int key) {
         mutex_.wait();
-        AddressPort* ptr = int_to_socket_map_[key];
+        Socket* value = NULL;
+        map<int, Socket*>::iterator itr = int_to_socket_map_.find(key);
+        if(itr != int_to_socket_map_.end()) {
+            value = itr->second;
+        }
         mutex_.post();
-        return ptr;
+        return value;
     }
 
-    Socket* get(const AddressPort* key) {
+    Socket* get(AddressPort* key) {
         mutex_.wait();
-        AddressPort* ptr = address_port_to_socket_map_[key];
+        Socket* value = NULL;
+        map<AddressPort*, Socket*, AddressPortComparator>::iterator itr = address_port_to_socket_map_.find(key);
+        if(itr != address_port_to_socket_map_.end()) {
+            value = itr->second;
+        }
         mutex_.post();
-        return ptr;
+        return value;
     }
 
     void put(int key, Socket* value) {
@@ -54,7 +62,12 @@ public:
 
     void erase_at(const int key) {
         mutex_.wait();
-        Socket* value = int_to_socket_map_[key];
+
+        Socket* value = NULL;
+        map<int, Socket*>::iterator itr = int_to_socket_map_.find(key);
+        if(itr != int_to_socket_map_.end()) {
+            value = itr->second;
+        }
 
         if (value) {
             map<AddressPort*, Socket*>::iterator itr;
@@ -65,14 +78,23 @@ public:
                     break;
                 }
             }
-            address_port_to_socket_map_.erase(ptr);
-            delete ptr;
-
+            address_port_to_socket_map_.erase(itr);
+            // AddressPort will be deleted in the Socket
             int_to_socket_map_.erase(key);
             delete value;
         }
         
         mutex_.post();
+    }
+
+    int size() {
+        mutex_.wait();
+        int size = address_port_to_socket_map_.size();
+        int size1 = int_to_socket_map_.size();
+        mutex_.post();
+        assert(size == size1);
+        return size;
+
     }
 
 private:
