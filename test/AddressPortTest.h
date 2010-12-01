@@ -106,6 +106,17 @@ namespace {
             copy = AddressPort(address, 5000);
             CHECK(ap != copy);
         }
+
+        TEST(AddressToString) {
+
+            string expected = "Address: 127.0.0.1 Port: 5000";
+
+            string address("127.0.0.1");
+            int port = 5000;
+
+            AddressPort ap(address, port);
+            CHECK_EQUAL(expected, ap.to_s());
+        }
     }
 }
 

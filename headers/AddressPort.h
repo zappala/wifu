@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <sstream>
 
 using namespace std;
 
@@ -141,6 +142,18 @@ public:
      */
     struct sockaddr_in* get_network_struct_ptr() {
         return &data_;
+    }
+
+    /**
+     * Returns a string representation of this AddressPort
+     *
+     * @return A string representation of this AddressPort
+     */
+    string to_s() {
+        stringstream s;
+        s << "Address: " << get_address() << " ";
+        s << "Port: " << get_port();
+        return s.str();
     }
 
 private:

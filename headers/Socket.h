@@ -17,16 +17,13 @@
 
 using namespace std;
 
-/**
- * This class is meant to be used in place of the Unix socket and subsequent calls like listen, bind, connect, etc.
- */
 class Socket : public Identifiable {
 public:
 
     /**
      * Creates a Socket object.
      */
-    Socket() {
+    Socket(int protocol) : Identifiable(), protocol_(protocol), local_(0), remote_(0) {
 
     }
 
@@ -34,47 +31,46 @@ public:
      * Cleans up this Socket object.
      */
     virtual ~Socket() {
+        if(local_) {
+            delete local_;
+        }
 
-    }
-
-    /**
-     * Connect to a machine represented by addresd and port.
-     *
-     * @param address The address to connect to.
-     * @param port The port to connect to.
-     */
-    void connect(string & address, int& port) {
-        Event* connect_event = new ConnectEvent(get_socket(), address, port);
-        dispatch(connect_event);
-    }
-
-    /**
-     * Sends message to machine represented by this Socket.
-     *
-     * @param message The message to send.
-     */
-    void send(string & message) {
-
+        if(remote_) {
+            delete remote_;
+        }
     }
 
     /**
      * @return The int which represents this Socket.
      */
-    int & get_socket() {
+    int& get_socket() {
         return get_id();
     }
 
-private:
-
-    /**
-     * Simply calls enqueue on the Dispatcher.
-     *
-     * @param e The Event object to enqueue on the Dispatcher.
-     * @see Dispatcher::enqueue()
-     */
-    void dispatch(Event * e) {
-        Dispatcher::instance().enqueue(e);
+    int& get_protocol() {
+        return protocol_;
     }
+
+    AddressPort* get_local_address_port() {
+        return local_;
+    }
+
+    AddressPort* get_remote_address_port() {
+        return remote_;
+    }
+
+    void set_local_address_port(AddressPort* local) {
+        local_ = local;
+    }
+
+    void set_remote_address_port(AddressPort* remote) {
+        remote_ = remote;
+    }
+
+private:
+    AddressPort* local_;
+    AddressPort* remote_;
+    int protocol_;
 };
 
 #endif	/* _SOCKET_H */

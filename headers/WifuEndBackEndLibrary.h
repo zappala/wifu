@@ -11,16 +11,23 @@
 #include "LocalSocketFullDuplex.h"
 #include "Module.h"
 
-
-class WifuEndBackEndLibrary : public LocalSocketFullDuplex, Module {
+/**
+ * Translates string messages received from the front-end library into Event objects
+ * and enqueues them to the dispatcher (and visa-versa).
+ *
+ *
+ */
+class WifuEndBackEndLibrary : public LocalSocketFullDuplex, public Module {
 public:
 
-    WifuEndBackEndLibrary() {
-
+    static WifuEndBackEndLibrary& instance() {
+        static WifuEndBackEndLibrary instance_;
+        return instance_;
     }
 
+
     virtual ~WifuEndBackEndLibrary() {
-        
+
     }
 
     /**
@@ -67,6 +74,10 @@ public:
     }
 
 private:
+
+    WifuEndBackEndLibrary() : LocalSocketFullDuplex("WifuSocket"), Module() {
+
+    }
 
 };
 
