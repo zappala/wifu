@@ -40,14 +40,23 @@ public:
         memcpy(payload_, payload.c_str(), payload.size());
     }
 
+    void set_payload_length(int length) {
+        payload_length_ = length;
+    }
+
     unsigned char* get_payload() {
         return payload_;
+    }
+
+    int get_payload_length() {
+        return payload_length_;
     }
 
 private:
     int return_value_;
     Semaphore* sem_;
     unsigned char payload_[PAYLOAD_SIZE + 1];
+    int payload_length_;
 };
 
 #endif	/* _SOCKETDATA_H */

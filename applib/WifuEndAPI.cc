@@ -9,6 +9,14 @@ int wifu_bind(int fd, const struct sockaddr* addr, socklen_t len) {
     return end_socket.wifu_bind(fd, addr, len);
 }
 
+int wifu_getsockopt(int fd, int level, int optname, void *__restrict optval, socklen_t *__restrict optlen) {
+    return end_socket.wifu_getsockopt(fd, level, optname, optval, optlen);
+}
+
+int wifu_setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen) {
+    return end_socket.wifu_setsockopt(fd, level, optname, optval, optlen);
+}
+
 int wifu_listen(int fd, int n) {
     return end_socket.wifu_listen(fd, n);
 }

@@ -81,6 +81,14 @@ public:
         } else if (!name.compare(WIFU_CONNECT_NAME)) {
             int return_val = 0;
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+        } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
+            int return_val = SO_BINDTODEVICE;
+            string value = "Value";
+            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+            response[BUFFER_STRING] = value;
+        } else if (!name.compare(WIFU_SETSOCKOPT_NAME)) {
+            int return_val = 0;
+            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         }
 
         string response_message = QueryStringParser::create(name, response);
@@ -165,7 +173,7 @@ namespace {
             // wifu_recv()
             string message = localSocket.get_recv_message();
             expected = localSocket.get_recv_message().size();
-            
+
             for (int i = 1; i <= 50; i++) {
                 result = 0;
                 localSocket.reset();
@@ -213,6 +221,24 @@ namespace {
             expected = 0;
             result = wifu_connect(socket, (struct sockaddr*) ap.get_network_struct_ptr(), len);
             CHECK_EQUAL(expected, result);
+
+            //wifu_getsockopt()
+            expected = SO_BINDTODEVICE;
+            const char* optvalue = "Value";
+            socklen_t val_len = 5;
+
+            socklen_t length = 1000;
+            char buf[length];
+            result = wifu_getsockopt(socket, 0, SO_BINDTODEVICE, &buf, &length);
+            CHECK_EQUAL(expected, result);
+            CHECK_EQUAL(optvalue, buf);
+            CHECK_EQUAL(val_len, length);
+
+            //wifu_setsockopt()
+            expected = 0;
+            result = wifu_setsockopt(socket, 0, SO_BINDTODEVICE, optvalue, val_len);
+            CHECK_EQUAL(expected, result);
+
 
         }
     }

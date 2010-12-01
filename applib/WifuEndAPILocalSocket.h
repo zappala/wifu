@@ -36,7 +36,7 @@ private:
      *
      * @param file The file which this object listens on (other local sockets can write to this file).
      */
-    WifuEndAPILocalSocket() : Identifiable(), LocalSocketFullDuplex(get_filename().c_str()), write_file_("WifuSocket"){
+    WifuEndAPILocalSocket() : Identifiable(), LocalSocketFullDuplex(get_filename().c_str()), write_file_("WifuSocket") {
         socket_signal_.init(0);
         socket_mutex_.init(1);
     }
@@ -72,7 +72,7 @@ public:
      * @param message The message received
      */
     void receive(string& message) {
-//        cout << "Response:\t" << message << endl;
+        //        cout << "Response:\t" << message << endl;
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
@@ -86,6 +86,12 @@ public:
 
         if (!response_[NAME_STRING].compare(WIFU_RECVFROM_NAME)) {
             sockets.get(socket)->set_payload(response_[BUFFER_STRING]);
+        }
+
+        if (!response_[NAME_STRING].compare(WIFU_GETSOCKOPT_NAME)) {
+            string response = response_[BUFFER_STRING];
+            sockets.get(socket)->set_payload(response);
+            sockets.get(socket)->set_payload_length(response.size());
         }
 
         int value = atoi(response_[RETURN_VALUE_STRING].c_str());
@@ -139,6 +145,54 @@ public:
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
+        return data->get_return_value();
+    }
+
+    int wifu_getsockopt(int fd, int level, int optname, void *__restrict optval, socklen_t *__restrict optlen) {
+
+        map<string, string> m;
+        m[FILE_STRING] = getFile();
+        m[SOCKET_STRING] = Utils::itoa(fd);
+        m[LEVEL_STRING] = Utils::itoa(level);
+        m[OPTION_NAME_STRING] = Utils::itoa(optname);
+        m[LENGTH_STRING] = Utils::itoa(*optlen);
+
+        string message = QueryStringParser::create(WIFU_GETSOCKOPT_NAME, m);
+        send_to(write_file_, message);
+
+        //TODO: Fill in optval and optlen according to man 2 getsockopt
+        SocketData* data = sockets.get(fd);
+        data->get_semaphore()->wait();
+
+        socklen_t len = data->get_payload_length();
+        if (len > 0) {
+            memcpy(optval, data->get_payload(), len);
+            memcpy(optlen, &len, sizeof (socklen_t));
+        }
+
+        return data->get_return_value();
+    }
+
+    int wifu_setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen) {
+
+        assert(optlen < BUFFER_SIZE);
+        char value[BUFFER_SIZE];
+        memcpy(value, optval, optlen);
+
+        map<string, string> m;
+        m[FILE_STRING] = getFile();
+        m[SOCKET_STRING] = Utils::itoa(fd);
+        m[LEVEL_STRING] = Utils::itoa(level);
+        m[OPTION_NAME_STRING] = Utils::itoa(optname);
+        m[OPTION_VALUE_STRING] = value;
+        m[LENGTH_STRING] = Utils::itoa(optlen);
+
+        string message = QueryStringParser::create(WIFU_SETSOCKOPT_NAME, m);
+        send_to(write_file_, message);
+
+        SocketData* data = sockets.get(fd);
+        data->get_semaphore()->wait();
+
         return data->get_return_value();
     }
 
@@ -274,7 +328,7 @@ public:
         m[FILE_STRING] = getFile();
         m[SOCKET_STRING] = Utils::itoa(fd);
 
-        AddressPort ap((struct sockaddr_in*) addr);        
+        AddressPort ap((struct sockaddr_in*) addr);
         m[ADDRESS_STRING] = ap.get_address();
         m[PORT_STRING] = Utils::itoa(ap.get_port());
         m[LENGTH_STRING] = Utils::itoa(len);
@@ -285,7 +339,7 @@ public:
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
         return data->get_return_value();
-        
+
     }
 
 private:

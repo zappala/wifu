@@ -16,6 +16,16 @@ int wifu_socket(int domain, int type, int protocol);
 /* Give the socket FD the local address ADDR (which is LEN bytes long).  */
 int wifu_bind(int fd, const struct sockaddr* addr, socklen_t len);
 
+/* Put the current value for socket FD's option OPTNAME at protocol level LEVEL
+   into OPTVAL (which is *OPTLEN bytes long), and set *OPTLEN to the value's
+   actual length.  Returns 0 on success, -1 for errors.  */
+int wifu_getsockopt (int fd, int level, int optname, void *__restrict optval, socklen_t *__restrict optlen);
+
+/* Set socket FD's option OPTNAME at protocol level LEVEL
+   to *OPTVAL (which is OPTLEN bytes long).
+   Returns 0 on success, -1 for errors.  */
+int wifu_setsockopt (int fd, int level, int optname, const void *optval, socklen_t optlen);
+
 /* Prepare to accept connections on socket FD.
    N connection requests will be queued before further requests are refused.
    Returns 0 on success, -1 for errors.  */

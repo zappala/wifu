@@ -13,6 +13,7 @@
 #define SIG_CANCEL_EVENT 51
 #define NANOSECONDS_IN_SECONDS 1000000000
 #define PAYLOAD_SIZE 1500
+#define BUFFER_SIZE PAYLOAD_SIZE
 
 // message defines
 // method names
@@ -25,6 +26,8 @@
 #define WIFU_RECV_NAME "wifu_recv"
 #define WIFU_RECVFROM_NAME "wifu_recvfrom"
 #define WIFU_CONNECT_NAME "wifu_connect"
+#define WIFU_GETSOCKOPT_NAME "wifu_getsockopt"
+#define WIFU_SETSOCKOPT_NAME "wifu_setsockopt"
 
 // variable names
 #define SOCKET_STRING "socket"
@@ -40,6 +43,9 @@
 #define N_STRING "n"
 #define BUFFER_STRING "buffer"
 #define FLAGS_STRING "flags"
+#define OPTION_NAME_STRING "option_name"
+#define OPTION_VALUE_STRING "option_value"
+#define LEVEL_STRING "level"
 
 
 
