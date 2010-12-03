@@ -1,4 +1,7 @@
+#include <typeinfo>
+
 #include "LocalSocketReceiver.h"
+
 
 LocalSocketReceiver::LocalSocketReceiver(string& file, LocalSocketReceiverCallback* callback) : file_(file), callback_(callback) {
     init();
@@ -9,15 +12,23 @@ LocalSocketReceiver::LocalSocketReceiver(const char* file, LocalSocketReceiverCa
 }
 
 LocalSocketReceiver::~LocalSocketReceiver() {
-    unlink(file_.c_str());
+    unlink(file_.c_str());    
+}
+
+void LocalSocketReceiver::kill_threads() {
+    while (!ts_.is_empty()) {
+        pair<pthread_t, int> item = ts_.pop();
+
+        cout << "Closing socket: " << item.second << endl;
+        close(item.second);
+
+        cout << "Killing thread: " << item.first << endl;
+        pthread_cancel(item.first);
+    }
 }
 
 string & LocalSocketReceiver::getFile() {
     return file_;
-}
-
-int & LocalSocketReceiver::getSocket() {
-    return socket_;
 }
 
 void LocalSocketReceiver::recv(string & message) {
@@ -50,7 +61,7 @@ void LocalSocketReceiver::init(void) {
 
     int optval = 1;
     int value = setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval);
-    if(value) {
+    if (value) {
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
@@ -67,12 +78,15 @@ void LocalSocketReceiver::init(void) {
     struct thread_spawn_obj obj;
     obj.sock = s;
     obj.receiver = this;
+    obj.ts = &ts_;
     sem_init(&(obj.sem), 0, 0);
 
     if (pthread_create(&spawner_, NULL, &thread_spawner, &obj) != 0) {
         perror("Error creating new thread");
         exit(EXIT_FAILURE);
     }
+    cout << "Thread created in init: " << spawner_ << endl;
+    ts_.push(make_pair(spawner_, s));
     sem_wait(&(obj.sem));
 }
 
@@ -84,6 +98,7 @@ void * thread_spawner(void* arg) {
 
     LocalSocketReceiver * receiver = obj->receiver;
     int socket = obj->sock;
+    LocalSocketReceiverThreadsSockets* ts = obj->ts;
     int c;
 
     sem_post(&(obj->sem));
@@ -98,6 +113,8 @@ void * thread_spawner(void* arg) {
             perror("Error creating new thread");
             exit(EXIT_FAILURE);
         }
+        cout << "Thread created in spawner: " << thread << endl;
+        ts->push(make_pair(thread, c));
     }
 }
 

@@ -22,8 +22,10 @@
 #include <semaphore.h>
 #include <map>
 #include <string.h>
+#include <vector>
 
 #include "LocalSocketReceiverCallback.h"
+#include "LocalSocketReceiverThreadsSockets.h"
 
 #define MESSAGE_SIZE 2000
 
@@ -39,6 +41,7 @@ struct thread_obj {
 };
 
 struct thread_spawn_obj : thread_obj {
+    LocalSocketReceiverThreadsSockets* ts;
     int sock;
     sem_t sem;
 };
@@ -53,19 +56,22 @@ public:
     LocalSocketReceiver(const char* file, LocalSocketReceiverCallback * callback);
 
     virtual ~LocalSocketReceiver();
+    virtual void kill_threads();
 
     string & getFile();
-    int & getSocket();
 
-    void recv(string &  message);
-    virtual void receive(string &  message) = 0;
+    void recv(string & message);
+    virtual void receive(string & message) = 0;
+
+
 
 private:
     string file_;
-    int socket_;
     sem_t sem_;
     pthread_t spawner_;
     LocalSocketReceiverCallback * callback_;
+    vector<pthread_t> threads_;
+    LocalSocketReceiverThreadsSockets ts_;
 
     void init(void);
 };

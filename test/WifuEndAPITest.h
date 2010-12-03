@@ -18,6 +18,8 @@
 #include "../applib/wifu_socket.h"
 
 #include "../headers/LocalSocketFullDuplex.h"
+#include "../headers/Utils.h"
+#include "../headers/QueryStringParser.h"
 
 using namespace std;
 
@@ -33,7 +35,8 @@ public:
     }
 
     virtual ~LocalSocketFullDuplexImpl() {
-
+        cout << "Fake back end destroyed" << endl;
+        kill_threads();
     }
 
     void receive(string& message) {
@@ -120,12 +123,13 @@ namespace {
 
     SUITE(WifuEndTest) {
 
-        TEST(WifuSocketTest) {
+        TEST(WifuSocketTest2) {
+            sleep(1);
             // wifu_socket()
             string file("WifuSocket");
             LocalSocketFullDuplexImpl localSocket(file);
 
-            int socket = wifu_socket(0, 0, 0);
+            int socket = wifu_socket(1000, 1000, 1000);
             int expected = 10;
             int result = socket;
 
@@ -239,6 +243,131 @@ namespace {
             result = wifu_setsockopt(socket, 0, SO_BINDTODEVICE, optvalue, val_len);
             CHECK_EQUAL(expected, result);
 
+            sleep(1);
+
+        }
+
+        TEST(WifuSocketTest) {
+            sleep(1);
+            // wifu_socket()
+            string file("WifuSocket");
+            LocalSocketFullDuplexImpl localSocket(file);
+
+            int socket = wifu_socket(1000, 1000, 1000);
+            int expected = 10;
+            int result = socket;
+
+            CHECK_EQUAL(expected, result);
+
+            // wifu_bind()
+            string address("127.0.0.1");
+            int port = 5000;
+            AddressPort ap(address, port);
+            expected = 100;
+
+            result = wifu_bind(socket, (struct sockaddr*) ap.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+            CHECK_EQUAL(expected, result);
+
+
+            // wifu listen()
+            result = wifu_listen(socket, 0);
+            expected = 1000;
+            CHECK_EQUAL(expected, result);
+
+            // wifu_accept()
+            socklen_t len = sizeof (struct sockaddr_in);
+            result = wifu_accept(socket, (struct sockaddr*) ap.get_network_struct_ptr(), &len);
+            expected = 2000;
+            CHECK_EQUAL(expected, result);
+
+            // Do everything on new socket
+            socket = expected;
+
+
+            // wifu_send()
+            string send_message = "This is the message to send";
+            expected = send_message.size();
+            result = wifu_send(socket, send_message.c_str(), send_message.size(), 0);
+            CHECK_EQUAL(expected, result);
+            CHECK_EQUAL(send_message, localSocket.get_last_message());
+
+            // wifu_sendto()
+            len = sizeof (struct sockaddr_in);
+            result = wifu_sendto(socket, send_message.c_str(), send_message.size(), 0, (struct sockaddr*) ap.get_network_struct_ptr(), len);
+            expected = send_message.size();
+            CHECK_EQUAL(expected, result);
+            CHECK_EQUAL(send_message, localSocket.get_last_message());
+
+            // wifu_recv()
+            string message = localSocket.get_recv_message();
+            expected = localSocket.get_recv_message().size();
+
+            for (int i = 1; i <= 50; i++) {
+                result = 0;
+                localSocket.reset();
+
+                char buf[i + 1];
+                string result_string = "";
+
+                while (1) {
+                    memset(buf, 0, i + 1);
+                    ssize_t num = wifu_recv(socket, &buf, i, 0);
+                    if (num <= 0) {
+                        break;
+                    }
+
+                    result += num;
+                    result_string.append(buf);
+                }
+                CHECK_EQUAL(expected, result);
+                CHECK_EQUAL(message, result_string);
+            }
+
+            // wifu_recvfrom()
+            for (int i = 1; i <= 50; i++) {
+                result = 0;
+                localSocket.reset();
+
+                char buf[i + 1];
+                string result_string = "";
+
+                while (1) {
+                    memset(buf, 0, i + 1);
+                    ssize_t num = wifu_recvfrom(socket, &buf, i, 0, (struct sockaddr*) ap.get_network_struct_ptr(), &len);
+                    if (num <= 0) {
+                        break;
+                    }
+
+                    result += num;
+                    result_string.append(buf);
+                }
+                CHECK_EQUAL(expected, result);
+                CHECK_EQUAL(message, result_string);
+            }
+
+            // wifu_connect()
+            expected = 0;
+            result = wifu_connect(socket, (struct sockaddr*) ap.get_network_struct_ptr(), len);
+            CHECK_EQUAL(expected, result);
+
+            //wifu_getsockopt()
+            expected = SO_BINDTODEVICE;
+            const char* optvalue = "Value";
+            socklen_t val_len = 5;
+
+            socklen_t length = 1000;
+            char buf[length];
+            result = wifu_getsockopt(socket, 0, SO_BINDTODEVICE, &buf, &length);
+            CHECK_EQUAL(expected, result);
+            CHECK_EQUAL(optvalue, buf);
+            CHECK_EQUAL(val_len, length);
+
+            //wifu_setsockopt()
+            expected = 0;
+            result = wifu_setsockopt(socket, 0, SO_BINDTODEVICE, optvalue, val_len);
+            CHECK_EQUAL(expected, result);
+
+            sleep(1);
 
         }
     }

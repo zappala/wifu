@@ -7,7 +7,7 @@
 
 #include "UDPSocket.h"
 
-UDPSocket::UDPSocket() : ap_(0) {
+UDPSocket::UDPSocket() : ap_(0), is_receiving_(false) {
     createSocket();
     sem_ = new Semaphore();
     sem_->init(0);
@@ -19,6 +19,12 @@ UDPSocket::~UDPSocket() {
     if (ap_) {
         delete ap_;
     }
+
+    if(is_receiving_) {
+        pthread_cancel(receive_thread_);
+    }
+
+    closeSocket();
 }
 
 int UDPSocket::createSocket() {
@@ -127,6 +133,8 @@ void UDPSocket::receive(UDPSocketCallback* callback) {
     data.callback = callback;
     data.socket = getSocket();
     data.sem = sem_;
+
+    is_receiving_ = true;
 
     if (pthread_create(&receive_thread_, NULL, &receive_handler, &data) != 0) {
         perror("Error creating new thread");

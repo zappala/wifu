@@ -48,7 +48,7 @@ public:
 
     // General Functions
     
-    int closeSocket();
+    
     int getSocket() const;
     void makeNonBlocking();
     AddressPort* get_bound_address_port();
@@ -68,8 +68,10 @@ private:
     int sock_;
     Semaphore* sem_;
     AddressPort* ap_;
+    bool is_receiving_;
 
     int createSocket();
+    int closeSocket();
 };
 
 #endif	/* _UDPSOCKET_H */

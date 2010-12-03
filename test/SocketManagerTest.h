@@ -29,10 +29,12 @@ namespace {
             AddressPort* ap2 = new AddressPort("127.0.0.2", 2);
             AddressPort* ap3 = new AddressPort("127.0.0.3", 3);
 
+            int domain = 0;
+            int type = 0;
             int protocol = 0;
 
             // One
-            Socket* s0 = new Socket(protocol, ap0);
+            Socket* s0 = new Socket(domain, type, protocol, ap0);
             int socket = s0->get_socket();
             manager.put(socket, s0);
 
@@ -43,7 +45,7 @@ namespace {
             CHECK(1 == manager.size());
 
             // Two
-            Socket* s1 = new Socket(protocol, ap1);
+            Socket* s1 = new Socket(domain, type, protocol, ap1);
             socket = s1->get_socket();
             manager.put(socket, s1);
 
@@ -54,7 +56,7 @@ namespace {
             CHECK(2 == manager.size());
 
             // Three
-            Socket* s2 = new Socket(protocol, ap2);
+            Socket* s2 = new Socket(domain, type, protocol, ap2);
             socket = s2->get_socket();
             manager.put(socket, s2);
 
@@ -65,7 +67,7 @@ namespace {
             CHECK(3 == manager.size());
 
             // Four
-            Socket* s3 = new Socket(protocol, ap3);
+            Socket* s3 = new Socket(domain, type, protocol, ap3);
             socket = s3->get_socket();
             manager.put(socket, s3);
 

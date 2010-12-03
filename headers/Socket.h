@@ -24,7 +24,16 @@ public:
     /**
      * Creates a Socket object.
      */
-    Socket(int protocol, AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().next())) : Identifiable(), protocol_(protocol), local_(local), remote_(0) {
+    Socket( int domain,
+            int type,
+            int protocol,
+            AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().next())) :
+            Identifiable(),
+            domain_(domain),
+            type_(type),
+            protocol_(protocol),
+            local_(local),
+            remote_(0) {
 
     }
 
@@ -48,7 +57,15 @@ public:
         return get_id();
     }
 
-    int get_protocol() {
+    int get_domain() const {
+        return domain_;
+    }
+
+    int get_type() const {
+        return type_;
+    }
+
+    int get_protocol() const {
         return protocol_;
     }
 
@@ -62,10 +79,16 @@ public:
     }
 
     void set_local_address_port(AddressPort* local) {
+        if(local_) {
+            delete local_;
+        }
         local_ = local;
     }
 
     void set_remote_address_port(AddressPort* remote) {
+        if(remote_) {
+            delete remote_;
+        }
         remote_ = remote;
     }
 
@@ -80,6 +103,8 @@ public:
 private:
     AddressPort* local_;
     AddressPort* remote_;
+    int domain_;
+    int type_;
     int protocol_;
 };
 

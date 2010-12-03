@@ -63,7 +63,7 @@ public:
     }
 
     virtual ~WifuEndAPILocalSocket() {
-
+        cout << "Front end library destroyed" << endl;
     }
 
     /**
@@ -72,7 +72,7 @@ public:
      * @param message The message received
      */
     void receive(string& message) {
-        //        cout << "Response:\t" << message << endl;
+//        cout << "Response:\t" << message << endl;
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());

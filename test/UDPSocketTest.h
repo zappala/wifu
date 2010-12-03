@@ -78,12 +78,18 @@ namespace {
 
             usleep(500);
 
-            sender.closeSocket();
-            receiver.closeSocket();
+//            if (sender.closeSocket() < 0) {
+//                cout << "Error closing sender (errno): " << errno << endl;
+//            }
+
+//            if (receiver.closeSocket() < 0) {
+//                cout << "Error closing receiver (errno): " << errno << endl;
+//            }
 
             CHECK_EQUAL(message.length(), count);
             CHECK_EQUAL(message, callback.get_message());
             CHECK_EQUAL(ap.get_address(), callback.get_ap()->get_address());
+
         }
     }
 }

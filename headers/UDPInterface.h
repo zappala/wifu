@@ -48,7 +48,7 @@ public:
      * Cleans up this UDPInterface object.
      */
     virtual ~UDPInterface() {
-        socket_.closeSocket();
+
     }
 
     /**

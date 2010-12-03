@@ -11,6 +11,8 @@
 #include "LocalSocketFullDuplex.h"
 #include "Module.h"
 #include "QueryStringParser.h"
+#include "Socket.h"
+#include "SocketManager.h"
 
 /**
  * Translates string messages received from the front-end library into Event objects
@@ -27,7 +29,7 @@ public:
     }
 
     virtual ~WifuEndBackEndLibrary() {
-
+        cout << "Back end destroyed" << endl;
     }
 
     /**
@@ -47,8 +49,17 @@ public:
         response[SOCKET_STRING] = m[SOCKET_STRING];
 
         if (!name.compare(WIFU_SOCKET_NAME)) {
-            int socket = 1;
-            response[SOCKET_STRING] = Utils::itoa(socket);
+
+            int domain = atoi(m[DOMAIN_STRING].c_str());
+            int type = atoi(m[TYPE_STRING].c_str());
+            int protocol = atoi(m[PROTOCOL_STRING].c_str());
+
+            Socket* socket = new Socket(domain, type, protocol);
+            int id = socket->get_socket();
+            SocketManager::instance().put(id, socket);
+
+            response[SOCKET_STRING] = Utils::itoa(id);
+
         } else if (!name.compare(WIFU_BIND_NAME)) {
             int return_val = 1;
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
@@ -76,6 +87,7 @@ public:
         }
 
         string response_message = QueryStringParser::create(name, response);
+        cout << "Response Message: " << response_message << endl;
         send_to(m[FILE_STRING], response_message);
     }
 

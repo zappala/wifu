@@ -10,6 +10,7 @@
 
 #include "Event.h"
 #include "QueueProcessor.h"
+#include "Queue.h"
 #include "defines.h"
 
 #include <tr1/unordered_map>
