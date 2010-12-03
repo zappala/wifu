@@ -15,7 +15,8 @@
 #include "../headers/AddressPort.h"
 #include "headers/CheckMacros.h"
 
-#include "WifuEndAPITest.h"
+
+
 #include "UDPSocketTest.h"
 #include "AddressPortTest.h"
 #include "SemaphoreTest.h"
@@ -30,7 +31,9 @@
 #include "SocketMapTest.h"
 #include "SocketManagerTest.h"
 
-//#include "IntegrationTest.h"
+
+#include "WifuEndAPITest.h"
+#include "IntegrationTest.h"
 
 using namespace UnitTest;
 
@@ -47,14 +50,14 @@ void change_dir() {
 }
 
 void cleanup() {
-    int value = system("rm LibrarySocket*");
+    int value = system("rm LS*");
     if (value < 0) {
-        perror("Error Removing LibrarySocket Files");
+        perror("Error Removing LS Files");
     }
 
-    value = system("rm WifuSocket");
+    value = system("rm WS");
     if (value < 0) {
-        perror("Error Removing WifuSocket File");
+        perror("Error Removing WS File");
     }
 
 }

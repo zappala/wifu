@@ -88,4 +88,4 @@ def build(bld):
 		uselib_local='wifu-end-api',
 		target='wifu-end-test')
 
-	#bld.add_post_fun(post)
+	bld.add_post_fun(post)

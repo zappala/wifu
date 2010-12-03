@@ -27,10 +27,11 @@
 #include "Semaphore.h"
 #include "UDPSocketCallback.h"
 #include "AddressPort.h"
+#include "defines.h"
 
 using namespace std;
 
-#define BUF_LENGTH 4096
+
 
 struct socket_thread_data {
     int socket;

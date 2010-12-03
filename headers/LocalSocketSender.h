@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <sys/un.h>
 #include <map>
+#include <assert.h>
 
 #include "Semaphore.h"
 
@@ -27,15 +28,15 @@ public:
     LocalSocketSender();
     virtual ~LocalSocketSender();
 
-    void send_to(string & socket_file, string & message);
+    ssize_t send_to(string& socket_file, string& message);
 private:
-    map<string, int> sockets_;
-    
-    void send_to(int & socket, string & message);
-    void create_socket(string & socket_file);
+    map<string, struct sockaddr_un*> destinations_;
+    struct sockaddr_un* create_socket(string & socket_file);
 
-    Semaphore mutex_;
-    Semaphore mutex1_;
+    int socket_;
+
+    void init();
+
 };
 
 #endif	/* _LOCALSOCKETSENDER_H */

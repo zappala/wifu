@@ -29,7 +29,7 @@ public:
     }
 
     virtual ~WifuEndBackEndLibrary() {
-        cout << "Back end destroyed" << endl;
+
     }
 
     /**
@@ -87,13 +87,12 @@ public:
         }
 
         string response_message = QueryStringParser::create(name, response);
-        cout << "Response Message: " << response_message << endl;
         send_to(m[FILE_STRING], response_message);
     }
 
 private:
 
-    WifuEndBackEndLibrary() : LocalSocketFullDuplex("WifuSocket"), Module() {
+    WifuEndBackEndLibrary() : LocalSocketFullDuplex("WS"), Module() {
 
     }
 

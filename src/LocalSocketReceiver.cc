@@ -1,5 +1,3 @@
-#include <typeinfo>
-
 #include "LocalSocketReceiver.h"
 
 
@@ -12,19 +10,12 @@ LocalSocketReceiver::LocalSocketReceiver(const char* file, LocalSocketReceiverCa
 }
 
 LocalSocketReceiver::~LocalSocketReceiver() {
+    close(socket_);
     unlink(file_.c_str());    
 }
 
-void LocalSocketReceiver::kill_threads() {
-    while (!ts_.is_empty()) {
-        pair<pthread_t, int> item = ts_.pop();
-
-        cout << "Closing socket: " << item.second << endl;
-        close(item.second);
-
-        cout << "Killing thread: " << item.first << endl;
-        pthread_cancel(item.first);
-    }
+int LocalSocketReceiver::get_socket() {
+    return socket_;
 }
 
 string & LocalSocketReceiver::getFile() {
@@ -32,17 +23,16 @@ string & LocalSocketReceiver::getFile() {
 }
 
 void LocalSocketReceiver::recv(string & message) {
-    sem_wait(&sem_);
+    sem_.wait();
     callback_->receive(message);
-    sem_post(&sem_);
+    sem_.post();
 }
 
 void LocalSocketReceiver::init(void) {
 
-    sem_init(&sem_, 0, 1);
+    sem_.init(1);
 
     struct sockaddr_un server;
-    int s;
 
     // setup socket address structure
     memset(&server, 0, sizeof (server));
@@ -50,85 +40,52 @@ void LocalSocketReceiver::init(void) {
     strcpy(server.sun_path, file_.c_str());
 
     // create socket
-    s = socket(AF_LOCAL, SOCK_STREAM, 0);
-    if (!s) {
-        perror("socket");
+    socket_ = socket(AF_LOCAL, SOCK_DGRAM, 0);
+    if (!get_socket()) {
+        perror("Error creating Unix socket");
         exit(-1);
     }
 
-    /* ATTENTION!!! THIS ACTUALLY REMOVES A FILE FROM YOUR HARD DRIVE!!! */
-    unlink(file_.c_str()); /* Remove any previous socket with the same filename. */
+    unlink(file_.c_str());
 
     int optval = 1;
-    int value = setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval);
+    int value = setsockopt(get_socket(), SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval);
     if (value) {
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
 
-    if (bind(s, (const struct sockaddr *) & server, sizeof (server)) < 0) {
+    if (bind(get_socket(), (const struct sockaddr *) & server, SUN_LEN(&server)) < 0) {
         perror("Bind");
         exit(-1);
     }
-    if (listen(s, SOMAXCONN) < 0) {
-        perror("listen");
-        exit(-1);
-    }
-
-    struct thread_spawn_obj obj;
-    obj.sock = s;
+   
+    struct local_socket_receiver_obj obj;
+    obj.sock = get_socket();
     obj.receiver = this;
-    obj.ts = &ts_;
-    sem_init(&(obj.sem), 0, 0);
+    obj.sem.init(0);
 
-    if (pthread_create(&spawner_, NULL, &thread_spawner, &obj) != 0) {
+    if (pthread_create(&thread_, NULL, &unix_receive_handler, &obj) != 0) {
         perror("Error creating new thread");
         exit(EXIT_FAILURE);
     }
-    cout << "Thread created in init: " << spawner_ << endl;
-    ts_.push(make_pair(spawner_, s));
-    sem_wait(&(obj.sem));
+    obj.sem.wait();
 }
 
-void * thread_spawner(void* arg) {
-    struct sockaddr_un client;
-    socklen_t clientlen = sizeof (client);
-
-    struct thread_spawn_obj * obj = (struct thread_spawn_obj *) arg;
-
+void * unix_receive_handler(void* arg) {
+    struct local_socket_receiver_obj* obj = (struct local_socket_receiver_obj*) arg;
+    
     LocalSocketReceiver * receiver = obj->receiver;
     int socket = obj->sock;
-    LocalSocketReceiverThreadsSockets* ts = obj->ts;
-    int c;
+    
+    obj->sem.post();
 
-    sem_post(&(obj->sem));
-
-    while ((c = accept(socket, (struct sockaddr *) & client, &clientlen)) > 0) {
-        struct thread_connection_handler_obj obj;
-        obj.conn = c;
-        obj.receiver = receiver;
-
-        pthread_t thread;
-        if (pthread_create(&thread, NULL, &thread_handler, &obj) != 0) {
-            perror("Error creating new thread");
-            exit(EXIT_FAILURE);
-        }
-        cout << "Thread created in spawner: " << thread << endl;
-        ts->push(make_pair(thread, c));
-    }
-}
-
-void * thread_handler(void* arg) {
-
-    LocalSocketReceiver * receiver = ((thread_connection_handler_obj *) arg)->receiver;
-    int connection = ((thread_connection_handler_obj *) arg)->conn;
-
-    char buf[MESSAGE_SIZE];
+    char buf[UNIX_SOCKET_MESSAGE_LENGTH];
     int nread;
 
     while (1) {
-        memset(buf, 0, MESSAGE_SIZE);
-        nread = recv(connection, buf, MESSAGE_SIZE, 0);
+        memset(buf, 0, UNIX_SOCKET_MESSAGE_LENGTH);
+        nread = recv(socket, buf, UNIX_SOCKET_MESSAGE_LENGTH, 0);
         if (nread < 0) {
             if (errno == EINTR)
                 continue;
@@ -142,6 +99,5 @@ void * thread_handler(void* arg) {
         string s(buf);
         receiver->recv(s);
     }
-    close(connection);
 }
 

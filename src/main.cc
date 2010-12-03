@@ -52,9 +52,8 @@ void register_signals(){
 int main(int argc, char** argv) {
 
 
+    //TODO: Change second argument to 0 once we have a logger in place
     daemon(1,1);
-
-    cout << "Daemon started" << endl;
 
     MainSemaphore::instance().init(0);
 
@@ -80,9 +79,7 @@ int main(int argc, char** argv) {
     Dispatcher::instance().map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
     
     // Wait indefinitely
-    cout << "Waiting for events" << endl;
     MainSemaphore::instance().wait();
-    cout << "Closing" << endl;
 
     return (EXIT_SUCCESS);
 }

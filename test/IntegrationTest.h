@@ -23,7 +23,7 @@ namespace {
         if (value < 0) {
             perror("Error starting wifu-end");
         }
-        sleep(2);
+        sleep(1);
     }
 
     void kill_backend() {
@@ -37,29 +37,19 @@ namespace {
     public:
 
         BackEndFixture() {
-            cout << "Starting up back end" << endl;
             startup_backend();
         }
 
         ~BackEndFixture() {
-            cout << "Killing back end" << endl;
             kill_backend();
         }
     };
 
     SUITE(IntegrationTest) {
 
-//        TEST_FIXTURE(BackEndFixture, Socket) {
-//            int socket = wifu_socket(AF_INET, SOCK_STREAM, 0);
-//            cout << "Socket Returned: " <<socket << endl;
-//        }
-
-        TEST(Backend) {
-            startup_backend();
-            usleep(1000);
+        TEST_FIXTURE(BackEndFixture, Socket) {
             int socket = wifu_socket(AF_INET, SOCK_STREAM, 0);
             cout << "Socket Returned: " <<socket << endl;
-            kill_backend();
         }
     }
 }

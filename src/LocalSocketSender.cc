@@ -1,50 +1,51 @@
 #include "LocalSocketSender.h"
 
 LocalSocketSender::LocalSocketSender() {
-    mutex_.init(1);
-    mutex1_.init(1);
+    init();
 }
 
 LocalSocketSender::~LocalSocketSender() {
+    map<string, struct sockaddr_un*>::iterator itr;
 
-}
-
-void LocalSocketSender::send_to(string & socket_file, string & message) {
-    mutex_.wait();
-    if (!sockets_[socket_file]) {
-        create_socket(socket_file);
+    // show content:
+    for (itr = destinations_.begin(); itr != destinations_.end(); itr++) {
+        delete itr->second;
     }
-    send_to(sockets_[socket_file], message);
-    mutex_.post();
+
+    close(socket_);
 }
 
-void LocalSocketSender::send_to(int & socket, string & message) {
-    mutex1_.wait();
-    send(socket, message.c_str(), message.length(), 0);
-    mutex1_.post();
+
+
+ssize_t LocalSocketSender::send_to(string& socket_file, string& message) {
+    struct sockaddr_un* destination = destinations_[socket_file];
+    if (!destination) {
+        destination = create_socket(socket_file);
+    }
+    return sendto(socket_, message.c_str(), message.size(), 0, (const struct sockaddr*) destination, SUN_LEN(destination));
 }
 
-void LocalSocketSender::create_socket(string & socket_file) {
-    struct sockaddr_un server;
+struct sockaddr_un* LocalSocketSender::create_socket(string& socket_file) {
+    struct sockaddr_un* destination = new struct sockaddr_un;
 
     // Setup socket address structure
-    memset(&server, 0, sizeof (server));
-    server.sun_family = AF_LOCAL;
-    strcpy(server.sun_path, socket_file.c_str());
+    memset(destination, 0, sizeof (struct sockaddr_un));
+    destination->sun_family = AF_LOCAL;
+    strcpy(destination->sun_path, socket_file.c_str());
 
 
-    // Create socket
-    int s = socket(AF_LOCAL, SOCK_STREAM, 0);
-    if (!s) {
-        perror("socket");
+    assert(destination->sun_family == AF_LOCAL);
+    assert(socket_file == string(destination->sun_path));
+
+
+    destinations_[socket_file] = destination;
+    return destination;
+}
+
+void LocalSocketSender::init() {
+    socket_ = socket(AF_LOCAL, SOCK_DGRAM, 0);
+    if (!socket_) {
+        perror("Error Creating Socket");
         exit(-1);
     }
-
-    // Connect to server
-    if (connect(s, (const struct sockaddr *) & server, sizeof (server)) < 0) {
-        perror("connect");
-        exit(-1);
-    }
-
-    sockets_[socket_file] = s;
 }

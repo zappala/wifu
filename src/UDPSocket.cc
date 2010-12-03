@@ -150,7 +150,7 @@ void * receive_handler(void * arg) {
     UDPSocketCallback * callback = data->callback;
 
 
-    unsigned char buf[BUF_LENGTH];
+    unsigned char buf[BUFFER_SIZE];
     struct sockaddr_in address;
     socklen_t length = sizeof (struct sockaddr_in);
 
@@ -158,9 +158,9 @@ void * receive_handler(void * arg) {
 
     while (1) {
         /* get a packet */
-        memset(buf, 0, BUF_LENGTH);
+        memset(buf, 0, BUFFER_SIZE);
         //ssize_t num = recv(socket, &buf, BUF_LENGTH, 0);
-        ssize_t num = recvfrom(socket, &buf, BUF_LENGTH, 0, (struct sockaddr*) & address, &length);
+        ssize_t num = recvfrom(socket, &buf, BUFFER_SIZE, 0, (struct sockaddr*) & address, &length);
 
         AddressPort ap(&address);
 

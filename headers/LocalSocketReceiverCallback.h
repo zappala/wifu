@@ -14,7 +14,7 @@ using namespace std;
 
 class LocalSocketReceiverCallback {
 public:
-    virtual void receive(string &  message) = 0;
+    virtual void receive(string&  message) = 0;
 };
 
 #endif	/* _LOCALSOCKETRECEIVERCALLBACK_H */

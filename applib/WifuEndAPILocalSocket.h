@@ -36,12 +36,13 @@ private:
      *
      * @param file The file which this object listens on (other local sockets can write to this file).
      */
-    WifuEndAPILocalSocket() : Identifiable(), LocalSocketFullDuplex(get_filename().c_str()), write_file_("WifuSocket") {
+    WifuEndAPILocalSocket() : Identifiable(), LocalSocketFullDuplex(get_filename().c_str()), write_file_("WS") {
         socket_signal_.init(0);
         socket_mutex_.init(1);
+
     }
 
-    WifuEndAPILocalSocket(WifuEndAPILocalSocket const&) : Identifiable(), LocalSocketFullDuplex(getFile()), write_file_("WifuSocket") {
+    WifuEndAPILocalSocket(WifuEndAPILocalSocket const&) : Identifiable(), LocalSocketFullDuplex(getFile()), write_file_("WS") {
 
     }
 
@@ -50,7 +51,7 @@ private:
     }
 
     string get_filename() {
-        string s("LibrarySocket");
+        string s("LS");
         s.append(Utils::itoa(get_id()));
         return s;
     }
@@ -63,7 +64,7 @@ public:
     }
 
     virtual ~WifuEndAPILocalSocket() {
-        cout << "Front end library destroyed" << endl;
+
     }
 
     /**
