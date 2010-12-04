@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
 
     //TODO: Change second argument to 0 once we have a logger in place
     daemon(1,1);
-
+    
     MainSemaphore::instance().init(0);
 
     register_signals();

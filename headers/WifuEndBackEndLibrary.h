@@ -12,7 +12,6 @@
 #include "Module.h"
 #include "QueryStringParser.h"
 #include "Socket.h"
-#include "SocketManager.h"
 
 /**
  * Translates string messages received from the front-end library into Event objects
@@ -56,7 +55,6 @@ public:
 
             Socket* socket = new Socket(domain, type, protocol);
             int id = socket->get_socket();
-            SocketManager::instance().put(id, socket);
 
             response[SOCKET_STRING] = Utils::itoa(id);
 

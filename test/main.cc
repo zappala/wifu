@@ -29,7 +29,6 @@
 #include "LocalSocketFullDuplexTest.h"
 #include "QueryStringParserTest.h"
 #include "SocketMapTest.h"
-#include "SocketManagerTest.h"
 
 
 #include "WifuEndAPITest.h"

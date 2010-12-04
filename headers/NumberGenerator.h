@@ -27,9 +27,10 @@ public:
 
     }
 
-    N next() {
+    virtual N next() {
         N random;
         while (ids_.find(random = rand()) != ids_.end());
+        use(random);
         return random;
     }
 
@@ -41,7 +42,7 @@ public:
         ids_.erase(number);
     }
 
-private:
+protected:
     tr1::unordered_set<N> ids_;
 };
 

@@ -15,10 +15,11 @@
 #include "Dispatcher.h"
 #include "Identifiable.h"
 #include "PortManager.h"
+#include "SocketManager.h"
 
 using namespace std;
 
-class Socket : public Identifiable {
+class Socket {
 public:
 
     /**
@@ -28,7 +29,7 @@ public:
             int type,
             int protocol,
             AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().next())) :
-            Identifiable(),
+            socket_(SocketManager::instance().next()),
             domain_(domain),
             type_(type),
             protocol_(protocol),
@@ -54,7 +55,7 @@ public:
      * @return The int which represents this Socket.
      */
     int get_socket() const {
-        return get_id();
+        return socket_;
     }
 
     int get_domain() const {
@@ -106,6 +107,7 @@ private:
     int domain_;
     int type_;
     int protocol_;
+    int16_t socket_;
 };
 
 #endif	/* _SOCKET_H */
