@@ -19,8 +19,7 @@ class NumberGenerator {
 public:
 
     NumberGenerator() {
-        // Initialize random seed
-        srand(time(NULL));
+        reset_seed();
     }
 
     virtual ~NumberGenerator() {
@@ -40,6 +39,12 @@ public:
 
     void remove(N number) {
         ids_.erase(number);
+    }
+
+    void reset_seed() {
+        timespec ts;
+        clock_gettime(CLOCK_REALTIME, &ts);
+        srand(ts.tv_nsec);
     }
 
 protected:

@@ -9,10 +9,11 @@
 #define	_SHORTGENERATOR_H
 
 #include "NumberGenerator.h"
+#include <cmath>
 
 class ShortGenerator : public NumberGenerator<uint16_t> {
 public:
-    ShortGenerator() : NumberGenerator<uint16_t>() {
+    ShortGenerator() : NumberGenerator<uint16_t>(), max_(pow(2, 15)) {
 
     }
 
@@ -21,19 +22,29 @@ public:
     }
 
     uint16_t next() {
+        reset_seed();
+        
         uint16_t random;
 
         while (true) {
             random = rand();
+
+            // Ensure the left-most bit is 0
             random &= 0x7FFF;
-            if(ids_.find(random = rand()) == ids_.end()) {
+
+            assert(!(random & 0x8000));
+            assert(random <= max_);
+
+            if(ids_.find(random) == ids_.end()) {
                 break;
             }
         }
         use(random);
-        cout << "Random Short: " << random << endl;
         return random;
     }
+
+private:
+    uint16_t max_;
 };
 
 #endif	/* _SHORTGENERATOR_H */

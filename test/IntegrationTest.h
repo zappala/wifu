@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include "headers/UnitTest++.h"
 #include "../applib/wifu_socket.h"
@@ -23,6 +24,7 @@ namespace {
         if (value < 0) {
             perror("Error starting wifu-end");
         }
+        // We have to sleep so we can ensure the back end is up and running
         sleep(1);
     }
 
@@ -48,8 +50,12 @@ namespace {
     SUITE(IntegrationTest) {
 
         TEST_FIXTURE(BackEndFixture, Socket) {
-            int socket = wifu_socket(AF_INET, SOCK_STREAM, 0);
-            cout << "Socket Returned: " <<socket << endl;
+
+            for (int i = 0; i < 1000; i++) {
+                u_int16_t socket = wifu_socket(AF_INET, SOCK_STREAM, 0);
+                CHECK(socket >= 0);
+                CHECK(socket <= pow(2, 15));
+            }
         }
     }
 }

@@ -107,7 +107,7 @@ private:
     int domain_;
     int type_;
     int protocol_;
-    int16_t socket_;
+    int socket_;
 };
 
 #endif	/* _SOCKET_H */

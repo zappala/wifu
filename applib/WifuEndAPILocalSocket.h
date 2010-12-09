@@ -77,7 +77,7 @@ public:
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
-
+        
         if (!response_[NAME_STRING].compare(WIFU_SOCKET_NAME)) {
             sockets.put(0, new SocketData());
             sockets.get(0)->set_return_value(socket);
