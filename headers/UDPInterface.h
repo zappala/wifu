@@ -39,7 +39,6 @@ public:
     void start(AddressPort& ap) {
         // Set up the UDPSocket
         socket_.bind_socket(ap);
-        socket_.makeNonBlocking();
         socket_.receive(this);
     }
 

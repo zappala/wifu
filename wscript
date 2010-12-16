@@ -65,11 +65,13 @@ def build(bld):
 		target='udp-blaster')
 
 	# udp sink
-	udp_files.remove('preliminary/UDPBlaster.cc')
-	udp_files += bld.glob('preliminary/UDPSink.cc')
+	udp_sink_files = bld.glob('preliminary/Timer.cc')
+	udp_sink_files += bld.glob('preliminary/UDPSink.cc')
+	udp_sink_files += bld.glob('src/UDPSocket.cc')
+	udp_sink_files += bld.glob('src/Semaphore.cc')
 
 	udp_sink = bld(features='cxx cprogram',
-        source=udp_files,
+        source=udp_sink_files,
         includes='headers',
         uselib='PTHREAD RT',
 		target='udp-sink')

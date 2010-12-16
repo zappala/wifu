@@ -11,9 +11,10 @@
 #include <unistd.h>
 
 #include "../headers/OptionParser.h"
-#include "../headers/AddressPort.h"
 #include "Timer.h"
 #include "../headers/UDPSocket.h"
+#include "../headers/UDPSocketCallback.h"
+#include "Utils.h"
 
 using namespace std;
 
@@ -21,18 +22,16 @@ class Callback : public UDPSocketCallback {
 public:
     Callback() : UDPSocketCallback(), count_(0) {
         sem_.init(0);
-        timer_.start();
     }
 
     void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
 
-        timer_.update_start();
+        timer_.start();
 
         if(!strcmp((const char*)buffer, "stop")) {
             sem_.post();
+            return;
         }
-
-
 
         ++count_;
         timer_.update_stop();
@@ -44,6 +43,10 @@ public:
 
     Timer& get_timer() {
         return timer_;
+    }
+
+    int get_count() {
+        return count_;
     }
 
 private:
@@ -60,11 +63,13 @@ int main(int argc, char** argv) {
 
     const char * sink_address = "sink-address";
     const char * sink_port = "sink-port";
+    const char * max_run_time = "max-run-time";
 
     // setup options
     static struct option long_options[] = {
         {sink_address, required_argument, NULL, 1},
         {sink_port, required_argument, NULL, 2},
+        {max_run_time, required_argument, NULL, 3},
         {0, 0, 0, 0}
     };
 
@@ -73,6 +78,7 @@ int main(int argc, char** argv) {
 
     string sink_address_ = "127.0.0.1";
     u_int16_t sink_port_ = 5000;
+    int max_run_time_ = 30;
 
     if (options.present(sink_address)) {
         sink_address_ = options.argument(sink_address);
@@ -80,21 +86,35 @@ int main(int argc, char** argv) {
     if (options.present(sink_port)) {
         sink_port_ = atoi(options.argument(sink_port));
     }
+    if (options.present(max_run_time)) {
+        max_run_time_ = atoi(options.argument(max_run_time));
+    }
 
     cout << "Sink Address:\t" << sink_address_ << endl;
     cout << "Sink Port:\t" << sink_port_ << endl;
+    cout << "Max Run Time:\t" << max_run_time_ << endl;
 
     AddressPort sink(sink_address_, sink_port_);
     UDPSocket socket;
-    socket.makeNonBlocking();
     socket.bind_socket(sink);
-
 
     Callback callback;
     socket.receive(&callback);
-    callback.get_semaphore().wait();
 
-    cout << "Done" << endl;
+    cout << "Waiting for signal to stop listening." << endl;
+    struct timespec ts;
+    Utils::get_timespec_future_time(max_run_time_, 0, &ts);
+    bool timedout = callback.get_semaphore().timed_wait(&ts);
+
+    cout << "Done: ";
+    if(timedout) {
+        cout << "Timed Out" << endl;
+    }
+    else {
+        cout << "Received Signal" << endl;
+    }
+    cout << "Duration (sec):\t" << callback.get_timer().get_duration_seconds() << endl;
+    cout << "Count:\t" << callback.get_count() << endl;
 
 
     return (EXIT_SUCCESS);
