@@ -76,6 +76,12 @@ def build(bld):
         uselib='PTHREAD RT',
 		target='udp-sink')
 
+	simple_tcp_files = bld.glob('preliminary/SimpleTCP.cc')
+	udp_sink = bld(features='cxx cprogram',
+        source=simple_tcp_files,
+        includes='headers',
+        uselib='PTHREAD RT',
+		target='simple-tcp')
 
 
 
