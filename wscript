@@ -76,12 +76,32 @@ def build(bld):
         uselib='PTHREAD RT',
 		target='udp-sink')
 
-	simple_tcp_files = bld.glob('preliminary/SimpleTCP.cc')
+	# SimpleTCP
+	simple_tcp_files = bld.glob('preliminary/SimpleTCPServer.cc')
+	simple_tcp_files += bld.glob('preliminary/SimpleTCP.cc')
+	simple_tcp_files += bld.glob('src/UDPSocket.cc')
+	simple_tcp_files += bld.glob('src/Semaphore.cc')
+	simple_tcp_files += bld.glob('src/Identifiable.cc')
+	simple_tcp_files += bld.glob('src/IDGenerator.cc')
+
 	udp_sink = bld(features='cxx cprogram',
         source=simple_tcp_files,
         includes='headers',
         uselib='PTHREAD RT',
-		target='simple-tcp')
+		target='simple-tcp-server')
+
+	
+	simple_tcp_files = bld.glob('preliminary/SimpleTCPClient.cc')
+	simple_tcp_files += bld.glob('preliminary/SimpleTCP.cc')
+	simple_tcp_files += bld.glob('src/UDPSocket.cc')
+	simple_tcp_files += bld.glob('src/Semaphore.cc')
+	simple_tcp_files += bld.glob('src/Identifiable.cc')
+	simple_tcp_files += bld.glob('src/IDGenerator.cc')
+	udp_sink = bld(features='cxx cprogram',
+        source=simple_tcp_files,
+        includes='headers',
+        uselib='PTHREAD RT',
+		target='simple-tcp-client')
 
 
 
