@@ -29,8 +29,12 @@ public:
     void receive(AddressPort& ap, unsigned char* buffer, size_t length);
     void send(unsigned char* buffer, size_t length);
     void send(AddressPort* ap, SimplePacket& p);
+    void send(SimplePacket& p);
     void connect(AddressPort& ap);
+    void close();
     void set_state(SimpleTCPState* state);
+
+    Semaphore& get_connected_flag();
 
 private:
     UDPSocket socket_;
@@ -47,6 +51,8 @@ private:
     Semaphore queue_flag_;
 
     class SimpleTCPState* state_;
+
+    Semaphore connected_flag_;
 
 };
 

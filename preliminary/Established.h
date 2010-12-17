@@ -10,10 +10,7 @@
 
 #include <iostream>
 
-#include "SimpleTCP.h"
-
 using namespace std;
-
 
 class Established : public SimpleTCPState {
 
@@ -22,15 +19,31 @@ class Established : public SimpleTCPState {
         cout << "ID of packet: " << packet.get_header()->id << endl;
         cout << "Payload: " << (char*) packet.get_payload() << endl;
 
-        
+
     }
 
     virtual void timeout(SimpleTCP* s) {
 
     }
 
+    virtual void close(SimpleTCP* s) {
+        cout << "Established: Close" << endl;
+
+        struct SimpleHeader header;
+        header.ack = 0;
+        header.id = IDGenerator::instance().next();
+
+        string message = "FIN";
+        SimplePacket p((unsigned char*) message.c_str(), message.length(), &header);
+        s->send(p);
+
+        
+        //s->set_state(new Closed());
+    }
+
     virtual void enter(SimpleTCP* s) {
         enter_state("Established");
+        s->get_connected_flag().post();
     }
 
     virtual void exit(SimpleTCP* s) {

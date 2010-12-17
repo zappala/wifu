@@ -9,6 +9,7 @@ SimpleTCP::SimpleTCP(AddressPort& ap) : UDPSocketCallback() {
     remote_ = 0;
 
     queue_flag_.init(0);
+    connected_flag_.init(0);
 
     state_ = 0;
     set_state(new Closed());
@@ -42,8 +43,17 @@ void SimpleTCP::send(AddressPort* ap, SimplePacket& p) {
     socket_.send(ap->get_network_struct_ptr(), p.to_bytes(), p.get_total_length());
 }
 
+void SimpleTCP::send(SimplePacket& p) {
+    socket_.send(remote_->get_network_struct_ptr(), p.to_bytes(), p.get_total_length());
+}
+
 void SimpleTCP::connect(AddressPort& ap) {
     state_->activeOpen(this, ap);
+    connected_flag_.wait();
+}
+
+void SimpleTCP::close() {
+    state_->close(this);
 }
 
 void SimpleTCP::set_state(SimpleTCPState* state) {
@@ -55,4 +65,8 @@ void SimpleTCP::set_state(SimpleTCPState* state) {
     if (state_ != 0) {
         state_->enter(this);
     }
+}
+
+Semaphore& SimpleTCP::get_connected_flag() {
+    return connected_flag_;
 }
