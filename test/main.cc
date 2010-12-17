@@ -16,7 +16,6 @@
 #include "headers/CheckMacros.h"
 
 
-
 #include "UDPSocketTest.h"
 #include "AddressPortTest.h"
 #include "SemaphoreTest.h"
@@ -30,6 +29,9 @@
 #include "QueryStringParserTest.h"
 #include "SocketMapTest.h"
 
+#include "ConnectEventTest.h"
+#include "PacketReceivedEventTest.h"
+#include "SendPacketEventTest.h"
 
 #include "WifuEndAPITest.h"
 #include "IntegrationTest.h"
