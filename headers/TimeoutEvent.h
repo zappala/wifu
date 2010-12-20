@@ -76,7 +76,7 @@ public:
 
 private:
     /**
-     * Holds the absolute time which this TimeoutEvent should time out at.
+     * Holds the absolute time when this TimeoutEvent should time out.
      */
     struct timespec timer_;
 
