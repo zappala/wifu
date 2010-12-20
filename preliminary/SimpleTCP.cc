@@ -1,107 +1,72 @@
-/* 
- * File:   SimpleTCP.cc
- * Author: rbuck
- *
- * Created on December 16, 2010, 1:40 PM
- */
+#include "SimpleTCP.h"
+#include "Closed.h"
 
-#include <stdlib.h>
-#include <iostream>
+SimpleTCP::SimpleTCP(AddressPort& ap) : UDPSocketCallback() {
+    socket_.bind_socket(ap);
+    socket_.receive(this);
 
-#include "../headers/UDPSocket.h"
-#include "../headers/Identifiable.h"
-#include "../headers/Queue.h"
+    local_ = new AddressPort(ap);
+    remote_ = 0;
 
-#define MSS 1500
+    queue_flag_.init(0);
+    connected_flag_.init(0);
 
-using namespace std;
-
-class SimplePacket : public Identifiable {
-public:
-
-    SimplePacket(unsigned char* data, size_t length) : length_(length) {
-        memcpy(buffer_ + sizeof (int), data, length);
-        int id = get_id();
-        memcpy(buffer_, &id, sizeof (int));
-    }
-
-    virtual ~SimplePacket() {
-
-    }
-
-    unsigned char* to_bytes() {
-        return buffer_;
-    }
-
-    size_t length() {
-        return length_ + sizeof (int);
-    }
-
-private:
-    size_t length_;
-    unsigned char buffer_[MSS];
-};
-
-class SimpleTCP : public UDPSocketCallback {
-public:
-
-    SimpleTCP(AddressPort& ap) : UDPSocketCallback() {
-        socket_.bind_socket(ap);
-        socket_.receive(this);
-
-        local_ = 0;
-        remote_ = 0;
-
-        queue_flag_.init(0);
-    }
-
-    virtual ~SimpleTCP() {
-        if (local_) {
-            delete local_;
-        }
-
-        if (remote_) {
-            delete remote_;
-        }
-    }
-
-    void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
-
-    }
-
-    void send(unsigned char* buffer, size_t length) {
-        // fill up the Queue here,
-    }
-
-    void connect(AddressPort& ap) {
-        
-        //SimplePacket* p = new SimplePacket()
-    }
-
-private:
-    UDPSocket socket_;
-
-    // Local address and port that this object is bound to
-    AddressPort* local_;
-
-    // Remote address and port to which to send to
-    AddressPort* remote_;
-
-    // Queue to hold the packets
-    Queue<SimplePacket*> queue_;
-
-    Semaphore queue_flag_;
-
-    
-
-};
-
-/*
- * 
- */
-int main(int argc, char** argv) {
-
-    cout << "SimpleTCP" << endl;
-    return (EXIT_SUCCESS);
+    state_ = 0;
+    set_state(new Closed());
 }
 
+SimpleTCP::~SimpleTCP() {
+    if (local_) {
+        delete local_;
+    }
+
+    if (remote_) {
+        delete remote_;
+    }
+
+    if (state_) {
+        delete state_;
+    }
+}
+
+void SimpleTCP::receive(AddressPort& ap, unsigned char* buffer, size_t length) {
+    SimplePacket packet(buffer, length);
+    state_->receive(this, ap, packet);
+
+}
+
+void SimpleTCP::send(unsigned char* buffer, size_t length) {
+    // fill up the Queue here,
+}
+
+void SimpleTCP::send(AddressPort* ap, SimplePacket& p) {
+    socket_.send(ap->get_network_struct_ptr(), p.to_bytes(), p.get_total_length());
+}
+
+void SimpleTCP::send(SimplePacket& p) {
+    socket_.send(remote_->get_network_struct_ptr(), p.to_bytes(), p.get_total_length());
+}
+
+void SimpleTCP::connect(AddressPort& ap) {
+    state_->activeOpen(this, ap);
+    connected_flag_.wait();
+}
+
+void SimpleTCP::close() {
+    state_->close(this);
+}
+
+void SimpleTCP::set_state(SimpleTCPState* state) {
+    if (state_ != 0) {
+        state_->exit(this);
+    }
+    delete state_;
+    state_ = state;
+    if (state_ != 0) {
+        state_->enter(this);
+    }
+}
+
+Semaphore& SimpleTCP::get_connected_flag() {
+    return connected_flag_;
+}
