@@ -35,7 +35,6 @@ namespace {
 			CHECK(dummyImodule.udp_sent == false);
 
 
-
 			int data_length = 10;
 			unsigned char data[data_length];
 			string source_address("127.0.0.1");

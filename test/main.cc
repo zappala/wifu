@@ -32,6 +32,9 @@
 #include "ConnectEventTest.h"
 #include "PacketReceivedEventTest.h"
 #include "SendPacketEventTest.h"
+#include "TimeoutEventTest.h"
+#include "CancelTimerEventTest.h"
+#include "TimerFiredEventTest.h"
 
 #include "WifuEndAPITest.h"
 #include "IntegrationTest.h"
