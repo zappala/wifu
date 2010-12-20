@@ -27,6 +27,8 @@ int main(int argc, char** argv) {
     AddressPort server("127.0.0.1", 5000);
     tcp.connect(server);
 
+    cout << "Connected" << endl;
+
 
     return (EXIT_SUCCESS);
 }

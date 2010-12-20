@@ -11,8 +11,14 @@ SimpleTCP::SimpleTCP(AddressPort& ap) : UDPSocketCallback() {
     queue_flag_.init(0);
     connected_flag_.init(0);
 
+
+
+
     state_ = 0;
     set_state(new Closed());
+
+
+
 }
 
 SimpleTCP::~SimpleTCP() {
@@ -70,3 +76,4 @@ void SimpleTCP::set_state(SimpleTCPState* state) {
 Semaphore& SimpleTCP::get_connected_flag() {
     return connected_flag_;
 }
+

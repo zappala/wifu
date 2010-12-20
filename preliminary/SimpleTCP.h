@@ -54,6 +54,8 @@ private:
 
     Semaphore connected_flag_;
 
+    
+
 };
 
 class SimpleTCPState {
