@@ -21,9 +21,9 @@
 #include "../headers/AddressPort.h"
 #include "../headers/defines.h"
 #include "../headers/Identifiable.h"
-#include "SocketMap.h"
+#include "SocketDataMap.h"
 
-#define sockets SocketMap::instance()
+#define sockets SocketDataMap::instance()
 
 // TODO: Go over each man page and determine what we want to support,
 // TODO: then make sure that every function in this file supports that behavior.

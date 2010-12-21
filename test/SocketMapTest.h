@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "headers/UnitTest++.h"
-#include "../applib/SocketMap.h"
+#include "../applib/SocketDataMap.h"
 #include "../applib/SocketData.h"
 
 using namespace std;
@@ -22,29 +22,29 @@ using namespace std;
 
 namespace {
 
-    SUITE(SocketMap) {
+    SUITE(SocketDataMap) {
 
         TEST(SocketMapTest) {
             SocketData* data = new SocketData();
             data->set_return_value(0);
             
-            SocketMap::instance().put(0, data);
+            SocketDataMap::instance().put(0, data);
 
             data = new SocketData();
             data->set_return_value(2);
-            SocketMap::instance().put(2, data);
+            SocketDataMap::instance().put(2, data);
 
-            SocketData* instance = SocketMap::instance().get(2);
+            SocketData* instance = SocketDataMap::instance().get(2);
             CHECK_EQUAL(2, instance->get_return_value());
 
-            instance = SocketMap::instance().get(0);
+            instance = SocketDataMap::instance().get(0);
             CHECK_EQUAL(0, instance->get_return_value());
 
-            SocketMap::instance().erase_at(0);
-            SocketMap::instance().delete_at(2);
-            SocketMap::instance().put(2, instance);
+            SocketDataMap::instance().erase_at(0);
+            SocketDataMap::instance().delete_at(2);
+            SocketDataMap::instance().put(2, instance);
 
-            instance = SocketMap::instance().get(2);
+            instance = SocketDataMap::instance().get(2);
             CHECK_EQUAL(0, instance->get_return_value());
 
             

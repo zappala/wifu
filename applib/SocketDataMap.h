@@ -14,18 +14,18 @@
 
 using namespace std;
 
-class SocketMap {
+class SocketDataMap {
 private:
 
-    SocketMap() {
+    SocketDataMap() {
         mutex_.init(1);
     }
 
-    SocketMap(SocketMap const&) {
+    SocketDataMap(SocketDataMap const&) {
 
     }
 
-    SocketMap & operator=(SocketMap const&) {
+    SocketDataMap & operator=(SocketDataMap const&) {
 
     }
 
@@ -34,7 +34,7 @@ private:
 
 public:
 
-    virtual ~SocketMap() {
+    virtual ~SocketDataMap() {
         map<int, SocketData*>::iterator itr;
         for (itr = data_.begin(); itr != data_.end(); ++itr) {
             if (itr->second != NULL) {
@@ -43,8 +43,8 @@ public:
         }
     }
 
-    static SocketMap& instance() {
-        static SocketMap instance_;
+    static SocketDataMap& instance() {
+        static SocketDataMap instance_;
         return instance_;
     }
 
