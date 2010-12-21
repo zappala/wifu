@@ -22,6 +22,7 @@ enum HowSorted {
 };
 
 // functions used in sorting
+
 bool id_cmp(Socket* a, Socket* b) {
     return a->get_socket() < b->get_socket();
 }
@@ -40,6 +41,7 @@ bool ap_cmp(Socket* a, Socket* b) {
 }
 
 // functions used in binary search
+
 int bsearch_id_cmp(int& value, Socket* s) {
     return value - s->get_socket();
 }
@@ -49,6 +51,7 @@ int b_search_local_cmp(AddressPort* local, Socket* s) {
 }
 
 // first element in pair is local, second is remote
+
 int b_search_local_remote_cmp(pair<AddressPort*, AddressPort*>& aps, Socket* s) {
     AddressPort* local = aps.first;
     AddressPort* remote = aps.second;
@@ -118,6 +121,8 @@ public:
     }
 
     Socket* get_by_id(int id) {
+        assert(id >= 0);
+
         mutex_.wait();
         if (how_sorted_ != ID) {
             socket_sort(id_cmp);
@@ -129,6 +134,8 @@ public:
     }
 
     Socket* get_by_local_ap(AddressPort* local) {
+        assert(local != NULL);
+
         mutex_.wait();
         if (how_sorted_ != AP) {
             socket_sort(ap_cmp);
@@ -141,13 +148,16 @@ public:
     }
 
     Socket* get_by_local_and_remote_ap(AddressPort* local, AddressPort* remote) {
+        assert(local != NULL);
+        assert(remote != NULL);
+
         mutex_.wait();
         if (how_sorted_ != AP) {
             socket_sort(ap_cmp);
             how_sorted_ = AP;
         }
 
-        pair<AddressPort*,AddressPort*> p = make_pair(local, remote);
+        pair<AddressPort*, AddressPort*> p = make_pair(local, remote);
         Socket* value = binary_search(p, b_search_local_remote_cmp);
         mutex_.post();
         return value;
@@ -167,6 +177,12 @@ public:
     int clear() {
         mutex_.wait();
         collection_.clear();
+        mutex_.post();
+    }
+
+    void shuffle() {
+        mutex_.wait();
+        random_shuffle(collection_.begin(), collection_.end());
         mutex_.post();
     }
 

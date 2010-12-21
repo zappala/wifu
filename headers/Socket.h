@@ -50,6 +50,8 @@ public:
         if(remote_) {
             delete remote_;
         }
+
+        SocketManager::instance().remove(socket_);
     }
 
     /**
