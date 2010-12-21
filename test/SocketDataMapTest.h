@@ -5,8 +5,8 @@
  * Created on November 24, 2010, 3:26 PM
  */
 
-#ifndef SOCKETMAPTEST_H
-#define	SOCKETMAPTEST_H
+#ifndef SOCKETDATAMAPTEST_H
+#define	SOCKETDATAMAPTEST_H
 
 #include <iostream>
 #include <string>
@@ -62,9 +62,10 @@ namespace {
 
             int* ptr = m[1];
             m[3] = ptr;
+
         }
     }
 }
 
-#endif	/* SOCKETMAPTEST_H */
+#endif	/* SOCKETDATAMAPTEST_H */
 

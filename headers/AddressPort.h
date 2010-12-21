@@ -96,7 +96,7 @@ public:
      * @param other The "other" Address port to compare this one with
      * @return True if the addresses and the ports are equivialent, false otherwise
      */
-    bool operator==(const AddressPort& other) {
+    bool operator==(const AddressPort& other) const {
         return address_ == other.address_ && port_ == other.port_;
     }
 
@@ -106,7 +106,7 @@ public:
      * @param other The "other" Address port to compare this one with
      * @return True if either the addresses or ports do not match, false if addresses and ports are equivalent
      */
-    bool operator!=(const AddressPort& other) {
+    bool operator!=(const AddressPort& other) const {
         return !operator ==(other);
     }
 

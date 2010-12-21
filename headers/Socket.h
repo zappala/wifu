@@ -28,13 +28,14 @@ public:
     Socket( int domain,
             int type,
             int protocol,
-            AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().next())) :
+            AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().next()),
+            AddressPort* remote = new AddressPort("0.0.0.0", PortManager::instance().next())) :
             socket_(SocketManager::instance().next()),
             domain_(domain),
             type_(type),
             protocol_(protocol),
             local_(local),
-            remote_(0) {
+            remote_(remote) {
 
     }
 

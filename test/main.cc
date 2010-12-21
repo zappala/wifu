@@ -27,7 +27,7 @@
 
 #include "LocalSocketFullDuplexTest.h"
 #include "QueryStringParserTest.h"
-#include "SocketMapTest.h"
+#include "SocketDataMapTest.h"
 
 #include "CanceledEventsTest.h"
 #include "ConnectEventTest.h"
@@ -55,7 +55,7 @@
 #include "TimeoutHelperTest.h"
 #include "UtilsTest.h"
 #include "WifuEndBackEndLibrary.h"
-
+#include "SocketCollectionTest.h"
 
 #include "WifuEndAPITest.h"
 #include "IntegrationTest.h"
