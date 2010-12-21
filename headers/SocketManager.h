@@ -8,12 +8,12 @@
 #ifndef _SOCKETMANAGER_H
 #define	_SOCKETMANAGER_H
 
-#include "NumberGenerator.h"
+#include "RandomNumberSet.h"
 
-class SocketManager : public NumberGenerator<uint16_t> {
+class SocketManager : public RandomNumberSet<uint16_t> {
 private:
 
-    SocketManager() : NumberGenerator<uint16_t>() {
+    SocketManager() : RandomNumberSet<uint16_t>() {
 
     }
 

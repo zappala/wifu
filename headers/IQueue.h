@@ -25,9 +25,9 @@ public:
     virtual ~IQueue() {}
 
     /**
-     * Dequeues and returns the next element on the queue.
+     * Dequeues and returns the get element on the queue.
      *
-     * @return The next element on the queue.
+     * @return The get element on the queue.
      */
     virtual T dequeue() = 0;
 

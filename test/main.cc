@@ -43,7 +43,7 @@
 #include "LocalSocketReceiverTest.h"
 #include "LocalSocketSenderTest.h"
 #include "MainSemaphoreTest.h"
-#include "NumberGeneratorTest.h"
+#include "RandomNumberSetTest.h"
 #include "OptionParserTest.h"
 #include "SocketDataTest.h"
 #include "PortManagerTest.h"

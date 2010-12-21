@@ -31,7 +31,7 @@ class Established : public SimpleTCPState {
 
         struct SimpleHeader header;
         header.ack = 0;
-        header.id = IDGenerator::instance().next();
+        header.id = IDGenerator::instance().get();
 
         string message = "FIN";
         SimplePacket p((unsigned char*) message.c_str(), message.length(), &header);

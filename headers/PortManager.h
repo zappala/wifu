@@ -8,12 +8,12 @@
 #ifndef _PORTMANAGER_H
 #define	_PORTMANAGER_H
 
-#include "NumberGenerator.h"
+#include "RandomNumberSet.h"
 
-class PortManager : public NumberGenerator<uint16_t> {
+class PortManager : public RandomNumberSet<uint16_t> {
 private:
 
-    PortManager() : NumberGenerator<uint16_t>() {}
+    PortManager() : RandomNumberSet<uint16_t>() {}
 
 public:
 

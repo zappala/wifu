@@ -8,12 +8,12 @@
 #ifndef _IDGENERATOR_H
 #define	_IDGENERATOR_H
 
-#include "NumberGenerator.h"
+#include "RandomNumberSet.h"
 
 /**
  * Generates globally unique ids.
  */
-class IDGenerator : public NumberGenerator<int> {
+class IDGenerator : public RandomNumberSet<int> {
 private:
 
     /**
