@@ -45,10 +45,10 @@ public:
     }
 
     /**
-     * Dequeues and returns the next element in the queue.
+     * Dequeues and returns the get element in the queue.
      * This is a blocking method and will wait indefinately if there is nothing to dequeue.
      *
-     * @return The next element in the queue.
+     * @return The get element in the queue.
      */
     T dequeue() {
         counter_.wait();

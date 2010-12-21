@@ -2,7 +2,7 @@
 
 // private
 
-IDGenerator::IDGenerator() : NumberGenerator<int>() {
+IDGenerator::IDGenerator() : RandomNumberSet<int>() {
 
 }
 

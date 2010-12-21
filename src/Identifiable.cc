@@ -1,6 +1,6 @@
 #include "Identifiable.h"
 
-Identifiable::Identifiable() : id_(IDGenerator::instance().next()) {
+Identifiable::Identifiable() : id_(IDGenerator::instance().get()) {
 
 }
 

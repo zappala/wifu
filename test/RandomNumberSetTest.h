@@ -9,13 +9,13 @@
 #define NUMBERGENERATORTEST_H_
 
 #include "UnitTest++.h"
-#include "../headers/NumberGenerator.h"
+#include "RandomNumberSet.h"
 
 using namespace std;
 
 namespace {
 
-	SUITE(NumberGenerator) {
+	SUITE(RandomNumberSet) {
 
 	}
 

@@ -29,7 +29,7 @@ class SynSent : public SimpleTCPState {
 
         struct SimpleHeader header;
         header.ack = packet.get_header()->id;
-        header.id = IDGenerator::instance().next();
+        header.id = IDGenerator::instance().get();
 
         message = "ACK";
         SimplePacket p((unsigned char*) message.c_str(), message.length(), &header);

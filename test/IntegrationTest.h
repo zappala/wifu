@@ -12,7 +12,7 @@
 #include <vector>
 #include <cmath>
 
-#include "headers/UnitTest++.h"
+#include "UnitTest++.h"
 #include "../applib/wifu_socket.h"
 
 using namespace std;
@@ -54,7 +54,6 @@ namespace {
             for (int i = 0; i < 1000; i++) {
                 u_int16_t socket = wifu_socket(AF_INET, SOCK_STREAM, 0);
                 CHECK(socket >= 0);
-                CHECK(socket <= pow(2, 15));
             }
         }
     }

@@ -1,5 +1,5 @@
 /* 
- * File:   NumberGenerator.h
+ * File:   RandomNumberSet.h
  * Author: rbuck
  *
  * Created on December 1, 2010, 3:17 PM
@@ -15,18 +15,18 @@
 using namespace std;
 
 template<class N>
-class NumberGenerator {
+class RandomNumberSet {
 public:
 
-    NumberGenerator() {
+    RandomNumberSet() {
         reset_seed();
     }
 
-    virtual ~NumberGenerator() {
+    virtual ~RandomNumberSet() {
 
     }
 
-    virtual N next() {
+    virtual N get() {
         N random;
         while (ids_.find(random = rand()) != ids_.end());
         use(random);

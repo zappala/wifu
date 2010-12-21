@@ -28,9 +28,9 @@ public:
     Socket( int domain,
             int type,
             int protocol,
-            AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().next()),
-            AddressPort* remote = new AddressPort("0.0.0.0", PortManager::instance().next())) :
-            socket_(SocketManager::instance().next()),
+            AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().get()),
+            AddressPort* remote = new AddressPort("0.0.0.0", PortManager::instance().get())) :
+            socket_(SocketManager::instance().get()),
             domain_(domain),
             type_(type),
             protocol_(protocol),

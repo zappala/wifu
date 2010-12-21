@@ -24,8 +24,8 @@ namespace {
     SUITE(IDGenerator) {
         TEST(IDGeneratorTest) {
             UNITTEST_TIME_CONSTRAINT(1);
-            int id0 = IDGenerator::instance().next();
-            int id1 = IDGenerator::instance().next();
+            int id0 = IDGenerator::instance().get();
+            int id1 = IDGenerator::instance().get();
 
             CHECK(id0 != id1);
 
