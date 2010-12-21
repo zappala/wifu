@@ -46,7 +46,7 @@ public:
 
     /**
      * Dequeues and returns the next element in the queue.
-     * This is a blocking method and will wait indefinately if there is nothing to dequeue.
+     * This is a blocking method and will wait indefinitely if there is nothing to dequeue.
      *
      * @return The next element in the queue.
      */
