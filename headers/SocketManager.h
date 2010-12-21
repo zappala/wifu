@@ -8,12 +8,12 @@
 #ifndef _SOCKETMANAGER_H
 #define	_SOCKETMANAGER_H
 
-#include "ShortGenerator.h"
+#include "NumberGenerator.h"
 
-class SocketManager : public ShortGenerator {
+class SocketManager : public NumberGenerator<uint16_t> {
 private:
 
-    SocketManager() : ShortGenerator() {
+    SocketManager() : NumberGenerator<uint16_t>() {
 
     }
 

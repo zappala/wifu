@@ -8,20 +8,16 @@
 #ifndef _PORTMANAGER_H
 #define	_PORTMANAGER_H
 
-#include "ShortGenerator.h"
+#include "NumberGenerator.h"
 
-class PortManager : public ShortGenerator {
+class PortManager : public NumberGenerator<uint16_t> {
 private:
 
-    PortManager() : ShortGenerator() {
-
-    }
+    PortManager() : NumberGenerator<uint16_t>() {}
 
 public:
 
-    virtual ~PortManager() {
-
-    }
+    virtual ~PortManager() {}
     
     static PortManager& instance() {
         static PortManager instance_;

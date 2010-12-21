@@ -9,7 +9,7 @@
 #define NUMBERGENERATORTEST_H_
 
 #include "UnitTest++.h"
-#include "../headers/NumberGenerator.h"
+#include "NumberGenerator.h"
 
 using namespace std;
 
