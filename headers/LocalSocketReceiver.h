@@ -25,7 +25,6 @@
 #include <vector>
 
 #include "LocalSocketReceiverCallback.h"
-#include "LocalSocketReceiverThreadsSockets.h"
 #include "Semaphore.h"
 #include "defines.h"
 

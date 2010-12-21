@@ -1,0 +1,24 @@
+/*
+ * TimeoutEventManagerTest.h
+ *
+ *  Created on: Dec 20, 2010
+ *      Author: erickson
+ */
+
+#ifndef TIMEOUTEVENTMANAGERTEST_H_
+#define TIMEOUTEVENTMANAGERTEST_H_
+
+#include "UnitTest++.h"
+#include "../headers/TimeoutEventManager.h"
+
+using namespace std;
+
+namespace {
+
+	SUITE(TimeoutEventManager) {
+
+	}
+
+}
+
+#endif /* TIMEOUTEVENTMANAGERTEST_H_ */

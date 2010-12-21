@@ -29,12 +29,33 @@
 #include "QueryStringParserTest.h"
 #include "SocketMapTest.h"
 
+#include "CanceledEventsTest.h"
 #include "ConnectEventTest.h"
 #include "PacketReceivedEventTest.h"
 #include "SendPacketEventTest.h"
 #include "TimeoutEventTest.h"
 #include "CancelTimerEventTest.h"
 #include "TimerFiredEventTest.h"
+
+
+#include "DispatcherTest.h"
+#include "EventSetTest.h"
+#include "LocalSocketReceiverTest.h"
+#include "LocalSocketSenderTest.h"
+#include "MainSemaphoreTest.h"
+#include "NumberGeneratorTest.h"
+#include "OptionParserTest.h"
+#include "SocketDataTest.h"
+#include "PortManagerTest.h"
+#include "PriorityQueueTest.h"
+#include "QueueProcessor.h"
+#include "SocketManagerTest.h"
+#include "TimeoutEventManagerTest.h"
+#include "TimeoutEventManagerSemaphoreTest.h"
+#include "TimeoutHelperTest.h"
+#include "UtilsTest.h"
+#include "WifuEndBackEndLibrary.h"
+
 
 #include "WifuEndAPITest.h"
 #include "IntegrationTest.h"

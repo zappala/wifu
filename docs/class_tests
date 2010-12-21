@@ -1,0 +1,43 @@
+CanceledEvents ✓
+ConnectionManager ?
+DequeueCallback ..
+Dispatcher ✓
+Event -
+EventSet ✓
+LocalSocketReceiver ✓
+LocalSocketReceiverCallback ..
+LocalSocketSender ✓
+MainSemaphore ✓
+Message -
+Module -
+NumberGenerator ✓
+OptionParser ✓
+PacketEvent -
+SocketData ✓
+wifu_socket -
+PortManager ✓
+PriorityQueue ✓
+QueueProcessor ✓
+ShortGenerator ✓
+Socket -
+SocketCongestionControl -
+SocketConnectionManager -
+SocketDispatcher -
+SocketManager ✓
+SocketReliability -
+SocketSocket -
+SocketUDPInterface -
+TimeoutEventManager ✓
+TimeoutEventManagerSemaphore ✓
+TimeoutHelper ✓
+TimerEvent ✓
+UDPReceivePacketEvent -
+UDPSendPacketEvent -
+Utils ✓
+WifuEndBackEndLibrary ✓
+
+* to do
+- don't do yet
+? or ..  ?
+✓ created but empty
+delete classes off this list when they have tests
