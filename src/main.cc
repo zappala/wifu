@@ -32,6 +32,8 @@
 #include "WifuEndBackEndLibrary.h"
 #include "MainSemaphore.h"
 
+#include "../lib/gc/include/gc_cpp.h"
+
 using namespace std;
 
 void main_signal_manager(int signal) {
@@ -50,11 +52,12 @@ void register_signals(){
 }
 
 int main(int argc, char** argv) {
-
-
     //TODO: Change second argument to 0 once we have a logger in place
     daemon(1,1);
-    
+
+
+    //GC_INIT();
+
     MainSemaphore::instance().init(0);
 
     register_signals();
