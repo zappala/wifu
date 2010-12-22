@@ -20,7 +20,7 @@
 #include "../headers/Utils.h"
 #include "../headers/AddressPort.h"
 #include "../headers/defines.h"
-#include "../headers/Identifiable.h"
+#include "../headers/IDGenerator.h"
 #include "SocketDataMap.h"
 
 #define sockets SocketDataMap::instance()
@@ -28,7 +28,7 @@
 // TODO: Go over each man page and determine what we want to support,
 // TODO: then make sure that every function in this file supports that behavior.
 
-class WifuEndAPILocalSocket : public Identifiable, LocalSocketFullDuplex {
+class WifuEndAPILocalSocket : public LocalSocketFullDuplex {
 private:
 
     /**
@@ -36,13 +36,13 @@ private:
      *
      * @param file The file which this object listens on (other local sockets can write to this file).
      */
-    WifuEndAPILocalSocket() : Identifiable(), LocalSocketFullDuplex(get_filename().c_str()), write_file_("WS") {
+    WifuEndAPILocalSocket() : LocalSocketFullDuplex(get_filename().c_str()), write_file_("WS") {
         socket_signal_.init(0);
         socket_mutex_.init(1);
 
     }
 
-    WifuEndAPILocalSocket(WifuEndAPILocalSocket const&) : Identifiable(), LocalSocketFullDuplex(getFile()), write_file_("WS") {
+    WifuEndAPILocalSocket(WifuEndAPILocalSocket const&) : LocalSocketFullDuplex(getFile()), write_file_("WS") {
 
     }
 
@@ -52,7 +52,9 @@ private:
 
     string get_filename() {
         string s("LS");
-        s.append(Utils::itoa(get_id()));
+        // TODO: figure out a way to ensure a machine global value to append to the file
+        int id = IDGenerator::instance().get();
+        s.append(Utils::itoa(id));
         return s;
     }
 

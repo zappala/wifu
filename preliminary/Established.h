@@ -9,7 +9,7 @@
 #define	_ESTABLISHED_H
 
 #include <iostream>
-
+#include "../headers/IDGenerator.h"
 using namespace std;
 
 class Established : public SimpleTCPState {

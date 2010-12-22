@@ -8,7 +8,6 @@
 #ifndef _EVENT_H
 #define	_EVENT_H
 
-#include "Identifiable.h"
 #include "IModule.h"
 
 class IModule;
@@ -16,7 +15,7 @@ class IModule;
 /**
  * Represents an Event which IModule objects will receive and react to.
  */
-class Event : public Identifiable {
+class Event {
 public:
 
     /**
