@@ -12,6 +12,7 @@
 #include "Module.h"
 #include "QueryStringParser.h"
 #include "Socket.h"
+#include "SocketCollection.h"
 
 /**
  * Translates string messages received from the front-end library into Event objects
@@ -54,6 +55,7 @@ public:
             int protocol = atoi(m[PROTOCOL_STRING].c_str());
 
             Socket* socket = new Socket(domain, type, protocol);
+            SocketCollection::instance().push(socket);
             int id = socket->get_socket();
 
             response[SOCKET_STRING] = Utils::itoa(id);
@@ -84,6 +86,8 @@ public:
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         }
 
+        // TODO: May not always want to respond immediately
+        // TODO: We may need to wait for a response from the internal system
         string response_message = QueryStringParser::create(name, response);
         send_to(m[FILE_STRING], response_message);
     }

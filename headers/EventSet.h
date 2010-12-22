@@ -71,6 +71,18 @@ public:
         return val;
     }
 
+    /**
+     * Returns the number of elements in this EventSet
+     *
+     * @return the number of elements in this EventSet
+     */
+    virtual int size() {
+        sem_.wait();
+        int size = ids_.size();
+        sem_.post();
+        return size;
+    }
+
 private:
     /**
      * Set of ints which represent the ids of many Event objects.
