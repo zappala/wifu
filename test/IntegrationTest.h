@@ -52,9 +52,18 @@ namespace {
         TEST_FIXTURE(BackEndFixture, Socket) {
 
             for (int i = 0; i < 1000; i++) {
-                u_int16_t socket = wifu_socket(AF_INET, SOCK_STREAM, 0);
+                // Check valid
+                int socket = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
                 CHECK(socket >= 0);
+
+                // Check invalid (i != SIMPLE_TCP)
+                socket = wifu_socket(AF_INET, SOCK_STREAM, i);
+                CHECK(socket == -1);
             }
+
+
+
+            
         }
     }
 }

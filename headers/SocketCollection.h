@@ -171,7 +171,10 @@ public:
     }
 
     int size() {
-        return collection_.size();
+        mutex_.wait();
+        int val = collection_.size();
+        mutex_.post();
+        return val;
     }
 
     int clear() {

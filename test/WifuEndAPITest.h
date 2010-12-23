@@ -128,7 +128,7 @@ namespace {
             string file("WS");
             LocalSocketFullDuplexImpl localSocket(file);
 
-            int socket = wifu_socket(1000, 1000, 1000);
+            int socket = wifu_socket(1000, 1000, SIMPLE_TCP);
             int expected = 10;
             int result = socket;
 
@@ -232,6 +232,7 @@ namespace {
 
             socklen_t length = 1000;
             char buf[length];
+            memset(buf, 0, length);
             result = wifu_getsockopt(socket, 0, SO_BINDTODEVICE, &buf, &length);
             CHECK_EQUAL(expected, result);
             CHECK_EQUAL(optvalue, buf);

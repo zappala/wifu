@@ -50,9 +50,8 @@ def post(ctx):
 		error = "%d error(s) encountered during tests." %(val)
 		#raise Exception(error)
 
-def build(bld):
-
-	# udp blaster
+def build_blaster(bld):
+    # udp blaster
 	udp_files = bld.glob('preliminary/Timer.cc')
 	udp_files += bld.glob('preliminary/UDPBlaster.cc')
 	udp_files += bld.glob('src/UDPSocket.cc')
@@ -64,6 +63,7 @@ def build(bld):
         uselib='PTHREAD RT',
 		target='udp-blaster')
 
+def build_sink(bld):
 	# udp sink
 	udp_sink_files = bld.glob('preliminary/Timer.cc')
 	udp_sink_files += bld.glob('preliminary/UDPSink.cc')
@@ -76,6 +76,7 @@ def build(bld):
         uselib='PTHREAD RT',
 		target='udp-sink')
 
+def build_simpletcp(bld):
 	# SimpleTCP
 	simple_tcp_files = bld.glob('preliminary/SimpleTCPServer.cc')
 	simple_tcp_files += bld.glob('preliminary/SimpleTCP.cc')
@@ -90,7 +91,6 @@ def build(bld):
         uselib='PTHREAD RT',
 		target='simple-tcp-server')
 
-	
 #	simple_tcp_files = bld.glob('preliminary/SimpleTCPClient.cc')
 #	simple_tcp_files += bld.glob('preliminary/SimpleTCP.cc')
 #	simple_tcp_files += bld.glob('src/UDPSocket.cc')
@@ -104,8 +104,8 @@ def build(bld):
 #		target='simple-tcp-client')
 
 
-
-	# shared files
+def build_staticlib(bld):
+        # shared files
 	src_files = bld.glob('src/*.cc')
 
 	# shared library
@@ -119,12 +119,8 @@ def build(bld):
 		export_incdirs="applib",
         target='wifu-end-api')
 
-	# exe
-	test_files = bld.glob('test/*.cc')
-
-	all_files = src_files
-	all_files += test_files
-	all_files.remove("src/main.cc")
+def build_wifu(bld):
+	
 
 	exe = bld(features='cxx cprogram',
         source=bld.glob('src/*.cc'),
@@ -132,17 +128,29 @@ def build(bld):
         uselib='PTHREAD RT',
         target='wifu-end')
 
-	# unit tests
+def build_wifu_test(bld):
+        test_files = bld.glob('test/*.cc')
+        src_files = bld.glob('src/*.cc')
 
-	test = bld(features='cxx cprogram',
+	all_files = src_files
+	all_files += test_files
+	all_files.remove("src/main.cc")
+
+        test = bld(features='cxx cprogram',
         source=all_files,
         includes='headers test/headers',
         uselib='PTHREAD RT',
 		uselib_local='wifu-end-api',
 		target='wifu-end-test')
 
+def build(bld):
 
+#	build_blaster(bld)
+#        build_sink(bld)
+#        build_simpletcp(bld)
 
-
+        build_staticlib(bld)
+        build_wifu(bld)
+        build_wifu_test(bld)
 
 	bld.add_post_fun(post)

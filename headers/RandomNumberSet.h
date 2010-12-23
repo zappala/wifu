@@ -8,14 +8,15 @@
 #ifndef _NUMBERGENERATOR_H
 #define	_NUMBERGENERATOR_H
 
-#include <tr1/unordered_set>
 #include <cstdlib>
 #include <time.h>
+
+#include "HashSet.h"
 
 using namespace std;
 
 template<class N>
-class RandomNumberSet {
+class RandomNumberSet : public HashSet<N> {
 public:
 
     RandomNumberSet() {
@@ -28,17 +29,14 @@ public:
 
     virtual N get() {
         N random;
-        while (ids_.find(random = rand()) != ids_.end());
-        use(random);
+
+        do {
+            random = rand();
+        } while (contains(random));
+
+        // TODO: ensure that we are removing these ids at some point
+        insert(random);
         return random;
-    }
-
-    void use(N number) {
-        ids_.insert(number);
-    }
-
-    void remove(N number) {
-        ids_.erase(number);
     }
 
     void reset_seed() {
@@ -47,8 +45,6 @@ public:
         srand(ts.tv_nsec);
     }
 
-protected:
-    tr1::unordered_set<N> ids_;
 };
 
 #endif	/* _NUMBERGENERATOR_H */

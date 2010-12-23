@@ -13,6 +13,7 @@
 #include "QueryStringParser.h"
 #include "Socket.h"
 #include "SocketCollection.h"
+#include "ProtocolManager.h"
 
 /**
  * Translates string messages received from the front-end library into Event objects
@@ -54,11 +55,15 @@ public:
             int type = atoi(m[TYPE_STRING].c_str());
             int protocol = atoi(m[PROTOCOL_STRING].c_str());
 
-            Socket* socket = new Socket(domain, type, protocol);
-            SocketCollection::instance().push(socket);
-            int id = socket->get_socket();
+            int socket_id = -1;
 
-            response[SOCKET_STRING] = Utils::itoa(id);
+            if (ProtocolManager::instance().is_supported(domain, type, protocol)) {
+                Socket* socket = new Socket(domain, type, protocol);
+                SocketCollection::instance().push(socket);
+                socket_id = socket->get_socket();
+                
+            }
+            response[SOCKET_STRING] = Utils::itoa(socket_id);
 
         } else if (!name.compare(WIFU_BIND_NAME)) {
             int return_val = 1;

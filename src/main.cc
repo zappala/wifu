@@ -31,6 +31,7 @@
 #include "PacketReceivedEvent.h"
 #include "WifuEndBackEndLibrary.h"
 #include "MainSemaphore.h"
+#include "ProtocolManager.h"
 
 using namespace std;
 
@@ -49,6 +50,11 @@ void register_signals(){
     signal(SIGTERM, main_signal_manager);
 }
 
+void register_protocols() {
+    // TODO: figure out a better way to register protocols via a config file
+    ProtocolManager::instance().support(SIMPLE_TCP);
+}
+
 int main(int argc, char** argv) {
 
 
@@ -58,6 +64,7 @@ int main(int argc, char** argv) {
     MainSemaphore::instance().init(0);
 
     register_signals();
+    register_protocols();
 
     // INADDR_ANY == 0.0.0.0
     string address("0.0.0.0");

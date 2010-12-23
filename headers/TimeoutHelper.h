@@ -20,6 +20,7 @@
  * Due to the fact that every Module will receive all TimerFiredEvent objects,
  * this class helps filter and pass along only those which a corresponding TimeoutEvent was created by this class.
  */
+// TODO: Refactor this class to inherit from HashSet<Event*>
 class TimeoutHelper : public EventSet {
 public:
 

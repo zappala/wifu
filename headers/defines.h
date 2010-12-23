@@ -53,6 +53,8 @@
 // WIFU_PORT is created from the phone number representaion of W-I-F-U
 #define WIFU_PORT 9438
 
+#define SIMPLE_TCP 1000
+
 typedef const char * event_name;
 
 #endif	/* _INCLUDES_H */

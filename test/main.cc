@@ -56,6 +56,7 @@
 #include "UtilsTest.h"
 #include "WifuEndBackEndLibrary.h"
 #include "SocketCollectionTest.h"
+#include "HashSetTest.h"
 
 #include "WifuEndAPITest.h"
 #include "IntegrationTest.h"
