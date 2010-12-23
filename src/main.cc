@@ -32,7 +32,7 @@
 #include "WifuEndBackEndLibrary.h"
 #include "MainSemaphore.h"
 
-#include "../lib/gc/include/gc_cpp.h"
+//#include "../lib/gc/include/gc_cpp.h"
 
 using namespace std;
 

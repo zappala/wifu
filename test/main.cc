@@ -91,7 +91,7 @@ void cleanup() {
 }
 
 int main(int argc, char** argv) {
-    GC_INIT();
+//    GC_INIT();
     std::cout << "Running tests" << std::endl;
 
     change_dir();

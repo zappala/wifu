@@ -10,7 +10,6 @@
 
 #include "SocketData.h"
 
-
 #include <sstream>
 
 #include "../headers/QueryStringParser.h"
