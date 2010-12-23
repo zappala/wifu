@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     daemon(1,1);
 
 
-    GC_INIT();
+    //GC_INIT();
 
     MainSemaphore::instance().init(0);
 

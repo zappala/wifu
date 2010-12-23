@@ -61,7 +61,7 @@
 #include "WifuEndAPITest.h"
 #include "IntegrationTest.h"
 
-#include "../lib/gc/include/gc_cpp.h"
+//#include "../lib/gc/include/gc_cpp.h"
 
 using namespace UnitTest;
 
