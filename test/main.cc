@@ -11,7 +11,7 @@
 #include <vector>
 #include <sstream>
 
-#include "../lib/gc/include/gc_cpp.h"
+
 
 #include "UnitTest++.h"
 #include "../headers/AddressPort.h"
@@ -61,6 +61,8 @@
 #include "WifuEndAPITest.h"
 #include "IntegrationTest.h"
 
+#include "../lib/gc/include/gc_cpp.h"
+
 using namespace UnitTest;
 
 void change_dir() {
@@ -89,7 +91,7 @@ void cleanup() {
 }
 
 int main(int argc, char** argv) {
-    //GC_INIT();
+    GC_INIT();
     std::cout << "Running tests" << std::endl;
 
     change_dir();
