@@ -154,7 +154,6 @@ public:
         m[LENGTH_STRING] = Utils::itoa(len);
 
         string message = QueryStringParser::create(WIFU_BIND_NAME, m);
-        cout << "Sending this message: " << message << endl;
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
