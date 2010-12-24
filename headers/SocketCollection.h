@@ -193,8 +193,12 @@ public:
 
     virtual void accept(Visitor* v) {
         mutex_.wait();
-        for (int i = 0; i < collection_.size(); i++) {
+        int size = collection_.size();
+        for (int i = 0; i < size; i++) {
             v->visit(collection_[i]);
+            if(v->stop()) {
+                break;
+            }
         }
         mutex_.post();
     }

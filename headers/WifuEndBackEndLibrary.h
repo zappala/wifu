@@ -15,6 +15,7 @@
 #include "SocketCollection.h"
 #include "ProtocolManager.h"
 #include "Utils.h"
+#include "visitors/AlreadyBoundToAddressPortVisitor.h"
 
 /**
  * Translates string messages received from the front-end library into Event objects
@@ -75,31 +76,35 @@ public:
             }
             response[SOCKET_STRING] = Utils::itoa(socket_id);
 
-        }
-        else if (!name.compare(WIFU_BIND_NAME)) {
+        } else if (!name.compare(WIFU_BIND_NAME)) {
             int return_val = -1;
 
             Socket* socket = SocketCollection::instance().get_by_id(socket_id);
-            if(socket != NULL) {
+            if (socket != NULL) {
 
                 u_int16_t port = atoi(m[PORT_STRING].c_str());
                 AddressPort* local = new AddressPort(m[ADDRESS_STRING], port);
 
                 // TODO: Check possible errors
-                // TODO: The main error here is that a socket is already bound
-                // TODO: to the specified address/port
-                socket->set_local_address_port(local);
-                return_val = 0;
-            }
-            else {
+
+                AlreadyBoundToAddressPortVisitor v(local);
+                SocketCollection::instance().accept(&v);
+
+                if (!v.is_bound()) {
+                    socket->set_local_address_port(local);
+                    return_val = 0;
+                } else {
+                    errno = EINVAL;
+                }
+
+            } else {
                 errno = EBADF;
             }
 
 
 
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
-        }
-        else if (!name.compare(WIFU_LISTEN_NAME)) {
+        } else if (!name.compare(WIFU_LISTEN_NAME)) {
             int return_val = 1;
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         } else if (!name.compare(WIFU_ACCEPT_NAME)) {

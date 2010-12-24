@@ -39,7 +39,7 @@ namespace {
 
             for(int port = count; port < count*2; port++) {
                 AddressPort to_check(address, port);
-                AlreadyBoundToAddressPortVisitor v(to_check);
+                AlreadyBoundToAddressPortVisitor v(&to_check);
 
                 sc.accept(&v);
                 CHECK(!v.is_bound());
@@ -66,7 +66,7 @@ namespace {
 
             for(int port = 0; port < count; port++) {
                 AddressPort to_check(address, port);
-                AlreadyBoundToAddressPortVisitor v(to_check);
+                AlreadyBoundToAddressPortVisitor v(&to_check);
 
                 sc.accept(&v);
                 CHECK(v.is_bound());
@@ -101,7 +101,7 @@ namespace {
                 address.append(rest);
 
                 AddressPort to_check(address, port);
-                AlreadyBoundToAddressPortVisitor v(to_check);
+                AlreadyBoundToAddressPortVisitor v(&to_check);
 
                 sc.accept(&v);
                 CHECK(!v.is_bound());
@@ -135,7 +135,7 @@ namespace {
                 address.append(subnet);
 
                 AddressPort to_check(address, port);
-                AlreadyBoundToAddressPortVisitor v(to_check);
+                AlreadyBoundToAddressPortVisitor v(&to_check);
 
                 sc.accept(&v);
                 CHECK(v.is_bound());

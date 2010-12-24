@@ -10,9 +10,26 @@
 
 #include "Visitor.h"
 
+/**
+ * Inherting from this class makes the child class visitable.
+ * 
+ * Namely, the child class must implement the accept so that it
+ * may be visited.
+ *
+ */
 class Visitable {
 public:
+
+    /**
+     * Does nothing special
+     */
     virtual ~Visitable() {}
+
+    /**
+     * Accepts a Visitor which will perform some operation on this Visitable class
+     * @param v Pointer to a Visitor
+     * @see Visitor
+     */
     virtual void accept(Visitor* v) = 0;
 };
 
