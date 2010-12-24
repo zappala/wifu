@@ -58,6 +58,9 @@
 #include "SocketCollectionTest.h"
 #include "HashSetTest.h"
 
+#include "AlreadyBoundToAddressPortVisitorTest.h"
+
+
 #include "WifuEndAPITest.h"
 #include "IntegrationTest.h"
 

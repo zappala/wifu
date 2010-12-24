@@ -17,6 +17,7 @@
 #include "PortManager.h"
 #include "SocketManager.h"
 
+
 using namespace std;
 
 class Socket {
@@ -103,6 +104,9 @@ public:
     bool operator!=(const Socket& other) {
         return !(operator ==(other));
     }
+
+
+
 
 private:
     AddressPort* local_;

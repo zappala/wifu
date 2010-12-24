@@ -12,6 +12,8 @@
 #include <vector>
 
 #include "Socket.h"
+#include "visitors/Visitable.h"
+#include "visitors/Visitor.h"
 
 using namespace std;
 
@@ -68,7 +70,7 @@ int b_search_local_remote_cmp(pair<AddressPort*, AddressPort*>& aps, Socket* s) 
 
 }
 
-class SocketCollection {
+class SocketCollection : public Visitable {
 private:
 
     SocketCollection() : how_sorted_(RE_SORT) {
@@ -186,6 +188,14 @@ public:
     void shuffle() {
         mutex_.wait();
         random_shuffle(collection_.begin(), collection_.end());
+        mutex_.post();
+    }
+
+    virtual void accept(Visitor* v) {
+        mutex_.wait();
+        for (int i = 0; i < collection_.size(); i++) {
+            v->visit(collection_[i]);
+        }
         mutex_.post();
     }
 
