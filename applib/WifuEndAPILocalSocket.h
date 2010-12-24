@@ -56,6 +56,7 @@ private:
         return s;
     }
 
+
 public:
 
     static WifuEndAPILocalSocket& instance() {
@@ -97,6 +98,7 @@ public:
 
         int value = atoi(response_[RETURN_VALUE_STRING].c_str());
         SocketData* data = sockets.get(socket);
+        assert(data);
         data->set_return_value(value);
         data->get_semaphore()->post();
     }
@@ -119,6 +121,7 @@ public:
 
         // TODO: Ensure that we never receive a socket id of 0        
         SocketData* data = sockets.get(0);
+        assert(data);
         int socket = data->get_return_value();
         sockets.erase_at(0);
         sockets.put(socket, data);
@@ -132,6 +135,15 @@ public:
      */
     int wifu_bind(int fd, const struct sockaddr* addr, socklen_t len) {
         assert(sizeof (struct sockaddr_in) == len);
+
+        //TODO: determine if this is the best way to check for bad fd
+        // we are essentially keeping track of the fd in two places now
+        // we could fix this by having a different method on the front end.
+        if(sockets.get(fd) == NULL) {
+            errno = EBADF;
+            return -1;
+        }
+
         AddressPort ap((struct sockaddr_in*) addr);
 
         map<string, string> m;
@@ -142,6 +154,7 @@ public:
         m[LENGTH_STRING] = Utils::itoa(len);
 
         string message = QueryStringParser::create(WIFU_BIND_NAME, m);
+        cout << "Sending this message: " << message << endl;
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);

@@ -50,7 +50,8 @@ public:
 
     SocketData* get(const int key) {
         mutex_.wait();
-        SocketData* ptr = data_[key];
+        map<int, SocketData*>::iterator itr = data_.find(key);
+        SocketData* ptr = itr == data_.end() ? NULL : itr->second;
         mutex_.post();
         return ptr;
     }
