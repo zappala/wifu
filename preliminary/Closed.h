@@ -12,7 +12,7 @@
 #include "SimpleTCP.h"
 #include "SynSent.h"
 #include "SynReceived.h"
-
+#include "../headers/IDGenerator.h"
 using namespace std;
 
 class Closed : public SimpleTCPState {

@@ -114,9 +114,11 @@ def build_staticlib(bld):
 
 	lib = bld(features='cxx cstaticlib',
         source=api_files,
-        includes="applib headers",
+        includes="applib headers lib/gc/include",
 		ccflags="-c -fPIC",
 		export_incdirs="applib",
+#		libpath = ['../lib/gc'],
+#		staticlib = ['gccpp','gc','cord'],
         target='wifu-end-api')
 
 def build_wifu(bld):
@@ -124,8 +126,10 @@ def build_wifu(bld):
 
 	exe = bld(features='cxx cprogram',
         source=bld.glob('src/*.cc'),
-        includes="headers",
+        includes="headers lib/gc/include",
         uselib='PTHREAD RT',
+		libpath = ['../lib/gc'],
+		staticlib = ['gccpp','gc','cord'],
         target='wifu-end')
 
 def build_wifu_test(bld):
@@ -138,8 +142,10 @@ def build_wifu_test(bld):
 
         test = bld(features='cxx cprogram',
         source=all_files,
-        includes='headers test/headers',
+        includes='headers test/headers lib/gc/include',
         uselib='PTHREAD RT',
+		libpath = ['../lib/gc'],
+		staticlib = ['gccpp','gc','cord'],
 		uselib_local='wifu-end-api',
 		target='wifu-end-test')
 

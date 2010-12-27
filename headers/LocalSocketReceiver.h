@@ -27,6 +27,7 @@
 #include "LocalSocketReceiverCallback.h"
 #include "Semaphore.h"
 #include "defines.h"
+#include "GarbageCollector.h"
 
 #define MESSAGE_SIZE 2000
 

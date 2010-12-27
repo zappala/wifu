@@ -1,6 +1,6 @@
 #include "Event.h"
 
-Event::Event(int socket) : Identifiable(), socket_(socket) {
+Event::Event(int socket) : socket_(socket) {
 
 }
 

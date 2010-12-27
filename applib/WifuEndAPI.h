@@ -8,6 +8,7 @@
 #ifndef _WIFUENDAPI_H
 #define	_WIFUENDAPI_H
 
+#include <sys/types.h>
 #include <unistd.h>
 #include "WifuEndAPILocalSocket.h"
 #include "wifu_socket.h"

@@ -10,6 +10,7 @@
 
 #include <pthread.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "IQueue.h"
 #include "DequeueCallback.h"

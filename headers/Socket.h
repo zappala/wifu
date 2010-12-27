@@ -13,7 +13,6 @@
 #include "Event.h"
 #include "ConnectEvent.h"
 #include "Dispatcher.h"
-#include "Identifiable.h"
 #include "PortManager.h"
 #include "SocketManager.h"
 

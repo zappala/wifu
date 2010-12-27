@@ -16,7 +16,7 @@
 using namespace std;
 
 /**
- * Keeps a set of Events.  This class is dependent on the fact that an Event inherits from Identifiable.
+ * Keeps a set of Events.
  * This class is thread safe.
  */
 class EventSet {
@@ -43,7 +43,7 @@ public:
      */
     virtual void add(Event* event) {
         sem_.wait();
-        ids_.insert(event->get_id());
+        ids_.insert(event);
         sem_.post();
     }
 
@@ -54,7 +54,7 @@ public:
      */
     virtual void remove(Event* event) {
         sem_.wait();
-        ids_.erase(event->get_id());
+        ids_.erase(event);
         sem_.post();
     }
 
@@ -66,7 +66,7 @@ public:
      */
     virtual bool contains(Event* event) {
         sem_.wait();
-        bool val = ids_.find(event->get_id()) != ids_.end();
+        bool val = ids_.find(event) != ids_.end();
         sem_.post();
         return val;
     }
@@ -87,7 +87,7 @@ private:
     /**
      * Set of ints which represent the ids of many Event objects.
      */
-    tr1::unordered_set<int> ids_;
+    tr1::unordered_set<Event*> ids_;
 
     /**
      * Semaphore which turns this class into a monitor.
