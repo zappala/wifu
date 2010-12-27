@@ -8,7 +8,7 @@
 #ifndef _IMODULE_H
 #define	_IMODULE_H
 
-#include "Event.h"
+#include "events/Event.h"
 #include <iostream>
 
 class Event;

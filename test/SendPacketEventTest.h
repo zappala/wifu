@@ -9,7 +9,7 @@
 #define SENDPACKETEVENTTEST_H_
 
 #include "UnitTest++.h"
-#include "../headers/SendPacketEvent.h"
+#include "../headers/events/SendPacketEvent.h"
 #include "../headers/IModule.h"
 
 using namespace std;

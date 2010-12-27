@@ -9,7 +9,7 @@
 #define TIMERFIREDEVENTTEST_H_
 
 #include "UnitTest++.h"
-#include "../headers/TimerFiredEvent.h"
+#include "../headers/events/TimerFiredEvent.h"
 #include "../headers/IModule.h"
 
 using namespace std;

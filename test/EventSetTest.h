@@ -9,7 +9,7 @@
 #define EVENTSETTEST_H_
 
 #include "UnitTest++.h"
-#include "../headers/EventSet.h"
+#include "../headers/events/EventSet.h"
 
 using namespace std;
 

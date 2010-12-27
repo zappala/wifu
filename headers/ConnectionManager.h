@@ -9,9 +9,9 @@
 #define	_CONNECTIONMANAGER_H
 
 #include "Module.h"
-#include "ConnectEvent.h"
-#include "SendPacketEvent.h"
-#include "TimeoutEvent.h"
+#include "events/ConnectEvent.h"
+#include "events/SendPacketEvent.h"
+#include "events/TimeoutEvent.h"
 
 /**
  * Manages all connections and provides state for every Socket.

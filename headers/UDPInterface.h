@@ -10,14 +10,14 @@
 
 #include "Module.h"
 #include "Dispatcher.h"
-#include "TimeoutEvent.h"
-#include "PacketReceivedEvent.h"
-#include "UDPSendPacketEvent.h"
+#include "events/TimeoutEvent.h"
+#include "events/PacketReceivedEvent.h"
+#include "events/UDPSendPacketEvent.h"
 #include "Packet.h"
 #include "UDPSocket.h"
 #include "UDPSocketCallback.h"
 #include "AddressPort.h"
-#include "UDPReceivePacketEvent.h"
+#include "events/UDPReceivePacketEvent.h"
 
 /**
  * Interface to an actual socket which data will be sent and recieved.

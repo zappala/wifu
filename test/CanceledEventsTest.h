@@ -9,7 +9,7 @@
 #define CANCELEDEVENTSTEST_H_
 
 #include "UnitTest++.h"
-#include "../headers/CanceledEvents.h"
+#include "../headers/events/CanceledEvents.h"
 
 using namespace std;
 

@@ -10,8 +10,8 @@
 
 #include <string>
 
-#include "Event.h"
-#include "ConnectEvent.h"
+#include "events/Event.h"
+#include "events/ConnectEvent.h"
 #include "Dispatcher.h"
 #include "PortManager.h"
 #include "SocketManager.h"

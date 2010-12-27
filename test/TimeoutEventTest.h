@@ -9,7 +9,7 @@
 #define TIMEOUTEVENTTEST_H_
 
 #include "UnitTest++.h"
-#include "../headers/TimeoutEvent.h"
+#include "../headers/events/TimeoutEvent.h"
 #include "../headers/IModule.h"
 #include <time.h>
 

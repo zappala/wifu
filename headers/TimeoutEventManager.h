@@ -9,12 +9,12 @@
 #define	_TIMEOUTEVENTMANAGER_H
 
 #include "PriorityQueue.h"
-#include "TimeoutEvent.h"
+#include "events/TimeoutEvent.h"
 #include "defines.h"
 #include "TimeoutEventManagerSemaphore.h"
-#include "CanceledEvents.h"
+#include "events/CanceledEvents.h"
 #include "Module.h"
-#include "CancelTimerEvent.h"
+#include "events/CancelTimerEvent.h"
 
 #include <pthread.h>
 #include <stdlib.h>

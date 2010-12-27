@@ -9,7 +9,7 @@
 #define CANCELTIMEREVENTTEST_H_
 
 #include "UnitTest++.h"
-#include "../headers/CancelTimerEvent.h"
+#include "../headers/events/CancelTimerEvent.h"
 #include "../headers/IModule.h"
 
 using namespace std;

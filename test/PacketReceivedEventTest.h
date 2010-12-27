@@ -9,7 +9,7 @@
 #define PACKETRECEIVEDEVENTTEST_H_
 
 #include "UnitTest++.h"
-#include "../headers/PacketReceivedEvent.h"
+#include "../headers/events/PacketReceivedEvent.h"
 #include "../headers/IModule.h"
 
 using namespace std;

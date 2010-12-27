@@ -8,7 +8,7 @@
 #ifndef _DISPATCHER_H
 #define	_DISPATCHER_H
 
-#include "Event.h"
+#include "events/Event.h"
 #include "QueueProcessor.h"
 #include "Queue.h"
 #include "defines.h"

@@ -8,11 +8,11 @@
 #ifndef _TIMEOUTHELPER_H
 #define	_TIMEOUTHELPER_H
 
-#include "EventSet.h"
-#include "TimeoutEvent.h"
+#include "events/EventSet.h"
+#include "events/TimeoutEvent.h"
 #include "Dispatcher.h"
-#include "TimerFiredEvent.h"
-#include "CancelTimerEvent.h"
+#include "events/TimerFiredEvent.h"
+#include "events/CancelTimerEvent.h"
 
 /**
  * Class wich aides a Module in filtering TimerFiredEvent objects.

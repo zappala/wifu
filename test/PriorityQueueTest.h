@@ -10,7 +10,7 @@
 
 #include "UnitTest++.h"
 #include "PriorityQueue.h"
-#include "TimeoutEvent.h"
+#include "events/TimeoutEvent.h"
 #include "defines.h"
 #include <pthread.h>
 #include <sys/un.h>

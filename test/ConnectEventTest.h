@@ -9,7 +9,7 @@
 #define CONNECTEVENTTEST_H_
 
 #include "UnitTest++.h"
-#include "../headers/ConnectEvent.h"
+#include "../headers/events/ConnectEvent.h"
 #include "../headers/IModule.h"
 
 using namespace std;

@@ -12,6 +12,7 @@
 
 #include "LocalSocketFullDuplex.h"
 #include "ISocketModule.h"
+#include "events/Event.h"
 
 /*
  * @depricated This class uses Unix sockets; we are now using Events instead.
