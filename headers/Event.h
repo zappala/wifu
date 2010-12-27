@@ -8,6 +8,7 @@
 #ifndef _EVENT_H
 #define	_EVENT_H
 
+#include "GarbageCollector.h"
 #include "IModule.h"
 
 class IModule;
@@ -15,7 +16,7 @@ class IModule;
 /**
  * Represents an Event which IModule objects will receive and react to.
  */
-class Event {
+class Event : public gc {
 public:
 
     /**

@@ -58,10 +58,8 @@
 #include "WifuEndBackEndLibrary.h"
 #include "SocketCollectionTest.h"
 
-//#include "WifuEndAPITest.h"
-//#include "IntegrationTest.h"
-
-#include "../lib/gc/include/gc_cpp.h"
+#include "WifuEndAPITest.h"
+#include "IntegrationTest.h"
 
 using namespace UnitTest;
 
@@ -91,7 +89,6 @@ void cleanup() {
 }
 
 int main(int argc, char** argv) {
-    GC_INIT();
     std::cout << "Running tests" << std::endl;
 
     change_dir();
