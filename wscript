@@ -132,8 +132,8 @@ def build(bld):
         source=bld.glob('src/*.cc'),
         includes="headers lib/gc/include",
         uselib='PTHREAD RT',
-#		libpath = ['../lib/gc'],
-#		staticlib = ['gccpp','gc','cord'],
+		libpath = ['../lib/gc'],
+		staticlib = ['gccpp','gc','cord'],
         target='wifu-end')
 
 	# unit tests
@@ -142,8 +142,8 @@ def build(bld):
         source=all_files,
         includes='headers test/headers lib/gc/include',
         uselib='PTHREAD RT',
-#		libpath = ['../lib/gc'],
-#		staticlib = ['gccpp','gc','cord'],
+		libpath = ['../lib/gc'],
+		staticlib = ['gccpp','gc','cord'],
 		uselib_local='wifu-end-api',
 		target='wifu-end-test')
 

@@ -32,7 +32,7 @@
 #include "WifuEndBackEndLibrary.h"
 #include "MainSemaphore.h"
 
-//#include "../lib/gc/include/gc_cpp.h"
+#include "../lib/gc/include/gc_cpp.h"
 
 using namespace std;
 
@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     daemon(1,1);
 
 
-    //GC_INIT();
+    GC_INIT();
 
     MainSemaphore::instance().init(0);
 
