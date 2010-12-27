@@ -117,8 +117,8 @@ def build_staticlib(bld):
         includes="applib headers lib/gc/include",
 		ccflags="-c -fPIC",
 		export_incdirs="applib",
-#		libpath = ['../lib/gc'],
-#		staticlib = ['gccpp','gc','cord'],
+		libpath = ['../lib/gc'],
+		staticlib = ['gccpp','gc','cord'],
         target='wifu-end-api')
 
 def build_wifu(bld):
