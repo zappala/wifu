@@ -16,6 +16,7 @@
 #include "ProtocolManager.h"
 #include "Utils.h"
 #include "visitors/AlreadyBoundToAddressPortVisitor.h"
+#include "events/SocketEvent.h"
 
 /**
  * Translates string messages received from the front-end library into Event objects
@@ -71,6 +72,9 @@ public:
                 Socket* socket = new Socket(domain, type, protocol);
                 SocketCollection::instance().push(socket);
                 socket_id = socket->get_socket();
+                
+                // TODO: figure out if we need to do this...
+                Dispatcher::instance().enqueue(new SocketEvent(message, getFile()));
 
             } else {
                 error = EPROTONOSUPPORT;

@@ -8,6 +8,8 @@
 #ifndef _EVENT_H
 #define	_EVENT_H
 
+#include <assert.h>
+
 #include "GarbageCollector.h"
 #include "IModule.h"
 
@@ -29,6 +31,12 @@ public:
     Event(int socket);
 
     /**
+     * Constructs an Event object.
+     *
+     */
+    Event();
+
+    /**
      * Cleans up this Event object.
      */
     virtual ~Event();
@@ -45,6 +53,8 @@ public:
      * @return A reference to the socket.
      */
     int & get_socket();
+
+    void set_socket(int socket);
 
     /**
      * Default implemenation of less than.
