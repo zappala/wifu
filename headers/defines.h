@@ -47,6 +47,7 @@
 #define OPTION_NAME_STRING "option_name"
 #define OPTION_VALUE_STRING "option_value"
 #define LEVEL_STRING "level"
+#define ERRNO "errno"
 
 
 

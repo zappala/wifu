@@ -56,6 +56,7 @@ public:
         string s = m[SOCKET_STRING];
         response[SOCKET_STRING] = s;
         int socket_id = atoi(s.c_str());
+        int error = 0; // No error by default
 
         if (!name.compare(WIFU_SOCKET_NAME)) {
 
@@ -72,7 +73,7 @@ public:
                 socket_id = socket->get_socket();
 
             } else {
-                errno = EPROTONOSUPPORT;
+                error = EPROTONOSUPPORT;
             }
             response[SOCKET_STRING] = Utils::itoa(socket_id);
 
@@ -94,11 +95,11 @@ public:
                     socket->set_local_address_port(local);
                     return_val = 0;
                 } else {
-                    errno = EINVAL;
+                    error = EINVAL;
                 }
 
             } else {
-                errno = EBADF;
+                error = EBADF;
             }
 
 
@@ -127,11 +128,14 @@ public:
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         }
 
+        response[ERRNO] = Utils::itoa(error);
         // TODO: May not always want to respond immediately
         // TODO: We may need to wait for a response from the internal system
         string response_message = QueryStringParser::create(name, response);
         send_to(m[FILE_STRING], response_message);
     }
+
+
 
 private:
 

@@ -79,6 +79,7 @@ public:
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
         
+        
         if (!response_[NAME_STRING].compare(WIFU_SOCKET_NAME)) {
             sockets.put(0, new SocketData());
             sockets.get(0)->set_return_value(socket);
@@ -97,8 +98,12 @@ public:
         }
 
         int value = atoi(response_[RETURN_VALUE_STRING].c_str());
+        int error = atoi(response_[ERRNO].c_str());
+
         SocketData* data = sockets.get(socket);
         assert(data);
+
+        data->set_error(error);
         data->set_return_value(value);
         data->get_semaphore()->post();
     }
@@ -158,6 +163,12 @@ public:
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
+
+        int error = data->get_error();
+        if(error) {
+            errno = error;
+        }
+
         return data->get_return_value();
     }
 

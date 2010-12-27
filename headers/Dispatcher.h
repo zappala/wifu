@@ -66,7 +66,7 @@ public:
      * @see DequeueCallback<T>::process()
      */
     void process(Event * e) {
-        vector<QueueProcessor<Event*>*>* queue_processors = map_[typeid (*e).name()];
+        vector<QueueProcessor<Event*>*>* queue_processors = map_[type_name(*e)];
 
         if (queue_processors == NULL) {
             return;

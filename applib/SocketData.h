@@ -52,8 +52,17 @@ public:
         return payload_length_;
     }
 
+    void set_error(int error) {
+        this->error_ = error;
+    }
+
+    int get_error() {
+        return error_;
+    }
+
 private:
     int return_value_;
+    int error_;
     Semaphore* sem_;
     unsigned char payload_[PAYLOAD_SIZE + 1];
     int payload_length_;

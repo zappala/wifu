@@ -86,9 +86,7 @@ namespace {
         // Should fail (already bound)
         result = wifu_bind(socket, (const struct sockaddr *) &to_bind, length);
         CHECK(result < 0);
-
-        //TODO: We will need to put the errno values in the response if we want to propagate these errors back to the front end.
-        //CHECK_EQUAL(EINVAL, errno);
+        CHECK_EQUAL(EINVAL, errno);
     }
 
     SUITE(IntegrationTest) {
