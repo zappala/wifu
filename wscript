@@ -45,11 +45,20 @@ def post(ctx):
 	import os
 	val = 0
 	val = os.system("bin/wifu-end-test")
+	
 	val = (val >> 8)
 
 	# val now contains the number of tests which failed
 	if val > 0:
-		error = "%d error(s) encountered during tests." %(val)
+		error = "%d error(s) encountered during wifu-end tests." %(val)
+		#raise Exception(error)
+
+	val = os.system("bin/wifu-frontend-test")
+	val = (val >> 8)
+
+	# val now contains the number of tests which failed
+	if val > 0:
+		error = "%d error(s) encountered during wifu-frontend tests." %(val)
 		#raise Exception(error)
 
 def build_blaster(bld):

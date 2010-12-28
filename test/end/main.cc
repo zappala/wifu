@@ -54,42 +54,9 @@
 
 #include "AlreadyBoundToAddressPortVisitorTest.h"
 
-//#include "WifuEndAPITest.h"
-//#include "IntegrationTest.h"
-
 using namespace UnitTest;
-
-void change_dir() {
-    int size = 1000;
-    char buf[size];
-    getcwd(buf, size);
-    string path = buf;
-    string bin = "bin";
-
-    if (path.find(bin) == string::npos) {
-        chdir(bin.c_str());
-    }
-}
-
-void cleanup() {
-    int value = system("rm LS*");
-    if (value < 0) {
-        perror("Error Removing LS Files");
-    }
-
-    value = system("rm WS");
-    if (value < 0) {
-        perror("Error Removing WS File");
-    }
-
-}
 
 int main(int argc, char** argv) {
     std::cout << "Running end tests" << std::endl;
-
-    change_dir();
-    int result = UnitTest::RunAllTests();
-    //    cleanup();
-
-    return result;
+    return UnitTest::RunAllTests();
 }
