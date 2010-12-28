@@ -20,6 +20,7 @@
 #include "../headers/LocalSocketFullDuplex.h"
 #include "../headers/Utils.h"
 #include "../headers/QueryStringParser.h"
+#include "../headers/AddressPort.h"
 
 using namespace std;
 

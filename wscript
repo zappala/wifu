@@ -1,9 +1,11 @@
 import Options
-
+import subprocess
+import os
+import os.path
+import re
 
 top = '.'
 out = 'build'
-
 
 def set_options(opt):
 	# opt.tool_options('compiler_cxx')
@@ -23,7 +25,7 @@ def configure(conf):
 	print('→ configuring the project')
 	# conf.check_tool('compiler_cxx')
 	conf.check_tool('gcc g++')
-	conf.env['LIBPATH'] += ['../lib']
+	conf.env['LIBPATH'] += ['../lib/unittest++']
 	conf.env['LIB_PTHREAD'] = ['pthread']
 	conf.env['STATICLIB'] += ['UnitTest++']
 	conf.env['LIB_RT'] = ['rt']
@@ -43,6 +45,7 @@ def post(ctx):
 	import os
 	val = 0
 	val = os.system("bin/wifu-end-test")
+	val = os.system("bin/wifu-frontend-test")
 	val = (val >> 8)
 
 	# val now contains the number of tests which failed
@@ -117,17 +120,15 @@ def build_staticlib(bld):
         includes="applib headers lib/gc/include",
 		ccflags="-c -fPIC",
 		export_incdirs="applib lib/gc/include",
+		uselib='PTHREAD RT',
 		libpath = ['../lib/gc'],
 		staticlib = ['gccpp','gc','cord'],
-		uselib='PTHREAD RT',
         target='wifu-end-api')
 
 def build_wifu(bld):
-	
-
 	exe = bld(features='cxx cprogram',
         source=bld.glob('src/*.cc'),
-        includes="headers lib/gc/include",
+        includes='headers lib/gc/include',
         uselib='PTHREAD RT',
 		libpath = ['../lib/gc'],
 		staticlib = ['gccpp','gc','cord'],
@@ -143,21 +144,38 @@ def build_wifu_test(bld):
 
         test = bld(features='cxx cprogram',
         source=all_files,
-        includes='headers test/headers',
+        includes='headers test/end/headers lib/gc/include lib/unittest++/include',
         uselib='PTHREAD RT',
 		libpath = ['../lib/gc'],
 		staticlib = ['gccpp','gc','cord'],
 		uselib_local='wifu-end-api',
-		target='wifu-end-test')
+		target='wifu-frontend-test')
 
 def build(bld):
-
 #	build_blaster(bld)
-#        build_sink(bld)
-#        build_simpletcp(bld)
+#	build_sink(bld)
+#	build_simpletcp(bld)
 
-        build_staticlib(bld)
-        build_wifu(bld)
-        build_wifu_test(bld)
+	build_staticlib(bld)
+	build_wifu(bld)
+	build_wifu_end_test(bld)
+	build_wifu_frontend_test(bld)
 
 	bld.add_post_fun(post)
+
+def get_files(dir, regex):
+        list = []
+        for filename in os.listdir (dir):
+            # Ignore subfolders
+            path = os.path.join (dir, filename)
+            if os.path.isdir (path):
+                continue
+
+            # Ignore mismatched regex
+            if not re.match(regex, filename):
+                continue
+
+            list.append(path)
+
+        list.sort()
+        return list
