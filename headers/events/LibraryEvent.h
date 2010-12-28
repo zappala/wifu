@@ -22,7 +22,7 @@ public:
     LibraryEvent(string& message, string& file) : Event(), file_(file) {
         QueryStringParser::parse(message, m_);
         name_ = m_[NAME_STRING];
-        set_socket(m_[SOCKET_STRING]);
+        set_socket(atoi(m_[SOCKET_STRING].c_str()));
     }
 
     virtual ~LibraryEvent() {

@@ -17,6 +17,8 @@
 #include "Utils.h"
 #include "visitors/AlreadyBoundToAddressPortVisitor.h"
 #include "events/SocketEvent.h"
+#include "events/BindEvent.h"
+#include "events/ResponseEvent.h"
 
 /**
  * Translates string messages received from the front-end library into Event objects
@@ -52,10 +54,13 @@ public:
         QueryStringParser::parse(message, m);
 
         map<string, string> response;
-        response[FILE_STRING] = getFile();
+        
         string name = m[NAME_STRING];
         string s = m[SOCKET_STRING];
+
         response[SOCKET_STRING] = s;
+        response[FILE_STRING] = getFile();
+
         int socket_id = atoi(s.c_str());
         int error = 0; // No error by default
 
@@ -74,7 +79,7 @@ public:
                 socket_id = socket->get_socket();
                 
                 // TODO: figure out if we need to do this...
-                Dispatcher::instance().enqueue(new SocketEvent(message, getFile()));
+                //Dispatcher::instance().enqueue(new SocketEvent(message, getFile()));
 
             } else {
                 error = EPROTONOSUPPORT;
@@ -82,33 +87,10 @@ public:
             response[SOCKET_STRING] = Utils::itoa(socket_id);
 
         } else if (!name.compare(WIFU_BIND_NAME)) {
-            int return_val = -1;
-
-            Socket* socket = SocketCollection::instance().get_by_id(socket_id);
-            if (socket != NULL) {
-
-                u_int16_t port = atoi(m[PORT_STRING].c_str());
-                AddressPort* local = new AddressPort(m[ADDRESS_STRING], port);
-
-                // TODO: Check possible errors
-
-                AlreadyBoundToAddressPortVisitor v(local);
-                SocketCollection::instance().accept(&v);
-
-                if (!v.is_bound()) {
-                    socket->set_local_address_port(local);
-                    return_val = 0;
-                } else {
-                    error = EINVAL;
-                }
-
-            } else {
-                error = EBADF;
-            }
-
-
-
-            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+            
+            dispatch(new BindEvent(message, getFile()));
+            return;
+            
         } else if (!name.compare(WIFU_LISTEN_NAME)) {
             int return_val = 1;
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
@@ -137,6 +119,14 @@ public:
         // TODO: We may need to wait for a response from the internal system
         string response_message = QueryStringParser::create(name, response);
         send_to(m[FILE_STRING], response_message);
+    }
+
+    void library_response(Event* e) {
+        ResponseEvent* event = (ResponseEvent*)e;
+        event->put(FILE_STRING, getFile());
+        string file = event->get_write_file();
+        string response = event->get_response();
+        send_to(file, response);
     }
 
     

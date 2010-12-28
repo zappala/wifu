@@ -83,6 +83,7 @@ namespace {
         result = wifu_bind(socket, (const struct sockaddr *) &to_bind, length);
         CHECK_EQUAL(0, result);
 
+
         // Should fail (already bound)
         result = wifu_bind(socket, (const struct sockaddr *) &to_bind, length);
         CHECK(result < 0);

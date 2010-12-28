@@ -16,7 +16,7 @@ LocalSocketSender::~LocalSocketSender() {
 }
 
 
-
+// TODO: do we need to protect destinations_ with a semaphore?
 ssize_t LocalSocketSender::send_to(string& socket_file, string& message) {
     struct sockaddr_un* destination = destinations_[socket_file];
     if (!destination) {

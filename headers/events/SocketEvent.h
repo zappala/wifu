@@ -10,15 +10,19 @@
 
 #include "LibraryEvent.h"
 
-
 class SocketEvent : public LibraryEvent {
 public:
-    SocketEvent(string& message, string& file) {
+
+    SocketEvent(string& message, string& file) : LibraryEvent(message, file) {
 
     }
 
     virtual ~SocketEvent() {
-        
+
+    }
+
+    void execute(IModule* m) {
+        m->library_socket(this);
     }
 };
 

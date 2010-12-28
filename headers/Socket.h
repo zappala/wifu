@@ -18,7 +18,7 @@
 
 
 using namespace std;
-
+// TODO: do we need to protect this with a Semaphore?
 class Socket {
 public:
 

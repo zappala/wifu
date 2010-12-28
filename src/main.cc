@@ -32,6 +32,7 @@
 #include "WifuEndBackEndLibrary.h"
 #include "MainSemaphore.h"
 #include "ProtocolManager.h"
+#include "SimpleTCP.h"
 
 using namespace std;
 
@@ -84,6 +85,8 @@ int main(int argc, char** argv) {
     Dispatcher::instance().map_event(type_name(SendPacketEvent), &UDPInterface::instance());
     Dispatcher::instance().map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
     Dispatcher::instance().map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
+    Dispatcher::instance().map_event(type_name(BindEvent), &SimpleTCP::instance());
+    Dispatcher::instance().map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
     
     // Wait indefinitely
     MainSemaphore::instance().wait();
