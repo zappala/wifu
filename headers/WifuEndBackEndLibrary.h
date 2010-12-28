@@ -70,6 +70,7 @@ public:
                 socket_id = socket->get_socket();
 
                 dispatch(new SocketEvent(message, getFile(), socket_id));
+                return;
 
             } else {
                 map<string, string> response;

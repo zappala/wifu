@@ -18,12 +18,14 @@
 #include <sstream>
 #include <iostream>
 
+#include "GarbageCollector.h"
+
 using namespace std;
 
 /**
  * Represents an Address-Port combination.
  */
-class AddressPort {
+class AddressPort : public gc {
 public:
 
     /**

@@ -48,7 +48,6 @@ public:
             AddressPort* local = new AddressPort(event->get_map()[ADDRESS_STRING], port);
 
             // TODO: Check possible errors
-
             AlreadyBoundToAddressPortVisitor v(local);
             SocketCollection::instance().accept(&v);
 
@@ -70,6 +69,12 @@ public:
         dispatch(response);
     }
 
+    /**
+     * Default implementation of what a protocol will do when a socket Event is received
+     * Associates the socket id with this Protocol
+     * Dispatches a response
+     * @param e SocketEvent
+     */
     virtual void library_socket(Event* e) {
         SocketEvent* event = (SocketEvent*) e;
         
