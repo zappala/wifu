@@ -45,7 +45,6 @@ def post(ctx):
 	import os
 	val = 0
 	val = os.system("bin/wifu-end-test")
-	val = os.system("bin/wifu-frontend-test")
 	val = (val >> 8)
 
 	# val now contains the number of tests which failed
@@ -108,7 +107,7 @@ def build_simpletcp(bld):
 
 
 def build_staticlib(bld):
-        # shared files
+    # shared files
 	src_files = bld.glob('src/*.cc')
 
 	# shared library
@@ -117,9 +116,9 @@ def build_staticlib(bld):
 
 	lib = bld(features='cxx cstaticlib',
         source=api_files,
-        includes="applib headers lib/gc/include",
+        includes='applib headers lib/gc/include',
 		ccflags="-c -fPIC",
-		export_incdirs="applib lib/gc/include",
+		export_incdirs='applib lib/gc/include',
 		uselib='PTHREAD RT',
 		libpath = ['../lib/gc'],
 		staticlib = ['gccpp','gc','cord'],
@@ -134,20 +133,30 @@ def build_wifu(bld):
 		staticlib = ['gccpp','gc','cord'],
         target='wifu-end')
 
-def build_wifu_test(bld):
-        test_files = bld.glob('test/*.cc')
-        src_files = bld.glob('src/*.cc')
+def build_wifu_end_test(bld):
+	test_end_files = bld.glob('test/end/*.cc')
+	src_files = bld.glob('src/*.cc')
 
 	all_files = src_files
-	all_files += test_files
+	all_files += test_end_files
 	all_files.remove("src/main.cc")
 
-        test = bld(features='cxx cprogram',
+	test_end = bld(features='cxx cprogram',
         source=all_files,
         includes='headers test/end/headers lib/gc/include lib/unittest++/include',
         uselib='PTHREAD RT',
-		libpath = ['../lib/gc'],
+		libpath = '../lib/gc',
 		staticlib = ['gccpp','gc','cord'],
+		target='wifu-end-test')
+		
+def build_wifu_frontend_test(bld):
+	test_frontend_files = bld.glob('test/frontend/*.cc')
+
+	test_frontend = bld(features='cxx cprogram',
+		source=test_frontend_files,
+		includes='test/frontend/headers lib/unittest++/include',
+		libpath = '../lib/gc',
+		staticlib = ['gccpp', 'gc', 'cord'],
 		uselib_local='wifu-end-api',
 		target='wifu-frontend-test')
 
