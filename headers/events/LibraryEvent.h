@@ -19,10 +19,16 @@ using namespace std;
 class LibraryEvent : public Event {
 public:
 
-    LibraryEvent(string& message, string& file) : Event(), file_(file) {
+    LibraryEvent(string& message, string& file, int socket = 0) : Event(), file_(file) {
         QueryStringParser::parse(message, m_);
         name_ = m_[NAME_STRING];
-        set_socket(atoi(m_[SOCKET_STRING].c_str()));
+        
+        if (socket) {
+            m_[SOCKET_STRING] = Utils::itoa(socket);
+            set_socket(socket);
+        } else {
+            set_socket(atoi(m_[SOCKET_STRING].c_str()));
+        }
     }
 
     virtual ~LibraryEvent() {

@@ -36,6 +36,8 @@
 
 using namespace std;
 
+#define dispatcher Dispatcher::instance()
+
 void main_signal_manager(int signal) {
     switch(signal) {
         case SIGINT:
@@ -82,11 +84,14 @@ int main(int argc, char** argv) {
     // Load Modules
     UDPInterface::instance().start(ap);
 
-    Dispatcher::instance().map_event(type_name(SendPacketEvent), &UDPInterface::instance());
-    Dispatcher::instance().map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
-    Dispatcher::instance().map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
-    Dispatcher::instance().map_event(type_name(BindEvent), &SimpleTCP::instance());
-    Dispatcher::instance().map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
+    dispatcher.map_event(type_name(SendPacketEvent), &UDPInterface::instance());
+    dispatcher.map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
+    dispatcher.map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
+
+    dispatcher.map_event(type_name(SocketEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(BindEvent), &SimpleTCP::instance());
+    
+    dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
     
     // Wait indefinitely
     MainSemaphore::instance().wait();

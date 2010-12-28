@@ -12,6 +12,7 @@
 #include "events/LibraryEvent.h"
 #include "events/ResponseEvent.h"
 #include "HashSet.h"
+#include "Socket.h"
 
 class Protocol : public Module {
 public:
@@ -31,18 +32,15 @@ public:
     virtual void library_bind(Event* e) {
         BindEvent* event = (BindEvent*) e;
 
+        int error = 0;
         int return_val = -1;
         int s = event->get_socket();
 
-        Socket* socket = SocketCollection::instance().get_by_id(event->get_socket());
-
-        // This is to filter out bind events which do not correspond to this Protocol
-        // TODO: this will not (likely) scale well
-        if(socket->get_protocol() != protocol_) {
+        if(!get_sockets().contains(s)) {
             return;
         }
 
-        int error = 0;
+        Socket* socket = SocketCollection::instance().get_by_id(s);
 
         if (socket != NULL) {
 
@@ -55,8 +53,6 @@ public:
             SocketCollection::instance().accept(&v);
 
             if (!v.is_bound()) {
-                // TODO: what is the best way to handle the mapping of sockets to protocols?
-                sockets_.insert(s);
                 socket->set_local_address_port(local);
                 return_val = 0;
             } else {
@@ -70,6 +66,27 @@ public:
         ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
         response->put(ERRNO, Utils::itoa(error));
         response->put(RETURN_VALUE_STRING, Utils::itoa(return_val));
+
+        dispatch(response);
+    }
+
+    virtual void library_socket(Event* e) {
+        SocketEvent* event = (SocketEvent*) e;
+        
+        Socket* socket = SocketCollection::instance().get_by_id(event->get_socket());
+        // This is to filter out bind events which do not correspond to this Protocol
+        // TODO: this will not (likely) scale well
+        if (socket->get_protocol() != protocol_) {
+            return;
+        }
+
+        int s = socket->get_socket();
+
+        sockets_.insert(s);
+        
+        ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
+        response->put(ERRNO, Utils::itoa(0));
+        response->put(RETURN_VALUE_STRING, Utils::itoa(0));
 
         dispatch(response);
     }

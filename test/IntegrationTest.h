@@ -49,7 +49,7 @@ namespace {
 
     void socket_test() {
         // socket
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             // Check valid
             int socket = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
             CHECK(socket >= 0);

@@ -15,11 +15,11 @@
 #include "Dispatcher.h"
 #include "PortManager.h"
 #include "SocketManager.h"
-
+#include "GarbageCollector.h"
 
 using namespace std;
 // TODO: do we need to protect this with a Semaphore?
-class Socket {
+class Socket : public gc {
 public:
 
     /**

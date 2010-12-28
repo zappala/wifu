@@ -20,7 +20,6 @@
 #include <sys/un.h>
 #include <pthread.h>
 #include <semaphore.h>
-#include <map>
 #include <string.h>
 #include <vector>
 

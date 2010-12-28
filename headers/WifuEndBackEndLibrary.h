@@ -53,16 +53,8 @@ public:
         map<string, string> m;
         QueryStringParser::parse(message, m);
 
-        map<string, string> response;
-        
         string name = m[NAME_STRING];
         string s = m[SOCKET_STRING];
-
-        response[SOCKET_STRING] = s;
-        response[FILE_STRING] = getFile();
-
-        int socket_id = atoi(s.c_str());
-        int error = 0; // No error by default
 
         if (!name.compare(WIFU_SOCKET_NAME)) {
 
@@ -70,66 +62,72 @@ public:
             int type = atoi(m[TYPE_STRING].c_str());
             int protocol = atoi(m[PROTOCOL_STRING].c_str());
 
-            socket_id = -1;
+            int socket_id = -1;
 
             if (ProtocolManager::instance().is_supported(domain, type, protocol)) {
-                // TODO: delete Sockets at some point (or use GC)
                 Socket* socket = new Socket(domain, type, protocol);
                 SocketCollection::instance().push(socket);
                 socket_id = socket->get_socket();
-                
-                // TODO: figure out if we need to do this...
-                //Dispatcher::instance().enqueue(new SocketEvent(message, getFile()));
+
+                dispatch(new SocketEvent(message, getFile(), socket_id));
 
             } else {
-                error = EPROTONOSUPPORT;
+                map<string, string> response;
+                response[SOCKET_STRING] = s;
+                response[FILE_STRING] = getFile();
+                response[SOCKET_STRING] = Utils::itoa(socket_id);
+                response[ERRNO] = Utils::itoa(EPROTONOSUPPORT);
+                // TODO: May not always want to respond immediately
+                // TODO: We may need to wait for a response from the internal system
+                string response_message = QueryStringParser::create(name, response);
+                send_to(m[FILE_STRING], response_message);
             }
-            response[SOCKET_STRING] = Utils::itoa(socket_id);
+
 
         } else if (!name.compare(WIFU_BIND_NAME)) {
-            
+
             dispatch(new BindEvent(message, getFile()));
             return;
-            
+
         } else if (!name.compare(WIFU_LISTEN_NAME)) {
             int return_val = 1;
-            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+            //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         } else if (!name.compare(WIFU_ACCEPT_NAME)) {
             int return_val = 1;
-            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+            //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         } else if (!name.compare(WIFU_SENDTO_NAME)) {
             int return_val = 1;
-            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+            //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         } else if (!name.compare(WIFU_RECVFROM_NAME)) {
 
 
         } else if (!name.compare(WIFU_CONNECT_NAME)) {
             int return_val = 0;
-            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+            //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
             int return_val = SO_BINDTODEVICE;
-            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+            //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         } else if (!name.compare(WIFU_SETSOCKOPT_NAME)) {
             int return_val = 0;
-            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+            //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         }
 
-        response[ERRNO] = Utils::itoa(error);
+        //response[ERRNO] = Utils::itoa(error);
         // TODO: May not always want to respond immediately
         // TODO: We may need to wait for a response from the internal system
-        string response_message = QueryStringParser::create(name, response);
-        send_to(m[FILE_STRING], response_message);
+        //string response_message = QueryStringParser::create(name, response);
+        //send_to(m[FILE_STRING], response_message);
     }
 
     void library_response(Event* e) {
-        ResponseEvent* event = (ResponseEvent*)e;
+        ResponseEvent* event = (ResponseEvent*) e;
         event->put(FILE_STRING, getFile());
         string file = event->get_write_file();
         string response = event->get_response();
         send_to(file, response);
     }
 
-    
+
 
 
 private:
