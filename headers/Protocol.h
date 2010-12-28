@@ -35,6 +35,13 @@ public:
         int s = event->get_socket();
 
         Socket* socket = SocketCollection::instance().get_by_id(event->get_socket());
+
+        // This is to filter out bind events which do not correspond to this Protocol
+        // TODO: this will not (likely) scale well
+        if(socket->get_protocol() != protocol_) {
+            return;
+        }
+
         int error = 0;
 
         if (socket != NULL) {
