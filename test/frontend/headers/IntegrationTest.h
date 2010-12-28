@@ -11,9 +11,16 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <stdlib.h>
+#include <stdio.h>
+#include <netinet/in.h>
+#include <string.h>
+#include <errno.h>
 
 #include "UnitTest++.h"
 #include "../applib/wifu_socket.h"
+
+#define SIMPLE_TCP 1000
 
 using namespace std;
 

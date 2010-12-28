@@ -13,7 +13,7 @@
 #include <map>
 #include <stdlib.h>
 
-#include "headers/UnitTest++.h"
+#include "UnitTest++.h"
 #include "../headers/QueryStringParser.h"
 
 using namespace std;

@@ -1,9 +1,11 @@
 import Options
-
+import subprocess
+import os
+import os.path
+import re
 
 top = '.'
 out = 'build'
-
 
 def set_options(opt):
 	# opt.tool_options('compiler_cxx')
@@ -23,7 +25,7 @@ def configure(conf):
 	print('→ configuring the project')
 	# conf.check_tool('compiler_cxx')
 	conf.check_tool('gcc g++')
-	conf.env['LIBPATH'] += ['../lib']
+	conf.env['LIBPATH'] += ['../lib/unittest++']
 	conf.env['LIB_PTHREAD'] = ['pthread']
 	conf.env['STATICLIB'] += ['UnitTest++']
 	conf.env['LIB_RT'] = ['rt']
@@ -105,7 +107,7 @@ def build_simpletcp(bld):
 
 
 def build_staticlib(bld):
-        # shared files
+    # shared files
 	src_files = bld.glob('src/*.cc')
 
 	# shared library
@@ -114,49 +116,75 @@ def build_staticlib(bld):
 
 	lib = bld(features='cxx cstaticlib',
         source=api_files,
-        includes="applib headers lib/gc/include",
+        includes='applib headers lib/gc/include',
 		ccflags="-c -fPIC",
-		export_incdirs="applib",
-#		libpath = ['../lib/gc'],
-#		staticlib = ['gccpp','gc','cord'],
+		export_incdirs='applib lib/gc/include',
+		uselib='PTHREAD RT',
+		libpath = ['../lib/gc'],
+		staticlib = ['gccpp','gc','cord'],
         target='wifu-end-api')
 
 def build_wifu(bld):
-	
-
 	exe = bld(features='cxx cprogram',
         source=bld.glob('src/*.cc'),
-        includes="headers lib/gc/include",
+        includes='headers lib/gc/include',
         uselib='PTHREAD RT',
 		libpath = ['../lib/gc'],
 		staticlib = ['gccpp','gc','cord'],
         target='wifu-end')
 
-def build_wifu_test(bld):
-        test_files = bld.glob('test/*.cc')
-        src_files = bld.glob('src/*.cc')
+def build_wifu_end_test(bld):
+	test_end_files = bld.glob('test/end/*.cc')
+	src_files = bld.glob('src/*.cc')
 
 	all_files = src_files
-	all_files += test_files
+	all_files += test_end_files
 	all_files.remove("src/main.cc")
 
-        test = bld(features='cxx cprogram',
+	test_end = bld(features='cxx cprogram',
         source=all_files,
-        includes='headers test/headers lib/gc/include',
+        includes='headers test/end/headers lib/gc/include lib/unittest++/include',
         uselib='PTHREAD RT',
-		libpath = ['../lib/gc'],
+		libpath = '../lib/gc',
 		staticlib = ['gccpp','gc','cord'],
-		uselib_local='wifu-end-api',
 		target='wifu-end-test')
+		
+def build_wifu_frontend_test(bld):
+	test_frontend_files = bld.glob('test/frontend/*.cc')
+
+	test_frontend = bld(features='cxx cprogram',
+		source=test_frontend_files,
+		includes='test/frontend/headers lib/unittest++/include',
+		libpath = '../lib/gc',
+		staticlib = ['gccpp', 'gc', 'cord'],
+		uselib_local='wifu-end-api',
+		target='wifu-frontend-test')
 
 def build(bld):
-
 #	build_blaster(bld)
-#        build_sink(bld)
-#        build_simpletcp(bld)
+#	build_sink(bld)
+#	build_simpletcp(bld)
 
-        build_staticlib(bld)
-        build_wifu(bld)
-        build_wifu_test(bld)
+	build_staticlib(bld)
+	build_wifu(bld)
+	build_wifu_end_test(bld)
+	build_wifu_frontend_test(bld)
 
 	bld.add_post_fun(post)
+
+def get_files(dir, regex):
+        list = []
+        for filename in os.listdir (dir):
+            # Ignore subfolders
+            path = os.path.join (dir, filename)
+            if os.path.isdir (path):
+                continue
+
+            # Ignore mismatched regex
+            if not re.match(regex, filename):
+                continue
+
+            list.append(path)
+
+        list.sort()
+        return list

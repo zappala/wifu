@@ -1,22 +1,16 @@
 /*
- * test.cc
+ * main.cc
  *
  *  Created on: Oct 29, 2010
  *      Author: erickson
  */
-
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <sstream>
 
-
-
 #include "UnitTest++.h"
-#include "../headers/AddressPort.h"
-#include "headers/CheckMacros.h"
-
 
 #include "UDPSocketTest.h"
 #include "AddressPortTest.h"
@@ -37,7 +31,6 @@
 #include "TimeoutEventTest.h"
 #include "CancelTimerEventTest.h"
 #include "TimerFiredEventTest.h"
-
 
 #include "DispatcherTest.h"
 #include "EventSetTest.h"
@@ -61,9 +54,8 @@
 
 #include "AlreadyBoundToAddressPortVisitorTest.h"
 
-
-#include "WifuEndAPITest.h"
-#include "IntegrationTest.h"
+//#include "WifuEndAPITest.h"
+//#include "IntegrationTest.h"
 
 using namespace UnitTest;
 
@@ -93,7 +85,7 @@ void cleanup() {
 }
 
 int main(int argc, char** argv) {
-    std::cout << "Running tests" << std::endl;
+    std::cout << "Running end tests" << std::endl;
 
     change_dir();
     int result = UnitTest::RunAllTests();
