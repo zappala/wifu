@@ -225,6 +225,16 @@ public:
      * Non-blocking
      */
     int wifu_listen(int fd, int n) {
+
+        //TODO: determine if this is the best way to check for bad fd
+        // we are essentially keeping track of the fd in two places now
+        // we could fix this by having a different method on the front end.
+        if(sockets.get(fd) == NULL) {
+            errno = EBADF;
+            return -1;
+        }
+
+
         map<string, string> m;
         m[FILE_STRING] = getFile();
         m[SOCKET_STRING] = Utils::itoa(fd);
@@ -235,6 +245,12 @@ public:
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
+
+        int error = data->get_error();
+        if(error) {
+            errno = error;
+        }
+
         return data->get_return_value();
     }
 

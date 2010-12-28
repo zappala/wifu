@@ -90,6 +90,7 @@ int main(int argc, char** argv) {
 
     dispatcher.map_event(type_name(SocketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(BindEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ListenEvent), &SimpleTCP::instance());
     
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
     

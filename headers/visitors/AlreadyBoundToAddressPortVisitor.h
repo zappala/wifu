@@ -52,7 +52,7 @@ public:
      *
      */
     bool stop() {
-        return is_bound_;
+        return is_bound();
     }
 
     /**

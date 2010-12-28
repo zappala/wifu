@@ -74,20 +74,50 @@ namespace {
         //TODO: need to close all the sockets opened up above as we may collide
         // (badfd may actually have been created above)
         int badfd = 4000;
-        int result = wifu_bind(badfd, (const struct sockaddr *) &to_bind, length);
+        int result = wifu_bind(badfd, (const struct sockaddr *) & to_bind, length);
         CHECK_EQUAL(EBADF, errno);
         CHECK(result < 0);
 
         // Should be successful
         int socket = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
-        result = wifu_bind(socket, (const struct sockaddr *) &to_bind, length);
+        result = wifu_bind(socket, (const struct sockaddr *) & to_bind, length);
         CHECK_EQUAL(0, result);
 
 
         // Should fail (already bound)
-        result = wifu_bind(socket, (const struct sockaddr *) &to_bind, length);
+        result = wifu_bind(socket, (const struct sockaddr *) & to_bind, length);
         CHECK(result < 0);
         CHECK_EQUAL(EINVAL, errno);
+    }
+
+    void listen_test() {
+        // Bad fd
+        // TODO: need to close all the sockets opened up above as we may collide
+        // (badfd may actually have been created above)
+        int badfd = 4000;
+        int queue_size = 5;
+        int result = wifu_listen(badfd, queue_size);
+        CHECK_EQUAL(EBADF, errno);
+        CHECK(result < 0);
+
+        struct sockaddr_in to_bind;
+        socklen_t length = sizeof (struct sockaddr_in);
+        memset(&to_bind, 0, length);
+        to_bind.sin_family = AF_INET;
+        to_bind.sin_port = htons(5001);
+        to_bind.sin_addr.s_addr = INADDR_ANY;
+
+        // Should be successful
+        int socket = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+        result = wifu_bind(socket, (const struct sockaddr *) & to_bind, length);
+        CHECK_EQUAL(0, result);
+        result = wifu_listen(socket, 5);
+        CHECK_EQUAL(0, result);
+
+        // Should fail
+        result = wifu_listen(socket, 5);
+        CHECK(result < 0);
+        CHECK_EQUAL(EADDRINUSE, errno);
     }
 
     SUITE(IntegrationTest) {
@@ -96,6 +126,7 @@ namespace {
 
             socket_test();
             bind_test();
+            listen_test();
         }
     }
 }

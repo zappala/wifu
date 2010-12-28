@@ -19,6 +19,7 @@
 #include "events/SocketEvent.h"
 #include "events/BindEvent.h"
 #include "events/ResponseEvent.h"
+#include "events/ListenEvent.h"
 
 /**
  * Translates string messages received from the front-end library into Event objects
@@ -91,8 +92,10 @@ public:
             return;
 
         } else if (!name.compare(WIFU_LISTEN_NAME)) {
-            int return_val = 1;
-            //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+
+            dispatch(new ListenEvent(message, getFile()));
+            return;
+            
         } else if (!name.compare(WIFU_ACCEPT_NAME)) {
             int return_val = 1;
             //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
@@ -125,6 +128,7 @@ public:
         event->put(FILE_STRING, getFile());
         string file = event->get_write_file();
         string response = event->get_response();
+//        cout << "Response: " << response << endl;
         send_to(file, response);
     }
 

@@ -35,7 +35,8 @@ public:
             type_(type),
             protocol_(protocol),
             local_(local),
-            remote_(remote) {
+            remote_(remote),
+            is_passive_(false) {
 
     }
 
@@ -71,6 +72,14 @@ public:
 
     int get_protocol() const {
         return protocol_;
+    }
+
+    void make_passive() {
+        is_passive_ = true;
+    }
+
+    bool is_passive() const {
+        return is_passive_;
     }
 
     AddressPort* get_local_address_port() {
@@ -114,6 +123,8 @@ private:
     int type_;
     int protocol_;
     int socket_;
+
+    bool is_passive_;
 };
 
 #endif	/* _SOCKET_H */
