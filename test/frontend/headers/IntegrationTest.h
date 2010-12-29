@@ -19,8 +19,7 @@
 
 #include "UnitTest++.h"
 #include "../applib/wifu_socket.h"
-
-#define SIMPLE_TCP 1000
+#include "../headers/defines.h"
 
 using namespace std;
 
