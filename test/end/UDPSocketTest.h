@@ -71,12 +71,12 @@ namespace {
             receiver.bind_socket(ap);
             receiver.receive(&callback);
 
-            usleep(500);
+            usleep(5000);
 
             sender.makeNonBlocking();
             size_t count = sender.send(ap, message);
 
-            usleep(500);
+            usleep(5000);
 
 //            if (sender.closeSocket() < 0) {
 //                cout << "Error closing sender (errno): " << errno << endl;

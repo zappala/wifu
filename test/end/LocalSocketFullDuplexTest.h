@@ -64,7 +64,7 @@ namespace {
                 cout << "Error in sending: " << errno << endl;
             }
 
-            usleep(1000);
+            usleep(5000);
 
             CHECK_EQUAL(message.size(), sent);
             CHECK_EQUAL(message, s1.get_last_received());

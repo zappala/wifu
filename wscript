@@ -44,7 +44,9 @@ def configure(conf):
 def post(ctx):
 	import os
 	val = 0
-	val = os.system("bin/wifu-end-test")
+	count = 1
+	for i in range(0, count):
+		val = os.system("bin/wifu-end-test")
 	
 	val = (val >> 8)
 

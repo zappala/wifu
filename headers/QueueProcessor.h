@@ -86,7 +86,10 @@ public:
      * Cleans up this QueueProcessor object.
      */
     virtual ~QueueProcessor() {
-
+        int val = pthread_cancel(thread_);
+        if(val) {
+            cout << "Error canceling thread: " << errno << endl;
+        }
     }
 
     /**

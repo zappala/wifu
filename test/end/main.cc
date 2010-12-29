@@ -53,6 +53,7 @@
 #include "HashSetTest.h"
 
 #include "AlreadyBoundToAddressPortVisitorTest.h"
+#include "TempTest.h"
 
 using namespace UnitTest;
 
