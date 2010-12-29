@@ -40,6 +40,10 @@ public:
         flag.post();
     }
 
+    virtual ~SimpleTimeoutManager() {
+        pthread_cancel(timeout_thread_);
+    }
+
     void set_timer(int seconds, long int nanoseconds) {
         if(should_post_) {
             semaphore.post();

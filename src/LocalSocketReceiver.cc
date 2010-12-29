@@ -11,7 +11,8 @@ LocalSocketReceiver::LocalSocketReceiver(const char* file, LocalSocketReceiverCa
 
 LocalSocketReceiver::~LocalSocketReceiver() {
     close(socket_);
-    unlink(file_.c_str());    
+    unlink(file_.c_str());
+    pthread_cancel(thread_);
 }
 
 int LocalSocketReceiver::get_socket() {
