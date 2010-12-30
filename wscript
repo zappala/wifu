@@ -136,9 +136,13 @@ def build_staticlib(bld):
         target='wifu-end-api')
 
 def build_wifu(bld):
+        src_files = bld.glob('src/*.cc')
+        src_files += bld.glob('src/contexts/*.cc')
+        src_files += bld.glob('src/states/*.cc')
+
 	exe = bld(features='cxx cprogram',
-        source=bld.glob('src/*.cc'),
-        includes='headers lib/gc/include',
+        source=src_files,
+        includes='headers lib/gc/include headers/contexts headers/states',
         uselib='PTHREAD RT',
 		libpath = ['../lib/gc'],
 		staticlib = ['gccpp','gc','cord'],
@@ -147,6 +151,8 @@ def build_wifu(bld):
 def build_wifu_end_test(bld):
 	test_end_files = bld.glob('test/end/*.cc')
 	src_files = bld.glob('src/*.cc')
+        src_files += bld.glob('src/contexts/*.cc')
+        src_files += bld.glob('src/states/*.cc')
 
 	all_files = src_files
 	all_files += test_end_files
@@ -154,7 +160,7 @@ def build_wifu_end_test(bld):
 
 	test_end = bld(features='cxx cprogram',
         source=all_files,
-        includes='headers test/end/headers lib/gc/include lib/unittest++/include',
+        includes='headers test/end/headers lib/gc/include lib/unittest++/include headers/contexts headers/states',
         uselib='PTHREAD RT',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp','gc','cord'],

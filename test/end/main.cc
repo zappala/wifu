@@ -54,6 +54,7 @@
 
 #include "AlreadyBoundToAddressPortVisitorTest.h"
 #include "TempTest.h"
+#include "TemporaryStateTest.h"
 
 using namespace UnitTest;
 
