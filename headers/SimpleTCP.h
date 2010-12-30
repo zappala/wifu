@@ -11,20 +11,25 @@
 #include "Protocol.h"
 #include "defines.h"
 
-
 class SimpleTCP : public Protocol {
 private:
+
     SimpleTCP() : Protocol(SIMPLE_TCP) {
 
     }
 
 public:
+
     static SimpleTCP& instance() {
         static SimpleTCP instance_;
         return instance_;
     }
 
     virtual ~SimpleTCP() {
+        
+    }
+
+    virtual void connect(AddressPort& ap) {
         
     }
 

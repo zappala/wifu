@@ -12,6 +12,7 @@
 #include <map>
 
 #include "Event.h"
+#include "QueryStringParser.h"
 
 using namespace std;
 

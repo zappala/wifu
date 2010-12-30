@@ -11,9 +11,13 @@
 #include "Module.h"
 #include "events/LibraryEvent.h"
 #include "events/ResponseEvent.h"
+#include "events/SocketEvent.h"
+#include "events/BindEvent.h"
+#include "events/ListenEvent.h"
 #include "HashSet.h"
 #include "Socket.h"
 #include "visitors/AlreadyListeningOnSamePortVisitor.h"
+#include "visitors/AlreadyBoundToAddressPortVisitor.h"
 #include "SocketCollection.h"
 
 class Protocol : public Module {
@@ -26,6 +30,8 @@ public:
     virtual ~Protocol() {
 
     }
+
+    virtual void connect(AddressPort& ap) = 0;
 
     HashSet<int>& get_sockets() {
         return sockets_;
