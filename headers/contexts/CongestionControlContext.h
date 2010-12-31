@@ -21,6 +21,10 @@ public:
         set_state(new SlowStart());
     }
 
+    void listen(Socket* s, int back_log) {
+        get_state()->listen(this, s, back_log);
+    }
+
     void connect(string& dest) {
         get_state()->connect(this, dest);
     }

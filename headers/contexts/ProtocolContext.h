@@ -36,6 +36,14 @@ public:
         contexts_.push_back(c);
     }
 
+    void listen(Socket* s, int back_log) {
+        for(int i = 0; i < contexts_.size(); ++i) {
+            contexts_[i]->listen(s, back_log);
+        }
+    }
+
+    // TODO: can we refactor out this for loop in each of these methods?
+    // Maybe we can put it in the ContextContainter?
     virtual void send(string& destination, string& data) {
         //cout << "Protocol: SEND" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {

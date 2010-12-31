@@ -9,6 +9,7 @@
 #define	_PACKETEVENT_H
 
 #include "Event.h"
+#include "../headers/Packet.h"
 
 class PacketEvent : public Event {
 public:

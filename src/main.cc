@@ -22,17 +22,16 @@
 #include "Semaphore.h"
 #include "events/CanceledEvents.h"
 #include "Dispatcher.h"
-#include "ConnectionManager.h"
 #include "events/ConnectEvent.h"
 #include "Socket.h"
 #include "UDPInterface.h"
-#include "ConnectionManager.h"
 #include "defines.h"
 #include "events/PacketReceivedEvent.h"
 #include "WifuEndBackEndLibrary.h"
 #include "MainSemaphore.h"
 #include "ProtocolManager.h"
 #include "SimpleTCP.h"
+#include "../headers/events/SendPacketEvent.h"
 
 using namespace std;
 

@@ -44,6 +44,9 @@ public:
     virtual void exit(Context* c) {
     }
 
+    virtual void listen(Context* c, Socket* s, int back_log) {
+    }
+
     virtual void receive(Context* c, string& data) {
     }
 

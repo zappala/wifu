@@ -98,7 +98,6 @@ public:
 
             if (!v.is_bound()) {
                 socket->set_local_address_port(local);
-                itr->second->bind
                 return_val = 0;
             } else {
                 error = EINVAL;
@@ -119,7 +118,8 @@ public:
         ListenEvent* event = (ListenEvent*) e;
 
         int s = event->get_socket();
-        if (sockets_.find(s) == sockets_.end()) {
+        map<int, ProtocolContext*>::iterator itr = sockets_.find(s);
+        if (itr == sockets_.end()) {
             return;
         }
 
@@ -135,19 +135,24 @@ public:
         AlreadyListeningOnSamePortVisitor v(socket->get_local_address_port()->get_port());
         SocketCollection::instance().accept(&v);
 
+        // TODO: check EOPNOTSUPP:
+        // The socket is not of a type that supports  the  listen()  operation.
+        // see man 2 listen
+
         if(v.is_listening()) {
             error = EADDRINUSE;
             return_val = -1;
         }
-
-        // TODO: check EOPNOTSUPP:
-        // The socket is not of a type that supports  the  listen()  operation.
-        // see man 2 listen
+        else {
+            // Call all contexts
+            itr->second->listen(socket, back_log);
+        }        
 
         ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
         response->put(ERRNO, Utils::itoa(error));
         response->put(RETURN_VALUE_STRING, Utils::itoa(return_val));
 
+        // TODO: we may not need this if we are pushing things into the FSMs
         socket->make_passive();
         dispatch(response);
     }

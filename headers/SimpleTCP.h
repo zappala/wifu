@@ -12,7 +12,6 @@
 #include "defines.h"
 
 #include "contexts/ContextContainer.h"
-#include "ConnectionManager.h"
 #include "contexts/CongestionControlContext.h"
 #include "contexts/ConnectionManagerContext.h"
 #include "contexts/CongestionControlContext.h"
@@ -42,9 +41,9 @@ public:
 
     ContextContainer* get_contexts() {
         ContextContainer* container = new ContextContainer();
-        container->add_context(new ReliabilityContext());
+        //container->add_context(new ReliabilityContext());
         container->add_context(new ConnectionManagerContext());
-        container->add_context(new CongestionControlContext());
+        //container->add_context(new CongestionControlContext());
         return container;
     }
 

@@ -1,5 +1,5 @@
-#include "../headers/states/Closed.h"
-#include "../headers/states/Open.h"
+#include "states/Closed.h"
+
 
 Closed::Closed() : State() {
 
@@ -18,6 +18,16 @@ void Closed::exit(Context* c) {
 }
 
 void Closed::connect(Context* c, string& remote) {
-    //cout << "Closed: Connect to: " << remote << endl;
-    c->set_state(new Open());
+    ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
+
+    // TODO: send a SYN
+    cmc->set_state(new SynSent());
+}
+
+void Closed::listen(Context* c, Socket* s, int back_log) {
+    ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
+
+    // TODO: Do anything with the Socket?
+    cmc->set_back_log(back_log);
+    cmc->set_state(new Listen());
 }

@@ -11,7 +11,9 @@
 #include <iostream>
 
 #include "../contexts/Context.h"
-
+#include "contexts/ConnectionManagerContext.h"
+#include "states/Listen.h"
+#include "states/SynSent.h"
 
 using namespace std;
 
@@ -22,6 +24,7 @@ public:
     virtual void enter(Context* c);
     virtual void exit(Context* c);
     virtual void connect(Context* c, string& remote);
+    virtual void listen(Context* c, Socket* s, int back_log);
     
 };
 

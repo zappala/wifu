@@ -10,35 +10,28 @@
 
 #include <string>
 #include "Context.h"
-#include "../states/Closed.h"
+#include "states/Closed.h"
+
 
 using namespace std;
 
 class ConnectionManagerContext : public Context {
 public:
-    ConnectionManagerContext() : Context() {
-        set_state(new Closed());
-    }
+    ConnectionManagerContext();
+    void listen(Socket* s, int back_log);
+    void connect(string& dest);
+    void close();
+    void receive(string& data);
+    void send(string& dest, string& data);
+    bool is_open();
 
-    void connect(string& dest) {
-        get_state()->connect(this, dest);
-    }
+    // Non-state methods
 
-    void close() {
-        get_state()->close(this);
-    }
+    int get_back_log();
+    void set_back_log(int back_log);
 
-    void receive(string& data) {
-        get_state()->receive(this, data);
-    }
-
-    void send(string& dest, string& data) {
-        get_state()->send(this, data);
-    }
-
-    bool is_open() {
-        return get_state()->is_open();
-    }
+private:
+    int back_log_;
 };
 
 #endif	/* CONNECTIONMANAGERCONTEXT_H */
