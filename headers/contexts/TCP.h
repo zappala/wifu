@@ -8,18 +8,20 @@
 #ifndef TCP_H
 #define	TCP_H
 
-#include "Protocol.h"
+#include "ProtocolContext.h"
 #include "ReliabilityContext.h"
 #include "ConnectionManagerContext.h"
 #include "CongestionControlContext.h"
 
-class TCP : public Protocol {
+class TCP : public ProtocolContext {
 public:
-    TCP() : Protocol() {
-        get_contexts().push_back(new ReliabilityContext());
-        get_contexts().push_back(new ConnectionManagerContext());
-        get_contexts().push_back(new CongestionControlContext());
+    TCP() : ProtocolContext() {
+        add_context(new ReliabilityContext());
+        add_context(new ConnectionManagerContext());
+        add_context(new CongestionControlContext());
     }
+
+
 };
 
 #endif	/* TCP_H */

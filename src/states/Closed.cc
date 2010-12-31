@@ -1,5 +1,5 @@
-#include "Closed.h"
-#include "Open.h"
+#include "../headers/states/Closed.h"
+#include "../headers/states/Open.h"
 
 Closed::Closed() : State() {
 
@@ -18,6 +18,6 @@ void Closed::exit(Context* c) {
 }
 
 void Closed::connect(Context* c, string& remote) {
-    cout << "Closed: Connect to: " << remote << endl;
+    //cout << "Closed: Connect to: " << remote << endl;
     c->set_state(new Open());
 }

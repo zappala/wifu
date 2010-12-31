@@ -11,11 +11,18 @@
 #include "Protocol.h"
 #include "defines.h"
 
+#include "contexts/ContextContainer.h"
+#include "ConnectionManager.h"
+#include "contexts/CongestionControlContext.h"
+#include "contexts/ConnectionManagerContext.h"
+#include "contexts/CongestionControlContext.h"
+#include "contexts/ReliabilityContext.h"
+
 class SimpleTCP : public Protocol {
 private:
 
     SimpleTCP() : Protocol(SIMPLE_TCP) {
-
+        
     }
 
 public:
@@ -31,6 +38,14 @@ public:
 
     virtual void connect(AddressPort& ap) {
         
+    }
+
+    ContextContainer* get_contexts() {
+        ContextContainer* container = new ContextContainer();
+        container->add_context(new ReliabilityContext());
+        container->add_context(new ConnectionManagerContext());
+        container->add_context(new CongestionControlContext());
+        return container;
     }
 
 };

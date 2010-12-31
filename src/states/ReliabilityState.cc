@@ -1,4 +1,4 @@
-#include "ReliabilityState.h"
+#include "../headers/states/ReliabilityState.h"
 
 ReliabilityState::ReliabilityState() {}
 
@@ -9,7 +9,7 @@ void ReliabilityState::receive(Context* c, string& data) {
 }
 
 void ReliabilityState::connect(Context* c, string& remote) {
-    cout << "Reliability Connecting to: " << remote << endl;
+    //cout << "Reliability Connecting to: " << remote << endl;
 }
 
 void ReliabilityState::enter(Context* c) {

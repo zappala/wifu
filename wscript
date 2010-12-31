@@ -72,7 +72,9 @@ def build_blaster(bld):
 
 	udp_blaster = bld(features='cxx cprogram',
         source=udp_files,
-        includes='headers',
+        includes='headers lib/gc/include',
+        libpath = ['../lib/gc'],
+	staticlib = ['gccpp','gc','cord'],
         uselib='PTHREAD RT',
 		target='udp-blaster')
 
@@ -88,33 +90,6 @@ def build_sink(bld):
         includes='headers',
         uselib='PTHREAD RT',
 		target='udp-sink')
-
-def build_simpletcp(bld):
-	# SimpleTCP
-	simple_tcp_files = bld.glob('preliminary/SimpleTCPServer.cc')
-	simple_tcp_files += bld.glob('preliminary/SimpleTCP.cc')
-	simple_tcp_files += bld.glob('src/UDPSocket.cc')
-	simple_tcp_files += bld.glob('src/Semaphore.cc')
-	simple_tcp_files += bld.glob('src/Identifiable.cc')
-	simple_tcp_files += bld.glob('src/IDGenerator.cc')
-
-	udp_sink = bld(features='cxx cprogram',
-        source=simple_tcp_files,
-        includes='headers',
-        uselib='PTHREAD RT',
-		target='simple-tcp-server')
-
-#	simple_tcp_files = bld.glob('preliminary/SimpleTCPClient.cc')
-#	simple_tcp_files += bld.glob('preliminary/SimpleTCP.cc')
-#	simple_tcp_files += bld.glob('src/UDPSocket.cc')
-#	simple_tcp_files += bld.glob('src/Semaphore.cc')
-#	simple_tcp_files += bld.glob('src/Identifiable.cc')
-#	simple_tcp_files += bld.glob('src/IDGenerator.cc')
-#	udp_sink = bld(features='cxx cprogram',
-#        source=simple_tcp_files,
-#        includes='headers',
-#        uselib='PTHREAD RT',
-#		target='simple-tcp-client')
 
 
 def build_staticlib(bld):
@@ -180,7 +155,6 @@ def build_wifu_frontend_test(bld):
 def build(bld):
 #	build_blaster(bld)
 #	build_sink(bld)
-#	build_simpletcp(bld)
 
 	build_staticlib(bld)
 	build_wifu(bld)

@@ -20,6 +20,9 @@
 #include "visitors/AlreadyBoundToAddressPortVisitor.h"
 #include "SocketCollection.h"
 
+#include "contexts/ProtocolContext.h"
+#include "contexts/ContextContainer.h"
+
 class Protocol : public Module {
 public:
 
@@ -31,11 +34,9 @@ public:
 
     }
 
-    virtual void connect(AddressPort& ap) = 0;
+    virtual ContextContainer* get_contexts() = 0;
 
-    HashSet<int>& get_sockets() {
-        return sockets_;
-    }
+    virtual void connect(AddressPort& ap) = 0;
 
     /**
      * Default implementation of what a protocol will do when a socket Event is received
@@ -54,8 +55,10 @@ public:
         }
 
         int s = socket->get_socket();
+        ProtocolContext* c = new ProtocolContext();
+        c->set_contexts(get_contexts());
 
-        sockets_.insert(s);
+        sockets_[s] = c;
 
         ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
         response->put(ERRNO, Utils::itoa(0));
@@ -75,7 +78,7 @@ public:
         int return_val = -1;
         int s = event->get_socket();
 
-        if (!get_sockets().contains(s)) {
+        if (sockets_.find(s) == sockets_.end()) {
             return;
         }
 
@@ -114,7 +117,7 @@ public:
         ListenEvent* event = (ListenEvent*) e;
 
         int s = event->get_socket();
-        if (!get_sockets().contains(s)) {
+        if (sockets_.find(s) == sockets_.end()) {
             return;
         }
 
@@ -151,9 +154,9 @@ private:
     int protocol_;
 
     /**
-     * Sockets which are associated with this protocol
+     * Socket id to ProtocolContext pointer map
      */
-    HashSet<int> sockets_;
+    map<int, ProtocolContext*> sockets_;
 };
 
 #endif	/* PROTOCOL_H */

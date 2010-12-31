@@ -5,69 +5,75 @@
  * Created on December 30, 2010, 10:34 AM
  */
 
-#ifndef PROTOCOL_H
-#define	PROTOCOL_H
+#ifndef PROTOCOLCONTEXT_H
+#define	PROTOCOLCONTEXT_H
 
 #include <string>
 #include <vector>
 
+#include "IContext.h"
 #include "Context.h"
+#include "ContextContainer.h"
 
 using namespace std;
 
-class Protocol : public IContext {
+class ProtocolContext : public IContext {
 public:
 
-    Protocol() {
+    ProtocolContext() {
 
     }
 
-    virtual ~Protocol() {
+    virtual ~ProtocolContext() {
 
     }
 
-    vector<Context*>& get_contexts() {
-        return contexts_;
+    void set_contexts(ContextContainer* c) {
+        contexts_ = c->get_contexts();
+    }
+
+    virtual void add_context(Context* c) {
+        contexts_.push_back(c);
     }
 
     virtual void send(string& destination, string& data) {
-        cout << "Protocol: SEND" << endl;
+        //cout << "Protocol: SEND" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {
             contexts_[i]->send(destination, data);
         }
-        cout << endl;
+        //cout << endl;
     }
     virtual void receive(string& data) {
-        cout << "Protocol: RECEIVE" << endl;
+        //cout << "Protocol: RECEIVE" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {
             contexts_[i]->receive(data);
         }
-        cout << endl;
+        //cout << endl;
     }
     virtual void connect(string& destination) {
-        cout << "Protocol: CONNECT" << endl;
+        //cout << "Protocol: CONNECT" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {
             contexts_[i]->connect(destination);
         }
-        cout << endl;
+        //cout << endl;
     }
 
     virtual void close() {
-        cout << "Protocol: CLOSE" << endl;
+        //cout << "Protocol: CLOSE" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {
             contexts_[i]->close();
         }
-        cout << endl;
+        //cout << endl;
     }
 
     virtual bool is_open() {
-        cout << "Protocol: IS_OPEN" << endl;
+        //cout << "Protocol: IS_OPEN" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {
             if(contexts_[i]->is_open()) {
                 return true;
             }
         }
-        cout << endl;
+        //cout << endl;
         return false;
     }
 
@@ -75,5 +81,5 @@ private:
     vector<Context*> contexts_;
 };
 
-#endif	/* PROTOCOL_H */
+#endif	/* PROTOCOLCONTEXT_H */
 

@@ -1,5 +1,5 @@
-#include "Open.h"
-#include "Closed.h"
+#include "../headers/states/Closed.h"
+#include "../headers/states/Open.h"
 
 Open::Open() : State() {
 
@@ -18,7 +18,7 @@ void Open::exit(Context* c) {
 }
 
 void Open::close(Context* c) {
-    cout << "Open -> Close " << endl;
+    //cout << "Open -> Close " << endl;
     c->set_state(new Closed());
 }
 

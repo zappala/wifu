@@ -9,10 +9,11 @@
 #define	ICONTEXT_H
 
 #include <string>
+#include "../GarbageCollector.h"
 
 using namespace std;
 
-class IContext {
+class IContext : public gc {
 public:
     virtual void receive(string& data) = 0;
     virtual void send(string& dest, string& data) = 0;
