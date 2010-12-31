@@ -78,7 +78,8 @@ public:
         int return_val = -1;
         int s = event->get_socket();
 
-        if (sockets_.find(s) == sockets_.end()) {
+        map<int, ProtocolContext*>::iterator itr = sockets_.find(s);
+        if (itr == sockets_.end()) {
             return;
         }
 
@@ -97,6 +98,7 @@ public:
 
             if (!v.is_bound()) {
                 socket->set_local_address_port(local);
+                itr->second->bind
                 return_val = 0;
             } else {
                 error = EINVAL;
