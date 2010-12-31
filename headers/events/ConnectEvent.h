@@ -8,26 +8,25 @@
 #ifndef _CONNECTEVENT_H
 #define	_CONNECTEVENT_H
 
-#include "Event.h"
-#include "AddressPort.h"
+#include "LibraryEvent.h"
 
 /**
  * Event which represents a connect event.
  * @see Event
  */
-class ConnectEvent : public Event, public AddressPort {
+class ConnectEvent : public LibraryEvent {
 
 public:
 
     /**
      * Constructs a ConnectEvent.
      *
-     * @param socket The socket, which represents a unique connection, to use for this Event
-     * @param address The IP address of the machine to connect to.
-     * @param port The port on machine represented by address which is listening for a connection.
      */
-    ConnectEvent(int socket, string & address, int& port)
-        : Event(socket), AddressPort(address, port) {
+    ConnectEvent(string& message, string& file) : LibraryEvent(message, file) {
+
+    }
+
+    virtual ~ConnectEvent() {
 
     }
 
@@ -38,7 +37,7 @@ public:
      * @see IModule::connect()
      */
     void execute(IModule* m) {
-        m->connect(this);
+        m->library_connect(this);
     }
 };
 

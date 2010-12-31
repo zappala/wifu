@@ -106,8 +106,9 @@ public:
 
 
         } else if (!name.compare(WIFU_CONNECT_NAME)) {
-            int return_val = 0;
-            //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+//            dispatch(new ConnectEvent(message, getFile()));
+//            return;
+
         } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
             int return_val = SO_BINDTODEVICE;
             //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);

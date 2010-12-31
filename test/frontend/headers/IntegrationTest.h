@@ -126,6 +126,29 @@ namespace {
         CHECK_EQUAL(EADDRINUSE, errno);
     }
 
+//    void connect_test() {
+//        struct sockaddr_in to_bind;
+//        socklen_t length = sizeof (struct sockaddr_in);
+//        memset(&to_bind, 0, length);
+//        to_bind.sin_family = AF_INET;
+//        to_bind.sin_port = htons(5002);
+//        to_bind.sin_addr.s_addr = INADDR_ANY;
+//
+//        struct sockaddr_in to_connect;
+//        memset(&to_connect, 0, length);
+//        to_connect.sin_family = AF_INET;
+//        to_connect.sin_port = htons(5002);
+//        to_connect.sin_addr.s_addr = INADDR_ANY;
+//
+//        // Should be successful
+//        int socket = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+//        result = wifu_bind(socket, (const struct sockaddr *) & to_bind, length);
+//        CHECK_EQUAL(0, result);
+//
+//        result = wifu_connect(socket, &to_connect, length);
+//        //CHECK_EQUAL(0, result);
+//    }
+
     SUITE(IntegrationTest) {
 
         TEST_FIXTURE(BackEndFixture, IntegrationTest) {

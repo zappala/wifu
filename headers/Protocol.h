@@ -157,6 +157,10 @@ public:
         dispatch(response);
     }
 
+    void library_connect(Event* e) {
+        cout << "Library Connect" << endl;
+    }
+
 private:
     int protocol_;
 

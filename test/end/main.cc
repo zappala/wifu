@@ -25,7 +25,6 @@
 #include "SocketDataMapTest.h"
 
 #include "CanceledEventsTest.h"
-#include "ConnectEventTest.h"
 #include "PacketReceivedEventTest.h"
 #include "SendPacketEventTest.h"
 #include "TimeoutEventTest.h"
