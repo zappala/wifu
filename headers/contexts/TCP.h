@@ -20,8 +20,6 @@ public:
         add_context(new ConnectionManagerContext());
         add_context(new CongestionControlContext());
     }
-
-
 };
 
 #endif	/* TCP_H */
