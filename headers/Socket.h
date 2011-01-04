@@ -16,6 +16,7 @@
 #include "PortManager.h"
 #include "SocketManager.h"
 #include "GarbageCollector.h"
+#include "AddressPort.h"
 
 using namespace std;
 // TODO: do we need to protect this with a Semaphore?

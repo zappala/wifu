@@ -8,6 +8,8 @@
 #ifndef _PORTMANAGER_H
 #define	_PORTMANAGER_H
 
+#include <stdint.h>
+
 #include "RandomNumberSet.h"
 
 class PortManager : public RandomNumberSet<uint16_t> {
