@@ -18,6 +18,7 @@
 #include "UDPSocketCallback.h"
 #include "AddressPort.h"
 #include "events/UDPReceivePacketEvent.h"
+#include "SocketCollection.h"
 
 /**
  * Interface to an actual socket which data will be sent and recieved.
@@ -61,7 +62,15 @@ public:
      * @see UDPSocketCallback::receive()
      */
     void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
+
+        // ap is Sending address
+
         Packet* p = new Packet(buffer, length, ap.get_address(), socket_.get_bound_address_port()->get_address());
+
+        // Receiving address
+        socket_.get_bound_address_port();
+//        p->
+//        SocketCollection::instance().get_by_local_and_remote_ap()
         Event* e = new UDPReceivePacketEvent(0, p);
         Dispatcher::instance().enqueue(e);
     }

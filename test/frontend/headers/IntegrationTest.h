@@ -20,6 +20,7 @@
 #include "UnitTest++.h"
 #include "../applib/wifu_socket.h"
 #include "../headers/defines.h"
+#include "../headers/AddressPort.h"
 
 using namespace std;
 
@@ -126,28 +127,22 @@ namespace {
         CHECK_EQUAL(EADDRINUSE, errno);
     }
 
-//    void connect_test() {
-//        struct sockaddr_in to_bind;
-//        socklen_t length = sizeof (struct sockaddr_in);
-//        memset(&to_bind, 0, length);
-//        to_bind.sin_family = AF_INET;
-//        to_bind.sin_port = htons(5002);
-//        to_bind.sin_addr.s_addr = INADDR_ANY;
-//
-//        struct sockaddr_in to_connect;
-//        memset(&to_connect, 0, length);
-//        to_connect.sin_family = AF_INET;
-//        to_connect.sin_port = htons(5002);
-//        to_connect.sin_addr.s_addr = INADDR_ANY;
-//
-//        // Should be successful
-//        int socket = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
-//        result = wifu_bind(socket, (const struct sockaddr *) & to_bind, length);
+    void connect_test() {
+        AddressPort to_bind("0.0.0.0", 5002);
+        AddressPort to_connect("127.0.0.1", 5002);
+
+        // Create server
+        int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+        int result = wifu_bind(server, (const struct sockaddr *) to_bind.get_network_struct_ptr(), sizeof(struct sockaddr_in));
+        CHECK_EQUAL(0, result);
+        result = wifu_listen(server, 5);
+        CHECK_EQUAL(0, result);
+
+        // Create client
+        int client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+//        result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof(struct sockaddr_in));
 //        CHECK_EQUAL(0, result);
-//
-//        result = wifu_connect(socket, &to_connect, length);
-//        //CHECK_EQUAL(0, result);
-//    }
+    }
 
     SUITE(IntegrationTest) {
 
@@ -156,6 +151,7 @@ namespace {
             socket_test();
             bind_test();
             listen_test();
+            connect_test();
         }
     }
 }

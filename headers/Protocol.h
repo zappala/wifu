@@ -157,7 +157,7 @@ public:
         dispatch(response);
     }
 
-    void library_connect(Event* e) {
+    virtual void library_connect(Event* e) {
         cout << "Library Connect" << endl;
     }
 

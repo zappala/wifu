@@ -375,6 +375,7 @@ public:
         m[LENGTH_STRING] = Utils::itoa(len);
 
         string message = QueryStringParser::create(WIFU_CONNECT_NAME, m);
+        cout << "Sending connect event: " << message << endl;
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);

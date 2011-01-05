@@ -106,8 +106,9 @@ public:
 
 
         } else if (!name.compare(WIFU_CONNECT_NAME)) {
-//            dispatch(new ConnectEvent(message, getFile()));
-//            return;
+            dispatch(new ConnectEvent(message, getFile()));
+            cout << "Dispatched connect event" << endl;
+            return;
 
         } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
             int return_val = SO_BINDTODEVICE;

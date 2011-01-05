@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
     register_protocols();
 
     // INADDR_ANY == 0.0.0.0
-    string address("0.0.0.0");
+    string address("127.0.0.1");
     int port = WIFU_PORT;
 
     AddressPort ap(address, port);
