@@ -52,14 +52,17 @@ public:
      * @param dest The destination address and port of this Packet.
      * @param data The payload of this Packet.
      * @param data_length The size of data in bytes.
+     * @param header_legnth How many bytes should be left between the virtual ports and the data for header data
      */
     Packet(AddressPort* source,
             AddressPort* dest,
             unsigned char* data,
-            int data_length)
+            int data_length,
+            int header_length = 0)
     : data_length_(data_length),
     source_(source),
-    destination_(dest) {
+    destination_(dest),
+    header_length_(header_length) {
 
         memset(payload_, 0, PAYLOAD_SIZE);
 
@@ -68,8 +71,7 @@ public:
         header.virtual_src_port = source->get_port();
         memcpy(payload_, &header, END_HEADER_SIZE);
 
-        unsigned char* ptr = payload_;
-        ptr += END_HEADER_SIZE;
+        unsigned char* ptr = get_data();
         memcpy(ptr, data, data_length_);
     }
 
@@ -96,13 +98,13 @@ public:
      * Returns the entire length of this Packet.
      * Namely, it returns data_lenth() + sizeof(wifu_end_header).
      *
-     * @return data_lenth() + sizeof(wifu_end_header)
+     * @return data_lenth() + sizeof(wifu_end_header) + header_length
      *
      * @see Packet::data_length()
      * @see wifu_end_header
      */
     int packet_length() {
-        return data_length() + END_HEADER_SIZE;
+        return data_length() + END_HEADER_SIZE + header_length_;
     }
 
     /**
@@ -136,6 +138,15 @@ public:
      * @return A pointer to the data in this Packet.
      */
     virtual unsigned char* get_data() {
+        return get_header() + header_length_;
+    }
+
+    /**
+     * Returns the point immediately following the virtual ports
+     *
+     * @return the Point in this Packet immediately following the virtual ports
+     */
+    unsigned char* get_header() {
         return payload_ + END_HEADER_SIZE;
     }
 
@@ -160,6 +171,11 @@ private:
      * Actual destination address and virtual destination port.
      */
     AddressPort* destination_;
+
+    /**
+     * Number of bytes that are between the virtual ports and the data
+     */
+    int header_length_;
 };
 
 #endif	/* _PACKET_H */

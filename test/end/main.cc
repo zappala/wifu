@@ -20,6 +20,7 @@
 #include "IDGeneratorTest.h"
 #include "QueueTest.h"
 #include "PacketTest.h"
+#include "TCPPacketTest.h"
 
 #include "LocalSocketFullDuplexTest.h"
 #include "QueryStringParserTest.h"
@@ -54,6 +55,7 @@
 
 #include "AlreadyBoundToAddressPortVisitorTest.h"
 #include "TempTest.h"
+
 
 using namespace UnitTest;
 
