@@ -9,7 +9,7 @@ void ConnectionManagerContext::listen(Socket* s, int back_log) {
     get_state()->listen(this, s, back_log);
 }
 
-void ConnectionManagerContext::connect(string& dest) {
+void ConnectionManagerContext::connect(AddressPort& dest) {
     get_state()->connect(this, dest);
 }
 

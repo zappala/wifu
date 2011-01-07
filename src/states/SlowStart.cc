@@ -20,7 +20,7 @@ void SlowStart::exit(Context* c) {
     leave_state("SlowStart");
 }
 
-void SlowStart::connect(Context* c, string& remote) {
+void SlowStart::connect(Context* c, AddressPort& remote) {
     //cout << "SlowStart Connecting to: " << remote << endl;
 }
 

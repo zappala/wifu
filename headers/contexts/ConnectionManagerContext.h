@@ -11,6 +11,7 @@
 #include <string>
 #include "Context.h"
 #include "states/Closed.h"
+#include "../AddressPort.h"
 
 
 using namespace std;
@@ -19,7 +20,7 @@ class ConnectionManagerContext : public Context {
 public:
     ConnectionManagerContext();
     void listen(Socket* s, int back_log);
-    void connect(string& dest);
+    void connect(AddressPort& dest);
     void close();
     void receive(string& data);
     void send(string& dest, string& data);

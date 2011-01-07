@@ -8,7 +8,7 @@ void ReliabilityState::receive(Context* c, string& data) {
 
 }
 
-void ReliabilityState::connect(Context* c, string& remote) {
+void ReliabilityState::connect(Context* c, AddressPort& remote) {
     //cout << "Reliability Connecting to: " << remote << endl;
 }
 

@@ -139,14 +139,13 @@ public:
         // The socket is not of a type that supports  the  listen()  operation.
         // see man 2 listen
 
-        if(v.is_listening()) {
+        if (v.is_listening()) {
             error = EADDRINUSE;
             return_val = -1;
-        }
-        else {
+        } else {
             // Call all contexts
             itr->second->listen(socket, back_log);
-        }        
+        }
 
         ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
         response->put(ERRNO, Utils::itoa(error));
@@ -159,6 +158,20 @@ public:
 
     virtual void library_connect(Event* e) {
         cout << "Library Connect" << endl;
+        ConnectEvent* event = (ConnectEvent*) e;
+
+        int s = event->get_socket();
+        map<int, ProtocolContext*>::iterator itr = sockets_.find(s);
+        if (itr == sockets_.end()) {
+            return;
+        }
+
+        // TODO: Error check
+        string address = event->get_map()[ADDRESS_STRING];
+        int port = atoi(event->get_map()[PORT_STRING].c_str());
+        AddressPort ap(address, port);
+        itr->second->connect(ap);
+        
     }
 
 private:

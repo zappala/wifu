@@ -14,6 +14,7 @@
 #include "IContext.h"
 #include "Context.h"
 #include "ContextContainer.h"
+#include "../AddressPort.h"
 
 using namespace std;
 
@@ -58,7 +59,7 @@ public:
         }
         //cout << endl;
     }
-    virtual void connect(string& destination) {
+    virtual void connect(AddressPort& destination) {
         //cout << "Protocol: CONNECT" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {
             contexts_[i]->connect(destination);

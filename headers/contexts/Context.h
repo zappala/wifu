@@ -12,6 +12,8 @@
 #include <iostream>
 #include "IContext.h"
 
+#include "AddressPort.h"
+
 using namespace std;
 
 class State;
@@ -53,7 +55,7 @@ public:
     virtual void timeout(Context* c) {
     }
 
-    virtual void connect(Context* c, string& remote) {
+    virtual void connect(Context* c, AddressPort& remote) {
     }
 
     virtual void close(Context* c) {

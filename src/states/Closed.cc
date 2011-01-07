@@ -17,7 +17,7 @@ void Closed::exit(Context* c) {
     leave_state("Closed");
 }
 
-void Closed::connect(Context* c, string& remote) {
+void Closed::connect(Context* c, AddressPort& remote) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
 
     // TODO: send a SYN

@@ -11,6 +11,7 @@
 #include <string>
 #include "Context.h"
 #include "../states/SlowStart.h"
+#include "../AddressPort.h"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ public:
         get_state()->listen(this, s, back_log);
     }
 
-    void connect(string& dest) {
+    void connect(AddressPort& dest) {
         get_state()->connect(this, dest);
     }
 

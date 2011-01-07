@@ -11,6 +11,7 @@
 #include <string>
 
 #include "../contexts/Context.h"
+#include "../AddressPort.h"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ public:
     void receive(Context* c, string& data);
     void enter(Context* c);
     void exit(Context* c);
-    void connect(Context* c, string& remote);
+    void connect(Context* c, AddressPort& remote);
 };
 
 

@@ -12,6 +12,7 @@
 #include "../GarbageCollector.h"
 
 #include "../headers/Socket.h"
+#include "../headers/AddressPort.h"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ public:
     
     virtual void receive(string& data) = 0;
     virtual void send(string& dest, string& data) = 0;
-    virtual void connect(string& dest) = 0;
+    virtual void connect(AddressPort& dest) = 0;
     virtual void close() = 0;
     virtual bool is_open() = 0;
 };
