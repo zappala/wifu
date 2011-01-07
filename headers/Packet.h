@@ -79,7 +79,7 @@ public:
      *
      * @return The entire payload including virtual ports
      */
-    virtual unsigned char* to_bytes() {
+    unsigned char* to_bytes() {
         return payload_;
     }
 
@@ -135,7 +135,7 @@ public:
      *
      * @return A pointer to the data in this Packet.
      */
-    unsigned char* get_data() {
+    virtual unsigned char* get_data() {
         return payload_ + END_HEADER_SIZE;
     }
 
