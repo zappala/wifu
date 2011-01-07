@@ -65,14 +65,14 @@ public:
 
         // ap is Sending address
 
-        Packet* p = new Packet(buffer, length, ap.get_address(), socket_.get_bound_address_port()->get_address());
+        //Packet* p = new Packet(buffer, length, ap.get_address(), socket_.get_bound_address_port()->get_address());
 
         // Receiving address
-        socket_.get_bound_address_port();
+        //socket_.get_bound_address_port();
 //        p->
 //        SocketCollection::instance().get_by_local_and_remote_ap()
-        Event* e = new UDPReceivePacketEvent(0, p);
-        Dispatcher::instance().enqueue(e);
+        //Event* e = new UDPReceivePacketEvent(0, p);
+        //Dispatcher::instance().enqueue(e);
     }
 
     /**
@@ -83,8 +83,8 @@ public:
     void udp_send(Event* e) {
         UDPSendPacketEvent* event = (UDPSendPacketEvent*) e;
         Packet* p = event->get_packet();
-        AddressPort destination(p->get_dest_address(), p->get_dest_port());
-        socket_.send(destination, p->to_bytes(), p->length());
+        //AddressPort destination(p->get_dest_address(), p->get_dest_port());
+        //socket_.send(destination, p->to_bytes(), p->length());
     }
 
 private:
