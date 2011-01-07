@@ -11,6 +11,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stdlib.h>
+#include <time.h>
+#include <cstdlib>
 
 #include "UnitTest++.h"
 #include "../headers/UDPInterface.h"
@@ -38,12 +41,10 @@ public:
     void udp_receive(Event* e) {
         UDPReceivePacketEvent* event = (UDPReceivePacketEvent*) e;
         p = event->get_packet();
-        t.update_stop();
         s.post();
     }
 
     Packet* p;
-    Timer t;
     Semaphore s;
 };
 
@@ -51,7 +52,23 @@ namespace {
 
     SUITE(UDPInterface) {
 
+        string get_data(int packet_size) {
+            string data = "";
+            for (int i = 0; i < packet_size; i++) {
+                // Thanks to: http://www.geekstogo.com/forum/topic/94906-random-ints-and-chars-in-c/
+                timespec ts;
+                clock_gettime(CLOCK_REALTIME, &ts);
+                srand(ts.tv_nsec);
+                char c = (rand() % 26) + 'a';
+                string s(1, c);
+                data.append(s);
+            }
+            return data;
+        }
+
         TEST(UDPInterfaceTest) {
+            int num_packets = 100;
+            int packet_size = 1450;
             TempUDPModule temp;
             usleep(10000);
 
@@ -60,30 +77,63 @@ namespace {
             usleep(10000);
 
             dispatcher.map_event(type_name(UDPReceivePacketEvent), &temp);
+            dispatcher.map_event(type_name(UDPSendPacketEvent), &udp);
             dispatcher.start_processing();
 
             AddressPort* source = new AddressPort("127.0.0.1", 5000);
             AddressPort* dest = new AddressPort("127.0.0.1", 5001);
 
-            Socket* s = new Socket(0, 0, 0, dest, source);
+            Socket* s = new Socket(0, 0, 0, dest);
             SocketCollection::instance().push(s);
 
-            const char* data = "Hello";
-            int length = 5;
-
-            Packet* p = new Packet(source, dest, (unsigned char*) data, length);
-            UDPSendPacketEvent* e = new UDPSendPacketEvent(s->get_socket(), p);
-            udp.udp_send(e);
-            temp.t.start();
-            temp.s.wait();
+            // only by local address/port
 
 
-            CHECK_EQUAL(data, (const char*) temp.p->get_data());
-            CHECK_EQUAL(length, temp.p->data_length());
-            CHECK(*dest == *(temp.p->get_destination()));
-            CHECK(*source == *(temp.p->get_source()));
-            cout << "Time (us) to send and receive one packet: " << temp.t.get_duration_microseconds() << endl;
+            int time = 0;
+            for (int i = 0; i < num_packets; i++) {
 
+                string data = get_data(packet_size);
+
+                Timer t;
+                t.start();
+                Packet* p = new Packet(source, dest, (unsigned char*) data.c_str(), data.size());
+                UDPSendPacketEvent* e = new UDPSendPacketEvent(s->get_socket(), p);
+                dispatcher.enqueue(e);
+                temp.s.wait();
+                t.stop();
+                time += t.get_duration_microseconds();
+
+                CHECK_EQUAL(data.c_str(), (const char*) temp.p->get_data());
+                CHECK_EQUAL(packet_size, temp.p->data_length());
+                CHECK(*dest == *(temp.p->get_destination()));
+                CHECK(*source == *(temp.p->get_source()));
+            }
+            cout << "Time (us) to send and receive " << num_packets << " packets: " << time << endl;
+
+            // by local AND remote address/port
+            s->set_remote_address_port(source);
+            SocketCollection::instance().mark_dirty();
+
+            time = 0;
+            for (int i = 0; i < num_packets; i++) {
+
+                string data = get_data(packet_size);
+
+                Timer t;
+                t.start();
+                Packet* p = new Packet(source, dest, (unsigned char*) data.c_str(), data.size());
+                UDPSendPacketEvent* e = new UDPSendPacketEvent(s->get_socket(), p);
+                udp.udp_send(e);
+                temp.s.wait();
+                t.stop();
+                time += t.get_duration_microseconds();
+
+                CHECK_EQUAL(data.c_str(), (const char*) temp.p->get_data());
+                CHECK_EQUAL(packet_size, temp.p->data_length());
+                CHECK(*dest == *(temp.p->get_destination()));
+                CHECK(*source == *(temp.p->get_source()));
+            }
+            cout << "Time (us) to send and receive " << num_packets << " packets: " << time << endl;
         }
     }
 }
