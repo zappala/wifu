@@ -13,12 +13,12 @@
 
 class PacketEvent : public Event {
 public:
-    PacketEvent(int socket, Packet* p) : Event(socket) {
+    PacketEvent(int socket, Packet* p) : Event(socket), packet_(p) {
         
     }
     
     virtual ~PacketEvent() {
-        delete packet_;
+
     }
     
     Packet* get_packet() {

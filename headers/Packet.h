@@ -12,6 +12,7 @@
 #include "defines.h"
 #include <string.h>
 #include <assert.h>
+#include "GarbageCollector.h"
 
 using namespace std;
 
@@ -22,14 +23,14 @@ struct wifu_end_header {
 
 #define END_HEADER_SIZE sizeof(struct wifu_end_header)
 
-class Packet {
+class Packet : public gc {
 public:
 
     Packet( AddressPort* source,
             AddressPort* dest,
             unsigned char* data,
             int data_length)
-            :   length_(data_length),
+            :   data_length_(data_length),
                 source_(source),
                 destination_(dest) {
 
@@ -42,7 +43,7 @@ public:
 
         unsigned char* ptr = payload_;
         ptr += END_HEADER_SIZE;
-        memcpy(ptr, data, length_);
+        memcpy(ptr, data, data_length_);
     }
 
     virtual ~Packet() {
@@ -53,8 +54,12 @@ public:
         return payload_;
     }
 
-    virtual int length() {
-        return length_;
+    int data_length() {
+        return data_length_;
+    }
+
+    int packet_length() {
+        return data_length() + END_HEADER_SIZE;
     }
 
     AddressPort* get_source() {
@@ -71,7 +76,7 @@ public:
 
 private:
     unsigned char payload_[PAYLOAD_SIZE];
-    int length_;
+    int data_length_;
 
     AddressPort* source_;
     AddressPort* destination_;

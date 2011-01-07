@@ -68,9 +68,14 @@ namespace {
         }
 
 
-        TEST(PacketLengthTest) {
+        TEST(PacketPacketLengthTest) {
             PacketFixture f;
-            CHECK_EQUAL(f.data_length, f.packet->length());
+            CHECK_EQUAL(f.data_length + sizeof(struct wifu_end_header), f.packet->packet_length());
+        }
+
+        TEST(PacketDataLengthTest) {
+            PacketFixture f;
+            CHECK_EQUAL(f.data_length, f.packet->data_length());
         }
 
         TEST(PacketGetSourceTest) {

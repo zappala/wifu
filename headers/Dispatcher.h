@@ -13,6 +13,7 @@
 #include "Queue.h"
 #include "defines.h"
 
+#include <algorithm>
 #include <tr1/unordered_map>
 
 using namespace std;
@@ -53,6 +54,12 @@ public:
         if (map_[name] == NULL) {
             map_[name] = new vector<QueueProcessor<Event*>*>;
         }
+
+        vector<QueueProcessor<Event*>*>::iterator itr = find(map_[name]->begin(), map_[name]->end(), q);
+        if(itr != map_[name]->end()) {
+            return;
+        }
+
         map_[name]->push_back(q);
     }
 

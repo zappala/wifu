@@ -13,6 +13,7 @@
 #include "UnitTest++.h"
 
 #include "UDPSocketTest.h"
+#include "UDPInterfaceTest.h"
 #include "AddressPortTest.h"
 #include "SemaphoreTest.h"
 #include "BinarySemaphoreTest.h"

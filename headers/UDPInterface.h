@@ -62,17 +62,26 @@ public:
      * @see UDPSocketCallback::receive()
      */
     void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
+        struct wifu_end_header* header = (struct wifu_end_header*) buffer;
+        AddressPort* remote = new AddressPort(ap.get_address(), header->virtual_src_port);
+        AddressPort* local = new AddressPort(socket_.get_bound_address_port()->get_address(), header->virtual_dest_port);
 
-        // ap is Sending address
+        Socket* s = SocketCollection::instance().get_by_local_and_remote_ap(local, remote);
 
-        //Packet* p = new Packet(buffer, length, ap.get_address(), socket_.get_bound_address_port()->get_address());
+        if(!s) {
+            s = SocketCollection::instance().get_by_local_ap(local);
+        }
 
-        // Receiving address
-        //socket_.get_bound_address_port();
-//        p->
-//        SocketCollection::instance().get_by_local_and_remote_ap()
-        //Event* e = new UDPReceivePacketEvent(0, p);
-        //Dispatcher::instance().enqueue(e);
+
+        if(!s) {
+            // No bound local socket
+            return;
+        }
+
+
+        Packet* p = new Packet(remote, local, buffer + END_HEADER_SIZE, length - END_HEADER_SIZE);
+        Event* e = new UDPReceivePacketEvent(s->get_socket(), p);
+        Dispatcher::instance().enqueue(e);
     }
 
     /**
@@ -83,8 +92,8 @@ public:
     void udp_send(Event* e) {
         UDPSendPacketEvent* event = (UDPSendPacketEvent*) e;
         Packet* p = event->get_packet();
-        //AddressPort destination(p->get_dest_address(), p->get_dest_port());
-        //socket_.send(destination, p->to_bytes(), p->length());
+        AddressPort destination(p->get_destination()->get_address(), WIFU_PORT);
+        socket_.send(destination, p->to_bytes(), p->packet_length());
     }
 
 private:

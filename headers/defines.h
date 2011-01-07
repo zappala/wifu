@@ -8,6 +8,8 @@
 #ifndef _INCLUDES_H
 #define	_INCLUDES_H
 
+#include <typeinfo>
+
 #define type_name(X) typeid(X).name()
 #define SIG_ENQUEUE_EVENT 50
 #define SIG_CANCEL_EVENT 51

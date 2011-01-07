@@ -128,6 +128,7 @@ def build_wifu_end_test(bld):
 	src_files = bld.glob('src/*.cc')
         src_files += bld.glob('src/contexts/*.cc')
         src_files += bld.glob('src/states/*.cc')
+	src_files += bld.glob('preliminary/Timer.cc')
 
 	all_files = src_files
 	all_files += test_end_files
@@ -135,7 +136,7 @@ def build_wifu_end_test(bld):
 
 	test_end = bld(features='cxx cprogram',
         source=all_files,
-        includes='headers test/end/headers lib/gc/include lib/unittest++/include headers/contexts headers/states',
+        includes='preliminary headers test/end/headers lib/gc/include lib/unittest++/include headers/contexts headers/states',
         uselib='PTHREAD RT',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp','gc','cord'],
