@@ -87,8 +87,6 @@ namespace {
             SocketCollection::instance().push(s);
 
             // only by local address/port
-
-
             int time = 0;
             for (int i = 0; i < num_packets; i++) {
 
