@@ -25,6 +25,7 @@
 #include "../headers/Socket.h"
 #include "../preliminary/Timer.h"
 #include "../headers/Semaphore.h"
+#include "../headers/Packet.h"
 
 #define udp UDPInterface::instance()
 #define dispatcher Dispatcher::instance()
@@ -106,7 +107,7 @@ namespace {
                 CHECK(*dest == *(temp.p->get_destination()));
                 CHECK(*source == *(temp.p->get_source()));
             }
-            cout << "Time (us) to send and receive " << num_packets << " packets: " << time << endl;
+            cout << "Local AddressPort only, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
 
             // by local AND remote address/port
             s->set_remote_address_port(source);
@@ -131,7 +132,7 @@ namespace {
                 CHECK(*dest == *(temp.p->get_destination()));
                 CHECK(*source == *(temp.p->get_source()));
             }
-            cout << "Time (us) to send and receive " << num_packets << " packets: " << time << endl;
+            cout << "Local and Remote AddressPort, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
         }
     }
 }
