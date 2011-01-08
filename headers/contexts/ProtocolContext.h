@@ -15,6 +15,8 @@
 #include "Context.h"
 #include "ContextContainer.h"
 #include "../AddressPort.h"
+#include "../Socket.h"
+#include "../Packet.h"
 
 using namespace std;
 
@@ -45,10 +47,10 @@ public:
 
     // TODO: can we refactor out this for loop in each of these methods?
     // Maybe we can put it in the ContextContainter?
-    virtual void send(string& destination, string& data) {
+    virtual void send(Socket* s, Packet* p) {
         //cout << "Protocol: SEND" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {
-            contexts_[i]->send(destination, data);
+            contexts_[i]->send(s, p);
         }
         //cout << endl;
     }
@@ -59,10 +61,10 @@ public:
         }
         //cout << endl;
     }
-    virtual void connect(AddressPort& destination) {
+    virtual void connect(Socket* s, AddressPort& destination) {
         //cout << "Protocol: CONNECT" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {
-            contexts_[i]->connect(destination);
+            contexts_[i]->connect(s, destination);
         }
         //cout << endl;
     }

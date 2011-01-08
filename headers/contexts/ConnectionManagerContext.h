@@ -12,7 +12,8 @@
 #include "Context.h"
 #include "states/Closed.h"
 #include "../AddressPort.h"
-
+#include "../Socket.h"
+#include "../Packet.h"
 
 using namespace std;
 
@@ -20,10 +21,10 @@ class ConnectionManagerContext : public Context {
 public:
     ConnectionManagerContext();
     void listen(Socket* s, int back_log);
-    void connect(AddressPort& dest);
+    void connect(Socket* s, AddressPort& dest);
     void close();
     void receive(string& data);
-    void send(string& dest, string& data);
+    void send(Socket* s, Packet* p);
     bool is_open();
 
     // Non-state methods

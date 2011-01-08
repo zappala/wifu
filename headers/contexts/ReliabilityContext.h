@@ -11,6 +11,7 @@
 #include "Context.h"
 #include "../states/ReliabilityState.h"
 #include "../AddressPort.h"
+#include "../Socket.h"
 
 class ReliabilityContext : public Context {
 public:
@@ -27,8 +28,8 @@ public:
         get_state()->listen(this, s, back_log);
     }
 
-    void connect(AddressPort& dest) {
-        get_state()->connect(this, dest);
+    void connect(Socket* s, AddressPort& dest) {
+        get_state()->connect(this, s, dest);
     }
 
     void close() {
@@ -39,8 +40,8 @@ public:
         get_state()->receive(this, data);
     }
 
-    void send(string& dest, string& data) {
-        get_state()->send(this, data);
+    void send(Socket* s, Packet* p) {
+        get_state()->send(this, s, p);
     }
 
     bool is_open() {

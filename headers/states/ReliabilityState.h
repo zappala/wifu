@@ -10,6 +10,7 @@
 
 #include "../contexts/Context.h"
 #include "../AddressPort.h"
+#include "../Socket.h"
 
 #include <string>
 
@@ -22,7 +23,7 @@ public:
     void receive(Context* c, string& data);
     void enter(Context* c);
     void exit(Context* c);
-    void connect(Context* c, AddressPort& remote);
+    void connect(Context* c, Socket*s ,AddressPort& remote);
 
 };
 

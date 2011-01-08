@@ -35,15 +35,11 @@ public:
         
     }
 
-    virtual void connect(AddressPort& ap) {
-        
-    }
-
     ContextContainer* get_contexts() {
         ContextContainer* container = new ContextContainer();
-        //container->add_context(new ReliabilityContext());
+        container->add_context(new ReliabilityContext());
         container->add_context(new ConnectionManagerContext());
-        //container->add_context(new CongestionControlContext());
+        container->add_context(new CongestionControlContext());
         return container;
     }
 

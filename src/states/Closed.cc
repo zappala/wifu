@@ -1,6 +1,5 @@
 #include "states/Closed.h"
 
-
 Closed::Closed() : State() {
 
 }
@@ -17,10 +16,14 @@ void Closed::exit(Context* c) {
     leave_state("Closed");
 }
 
-void Closed::connect(Context* c, AddressPort& remote) {
+void Closed::connect(Context* c, Socket* s, AddressPort& remote) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
 
-    // TODO: send a SYN
+    unsigned char* data = (unsigned char*) "";
+    TCPPacket* p = new TCPPacket(s->get_local_address_port(), new AddressPort(remote), data, 0);
+    p->set_tcp_syn(true);
+    Dispatcher::instance().enqueue(new SendPacketEvent(s->get_socket(), p));
+
     cmc->set_state(new SynSent());
 }
 

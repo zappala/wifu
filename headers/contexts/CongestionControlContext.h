@@ -12,39 +12,21 @@
 #include "Context.h"
 #include "../states/SlowStart.h"
 #include "../AddressPort.h"
+#include "../Socket.h"
+#include "../Packet.h"
 
 using namespace std;
 
 class CongestionControlContext : public Context {
 public:
 
-    CongestionControlContext() : Context() {
-        set_state(new SlowStart());
-    }
-
-    void listen(Socket* s, int back_log) {
-        get_state()->listen(this, s, back_log);
-    }
-
-    void connect(AddressPort& dest) {
-        get_state()->connect(this, dest);
-    }
-
-    void close() {
-        get_state()->close(this);
-    }
-
-    void receive(string& data) {
-        get_state()->receive(this, data);
-    }
-
-    void send(string& dest, string& data) {
-        get_state()->send(this, data);
-    }
-
-    bool is_open() {
-        return get_state()->is_open();
-    }
+    CongestionControlContext();
+    void listen(Socket* s, int back_log);
+    void connect(Socket* s, AddressPort& dest);
+    void close();
+    void receive(string& data);
+    void send(Socket* s, Packet* p);
+    bool is_open();
 };
 
 #endif	/* CONGESTIONCONTROLCONTEXT_H */

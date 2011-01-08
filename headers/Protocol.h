@@ -22,6 +22,8 @@
 
 #include "contexts/ProtocolContext.h"
 #include "contexts/ContextContainer.h"
+#include "events/SendPacketEvent.h"
+#include "events/UDPReceivePacketEvent.h"
 
 class Protocol : public Module {
 public:
@@ -35,8 +37,6 @@ public:
     }
 
     virtual ContextContainer* get_contexts() = 0;
-
-    virtual void connect(AddressPort& ap) = 0;
 
     /**
      * Default implementation of what a protocol will do when a socket Event is received
@@ -166,13 +166,40 @@ public:
             return;
         }
 
+        Socket* socket = SocketCollection::instance().get_by_id(s);
+
         // TODO: Error check
         string address = event->get_map()[ADDRESS_STRING];
         int port = atoi(event->get_map()[PORT_STRING].c_str());
         AddressPort ap(address, port);
-        itr->second->connect(ap);
+        itr->second->connect(socket, ap);
+        assert(false);
+
+    }
+
+    virtual void send(Event* e) {
+        cout << "Send" << endl;
+        SendPacketEvent* event = (SendPacketEvent*) e;
+
+        int s = event->get_socket();
+        map<int, ProtocolContext*>::iterator itr = sockets_.find(s);
+        if (itr == sockets_.end()) {
+            return;
+        }
+
+        Socket* socket = SocketCollection::instance().get_by_id(s);
+        // TODO: Error check
+
+        itr->second->send(socket, event->get_packet());
+    }
+    virtual void udp_receive(Event* e) {
+        UDPReceivePacketEvent* event = (UDPReceivePacketEvent*)e;
+        cout << "Packet received in Protocol!" << endl;
         
     }
+
+
+
 
 private:
     int protocol_;

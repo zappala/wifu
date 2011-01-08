@@ -13,6 +13,7 @@
 
 #include "../headers/Socket.h"
 #include "../headers/AddressPort.h"
+#include "../headers/Packet.h"
 
 using namespace std;
 
@@ -22,8 +23,8 @@ public:
 
     
     virtual void receive(string& data) = 0;
-    virtual void send(string& dest, string& data) = 0;
-    virtual void connect(AddressPort& dest) = 0;
+    virtual void send(Socket* s, Packet* p) = 0;
+    virtual void connect(Socket* s, AddressPort& dest) = 0;
     virtual void close() = 0;
     virtual bool is_open() = 0;
 };

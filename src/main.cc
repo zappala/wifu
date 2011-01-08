@@ -33,6 +33,12 @@
 #include "SimpleTCP.h"
 #include "../headers/events/SendPacketEvent.h"
 
+#include "events/SendPacketEvent.h"
+#include "events/UDPSendPacketEvent.h"
+#include "events/UDPReceivePacketEvent.h"
+#include "events/TimeoutEvent.h"
+#include "events/TimerFiredEvent.h"
+
 using namespace std;
 
 #define dispatcher Dispatcher::instance()
@@ -83,13 +89,16 @@ int main(int argc, char** argv) {
     // Load Modules
     UDPInterface::instance().start(ap);
 
-    dispatcher.map_event(type_name(SendPacketEvent), &UDPInterface::instance());
+    dispatcher.map_event(type_name(UDPSendPacketEvent), &UDPInterface::instance());
     dispatcher.map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
     dispatcher.map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
 
     dispatcher.map_event(type_name(SocketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(BindEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(ListenEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(SendPacketEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(UDPReceivePacketEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(TimerFiredEvent), &SimpleTCP::instance());
     
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
     

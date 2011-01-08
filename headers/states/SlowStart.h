@@ -12,6 +12,9 @@
 
 #include "../contexts/Context.h"
 #include "../AddressPort.h"
+#include "../Socket.h"
+#include "contexts/CongestionControlContext.h"
+#include "events/UDPSendPacketEvent.h"
 
 using namespace std;
 
@@ -20,10 +23,10 @@ public:
     SlowStart();
     virtual ~SlowStart();
 
+    void send(Context* c, Socket* s, Packet* p);
     void receive(Context* c, string& data);
     void enter(Context* c);
     void exit(Context* c);
-    void connect(Context* c, AddressPort& remote);
 };
 
 

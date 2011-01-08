@@ -140,8 +140,8 @@ namespace {
 
         // Create client
         int client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
-//        result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof(struct sockaddr_in));
-//        CHECK_EQUAL(0, result);
+        result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof(struct sockaddr_in));
+        CHECK_EQUAL(0, result);
     }
 
     SUITE(IntegrationTest) {

@@ -103,6 +103,10 @@ public:
     virtual void receive(Event* e) {
     }
 
+    virtual void send(Event* e) {
+        
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Library Methods">
 
     /**

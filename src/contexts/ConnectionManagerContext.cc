@@ -9,8 +9,8 @@ void ConnectionManagerContext::listen(Socket* s, int back_log) {
     get_state()->listen(this, s, back_log);
 }
 
-void ConnectionManagerContext::connect(AddressPort& dest) {
-    get_state()->connect(this, dest);
+void ConnectionManagerContext::connect(Socket* s, AddressPort& dest) {
+    get_state()->connect(this, s, dest);
 }
 
 void ConnectionManagerContext::close() {
@@ -21,8 +21,8 @@ void ConnectionManagerContext::receive(string& data) {
     get_state()->receive(this, data);
 }
 
-void ConnectionManagerContext::send(string& dest, string& data) {
-    get_state()->send(this, data);
+void ConnectionManagerContext::send(Socket* s, Packet* p) {
+    get_state()->send(this, s, p);
 }
 
 bool ConnectionManagerContext::is_open() {

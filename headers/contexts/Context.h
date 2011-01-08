@@ -13,6 +13,8 @@
 #include "IContext.h"
 
 #include "AddressPort.h"
+#include "Socket.h"
+#include "Packet.h"
 
 using namespace std;
 
@@ -55,13 +57,13 @@ public:
     virtual void timeout(Context* c) {
     }
 
-    virtual void connect(Context* c, AddressPort& remote) {
+    virtual void connect(Context* c, Socket* s, AddressPort& remote) {
     }
 
     virtual void close(Context* c) {
     }
 
-    virtual void send(Context* c, string& data) {
+    virtual void send(Context* c, Socket* s, Packet* p) {
     }
 
     virtual bool is_open() {
