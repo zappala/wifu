@@ -21,7 +21,7 @@ public:
     virtual void enter(Context* c);
     virtual void exit(Context* c);
 
-    void receive(Context* c, string& data);
+    void receive(Context* c, Socket* s, Packet* p);
 
 };
 

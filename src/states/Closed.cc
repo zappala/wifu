@@ -17,7 +17,7 @@ void Closed::exit(Context* c) {
 }
 
 void Closed::connect(Context* c, Socket* s, AddressPort& remote) {
-    cout << "Closed: Connect" << endl;
+    cout << "Closed: Connect on socket: " << s->get_socket() << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
 
     unsigned char* data = (unsigned char*) "";
@@ -31,7 +31,7 @@ void Closed::connect(Context* c, Socket* s, AddressPort& remote) {
 }
 
 void Closed::listen(Context* c, Socket* s, int back_log) {
-    cout << "Closed: Listen" << endl;
+    cout << "Closed: Listen on socket: " << s->get_socket() << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
 
     // TODO: Do anything with the Socket?

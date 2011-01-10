@@ -54,10 +54,10 @@ public:
         }
         //cout << endl;
     }
-    virtual void receive(string& data) {
+    virtual void receive(Socket* s, Packet* p) {
         //cout << "Protocol: RECEIVE" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {
-            contexts_[i]->receive(data);
+            contexts_[i]->receive(s, p);
         }
         //cout << endl;
     }

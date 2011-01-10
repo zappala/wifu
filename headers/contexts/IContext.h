@@ -20,9 +20,8 @@ using namespace std;
 class IContext : public gc {
 public:
     virtual void listen(Socket* s, int back_log) = 0;
-
     
-    virtual void receive(string& data) = 0;
+    virtual void receive(Socket* s, Packet* p) = 0;
     virtual void send(Socket* s, Packet* p) = 0;
     virtual void connect(Socket* s, AddressPort& dest) = 0;
     virtual void close() = 0;

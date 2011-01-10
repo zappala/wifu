@@ -17,8 +17,8 @@ void ConnectionManagerContext::close() {
     get_state()->close(this);
 }
 
-void ConnectionManagerContext::receive(string& data) {
-    get_state()->receive(this, data);
+void ConnectionManagerContext::receive(Socket* s, Packet* p) {
+    get_state()->receive(this, s, p);
 }
 
 void ConnectionManagerContext::send(Socket* s, Packet* p) {

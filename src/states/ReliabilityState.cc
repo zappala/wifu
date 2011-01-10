@@ -4,7 +4,7 @@ ReliabilityState::ReliabilityState() {}
 
 ReliabilityState::~ReliabilityState() {}
 
-void ReliabilityState::receive(Context* c, string& data) {
+void ReliabilityState::receive(Context* c, Socket* s, Packet* p) {
 
 }
 

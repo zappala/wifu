@@ -16,6 +16,6 @@ void Established::exit(Context* c) {
 
 }
 
-void Established::receive(Context* c, string& data) {
+void Established::receive(Context* c, Socket* s, Packet* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
 }

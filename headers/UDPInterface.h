@@ -84,6 +84,8 @@ public:
         cout << "Socket found" << endl;
         
         Packet* p = new Packet(remote, local, buffer + END_HEADER_SIZE, length - END_HEADER_SIZE);
+        cout << "UDPInterface receive(), data: " << (const char*) buffer << endl;
+        cout << "UDPInterface receive(), data length: " << p->data_length() << endl;
         Event* e = new UDPReceivePacketEvent(s->get_socket(), p);
         Dispatcher::instance().enqueue(e);
     }
@@ -99,6 +101,7 @@ public:
         Packet* p = event->get_packet();
         AddressPort destination(p->get_destination()->get_address(), WIFU_PORT);
         cout << "Sending to: " << destination.to_s() << endl;
+        cout << "Sending the following data: " << (const char*) p->to_bytes() << endl;
         socket_.send(destination, p->to_bytes(), p->packet_length());
     }
 

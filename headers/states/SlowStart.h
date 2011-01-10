@@ -24,7 +24,7 @@ public:
     virtual ~SlowStart();
 
     void send(Context* c, Socket* s, Packet* p);
-    void receive(Context* c, string& data);
+    void receive(Context* c, Socket* s, Packet* p);
     void enter(Context* c);
     void exit(Context* c);
 };

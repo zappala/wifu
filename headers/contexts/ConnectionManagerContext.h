@@ -23,7 +23,7 @@ public:
     void listen(Socket* s, int back_log);
     void connect(Socket* s, AddressPort& dest);
     void close();
-    void receive(string& data);
+    void receive(Socket* s, Packet* p);
     void send(Socket* s, Packet* p);
     bool is_open();
 

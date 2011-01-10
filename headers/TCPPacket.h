@@ -54,25 +54,24 @@ public:
             AddressPort* dest,
             unsigned char* data,
             int data_length)
-    : Packet(source, dest, data, data_length, TCP_HEADER_SIZE) {
-        tcp_ = (struct tcp_header*) get_header();
-        set_tcp_header_length(TCP_HEADER_SIZE / 4);
+    : Packet(source, dest, data, data_length, TCP_HEADER_SIZE) {        
+        
     }
 
     u_int32_t get_tcp_sequence_number() {
-        return tcp_->seq;
+        return get_tcp_header()->seq;
     }
 
     void set_tcp_sequence_number(u_int32_t seq_num) {
-        tcp_->seq = seq_num;
+        get_tcp_header()->seq = seq_num;
     }
 
     u_int32_t get_tcp_ack_number() {
-        return tcp_->ack_seq;
+        return get_tcp_header()->ack_seq;
     }
 
     void set_tcp_ack_number(u_int32_t ack_num) {
-        tcp_->ack_seq = ack_num;
+        get_tcp_header()->ack_seq = ack_num;
     }
 
     int get_tcp_header_length_bytes() {
@@ -80,87 +79,93 @@ public:
     }
 
     u_int16_t get_tcp_header_length() {
-        return tcp_->doff;
+        // TODO: Remove this next line once we figure out the best way to cast a Packet to a TCPPacket.
+        // Copy Constructor?
+        // init() method?
+        set_tcp_header_length(TCP_HEADER_SIZE / 4);
+        return get_tcp_header()->doff;
     }
 
     void set_tcp_header_length(u_int16_t length) {
-        tcp_->doff = length;
+        get_tcp_header()->doff = length;
     }
 
     bool is_tcp_urg() {
-        return tcp_->urg;
+        return get_tcp_header()->urg;
     }
 
     void set_tcp_urg(bool urg) {
-        tcp_->urg = urg;
+        get_tcp_header()->urg = urg;
     }
 
     bool is_tcp_ack() {
-        return tcp_->ack;
+        return get_tcp_header()->ack;
     }
 
     void set_tcp_ack(bool ack) {
-        tcp_->ack = ack;
+        get_tcp_header()->ack = ack;
     }
 
     bool is_tcp_psh() {
-        return tcp_->psh;
+        return get_tcp_header()->psh;
     }
 
     void set_tcp_psh(bool psh) {
-        tcp_->psh = psh;
+        get_tcp_header()->psh = psh;
     }
 
     bool is_tcp_rst() {
-        return tcp_->rst;
+        return get_tcp_header()->rst;
     }
 
     void set_tcp_rst(bool rst) {
-        tcp_->rst = rst;
+        get_tcp_header()->rst = rst;
     }
 
     bool is_tcp_syn() {
-        return tcp_->syn;
+        return get_tcp_header()->syn;
     }
 
     void set_tcp_syn(bool syn) {
-        tcp_->syn = syn;
+        get_tcp_header()->syn = syn;
     }
 
     bool is_tcp_fin() {
-        return tcp_->fin;
+        return get_tcp_header()->fin;
     }
 
     void set_tcp_fin(bool fin) {
-        tcp_->fin = fin;
+        get_tcp_header()->fin = fin;
     }
 
     u_int16_t get_tcp_receive_window_size() {
-        return tcp_->window;
+        return get_tcp_header()->window;
     }
 
     void set_tcp_receive_window_size(u_int16_t window) {
-        tcp_->window = window;
+        get_tcp_header()->window = window;
     }
 
     u_int16_t get_tcp_checksum() {
-        return tcp_->check;
+        return get_tcp_header()->check;
     }
 
     void set_tcp_checksum(u_int16_t checksum) {
-        tcp_->check = checksum;
+        get_tcp_header()->check = checksum;
     }
 
     u_int16_t get_tcp_urgent_pointer() {
-        return tcp_->urg_ptr;
+        return get_tcp_header()->urg_ptr;
     }
 
     void set_tcp_urgent_pointer(u_int16_t urg_ptr) {
-        tcp_->urg_ptr = urg_ptr;
+        get_tcp_header()->urg_ptr = urg_ptr;
     }
 
 private:
-    struct tcp_header* tcp_;
+    struct tcp_header* get_tcp_header() {
+        return (struct tcp_header*) get_header();
+    }
 
 
 };

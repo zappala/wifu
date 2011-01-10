@@ -20,7 +20,7 @@ class ReliabilityState : public State {
 public:
     ReliabilityState();
     virtual ~ReliabilityState();
-    void receive(Context* c, string& data);
+    void receive(Context* c, Socket* s, Packet* p);
     void enter(Context* c);
     void exit(Context* c);
     void connect(Context* c, Socket*s ,AddressPort& remote);

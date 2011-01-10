@@ -201,6 +201,19 @@ public:
         UDPReceivePacketEvent* event = (UDPReceivePacketEvent*) e;
         cout << "Packet received in Protocol!" << endl;
 
+        int s = event->get_socket();
+        map<int, ProtocolContext*>::iterator itr = sockets_.find(s);
+        if (itr == sockets_.end()) {
+            return;
+        }
+
+        cout << "Protocol udp_receive(), Socket found" << endl;
+
+        Socket* socket = SocketCollection::instance().get_by_id(s);
+        // TODO: Error check
+        Packet* p = event->get_packet();
+
+        itr->second->receive(socket, p);
     }
 
 

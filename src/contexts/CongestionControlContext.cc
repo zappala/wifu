@@ -16,8 +16,8 @@ void CongestionControlContext::close() {
     get_state()->close(this);
 }
 
-void CongestionControlContext::receive(string& data) {
-    get_state()->receive(this, data);
+void CongestionControlContext::receive(Socket* s, Packet* p) {
+    get_state()->receive(this, s, p);
 }
 
 void CongestionControlContext::send(Socket* s, Packet* p) {

@@ -36,8 +36,8 @@ public:
         get_state()->close(this);
     }
 
-    void receive(string& data) {
-        get_state()->receive(this, data);
+    void receive(Socket* s, Packet* p) {
+        get_state()->receive(this, s, p);
     }
 
     void send(Socket* s, Packet* p) {

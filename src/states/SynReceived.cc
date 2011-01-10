@@ -17,7 +17,7 @@ void SynReceived::exit(Context* c) {
 
 }
 
-void SynReceived::receive(Context* c, string& data) {
+void SynReceived::receive(Context* c, Socket* s, Packet* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
 
     // TODO: Ensure we receive ACK of SYN
