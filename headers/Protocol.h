@@ -156,6 +156,10 @@ public:
         dispatch(response);
     }
 
+    // TODO: refactor this to use the template pattern.
+    // Have common code here then abstract method calls which will
+    // call the actual protocol implementaion by which the event can be
+    // processed.
     virtual void library_connect(Event* e) {
         cout << "Library Connect" << endl;
         ConnectEvent* event = (ConnectEvent*) e;
@@ -169,6 +173,7 @@ public:
         Socket* socket = SocketCollection::instance().get_by_id(s);
 
         // TODO: Error check
+
         string address = event->get_map()[ADDRESS_STRING];
         int port = atoi(event->get_map()[PORT_STRING].c_str());
         AddressPort ap(address, port);
