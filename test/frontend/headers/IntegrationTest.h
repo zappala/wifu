@@ -128,7 +128,7 @@ namespace {
     }
 
     void connect_test() {
-        AddressPort to_bind("0.0.0.0", 5002);
+        AddressPort to_bind("127.0.0.1", 5002);
         AddressPort to_connect("127.0.0.1", 5002);
 
         // Create server
@@ -137,6 +137,10 @@ namespace {
         CHECK_EQUAL(0, result);
         result = wifu_listen(server, 5);
         CHECK_EQUAL(0, result);
+
+        cout << "Listening on: " << to_bind.to_s() << endl;
+        cout << "Connecting to: " << to_connect.to_s() << endl;
+
 
         // Create client
         int client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);

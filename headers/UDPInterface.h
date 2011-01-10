@@ -62,6 +62,7 @@ public:
      * @see UDPSocketCallback::receive()
      */
     void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
+        cout << "UDPInterface: receive() from: " << ap.to_s() << endl;
         struct wifu_end_header* header = (struct wifu_end_header*) buffer;
         AddressPort* remote = new AddressPort(ap.get_address(), header->virtual_src_port);
         AddressPort* local = new AddressPort(socket_.get_bound_address_port()->get_address(), header->virtual_dest_port);
@@ -69,16 +70,19 @@ public:
         Socket* s = SocketCollection::instance().get_by_local_and_remote_ap(local, remote);
 
         if(!s) {
+            cout << "Socket not found 1" << endl;
             s = SocketCollection::instance().get_by_local_ap(local);
         }
 
 
         if(!s) {
             // No bound local socket
+            cout << "Socket not found 2" << endl;
             return;
         }
 
-
+        cout << "Socket found" << endl;
+        
         Packet* p = new Packet(remote, local, buffer + END_HEADER_SIZE, length - END_HEADER_SIZE);
         Event* e = new UDPReceivePacketEvent(s->get_socket(), p);
         Dispatcher::instance().enqueue(e);
@@ -90,9 +94,11 @@ public:
      * @param e The Event which contains information needing to be sent over the wire.
      */
     void udp_send(Event* e) {
+        cout << "UDPInterface: udp_send()" << endl;
         UDPSendPacketEvent* event = (UDPSendPacketEvent*) e;
         Packet* p = event->get_packet();
         AddressPort destination(p->get_destination()->get_address(), WIFU_PORT);
+        cout << "Sending to: " << destination.to_s() << endl;
         socket_.send(destination, p->to_bytes(), p->packet_length());
     }
 

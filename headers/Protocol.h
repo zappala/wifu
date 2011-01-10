@@ -160,6 +160,7 @@ public:
     // Have common code here then abstract method calls which will
     // call the actual protocol implementaion by which the event can be
     // processed.
+
     virtual void library_connect(Event* e) {
         cout << "Library Connect" << endl;
         ConnectEvent* event = (ConnectEvent*) e;
@@ -178,12 +179,10 @@ public:
         int port = atoi(event->get_map()[PORT_STRING].c_str());
         AddressPort ap(address, port);
         itr->second->connect(socket, ap);
-        assert(false);
-
     }
 
     virtual void send(Event* e) {
-        cout << "Send" << endl;
+        cout << "Protocol: Send" << endl;
         SendPacketEvent* event = (SendPacketEvent*) e;
 
         int s = event->get_socket();
@@ -197,10 +196,11 @@ public:
 
         itr->second->send(socket, event->get_packet());
     }
+
     virtual void udp_receive(Event* e) {
-        UDPReceivePacketEvent* event = (UDPReceivePacketEvent*)e;
+        UDPReceivePacketEvent* event = (UDPReceivePacketEvent*) e;
         cout << "Packet received in Protocol!" << endl;
-        
+
     }
 
 

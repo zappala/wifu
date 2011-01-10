@@ -31,13 +31,13 @@ public:
     }
 
     /**
-     * Will call udp_send() on m.
+     * Will call send() on m.
      *
-     * @param m The IModule which to call udp_send() on.
-     * @see IModule::udp_send()
+     * @param m The IModule which to call send() on.
+     * @see IModule::send()
      */
     void execute(IModule* m) {
-        m->udp_send(this);
+        m->send(this);
     }
 
     /**

@@ -21,6 +21,7 @@ void CongestionControlContext::receive(string& data) {
 }
 
 void CongestionControlContext::send(Socket* s, Packet* p) {
+    cout << "Congestion Control Send" << endl;
     get_state()->send(this, s, p);
 }
 

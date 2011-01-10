@@ -96,6 +96,7 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(SocketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(BindEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(ListenEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ConnectEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(SendPacketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(UDPReceivePacketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(TimerFiredEvent), &SimpleTCP::instance());
