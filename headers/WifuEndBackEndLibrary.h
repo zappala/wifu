@@ -20,6 +20,10 @@
 #include "events/BindEvent.h"
 #include "events/ResponseEvent.h"
 #include "events/ListenEvent.h"
+#include "UDPInterface.h"
+#include "PortManager.h"
+
+#define SOURCE_ADDRESS UDPInterface::instance().get_bound_ip_address()
 
 /**
  * Translates string messages received from the front-end library into Event objects
@@ -66,7 +70,7 @@ public:
             int socket_id = -1;
 
             if (ProtocolManager::instance().is_supported(domain, type, protocol)) {
-                Socket* socket = new Socket(domain, type, protocol);
+                Socket* socket = new Socket(domain, type, protocol, new AddressPort(SOURCE_ADDRESS, PortManager::instance().get()));
                 SocketCollection::instance().push(socket);
                 socket_id = socket->get_socket();
 

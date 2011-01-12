@@ -105,6 +105,10 @@ public:
         socket_.send(destination, p->to_bytes(), p->packet_length());
     }
 
+    string& get_bound_ip_address() {
+        return socket_.get_bound_address_port()->get_address();
+    }
+
 private:
     UDPSocket socket_;
 

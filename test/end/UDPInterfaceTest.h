@@ -73,9 +73,12 @@ namespace {
             TempUDPModule temp;
             usleep(10000);
 
-            AddressPort ap("127.0.0.1", WIFU_PORT);
+            string address = "127.0.0.1";
+            AddressPort ap(address, WIFU_PORT);
             udp.start(ap);
             usleep(10000);
+
+            CHECK_EQUAL(address, udp.get_bound_ip_address());
 
             dispatcher.map_event(type_name(UDPReceivePacketEvent), &temp);
             dispatcher.map_event(type_name(UDPSendPacketEvent), &udp);
