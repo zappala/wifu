@@ -21,6 +21,8 @@
 #include "../applib/wifu_socket.h"
 #include "../headers/defines.h"
 #include "../headers/AddressPort.h"
+#include "../headers/GarbageCollector.h"
+#include "../headers/Semaphore.h"
 
 using namespace std;
 
@@ -127,25 +129,58 @@ namespace {
         CHECK_EQUAL(EADDRINUSE, errno);
     }
 
-    void connect_test() {
-        AddressPort to_bind("127.0.0.1", 5002);
-        AddressPort to_connect("127.0.0.1", 5002);
+    struct var {
+        Semaphore* sem_;
+        AddressPort* to_bind_;
+    };
+
+    void* thread(void* args) {
+
+        struct var* v = (struct var*) args;
+        AddressPort* to_bind = v->to_bind_;
+        Semaphore* sem = v->sem_;
+        cout << "In thread" << endl;
+
+
 
         // Create server
         int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
-        int result = wifu_bind(server, (const struct sockaddr *) to_bind.get_network_struct_ptr(), sizeof(struct sockaddr_in));
+        int result = wifu_bind(server, (const struct sockaddr *) to_bind->get_network_struct_ptr(), sizeof(struct sockaddr_in));
         CHECK_EQUAL(0, result);
         result = wifu_listen(server, 5);
         CHECK_EQUAL(0, result);
+        
+        cout << "Listening on: " << to_bind->to_s() << endl;
+        sem->post();
 
-        cout << "Listening on: " << to_bind.to_s() << endl;
+        
+
+    }
+
+    void connect_test() {
+        AddressPort to_connect("127.0.0.1", 5002);
+
+        struct var v;
+        v.sem_ = new Semaphore();
+        v.sem_->init(0);
+        v.to_bind_ = new AddressPort("127.0.0.1", 5002);
+
+        pthread_t t;
+        if(pthread_create(&t, NULL, &thread, &v) != 0) {
+            perror("Error creating new thread in IntegrationTest.h");
+            CHECK(false);
+            return;
+        }
+
+        v.sem_->wait();
+
         cout << "Connecting to: " << to_connect.to_s() << endl;
 
 
         // Create client
         int client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
-        result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof(struct sockaddr_in));
-        CHECK_EQUAL(0, result);
+//        result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof(struct sockaddr_in));
+//        CHECK_EQUAL(0, result);
     }
 
     SUITE(IntegrationTest) {
