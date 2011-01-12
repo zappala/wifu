@@ -20,6 +20,9 @@ void Closed::connect(Context* c, Socket* s, AddressPort& remote) {
     cout << "Closed: Connect on socket: " << s->get_socket() << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
 
+    // TODO: access the routing info for remote and extract the local IP address associated with it.
+    cout << "Closed::connect(), local AddressPort: " << s->get_local_address_port()->to_s() << endl;
+
     unsigned char* data = (unsigned char*) "";
     TCPPacket* p = new TCPPacket(s->get_local_address_port(), new AddressPort(remote), data, 0);
     p->set_tcp_syn(true);
