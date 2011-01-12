@@ -22,24 +22,24 @@ namespace {
         public:
 
             IModuleDummyImplementation() {
-                udp_sent = false;
+                sent = false;
             }
 
-            void udp_send(Event* e) {
-                udp_sent = true;
+            void send(Event* e) {
+                sent = true;
             }
 
-            bool udp_sent;
+            bool sent;
         };
 
-        TEST(udp_send) {
+        TEST(send) {
             IModuleDummyImplementation dummyImodule;
-            CHECK(dummyImodule.udp_sent == false);
+            CHECK(dummyImodule.sent == false);
             Packet* p;
             SendPacketEvent sendPacketEvent(100, p);
             sendPacketEvent.execute(&dummyImodule);
 
-            CHECK_EQUAL(true, dummyImodule.udp_sent);
+            CHECK_EQUAL(true, dummyImodule.sent);
         }
     }
 }

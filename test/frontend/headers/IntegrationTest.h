@@ -155,7 +155,7 @@ namespace {
             socket_test();
             bind_test();
             listen_test();
-            connect_test();
+            //connect_test();
         }
     }
 }

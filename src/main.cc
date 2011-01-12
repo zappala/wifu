@@ -74,6 +74,11 @@ int main(int argc, char** argv) {
     register_signals();
     register_protocols();
 
+    // TODO: change this to be either an option passed in or INADDR_ANY
+    // In the latter case we will need ensure that we have compatability throughout.
+    // (It is likely that the SocketCollection will break.)
+    // It is also likely that we will need to figure out how to query the kernel for
+    // the local address as well.
     // INADDR_ANY == 0.0.0.0
     string address("127.0.0.1");
     int port = WIFU_PORT;
