@@ -10,6 +10,7 @@ Established::~Established() {
 
 void Established::enter(Context* c) {
     // TODO: spawn new Socket.
+    cout << "Entering Established State" << endl;
 }
 
 void Established::exit(Context* c) {

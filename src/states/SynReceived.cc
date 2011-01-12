@@ -19,7 +19,15 @@ void SynReceived::exit(Context* c) {
 
 void SynReceived::receive(Context* c, Socket* s, Packet* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
+    TCPPacket* packet = (TCPPacket*) p;
 
-    // TODO: Ensure we receive ACK of SYN
-    cmc->set_state(new Established());
+    assert(packet->is_tcp_ack());
+
+    if(packet->is_tcp_ack()) {
+        cout << "SynReceived::receive(), processing SYN" << endl;
+        cmc->set_state(new Established());
+        return;
+    }
+
+    assert(false);
 }

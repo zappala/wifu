@@ -11,6 +11,8 @@
 #include "../contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
 
+#include "../states/Established.h"
+
 using namespace std;
 
 class Established : public State {
