@@ -38,3 +38,11 @@ int ConnectionManagerContext::get_back_log() {
 void ConnectionManagerContext::set_back_log(int back_log) {
     back_log_ = back_log;
 }
+
+ConnectionType ConnectionManagerContext::get_connection_type() {
+    return type_;
+}
+
+void ConnectionManagerContext::set_connection_type(ConnectionType type) {
+    type_ = type;
+}

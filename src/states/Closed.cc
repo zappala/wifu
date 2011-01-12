@@ -19,8 +19,8 @@ void Closed::exit(Context* c) {
 void Closed::connect(Context* c, Socket* s, AddressPort& remote) {
     cout << "Closed: Connect on socket: " << s->get_socket() << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
+    cmc->set_connection_type(ACTIVE);
 
-    // TODO: access the routing info for remote and extract the local IP address associated with it.
     cout << "Closed::connect(), local AddressPort: " << s->get_local_address_port()->to_s() << endl;
 
     unsigned char* data = (unsigned char*) "";
@@ -36,6 +36,7 @@ void Closed::connect(Context* c, Socket* s, AddressPort& remote) {
 void Closed::listen(Context* c, Socket* s, int back_log) {
     cout << "Closed: Listen on socket: " << s->get_socket() << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
+    cmc->set_connection_type(PASSIVE);
 
     // TODO: Do anything with the Socket?
     cmc->set_back_log(back_log);

@@ -141,8 +141,6 @@ namespace {
         Semaphore* sem = v->sem_;
         cout << "In thread" << endl;
 
-
-
         // Create server
         int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
         int result = wifu_bind(server, (const struct sockaddr *) to_bind->get_network_struct_ptr(), sizeof(struct sockaddr_in));
@@ -152,9 +150,6 @@ namespace {
         
         cout << "Listening on: " << to_bind->to_s() << endl;
         sem->post();
-
-        
-
     }
 
     void connect_test() {
@@ -179,8 +174,8 @@ namespace {
 
         // Create client
         int client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
-//        result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof(struct sockaddr_in));
-//        CHECK_EQUAL(0, result);
+        int result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof(struct sockaddr_in));
+        CHECK_EQUAL(0, result);
     }
 
     SUITE(IntegrationTest) {

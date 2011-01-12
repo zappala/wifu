@@ -27,6 +27,7 @@ void Listen::receive(Context* c, Socket* s, Packet* p) {
     
     if(packet->is_tcp_syn()) {
         cout << "Listen: receive(), processing TCP SYN" << endl;
+        
 
         unsigned char* data = (unsigned char*) "";
         AddressPort* source = packet->get_destination();

@@ -17,6 +17,11 @@
 
 using namespace std;
 
+enum ConnectionType {
+    PASSIVE,
+    ACTIVE
+};
+
 class ConnectionManagerContext : public Context {
 public:
     ConnectionManagerContext();
@@ -32,8 +37,12 @@ public:
     int get_back_log();
     void set_back_log(int back_log);
 
+    ConnectionType get_connection_type();
+    void set_connection_type(ConnectionType type);
+
 private:
     int back_log_;
+    ConnectionType type_;
 };
 
 #endif	/* CONNECTIONMANAGERCONTEXT_H */
