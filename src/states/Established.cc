@@ -14,6 +14,7 @@ void Established::enter(Context* c) {
 
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     ResponseEvent* response;
+    ConnectEvent* event;
 
     switch(cmc->get_connection_type()) {
         case ACTIVE:

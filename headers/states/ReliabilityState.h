@@ -11,7 +11,7 @@
 #include "../contexts/Context.h"
 #include "../AddressPort.h"
 #include "../Socket.h"
-
+#include "../events/ConnectEvent.h"
 #include <string>
 
 using namespace std;
@@ -23,7 +23,7 @@ public:
     void receive(Context* c, Socket* s, Packet* p);
     void enter(Context* c);
     void exit(Context* c);
-    void connect(Context* c, Socket*s ,AddressPort& remote);
+    void connect(Context* c, ConnectEvent* e);
 
 };
 

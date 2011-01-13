@@ -12,6 +12,7 @@
 #include "../states/ReliabilityState.h"
 #include "../AddressPort.h"
 #include "../Socket.h"
+#include "../events/ConnectEvent.h"
 
 class ReliabilityContext : public Context {
 public:
@@ -28,8 +29,8 @@ public:
         get_state()->listen(this, s, back_log);
     }
 
-    void connect(Socket* s, AddressPort& dest) {
-        get_state()->connect(this, s, dest);
+    void connect(ConnectEvent* e) {
+        get_state()->connect(this, e);
     }
 
     void close() {

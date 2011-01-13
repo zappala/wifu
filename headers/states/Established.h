@@ -12,6 +12,8 @@
 #include "contexts/ConnectionManagerContext.h"
 
 #include "../states/Established.h"
+#include "../events/ResponseEvent.h"
+#include "../events/ConnectEvent.h"
 
 using namespace std;
 

@@ -17,6 +17,7 @@
 #include "../AddressPort.h"
 #include "../Socket.h"
 #include "../Packet.h"
+#include "../events/ConnectEvent.h"
 
 using namespace std;
 
@@ -61,10 +62,10 @@ public:
         }
         //cout << endl;
     }
-    virtual void connect(Socket* s, AddressPort& destination) {
+    virtual void connect(ConnectEvent* e) {
         //cout << "Protocol: CONNECT" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {
-            contexts_[i]->connect(s, destination);
+            contexts_[i]->connect(e);
         }
         //cout << endl;
     }

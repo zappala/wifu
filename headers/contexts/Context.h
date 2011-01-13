@@ -15,6 +15,7 @@
 #include "AddressPort.h"
 #include "Socket.h"
 #include "Packet.h"
+#include "../events/ConnectEvent.h"
 
 using namespace std;
 
@@ -57,7 +58,7 @@ public:
     virtual void timeout(Context* c) {
     }
 
-    virtual void connect(Context* c, Socket* s, AddressPort& remote) {
+    virtual void connect(Context* c, ConnectEvent* e) {
     }
 
     virtual void close(Context* c) {

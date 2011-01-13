@@ -24,6 +24,7 @@
 #include "contexts/ContextContainer.h"
 #include "events/SendPacketEvent.h"
 #include "events/UDPReceivePacketEvent.h"
+#include "events/ConnectEvent.h"
 
 class Protocol : public Module {
 public:
@@ -179,7 +180,7 @@ public:
         string address = event->get_map()[ADDRESS_STRING];
         int port = atoi(event->get_map()[PORT_STRING].c_str());
         AddressPort ap(address, port);
-        itr->second->connect(socket, ap);
+        itr->second->connect(event);
     }
 
     virtual void send(Event* e) {

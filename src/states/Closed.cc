@@ -16,11 +16,12 @@ void Closed::exit(Context* c) {
     leave_state("Closed");
 }
 
-void Closed::connect(Context* c, Socket* s, AddressPort& remote) {
+void Closed::connect(Context* c, ConnectEvent* e) {
     cout << "Closed: Connect on socket: " << s->get_socket() << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(ACTIVE);
 
+    ConnectEvent* event;
     cout << "Closed::connect(), local AddressPort: " << s->get_local_address_port()->to_s() << endl;
 
     unsigned char* data = (unsigned char*) "";

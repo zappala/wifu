@@ -11,6 +11,7 @@
 #include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
 #include "states/SynReceived.h"
+#include "../events/ConnectEvent.h"
 
 using namespace std;
 

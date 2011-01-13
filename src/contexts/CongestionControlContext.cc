@@ -8,8 +8,8 @@ void CongestionControlContext::listen(Socket* s, int back_log) {
     get_state()->listen(this, s, back_log);
 }
 
-void CongestionControlContext::connect(Socket* s, AddressPort& dest) {
-    get_state()->connect(this, s, dest);
+void CongestionControlContext::connect(ConnectEvent* e) {
+    get_state()->connect(this, e);
 }
 
 void CongestionControlContext::close() {

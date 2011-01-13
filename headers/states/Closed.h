@@ -17,6 +17,7 @@
 #include "../AddressPort.h"
 #include "../TCPPacket.h"
 #include "../events/SendPacketEvent.h"
+#include "../events/ConnectEvent.h"
 
 using namespace std;
 
@@ -26,7 +27,7 @@ public:
     virtual ~Closed();
     virtual void enter(Context* c);
     virtual void exit(Context* c);
-    virtual void connect(Context* c, Socket* s, AddressPort& remote);
+    virtual void connect(Context* c, ConnectEvent* e);
     virtual void listen(Context* c, Socket* s, int back_log);
     
 };

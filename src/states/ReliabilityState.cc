@@ -8,7 +8,7 @@ void ReliabilityState::receive(Context* c, Socket* s, Packet* p) {
 
 }
 
-void ReliabilityState::connect(Context* c, Socket* s, AddressPort& remote) {
+void ReliabilityState::connect(Context* c, ConnectEvent* e) {
     //cout << "Reliability Connecting to: " << remote << endl;
 }
 

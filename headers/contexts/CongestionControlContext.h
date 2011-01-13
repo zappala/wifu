@@ -14,6 +14,7 @@
 #include "../AddressPort.h"
 #include "../Socket.h"
 #include "../Packet.h"
+#include "../events/ConnectEvent.h"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ public:
 
     CongestionControlContext();
     void listen(Socket* s, int back_log);
-    void connect(Socket* s, AddressPort& dest);
+    void connect(ConnectEvent* e);
     void close();
     void receive(Socket* s, Packet* p);
     void send(Socket* s, Packet* p);
