@@ -13,15 +13,22 @@ void Established::enter(Context* c) {
     cout << "Entering Established State" << endl;
 
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
+    ResponseEvent* response;
 
     switch(cmc->get_connection_type()) {
         case ACTIVE:
+            cout << "Established::enter(), active connection" << endl;
+            
             break;
         case PASSIVE:
+            cout << "Established::enter(), passive connection" << endl;
+            
             break;
         default:
             break;
     }
+
+    
 }
 
 void Established::exit(Context* c) {
