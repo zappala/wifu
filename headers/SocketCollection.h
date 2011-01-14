@@ -109,6 +109,10 @@ private:
         sort(collection_.begin(), collection_.end(), f);
     }
 
+    void mark_dirty() {
+        how_sorted_ = RE_SORT;
+    }
+
     vector<Socket*> collection_;
     Semaphore mutex_;
     HowSorted how_sorted_;
@@ -174,10 +178,6 @@ public:
         mutex_.post();
     }
 
-    void mark_dirty() {
-        how_sorted_ = RE_SORT;
-    }
-
     int size() {
         mutex_.wait();
         int val = collection_.size();
@@ -202,7 +202,7 @@ public:
         int size = collection_.size();
         for (int i = 0; i < size; i++) {
             v->visit(collection_[i]);
-            if(v->stop()) {
+            if (v->stop()) {
                 break;
             }
         }
