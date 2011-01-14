@@ -97,7 +97,6 @@ public:
 
             if (!v.is_bound()) {
                 socket->set_local_address_port(local);
-                SocketCollection::instance().mark_dirty();
                 return_val = 0;
             } else {
                 error = EINVAL;

@@ -114,7 +114,6 @@ namespace {
 
             // by local AND remote address/port
             s->set_remote_address_port(source);
-            SocketCollection::instance().mark_dirty();
 
             time = 0;
             for (int i = 0; i < num_packets; i++) {
