@@ -26,7 +26,7 @@ enum HowSorted {
 // functions used in sorting
 
 bool id_cmp(Socket* a, Socket* b) {
-    return a->get_socket() < b->get_socket();
+    return a->get_socket_id() < b->get_socket_id();
 }
 
 bool ap_cmp(Socket* a, Socket* b) {
@@ -45,7 +45,7 @@ bool ap_cmp(Socket* a, Socket* b) {
 // functions used in binary search
 
 int bsearch_id_cmp(int& value, Socket* s) {
-    return value - s->get_socket();
+    return value - s->get_socket_id();
 }
 
 int b_search_local_cmp(AddressPort* local, Socket* s) {

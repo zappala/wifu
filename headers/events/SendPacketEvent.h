@@ -26,7 +26,7 @@ public:
      * @param socket The socket, which represents a unique connection, to use for this Event
      * @param packet The Packet object to send
      */
-    SendPacketEvent(int socket, Packet* packet) : Event(socket), packet_(packet) {
+    SendPacketEvent(Socket* socket, Packet* packet) : Event(socket), packet_(packet) {
 
     }
 

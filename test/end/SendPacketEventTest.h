@@ -11,6 +11,7 @@
 #include "UnitTest++.h"
 #include "../headers/events/SendPacketEvent.h"
 #include "../headers/IModule.h"
+#include "../headers/Socket.h"
 
 using namespace std;
 
@@ -36,7 +37,8 @@ namespace {
             IModuleDummyImplementation dummyImodule;
             CHECK(dummyImodule.sent == false);
             Packet* p;
-            SendPacketEvent sendPacketEvent(100, p);
+            Socket* s = new Socket(1, 2, 3);
+            SendPacketEvent sendPacketEvent(s, p);
             sendPacketEvent.execute(&dummyImodule);
 
             CHECK_EQUAL(true, dummyImodule.sent);

@@ -43,8 +43,8 @@ namespace {
 
             for (int i = 0; i < number; i++) {
                 Socket* expected = sockets[i];
-                Socket* result = collection.get_by_id(expected->get_socket());
-                CHECK_EQUAL(expected->get_socket(), result->get_socket());
+                Socket* result = collection.get_by_id(expected->get_socket_id());
+                CHECK_EQUAL(expected->get_socket_id(), result->get_socket_id());
                 CHECK_EQUAL(expected->get_domain(), result->get_domain());
                 CHECK_EQUAL(expected->get_type(), result->get_type());
                 CHECK_EQUAL(expected->get_protocol(), result->get_protocol());
@@ -86,7 +86,7 @@ namespace {
                 AddressPort* temp = sockets[i]->get_local_address_port();
                 Socket* result = collection.get_by_local_ap(temp);
 
-                CHECK_EQUAL(expected->get_socket(), result->get_socket());
+                CHECK_EQUAL(expected->get_socket_id(), result->get_socket_id());
                 CHECK_EQUAL(expected->get_domain(), result->get_domain());
                 CHECK_EQUAL(expected->get_type(), result->get_type());
                 CHECK_EQUAL(expected->get_protocol(), result->get_protocol());
@@ -131,7 +131,7 @@ namespace {
 
                 Socket* result = collection.get_by_local_and_remote_ap(local, remote);
 
-                CHECK_EQUAL(expected->get_socket(), result->get_socket());
+                CHECK_EQUAL(expected->get_socket_id(), result->get_socket_id());
                 CHECK_EQUAL(expected->get_domain(), result->get_domain());
                 CHECK_EQUAL(expected->get_type(), result->get_type());
                 CHECK_EQUAL(expected->get_protocol(), result->get_protocol());
@@ -174,8 +174,8 @@ namespace {
 
                 // get by int
                 Socket* expected = sockets[i];
-                Socket* result = collection.get_by_id(expected->get_socket());
-                CHECK_EQUAL(expected->get_socket(), result->get_socket());
+                Socket* result = collection.get_by_id(expected->get_socket_id());
+                CHECK_EQUAL(expected->get_socket_id(), result->get_socket_id());
                 CHECK_EQUAL(expected->get_domain(), result->get_domain());
                 CHECK_EQUAL(expected->get_type(), result->get_type());
                 CHECK_EQUAL(expected->get_protocol(), result->get_protocol());
@@ -192,7 +192,7 @@ namespace {
                 AddressPort* temp = sockets[i]->get_local_address_port();
                 result = collection.get_by_local_ap(temp);
 
-                CHECK_EQUAL(expected->get_socket(), result->get_socket());
+                CHECK_EQUAL(expected->get_socket_id(), result->get_socket_id());
                 CHECK_EQUAL(expected->get_domain(), result->get_domain());
                 CHECK_EQUAL(expected->get_type(), result->get_type());
                 CHECK_EQUAL(expected->get_protocol(), result->get_protocol());
@@ -210,7 +210,7 @@ namespace {
 
                 result = collection.get_by_local_and_remote_ap(local, remote);
 
-                CHECK_EQUAL(expected->get_socket(), result->get_socket());
+                CHECK_EQUAL(expected->get_socket_id(), result->get_socket_id());
                 CHECK_EQUAL(expected->get_domain(), result->get_domain());
                 CHECK_EQUAL(expected->get_type(), result->get_type());
                 CHECK_EQUAL(expected->get_protocol(), result->get_protocol());

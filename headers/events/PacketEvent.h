@@ -10,10 +10,11 @@
 
 #include "Event.h"
 #include "../headers/Packet.h"
+#include "../Socket.h"
 
 class PacketEvent : public Event {
 public:
-    PacketEvent(int socket, Packet* p) : Event(socket), packet_(p) {
+    PacketEvent(Socket* socket, Packet* p) : Event(socket), packet_(p) {
         
     }
     

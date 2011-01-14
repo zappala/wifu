@@ -12,6 +12,7 @@
 
 #include "GarbageCollector.h"
 #include "IModule.h"
+#include "../Socket.h"
 
 class IModule;
 
@@ -28,7 +29,7 @@ public:
      *
      * @param socket The socket to which to apply this Event to.
      */
-    Event(int socket);
+    Event(Socket* s);
 
     /**
      * Constructs an Event object.
@@ -50,11 +51,11 @@ public:
     virtual void execute(IModule* m) = 0;
 
     /**
-     * @return A reference to the socket.
+     * @return A pointer to the socket.
      */
-    int & get_socket();
+    Socket* get_socket();
 
-    void set_socket(int socket);
+    void set_socket(Socket* s);
 
     /**
      * Default implemenation of less than.
@@ -66,9 +67,9 @@ public:
 private:
 
     /**
-     * ID of the Socket which is associated with this Event.
+     * Socket which is associated with this Event.
      */
-    int socket_;
+    Socket* socket_;
 
 };
 

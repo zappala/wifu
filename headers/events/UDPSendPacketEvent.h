@@ -9,10 +9,11 @@
 #define	_UDPSENDPACKETEVENT_H
 
 #include "PacketEvent.h"
+#include "../Socket.h"
 
 class UDPSendPacketEvent : public PacketEvent {
 public:
-    UDPSendPacketEvent(int socket, Packet* packet) : PacketEvent(socket, packet) {
+    UDPSendPacketEvent(Socket* socket, Packet* packet) : PacketEvent(socket, packet) {
 
     }
 

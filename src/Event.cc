@@ -1,6 +1,6 @@
 #include "events/Event.h"
 
-Event::Event(int socket) : socket_(socket) {
+Event::Event(Socket* s) : socket_(s) {
 
 }
 
@@ -12,12 +12,12 @@ Event::~Event() {
     
 }
 
-int & Event::get_socket() {
+Socket* Event::get_socket() {
     assert(socket_);
     return socket_;
 }
 
-void Event::set_socket(int socket) {
+void Event::set_socket(Socket* socket) {
     assert(socket);
     socket_ = socket;
 }

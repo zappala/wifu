@@ -99,7 +99,7 @@ namespace {
                 Timer t;
                 t.start();
                 Packet* p = new Packet(source, dest, (unsigned char*) data.c_str(), data.size());
-                UDPSendPacketEvent* e = new UDPSendPacketEvent(s->get_socket(), p);
+                UDPSendPacketEvent* e = new UDPSendPacketEvent(s, p);
                 dispatcher.enqueue(e);
                 temp.s.wait();
                 t.stop();
@@ -124,7 +124,7 @@ namespace {
                 Timer t;
                 t.start();
                 Packet* p = new Packet(source, dest, (unsigned char*) data.c_str(), data.size());
-                UDPSendPacketEvent* e = new UDPSendPacketEvent(s->get_socket(), p);
+                UDPSendPacketEvent* e = new UDPSendPacketEvent(s, p);
                 udp.udp_send(e);
                 temp.s.wait();
                 t.stop();

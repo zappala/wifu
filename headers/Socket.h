@@ -10,9 +10,6 @@
 
 #include <string>
 
-#include "events/Event.h"
-#include "events/ConnectEvent.h"
-#include "Dispatcher.h"
 #include "PortManager.h"
 #include "SocketManager.h"
 #include "GarbageCollector.h"
@@ -59,7 +56,7 @@ public:
     /**
      * @return The int which represents this Socket.
      */
-    int get_socket() const {
+    int get_socket_id() const {
         return socket_;
     }
 
@@ -107,7 +104,7 @@ public:
     }
 
     bool operator==(const Socket& other) {
-        return get_socket() == other.get_socket();
+        return get_socket_id() == other.get_socket_id();
     }
 
     bool operator!=(const Socket& other) {

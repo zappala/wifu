@@ -10,6 +10,7 @@
 
 #include "UnitTest++.h"
 #include "PriorityQueue.h"
+#include "../headers/Socket.h"
 #include "events/TimeoutEvent.h"
 #include "defines.h"
 #include <pthread.h>
@@ -31,8 +32,9 @@ SUITE(PriorityQueue) {
         CHECK(priorityQueue.size() == 0);
         CHECK(priorityQueue.isEmpty() == true);
 
-        TimeoutEvent event1(5, 5, 0);
-        TimeoutEvent event2(5, 10, 0);
+        Socket* s = new Socket(0,1,2);
+        TimeoutEvent event1(s, 5, 0);
+        TimeoutEvent event2(s, 10, 0);
 
         signalRaised == false;
         signal(SIG_ENQUEUE_EVENT, enqueueHandler);
@@ -48,7 +50,8 @@ SUITE(PriorityQueue) {
     }
 
     void* enqueuer(void * priorityQueue) {
-        TimeoutEvent event1(5, 5, 0);
+        Socket* s = new Socket(0,1,2);
+        TimeoutEvent event1(s, 5, 0);
         PriorityQueue<Event*, EventComparator>* pQueue =
                 (PriorityQueue<Event*, EventComparator>*) priorityQueue;
         signalRaised == false;
@@ -69,10 +72,11 @@ SUITE(PriorityQueue) {
         CHECK(priorityQueue.isEmpty() == true);
         CHECK(signalRaised == true);
 
-        TimeoutEvent event1(50, 0, 0);
-        TimeoutEvent event2(53, 5, 0);
-        TimeoutEvent event3(1, 10, 100);
-        TimeoutEvent event4(500, 15, 0);
+        Socket* s = new Socket(0,1,2);
+        TimeoutEvent event1(s, 0, 0);
+        TimeoutEvent event2(s, 5, 0);
+        TimeoutEvent event3(s, 10, 100);
+        TimeoutEvent event4(s, 15, 0);
 
         priorityQueue.enqueue(&event3);
         priorityQueue.enqueue(&event2);

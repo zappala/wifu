@@ -9,6 +9,7 @@
 #define	_PACKETRECEIVEDEVENT_H
 
 #include "Event.h"
+#include "../Socket.h"
 
 /**
  * Event which represents receipt of a packet.
@@ -23,7 +24,7 @@ public:
      *
      * @param socket The socket which received a packet.
      */
-    PacketReceivedEvent(int socket) : Event(socket) {
+    PacketReceivedEvent(Socket* socket) : Event(socket) {
 
     }
 

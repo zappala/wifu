@@ -20,6 +20,7 @@
 #include "events/BindEvent.h"
 #include "events/ResponseEvent.h"
 #include "events/ListenEvent.h"
+#include "events/ConnectEvent.h"
 #include "UDPInterface.h"
 #include "PortManager.h"
 
@@ -60,6 +61,7 @@ public:
 
         string name = m[NAME_STRING];
         string s = m[SOCKET_STRING];
+        Socket* socket = SocketCollection::instance().get_by_id(atoi(s.c_str()));
 
         if (!name.compare(WIFU_SOCKET_NAME)) {
 
@@ -67,21 +69,18 @@ public:
             int type = atoi(m[TYPE_STRING].c_str());
             int protocol = atoi(m[PROTOCOL_STRING].c_str());
 
-            int socket_id = -1;
-
             if (ProtocolManager::instance().is_supported(domain, type, protocol)) {
                 Socket* socket = new Socket(domain, type, protocol, new AddressPort(SOURCE_ADDRESS, PortManager::instance().get()));
                 SocketCollection::instance().push(socket);
-                socket_id = socket->get_socket();
 
-                dispatch(new SocketEvent(message, getFile(), socket_id));
+                dispatch(new SocketEvent(message, getFile(), socket));
                 return;
 
             } else {
                 map<string, string> response;
                 response[SOCKET_STRING] = s;
                 response[FILE_STRING] = getFile();
-                response[SOCKET_STRING] = Utils::itoa(socket_id);
+                response[SOCKET_STRING] = Utils::itoa(-1);
                 response[ERRNO] = Utils::itoa(EPROTONOSUPPORT);
                 // TODO: May not always want to respond immediately
                 // TODO: We may need to wait for a response from the internal system
@@ -92,12 +91,12 @@ public:
 
         } else if (!name.compare(WIFU_BIND_NAME)) {
 
-            dispatch(new BindEvent(message, getFile()));
+            dispatch(new BindEvent(message, getFile(), socket));
             return;
 
         } else if (!name.compare(WIFU_LISTEN_NAME)) {
 
-            dispatch(new ListenEvent(message, getFile()));
+            dispatch(new ListenEvent(message, getFile(), socket));
             return;
             
         } else if (!name.compare(WIFU_ACCEPT_NAME)) {
@@ -110,7 +109,7 @@ public:
 
 
         } else if (!name.compare(WIFU_CONNECT_NAME)) {
-            dispatch(new ConnectEvent(message, getFile()));
+            dispatch(new ConnectEvent(message, getFile(), socket));
             cout << "Dispatched connect event" << endl;
             return;
 

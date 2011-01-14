@@ -13,7 +13,7 @@
 
 class ListenEvent : public LibraryEvent {
 public:
-    ListenEvent(string& message, string& file) : LibraryEvent(message, file) {
+    ListenEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {
 
     }
 

@@ -11,6 +11,7 @@
 #include "UnitTest++.h"
 #include "../headers/events/TimeoutEvent.h"
 #include "../headers/IModule.h"
+#include "../headers/Socket.h"
 #include <time.h>
 
 using namespace std;
@@ -35,7 +36,8 @@ namespace {
 			IModuleDummyImplementation dummyImodule;
 			CHECK(dummyImodule.timedout == false);
 
-			TimeoutEvent timeoutEvent(500, 1, 0);
+                        Socket* s = new Socket(0,1,2);
+			TimeoutEvent timeoutEvent(s, 1, 0);
 			timeoutEvent.execute(&dummyImodule);
 
 			CHECK(dummyImodule.timedout == true);
@@ -45,7 +47,8 @@ namespace {
 			timespec ts;
 			clock_gettime(CLOCK_REALTIME, &ts);
 
-			TimeoutEvent timeoutEvent(500, 2, 0);
+                        Socket* s = new Socket(0,1,2);
+			TimeoutEvent timeoutEvent(s, 2, 0);
 
 			CHECK(timeoutEvent.get_timeout_time().tv_sec > ts.tv_sec);
 		}

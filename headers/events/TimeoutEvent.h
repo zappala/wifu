@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <iostream>
-
+#include "../Socket.h"
 
 
 using namespace std;
@@ -31,11 +31,11 @@ public:
      * Constructs a TimeoutEvent.
      * The timeout time will be set to the time this object is created plus seconds and nanoseconds.
      *
-     * @param socket The id of the socket to which this TimeoutEvent will be associated.
+     * @param socket The socket to which this TimeoutEvent will be associated.
      * @param seconds The number of seconds in the future in which to timeout.
      * @param nanoseconds The number nanoseconds in the future in which to timeout.
      */
-    TimeoutEvent(int socket, int seconds, long int nanoseconds) : Event(socket) {
+    TimeoutEvent(Socket* socket, int seconds, long int nanoseconds) : Event(socket) {
         Utils::get_timespec_future_time(seconds, nanoseconds, &timer_);
     }
 

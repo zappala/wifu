@@ -13,12 +13,13 @@
 
 #include "Event.h"
 #include "QueryStringParser.h"
+#include "../Socket.h"
 
 using namespace std;
 
 class ResponseEvent : public Event {
 public:
-    ResponseEvent(int socket, string& name, string& file) : Event(socket), name_(name), file_(file) {
+    ResponseEvent(Socket* socket, string& name, string& file) : Event(socket), name_(name), file_(file) {
         
         
     }
@@ -28,7 +29,7 @@ public:
     }
 
     string get_response() {
-        m_[SOCKET_STRING] = Utils::itoa(get_socket());
+        m_[SOCKET_STRING] = Utils::itoa(get_socket()->get_socket_id());
         return QueryStringParser::create(name_, m_);
     }
 

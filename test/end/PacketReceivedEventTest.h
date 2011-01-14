@@ -10,6 +10,7 @@
 
 #include "UnitTest++.h"
 #include "../headers/events/PacketReceivedEvent.h"
+#include "../headers/Socket.h"
 #include "../headers/IModule.h"
 
 using namespace std;
@@ -34,7 +35,8 @@ namespace {
 			IModuleDummyImplementation dummyImodule;
 			CHECK(dummyImodule.received == false);
 
-			PacketReceivedEvent packetReceivedEvent(100);
+                        Socket* s = new Socket(1, 2, 3);
+			PacketReceivedEvent packetReceivedEvent(s);
 			packetReceivedEvent.execute(&dummyImodule);
 
 			CHECK(dummyImodule.received == true);

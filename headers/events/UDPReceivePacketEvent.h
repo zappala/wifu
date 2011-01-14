@@ -9,11 +9,12 @@
 #define	_UDPRECEIVEPACKETEVENT_H
 
 #include "PacketEvent.h"
+#include "../Socket.h"
 
 class UDPReceivePacketEvent : public PacketEvent {
 public:
 
-    UDPReceivePacketEvent(int socket, Packet* packet) : PacketEvent(socket, packet) {
+    UDPReceivePacketEvent(Socket* socket, Packet* packet) : PacketEvent(socket, packet) {
 
     }
 

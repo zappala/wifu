@@ -34,7 +34,7 @@ void SynSent::receive(Context* c, Socket* s, Packet* p) {
         TCPPacket* response = new TCPPacket(source, destination, data, 0);
         response->set_tcp_ack(true);
 
-        SendPacketEvent* e = new SendPacketEvent(s->get_socket(), response);
+        SendPacketEvent* e = new SendPacketEvent(s, response);
         Dispatcher::instance().enqueue(e);
         cout << "SynSent::receive(), Dispatcher Enqueue: " << type_name(*e) << endl;
 

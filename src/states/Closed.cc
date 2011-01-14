@@ -17,25 +17,25 @@ void Closed::exit(Context* c) {
 }
 
 void Closed::connect(Context* c, ConnectEvent* e) {
-    cout << "Closed: Connect on socket: " << s->get_socket() << endl;
+    Socket* s = e->get_socket();
+    cout << "Closed: Connect on socket: " << s->get_socket_id() << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(ACTIVE);
 
-    ConnectEvent* event;
     cout << "Closed::connect(), local AddressPort: " << s->get_local_address_port()->to_s() << endl;
 
     unsigned char* data = (unsigned char*) "";
-    TCPPacket* p = new TCPPacket(s->get_local_address_port(), new AddressPort(remote), data, 0);
+    TCPPacket* p = new TCPPacket(s->get_local_address_port(), e->get_destination(), data, 0);
     p->set_tcp_syn(true);
-    SendPacketEvent* e = new SendPacketEvent(s->get_socket(), p);
-    Dispatcher::instance().enqueue(e);
-    cout << "Enqueued: " << type_name(*e) << endl;
+    SendPacketEvent* event = new SendPacketEvent(s, p);
+    Dispatcher::instance().enqueue(event);
+    cout << "Enqueued: " << type_name(*event) << endl;
 
     cmc->set_state(new SynSent());
 }
 
 void Closed::listen(Context* c, Socket* s, int back_log) {
-    cout << "Closed: Listen on socket: " << s->get_socket() << endl;
+    cout << "Closed: Listen on socket: " << s->get_socket_id() << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(PASSIVE);
 

@@ -14,7 +14,7 @@ using namespace std;
 
 class BindEvent : public LibraryEvent {
 public:
-    BindEvent(string& message, string& file) : LibraryEvent(message, file) {
+    BindEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {
 
     }
 

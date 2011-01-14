@@ -9,11 +9,12 @@
 #define	SOCKETEVENT_H
 
 #include "LibraryEvent.h"
+#include "../Socket.h"
 
 class SocketEvent : public LibraryEvent {
 public:
 
-    SocketEvent(string& message, string& file, int socket) : LibraryEvent(message, file, socket) {
+    SocketEvent(string& message, string& file, Socket* socket) : LibraryEvent(message, file, socket) {
 
     }
 

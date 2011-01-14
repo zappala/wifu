@@ -10,8 +10,9 @@
 
 #include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
-#include "states/Established.h"
-#include "../events/ConnectEvent.h"
+#include "Established.h"
+#include "events/ConnectEvent.h"
+#include "../Dispatcher.h"
 
 using namespace std;
 

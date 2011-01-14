@@ -86,7 +86,7 @@ public:
         Packet* p = new Packet(remote, local, buffer + END_HEADER_SIZE, length - END_HEADER_SIZE);
         cout << "UDPInterface receive(), data: " << (const char*) buffer << endl;
         cout << "UDPInterface receive(), data length: " << p->data_length() << endl;
-        Event* e = new UDPReceivePacketEvent(s->get_socket(), p);
+        Event* e = new UDPReceivePacketEvent(s, p);
         Dispatcher::instance().enqueue(e);
     }
 

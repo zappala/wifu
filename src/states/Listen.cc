@@ -17,7 +17,7 @@ void Listen::exit(Context* c) {
 }
 
 void Listen::receive(Context* c, Socket* s, Packet* p) {
-    cout << "Listen: Receive on socket: " << s->get_socket() << endl;
+    cout << "Listen: Receive on socket: " << s->get_socket_id() << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
     cout << "Listen::receive(), data length: " << packet->data_length() << endl;
@@ -37,7 +37,7 @@ void Listen::receive(Context* c, Socket* s, Packet* p) {
         response->set_tcp_syn(true);
         response->set_tcp_ack(true);
 
-        SendPacketEvent* e = new SendPacketEvent(s->get_socket(), response);
+        SendPacketEvent* e = new SendPacketEvent(s, response);
         Dispatcher::instance().enqueue(e);
         cout << "Listen: Dispatcher Enqueue: " << type_name(*e) << endl;
 

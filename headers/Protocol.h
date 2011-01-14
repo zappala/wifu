@@ -48,20 +48,19 @@ public:
     virtual void library_socket(Event* e) {
         SocketEvent* event = (SocketEvent*) e;
 
-        Socket* socket = SocketCollection::instance().get_by_id(event->get_socket());
+        Socket* socket = event->get_socket();
         // This is to filter out bind events which do not correspond to this Protocol
         // TODO: this will not (likely) scale well
         if (socket->get_protocol() != protocol_) {
             return;
         }
 
-        int s = socket->get_socket();
         ProtocolContext* c = new ProtocolContext();
         c->set_contexts(get_contexts());
 
-        sockets_[s] = c;
+        sockets_[socket] = c;
 
-        ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
+        ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
         response->put(ERRNO, Utils::itoa(0));
         response->put(RETURN_VALUE_STRING, Utils::itoa(0));
 
@@ -77,14 +76,12 @@ public:
 
         int error = 0;
         int return_val = -1;
-        int s = event->get_socket();
+        Socket* socket = event->get_socket();
 
-        map<int, ProtocolContext*>::iterator itr = sockets_.find(s);
+        map<Socket*, ProtocolContext*>::iterator itr = sockets_.find(socket);
         if (itr == sockets_.end()) {
             return;
         }
-
-        Socket* socket = SocketCollection::instance().get_by_id(s);
 
         // TODO: may not need this check, it is done on the front end.
         // TODO: I'm leaving it for now, just to be safe.
@@ -109,7 +106,7 @@ public:
             error = EBADF;
         }
 
-        ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
+        ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
         response->put(ERRNO, Utils::itoa(error));
         response->put(RETURN_VALUE_STRING, Utils::itoa(return_val));
 
@@ -119,8 +116,8 @@ public:
     virtual void library_listen(Event* e) {
         ListenEvent* event = (ListenEvent*) e;
 
-        int s = event->get_socket();
-        map<int, ProtocolContext*>::iterator itr = sockets_.find(s);
+        Socket* socket = event->get_socket();
+        map<Socket*, ProtocolContext*>::iterator itr = sockets_.find(socket);
         if (itr == sockets_.end()) {
             return;
         }
@@ -130,8 +127,6 @@ public:
 
         int error = 0;
         int return_val = 0;
-
-        Socket* socket = SocketCollection::instance().get_by_id(s);
 
         // TODO: do we need to check the address and port or just the port?
         AlreadyListeningOnSamePortVisitor v(socket->get_local_address_port()->get_port());
@@ -149,7 +144,7 @@ public:
             itr->second->listen(socket, back_log);
         }
 
-        ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
+        ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
         response->put(ERRNO, Utils::itoa(error));
         response->put(RETURN_VALUE_STRING, Utils::itoa(return_val));
 
@@ -167,19 +162,15 @@ public:
         cout << "Library Connect" << endl;
         ConnectEvent* event = (ConnectEvent*) e;
 
-        int s = event->get_socket();
-        map<int, ProtocolContext*>::iterator itr = sockets_.find(s);
+        Socket* socket = event->get_socket();
+        map<Socket*, ProtocolContext*>::iterator itr = sockets_.find(socket);
         if (itr == sockets_.end()) {
             return;
         }
 
-        Socket* socket = SocketCollection::instance().get_by_id(s);
-
         // TODO: Error check
 
-        string address = event->get_map()[ADDRESS_STRING];
-        int port = atoi(event->get_map()[PORT_STRING].c_str());
-        AddressPort ap(address, port);
+        
         itr->second->connect(event);
     }
 
@@ -187,13 +178,12 @@ public:
         cout << "Protocol: Send" << endl;
         SendPacketEvent* event = (SendPacketEvent*) e;
 
-        int s = event->get_socket();
-        map<int, ProtocolContext*>::iterator itr = sockets_.find(s);
+        Socket* socket = event->get_socket();
+        map<Socket*, ProtocolContext*>::iterator itr = sockets_.find(socket);
         if (itr == sockets_.end()) {
             return;
         }
 
-        Socket* socket = SocketCollection::instance().get_by_id(s);
         // TODO: Error check
 
         itr->second->send(socket, event->get_packet());
@@ -203,15 +193,15 @@ public:
         UDPReceivePacketEvent* event = (UDPReceivePacketEvent*) e;
         cout << "Packet received in Protocol!" << endl;
 
-        int s = event->get_socket();
-        map<int, ProtocolContext*>::iterator itr = sockets_.find(s);
+        Socket* socket = event->get_socket();
+
+        map<Socket*, ProtocolContext*>::iterator itr = sockets_.find(socket);
         if (itr == sockets_.end()) {
             return;
         }
 
         cout << "Protocol udp_receive(), Socket found" << endl;
 
-        Socket* socket = SocketCollection::instance().get_by_id(s);
         // TODO: Error check
         Packet* p = event->get_packet();
 
@@ -225,9 +215,9 @@ private:
     int protocol_;
 
     /**
-     * Socket id to ProtocolContext pointer map
+     * Socket to ProtocolContext pointer map
      */
-    map<int, ProtocolContext*> sockets_;
+    map<Socket*, ProtocolContext*> sockets_;
 };
 
 #endif	/* PROTOCOL_H */
