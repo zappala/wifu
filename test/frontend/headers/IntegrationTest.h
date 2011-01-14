@@ -143,16 +143,35 @@ namespace {
 
         // Create server
         int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
-        int result = wifu_bind(server, (const struct sockaddr *) to_bind->get_network_struct_ptr(), sizeof(struct sockaddr_in));
+        int result = wifu_bind(server, (const struct sockaddr *) to_bind->get_network_struct_ptr(), sizeof (struct sockaddr_in));
         CHECK_EQUAL(0, result);
         result = wifu_listen(server, 5);
         CHECK_EQUAL(0, result);
-        
         cout << "Listening on: " << to_bind->to_s() << endl;
         sem->post();
+
+
+
+        struct sockaddr_in addr;
+        socklen_t length = sizeof (addr);
+        int connection;
+        if ((connection = wifu_accept(server, (struct sockaddr *) & addr, &length)) < 0) {
+            cout << "Problem in Accept" << endl;
+            CHECK(false);
+        }
+
+        // TODO: Check the socket
+
+        //            n = recv(sd2, buf, sizeof (buf), 0);
+        //            while (n > 0) {
+        //                send(sd2, buf, n, 0);
+        //                n = recv(sd2, buf, sizeof (buf), 0);
+        //            }
+        //            closesocket(sd2);
     }
 
     void connect_test() {
+        cout << "Connect Test" << endl;
         AddressPort to_connect("127.0.0.1", 5002);
 
         struct var v;
@@ -161,7 +180,7 @@ namespace {
         v.to_bind_ = new AddressPort("127.0.0.1", 5002);
 
         pthread_t t;
-        if(pthread_create(&t, NULL, &thread, &v) != 0) {
+        if (pthread_create(&t, NULL, &thread, &v) != 0) {
             perror("Error creating new thread in IntegrationTest.h");
             CHECK(false);
             return;
@@ -169,12 +188,14 @@ namespace {
 
         v.sem_->wait();
 
-        cout << "Connecting to: " << to_connect.to_s() << endl;
+        // Make sure that we are in the accept state
+        usleep(50000);
 
+        cout << "Connecting to: " << to_connect.to_s() << endl;
 
         // Create client
         int client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
-        int result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof(struct sockaddr_in));
+        int result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
         CHECK_EQUAL(0, result);
     }
 

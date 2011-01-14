@@ -24,7 +24,7 @@ void SynReceived::receive(Context* c, Socket* s, Packet* p) {
     assert(packet->is_tcp_ack());
 
     if(packet->is_tcp_ack()) {
-        cout << "SynReceived::receive(), processing SYN" << endl;
+        cout << "SynReceived::receive(), processing ACK" << endl;
         cmc->set_state(new Established());
         return;
     }

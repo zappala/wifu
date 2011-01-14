@@ -33,6 +33,10 @@ public:
         get_state()->connect(this, e);
     }
 
+    void accept(Socket* s) {
+        get_state()->accept(this, s);
+    }
+
     void close() {
         get_state()->close(this);
     }

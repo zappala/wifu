@@ -24,6 +24,7 @@ public:
     CongestionControlContext();
     void listen(Socket* s, int back_log);
     void connect(ConnectEvent* e);
+    void accept(Socket* s);
     void close();
     void receive(Socket* s, Packet* p);
     void send(Socket* s, Packet* p);

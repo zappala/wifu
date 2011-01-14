@@ -19,8 +19,9 @@
 using namespace std;
 
 enum ConnectionType {
-    PASSIVE,
-    ACTIVE
+    PASSIVE_OPEN,
+    ACTIVE_OPEN,
+    ESTABLISHED
 };
 
 class ConnectionManagerContext : public Context {
@@ -28,6 +29,7 @@ public:
     ConnectionManagerContext();
     void listen(Socket* s, int back_log);
     void connect(ConnectEvent* e);
+    void accept(Socket* s);
     void close();
     void receive(Socket* s, Packet* p);
     void send(Socket* s, Packet* p);
@@ -38,12 +40,16 @@ public:
     int get_back_log();
     void set_back_log(int back_log);
 
+    ConnectEvent* get_connect_event();
+    void set_connect_event(ConnectEvent* e);
+
     ConnectionType get_connection_type();
     void set_connection_type(ConnectionType type);
 
 private:
     int back_log_;
     ConnectionType type_;
+    ConnectEvent* c_event_;
 };
 
 #endif	/* CONNECTIONMANAGERCONTEXT_H */

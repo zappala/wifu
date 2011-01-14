@@ -21,6 +21,7 @@
 #include "events/ResponseEvent.h"
 #include "events/ListenEvent.h"
 #include "events/ConnectEvent.h"
+#include "events/AcceptEvent.h"
 #include "UDPInterface.h"
 #include "PortManager.h"
 
@@ -100,8 +101,9 @@ public:
             return;
             
         } else if (!name.compare(WIFU_ACCEPT_NAME)) {
-            int return_val = 1;
-            //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+            dispatch(new AcceptEvent(message, getFile(), socket));
+            return;
+            
         } else if (!name.compare(WIFU_SENDTO_NAME)) {
             int return_val = 1;
             //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);

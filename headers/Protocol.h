@@ -25,6 +25,7 @@
 #include "events/SendPacketEvent.h"
 #include "events/UDPReceivePacketEvent.h"
 #include "events/ConnectEvent.h"
+#include "events/AcceptEvent.h"
 
 class Protocol : public Module {
 public:
@@ -172,6 +173,22 @@ public:
 
         
         itr->second->connect(event);
+    }
+
+    virtual void library_accept(Event* e) {
+        cout << "Library Accept" << endl;
+        AcceptEvent* event = (AcceptEvent*) e;
+
+        Socket* socket = event->get_socket();
+        map<Socket*, ProtocolContext*>::iterator itr = sockets_.find(socket);
+        if (itr == sockets_.end()) {
+            return;
+        }
+
+        // TODO: Error check
+
+
+        itr->second->accept(socket);
     }
 
     virtual void send(Event* e) {

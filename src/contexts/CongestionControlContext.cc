@@ -12,6 +12,10 @@ void CongestionControlContext::connect(ConnectEvent* e) {
     get_state()->connect(this, e);
 }
 
+void CongestionControlContext::accept(Socket* s) {
+    get_state()->accept(this, s);
+}
+
 void CongestionControlContext::close() {
     get_state()->close(this);
 }

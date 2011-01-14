@@ -70,6 +70,14 @@ public:
         //cout << endl;
     }
 
+    virtual void accept(Socket* s) {
+        //cout << "Protocol: ACCEPT" << endl;
+        for(int i = 0; i < contexts_.size(); ++i) {
+            contexts_[i]->accept(s);
+        }
+        //cout << endl;
+    }
+
     virtual void close() {
         //cout << "Protocol: CLOSE" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {

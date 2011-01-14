@@ -10,8 +10,7 @@
 
 #include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
-#include "states/SynReceived.h"
-#include "../events/ConnectEvent.h"
+#include "Accept.h"
 
 using namespace std;
 
@@ -22,7 +21,8 @@ public:
     virtual void enter(Context* c);
     virtual void exit(Context* c);
 
-    void receive(Context* c, Socket* s, Packet* p);
+    void accept(Context* c, Socket* s);
+
 };
 
 #endif	/* LISTEN_H */

@@ -5,12 +5,17 @@ ConnectionManagerContext::ConnectionManagerContext() : Context() {
 }
 
 // TODO: move this method (and all others that we can) into Context
+
 void ConnectionManagerContext::listen(Socket* s, int back_log) {
     get_state()->listen(this, s, back_log);
 }
 
 void ConnectionManagerContext::connect(ConnectEvent* e) {
     get_state()->connect(this, e);
+}
+
+void ConnectionManagerContext::accept(Socket* s) {
+    get_state()->accept(this, s);
 }
 
 void ConnectionManagerContext::close() {
@@ -45,4 +50,12 @@ ConnectionType ConnectionManagerContext::get_connection_type() {
 
 void ConnectionManagerContext::set_connection_type(ConnectionType type) {
     type_ = type;
+}
+
+ConnectEvent* ConnectionManagerContext::get_connect_event() {
+    return c_event_;
+}
+
+void ConnectionManagerContext::set_connect_event(ConnectEvent* e) {
+    c_event_ = e;
 }

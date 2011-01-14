@@ -16,14 +16,13 @@
  * @see Event
  */
 class ConnectEvent : public LibraryEvent {
-
 public:
 
     /**
      * Constructs a ConnectEvent.
      *
      */
-    ConnectEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {
+    ConnectEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s), destination_(0) {
 
     }
 
@@ -42,10 +41,20 @@ public:
     }
 
     AddressPort* get_destination() {
-        string address = get_map()[ADDRESS_STRING];
-        int port = atoi(get_map()[PORT_STRING].c_str());
-        return new AddressPort(address, port);
+        if (!destination_) {
+            string address = get_map()[ADDRESS_STRING];
+            int port = atoi(get_map()[PORT_STRING].c_str());
+            destination_ = new AddressPort(address, port);
+        }
+        return destination_;
     }
+
+    void set_socket_destination() {
+        get_socket()->set_remote_address_port(get_destination());
+    }
+
+private:
+    AddressPort* destination_;
 };
 
 #endif	/* _CONNECTEVENT_H */

@@ -52,6 +52,9 @@ public:
     virtual void listen(Context* c, Socket* s, int back_log) {
     }
 
+    virtual void accept(Context* c, Socket* s) {        
+    }
+
     virtual void receive(Context* c, Socket* s, Packet* p) {
     }
 
