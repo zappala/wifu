@@ -14,6 +14,7 @@
 #include "Socket.h"
 #include "visitors/Visitable.h"
 #include "visitors/Visitor.h"
+#include "observer/Observer.h"
 
 using namespace std;
 
@@ -70,7 +71,7 @@ int b_search_local_remote_cmp(pair<AddressPort*, AddressPort*>& aps, Socket* s) 
 
 }
 
-class SocketCollection : public Visitable {
+class SocketCollection : public Visitable, public Observer {
 private:
 
     SocketCollection() : how_sorted_(RE_SORT) {
@@ -167,6 +168,7 @@ public:
 
     void push(Socket* s) {
         mutex_.wait();
+        s->add_observer(this);
         collection_.push_back(s);
         how_sorted_ = RE_SORT;
         mutex_.post();
@@ -205,6 +207,14 @@ public:
             }
         }
         mutex_.post();
+    }
+
+    void update(Observable* o) {
+        // TODO: assert that o is an instance of Socket*
+
+        // We simply want to mark the collection dirty so we will re-sort it
+        mark_dirty();
+        cout << "SOCKET COLLECTION UPDATE, MARK DIRTY" << endl;
     }
 
 };

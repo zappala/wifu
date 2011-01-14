@@ -14,10 +14,11 @@
 #include "SocketManager.h"
 #include "GarbageCollector.h"
 #include "AddressPort.h"
+#include "observer/Observable.h"
 
 using namespace std;
 // TODO: do we need to protect this with a Semaphore?
-class Socket : public gc {
+class Socket : public Observable, public gc {
 public:
 
     /**
@@ -94,6 +95,7 @@ public:
             delete local_;
         }
         local_ = local;
+        notify();
     }
 
     void set_remote_address_port(AddressPort* remote) {
@@ -101,6 +103,7 @@ public:
             delete remote_;
         }
         remote_ = remote;
+        notify();
     }
 
     bool operator==(const Socket& other) {

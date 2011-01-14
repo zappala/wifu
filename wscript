@@ -114,10 +114,11 @@ def build_wifu(bld):
         src_files = bld.glob('src/*.cc')
         src_files += bld.glob('src/contexts/*.cc')
         src_files += bld.glob('src/states/*.cc')
+	src_files += bld.glob('src/observer/*.cc')
 
 	exe = bld(features='cxx cprogram',
         source=src_files,
-        includes='headers lib/gc/include headers/contexts headers/states',
+        includes='headers lib/gc/include headers/contexts headers/states headers/observer',
         uselib='PTHREAD RT',
 		libpath = ['../lib/gc'],
 		staticlib = ['gccpp','gc','cord'],
@@ -128,6 +129,7 @@ def build_wifu_end_test(bld):
 	src_files = bld.glob('src/*.cc')
         src_files += bld.glob('src/contexts/*.cc')
         src_files += bld.glob('src/states/*.cc')
+	src_files += bld.glob('src/observer/*.cc')
 	src_files += bld.glob('preliminary/Timer.cc')
 
 	all_files = src_files
@@ -136,7 +138,7 @@ def build_wifu_end_test(bld):
 
 	test_end = bld(features='cxx cprogram',
         source=all_files,
-        includes='preliminary headers test/end/headers lib/gc/include lib/unittest++/include headers/contexts headers/states',
+        includes='preliminary headers test/end/headers lib/gc/include lib/unittest++/include headers/contexts headers/states headers/observer',
         uselib='PTHREAD RT',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp','gc','cord'],
