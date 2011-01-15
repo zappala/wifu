@@ -22,7 +22,6 @@ public:
     virtual void enter(Context* c);
     virtual void exit(Context* c);
     virtual void close(Context* c);
-    virtual bool is_open();
 };
 
 #endif	/* OPEN_H */

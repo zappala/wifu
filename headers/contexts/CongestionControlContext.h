@@ -30,7 +30,6 @@ public:
     void close();
     void receive(Socket* s, Packet* p);
     void send(Socket* s, Packet* p);
-    bool is_open();
 };
 
 #endif	/* CONGESTIONCONTROLCONTEXT_H */

@@ -22,6 +22,3 @@ void Open::close(Context* c) {
     c->set_state(new Closed());
 }
 
-bool Open::is_open() {
-    return true;
-}

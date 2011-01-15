@@ -30,6 +30,8 @@ void Closed::connect(Context* c, ConnectEvent* e) {
     SendPacketEvent* event = new SendPacketEvent(s, p);
     Dispatcher::instance().enqueue(event);
 
+    // TODO: move this earlier so we don't send and dequeue a packet while still in this (Closed) state
+    // We don't want the FSM to be in between changing states either (see set_state).
     cmc->set_state(new SynSent());
 }
 

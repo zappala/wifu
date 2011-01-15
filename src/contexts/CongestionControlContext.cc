@@ -32,6 +32,3 @@ void CongestionControlContext::send(Socket* s, Packet* p) {
     get_state()->send(this, s, p);
 }
 
-bool CongestionControlContext::is_open() {
-    return get_state()->is_open();
-}

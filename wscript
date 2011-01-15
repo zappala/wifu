@@ -146,10 +146,11 @@ def build_wifu_end_test(bld):
 		
 def build_wifu_frontend_test(bld):
 	test_frontend_files = bld.glob('test/frontend/*.cc')
+	test_frontend_files += bld.glob('preliminary/Timer.cc')
 
 	test_frontend = bld(features='cxx cprogram',
 		source=test_frontend_files,
-		includes='test/frontend/headers lib/unittest++/include',
+		includes='preliminary test/frontend/headers lib/unittest++/include',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp', 'gc', 'cord'],
 		uselib_local='wifu-end-api',

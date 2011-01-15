@@ -26,7 +26,3 @@ void Context::set_state(State* s) {
 State* Context::get_state() {
     return current_;
 }
-
-bool Context::is_open() {
-    return false;
-}

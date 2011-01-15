@@ -29,7 +29,6 @@ public:
     virtual void accept(AcceptEvent* e) = 0;
     virtual void connection_established(Socket* s) = 0;
     virtual void close() = 0;
-    virtual bool is_open() = 0;
 };
 
 #endif	/* ICONTEXT_H */

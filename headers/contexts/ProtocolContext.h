@@ -95,17 +95,6 @@ public:
         //cout << endl;
     }
 
-    virtual bool is_open() {
-        //cout << "Protocol: IS_OPEN" << endl;
-        for(int i = 0; i < contexts_.size(); ++i) {
-            if(contexts_[i]->is_open()) {
-                return true;
-            }
-        }
-        //cout << endl;
-        return false;
-    }
-
 private:
     vector<Context*> contexts_;
 };

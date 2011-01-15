@@ -34,10 +34,6 @@ void ConnectionManagerContext::send(Socket* s, Packet* p) {
     get_state()->send(this, s, p);
 }
 
-bool ConnectionManagerContext::is_open() {
-    return get_state()->is_open();
-}
-
 // Non-state methods
 
 int ConnectionManagerContext::get_back_log() {

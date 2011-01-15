@@ -28,7 +28,6 @@ public:
     virtual ~Context();
     virtual void set_state(State* s);
     State* get_state();
-    virtual bool is_open();
 
 private:
     class State* current_;
@@ -72,10 +71,6 @@ public:
     }
 
     virtual void send(Context* c, Socket* s, Packet* p) {
-    }
-
-    virtual bool is_open() {
-        return false;
     }
 
     void enter_state(string state) {
