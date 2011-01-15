@@ -98,6 +98,15 @@ public:
             sockets.get(socket)->set_payload_length(response.size());
         }
 
+        if(!response_[NAME_STRING].compare(WIFU_ACCEPT_NAME)) {
+            string address = response_[ADDRESS_STRING];
+            u_int16_t port = atoi(response_[PORT_STRING].c_str());
+            cout << "ADDRESS: " << address << endl;
+            cout << "PORT:    " << port << endl;
+            AddressPort* ap = new AddressPort(address, port);
+            sockets.get(socket)->set_address_port(ap);
+        }
+
         int value = atoi(response_[RETURN_VALUE_STRING].c_str());
         int error = atoi(response_[ERRNO].c_str());
 
@@ -272,12 +281,17 @@ public:
         }
 
         string message = QueryStringParser::create(WIFU_ACCEPT_NAME, m);
+        cout << "Sending message: " << message << endl;
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
 
-        // TODO: Fill in addr_len according to man 2 accept
+        cout << "Done waiting" << endl;
+
+        socklen_t length = data->get_length();
+        memcpy(addr_len, &length, sizeof(socklen_t));
+        memcpy(addr, data->get_address_port()->get_network_struct_ptr(),(size_t) length);
 
         int new_socket = data->get_return_value();
         sockets.put(new_socket, new SocketData());

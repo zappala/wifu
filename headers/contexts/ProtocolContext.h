@@ -18,6 +18,7 @@
 #include "../Socket.h"
 #include "../Packet.h"
 #include "../events/ConnectEvent.h"
+#include "../events/AcceptEvent.h"
 
 using namespace std;
 
@@ -70,10 +71,18 @@ public:
         //cout << endl;
     }
 
-    virtual void accept(Socket* s) {
+    virtual void accept(AcceptEvent* e) {
         //cout << "Protocol: ACCEPT" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {
-            contexts_[i]->accept(s);
+            contexts_[i]->accept(e);
+        }
+        //cout << endl;
+    }
+
+    virtual void connection_established(Socket* s) {
+        //cout << "Protocol: CONNECTION ESTABLISHED" << endl;
+        for(int i = 0; i < contexts_.size(); ++i) {
+            contexts_[i]->connection_established(s);
         }
         //cout << endl;
     }

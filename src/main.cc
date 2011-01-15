@@ -39,6 +39,7 @@
 #include "events/TimeoutEvent.h"
 #include "events/TimerFiredEvent.h"
 #include "events/AcceptEvent.h"
+#include "events/ConnectionEstablishedEvent.h"
 
 using namespace std;
 
@@ -104,9 +105,11 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(ListenEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(ConnectEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(AcceptEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(SendPacketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(UDPReceivePacketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(TimerFiredEvent), &SimpleTCP::instance());
+
     
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
     

@@ -1,4 +1,5 @@
 #include "states/Closed.h"
+#include "events/ConnectionEstablishedEvent.h"
 
 Closed::Closed() : State() {
 
@@ -43,4 +44,11 @@ void Closed::listen(Context* c, Socket* s, int back_log) {
     // TODO: Do anything with the Socket?
     cmc->set_back_log(back_log);
     cmc->set_state(new Listen());
+}
+
+void Closed::connection_established(Context* c, Socket* s) {
+    cout << "Closed: Connection Established" << endl;
+    ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
+    cmc->set_connection_type(ESTABLISHED);
+    c->set_state(new Established());
 }

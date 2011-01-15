@@ -11,6 +11,7 @@
 #include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
 #include "Accept.h"
+#include "../events/AcceptEvent.h"
 
 using namespace std;
 
@@ -21,7 +22,7 @@ public:
     virtual void enter(Context* c);
     virtual void exit(Context* c);
 
-    void accept(Context* c, Socket* s);
+    void accept(Context* c, AcceptEvent* e);
 
 };
 

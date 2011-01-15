@@ -15,6 +15,7 @@
 #include "../Socket.h"
 #include "../Packet.h"
 #include "../events/ConnectEvent.h"
+#include "../events/AcceptEvent.h"
 
 using namespace std;
 
@@ -29,7 +30,8 @@ public:
     ConnectionManagerContext();
     void listen(Socket* s, int back_log);
     void connect(ConnectEvent* e);
-    void accept(Socket* s);
+    void accept(AcceptEvent* e);
+    void connection_established(Socket* s);
     void close();
     void receive(Socket* s, Packet* p);
     void send(Socket* s, Packet* p);
@@ -43,6 +45,9 @@ public:
     ConnectEvent* get_connect_event();
     void set_connect_event(ConnectEvent* e);
 
+    AcceptEvent* get_accept_event();
+    void set_accept_event(AcceptEvent* e);
+
     ConnectionType get_connection_type();
     void set_connection_type(ConnectionType type);
 
@@ -50,6 +55,7 @@ private:
     int back_log_;
     ConnectionType type_;
     ConnectEvent* c_event_;
+    AcceptEvent* a_event_;
 };
 
 #endif	/* CONNECTIONMANAGERCONTEXT_H */

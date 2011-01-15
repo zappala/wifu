@@ -13,6 +13,7 @@
 #include "../AddressPort.h"
 #include "../Socket.h"
 #include "../events/ConnectEvent.h"
+#include "../events/AcceptEvent.h"
 
 class ReliabilityContext : public Context {
 public:
@@ -33,8 +34,12 @@ public:
         get_state()->connect(this, e);
     }
 
-    void accept(Socket* s) {
-        get_state()->accept(this, s);
+    void accept(AcceptEvent* e) {
+        get_state()->accept(this, e);
+    }
+
+    void connection_established(Socket* s) {
+        get_state()->connection_established(this, s);
     }
 
     void close() {

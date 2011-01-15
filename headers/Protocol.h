@@ -26,6 +26,8 @@
 #include "events/UDPReceivePacketEvent.h"
 #include "events/ConnectEvent.h"
 #include "events/AcceptEvent.h"
+#include "events/ConnectionEstablishedEvent.h"
+
 
 class Protocol : public Module {
 public:
@@ -170,7 +172,7 @@ public:
 
         // TODO: Error check
 
-        
+
         itr->second->connect(event);
     }
 
@@ -187,7 +189,7 @@ public:
         // TODO: Error check
 
 
-        itr->second->accept(socket);
+        itr->second->accept(event);
     }
 
     virtual void send(Event* e) {
@@ -222,6 +224,38 @@ public:
         Packet* p = event->get_packet();
 
         itr->second->receive(socket, p);
+    }
+
+    virtual void connection_established(Event* e) {
+        // TODO: a lot of this code is the same as in library_socket, refactor later
+        cout << "Connection Established" << endl;
+        ConnectionEstablishedEvent* event = (ConnectionEstablishedEvent*) e;
+
+        Socket* socket = event->get_socket();
+
+        // This is to filter out bind events which do not correspond to this Protocol
+        // TODO: this will not (likely) scale well
+        if (socket->get_protocol() != protocol_) {
+            return;
+        }
+
+        Socket* new_socket = event->get_new_socket();
+
+        SocketCollection::instance().push(new_socket);
+
+        ProtocolContext* c = new ProtocolContext();
+        c->set_contexts(get_contexts());
+        sockets_[new_socket] = c;
+        c->connection_established(new_socket);
+
+        AcceptEvent* a_event = event->get_accept_event();
+        ResponseEvent* response = new ResponseEvent(socket, a_event->get_name(), a_event->get_map()[FILE_STRING]);
+        response->put(ERRNO, Utils::itoa(0));
+        response->put(RETURN_VALUE_STRING, Utils::itoa(new_socket->get_socket_id()));
+        response->put(ADDRESS_STRING, new_socket->get_remote_address_port()->get_address());
+        response->put(PORT_STRING, Utils::itoa(new_socket->get_remote_address_port()->get_port()));
+
+        dispatch(response);
     }
 
 

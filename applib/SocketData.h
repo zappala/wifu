@@ -12,6 +12,7 @@
 
 #include "../headers/Semaphore.h"
 #include "../headers/defines.h"
+#include "../headers/AddressPort.h"
 
 class SocketData {
 public:
@@ -60,12 +61,25 @@ public:
         return error_;
     }
 
+    void set_address_port(AddressPort* ap) {
+        address_ = ap;
+    }
+
+    AddressPort* get_address_port() {
+        return address_;
+    }
+
+    socklen_t get_length() {
+        return sizeof(* get_address_port()->get_network_struct_ptr());
+    }
+
 private:
     int return_value_;
     int error_;
     Semaphore* sem_;
     unsigned char payload_[PAYLOAD_SIZE + 1];
     int payload_length_;
+    AddressPort* address_;
 };
 
 #endif	/* _SOCKETDATA_H */

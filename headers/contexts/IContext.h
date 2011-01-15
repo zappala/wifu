@@ -15,6 +15,7 @@
 #include "../headers/AddressPort.h"
 #include "../headers/Packet.h"
 #include "../events/ConnectEvent.h"
+#include "../events/AcceptEvent.h"
 
 using namespace std;
 
@@ -25,7 +26,8 @@ public:
     virtual void receive(Socket* s, Packet* p) = 0;
     virtual void send(Socket* s, Packet* p) = 0;
     virtual void connect(ConnectEvent* e) = 0;
-    virtual void accept(Socket* s) = 0;
+    virtual void accept(AcceptEvent* e) = 0;
+    virtual void connection_established(Socket* s) = 0;
     virtual void close() = 0;
     virtual bool is_open() = 0;
 };

@@ -16,6 +16,7 @@
 #include "Socket.h"
 #include "Packet.h"
 #include "../events/ConnectEvent.h"
+#include "../events/AcceptEvent.h"
 
 using namespace std;
 
@@ -24,7 +25,7 @@ class State;
 class Context : public IContext {
 public:
     Context();
-    virtual ~Context();    
+    virtual ~Context();
     virtual void set_state(State* s);
     State* get_state();
     virtual bool is_open();
@@ -52,7 +53,10 @@ public:
     virtual void listen(Context* c, Socket* s, int back_log) {
     }
 
-    virtual void accept(Context* c, Socket* s) {        
+    virtual void accept(Context* c, AcceptEvent* e) {
+    }
+
+    virtual void connection_established(Context* c, Socket* s) {
     }
 
     virtual void receive(Context* c, Socket* s, Packet* p) {

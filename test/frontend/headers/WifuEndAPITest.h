@@ -62,6 +62,8 @@ public:
         } else if (!name.compare(WIFU_ACCEPT_NAME)) {
             int return_val = accept_return_val_++;
             response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+            response[ADDRESS_STRING] = "127.0.0.1";
+            response[PORT_STRING] = "9000";
         } else if (!name.compare(WIFU_SENDTO_NAME)) {
             int return_val = m[BUFFER_STRING].size();
             last_message_ = m[BUFFER_STRING];
@@ -152,9 +154,13 @@ namespace {
 
             // wifu_accept()
             socklen_t len = sizeof (struct sockaddr_in);
-            result = wifu_accept(socket, (struct sockaddr*) ap.get_network_struct_ptr(), &len);
+            struct sockaddr_in s;
+            result = wifu_accept(socket, (struct sockaddr*) &s, &len);
             expected = 2000;
             CHECK_EQUAL(expected, result);
+            AddressPort exp("127.0.0.1", 9000);
+            AddressPort act(&s);
+            
 
             // Do everything on new socket
             socket = expected;

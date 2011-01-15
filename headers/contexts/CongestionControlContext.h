@@ -15,6 +15,7 @@
 #include "../Socket.h"
 #include "../Packet.h"
 #include "../events/ConnectEvent.h"
+#include "../events/AcceptEvent.h"
 
 using namespace std;
 
@@ -24,7 +25,8 @@ public:
     CongestionControlContext();
     void listen(Socket* s, int back_log);
     void connect(ConnectEvent* e);
-    void accept(Socket* s);
+    void accept(AcceptEvent* e);
+    void connection_established(Socket* s);
     void close();
     void receive(Socket* s, Packet* p);
     void send(Socket* s, Packet* p);

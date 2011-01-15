@@ -34,10 +34,7 @@ void Established::enter(Context* c) {
 
             break;
 
-        case PASSIVE_OPEN:
-            cout << "Established::enter(), passive connection" << endl;
-
-            break;
+        
 
         case ESTABLISHED:
             break;

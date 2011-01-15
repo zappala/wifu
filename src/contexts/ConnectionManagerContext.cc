@@ -14,8 +14,12 @@ void ConnectionManagerContext::connect(ConnectEvent* e) {
     get_state()->connect(this, e);
 }
 
-void ConnectionManagerContext::accept(Socket* s) {
-    get_state()->accept(this, s);
+void ConnectionManagerContext::accept(AcceptEvent* e) {
+    get_state()->accept(this, e);
+}
+
+void ConnectionManagerContext::connection_established(Socket* s) {
+    get_state()->connection_established(this, s);
 }
 
 void ConnectionManagerContext::close() {
@@ -58,4 +62,12 @@ ConnectEvent* ConnectionManagerContext::get_connect_event() {
 
 void ConnectionManagerContext::set_connect_event(ConnectEvent* e) {
     c_event_ = e;
+}
+
+AcceptEvent* ConnectionManagerContext::get_accept_event() {
+    return a_event_;
+}
+
+void ConnectionManagerContext::set_accept_event(AcceptEvent* e) {
+    a_event_ = e;
 }

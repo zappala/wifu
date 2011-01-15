@@ -104,7 +104,7 @@ public:
     }
 
     virtual void send(Event* e) {
-        
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="Library Methods">
@@ -182,8 +182,8 @@ public:
     }
     // </editor-fold>
 
-
-
+    virtual void connection_established(Event* e) {
+    }
 
 protected:
 
