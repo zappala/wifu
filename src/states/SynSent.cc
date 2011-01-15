@@ -19,13 +19,11 @@ void SynSent::exit(Context* c) {
 void SynSent::receive(Context* c, Socket* s, Packet* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
-    cout << "SynSent::receive()" << endl;
 
     assert(packet->is_tcp_syn());
     assert(packet->is_tcp_ack());
 
     if (packet->is_tcp_syn() && packet->is_tcp_ack()) {
-        cout << "SynSent::receive(), SYN ACK received" << endl;
 
         unsigned char* data = (unsigned char*) "";
         AddressPort* source = packet->get_destination();
@@ -36,7 +34,6 @@ void SynSent::receive(Context* c, Socket* s, Packet* p) {
 
         SendPacketEvent* e = new SendPacketEvent(s, response);
         Dispatcher::instance().enqueue(e);
-        cout << "SynSent::receive(), Dispatcher Enqueue: " << type_name(*e) << endl;
 
         cmc->set_state(new Established());
         return;

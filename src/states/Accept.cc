@@ -17,18 +17,12 @@ void Accept::exit(Context* c) {
 }
 
 void Accept::receive(Context* c, Socket* s, Packet* p) {
-    cout << "Accept: Receive on socket: " << s->get_socket_id() << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
-    cout << "Accept::receive(), data length: " << packet->data_length() << endl;
-    cout << "Accept::receive(), is SYN: " << endl;
 
     assert(packet->is_tcp_syn());
 
     if(packet->is_tcp_syn()) {
-        cout << "Accept: receive(), processing TCP SYN" << endl;
-
-
         unsigned char* data = (unsigned char*) "";
         AddressPort* source = packet->get_destination();
         AddressPort* destination = packet->get_source();
@@ -39,7 +33,6 @@ void Accept::receive(Context* c, Socket* s, Packet* p) {
 
         SendPacketEvent* e = new SendPacketEvent(s, response);
         Dispatcher::instance().enqueue(e);
-        cout << "Accept: Dispatcher Enqueue: " << type_name(*e) << endl;
 
         cmc->set_state(new SynReceived());
         return;

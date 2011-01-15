@@ -112,7 +112,6 @@ public:
 
         } else if (!name.compare(WIFU_CONNECT_NAME)) {
             dispatch(new ConnectEvent(message, getFile(), socket));
-            cout << "Dispatched connect event" << endl;
             return;
 
         } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
@@ -122,12 +121,6 @@ public:
             int return_val = 0;
             //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
         }
-
-        //response[ERRNO] = Utils::itoa(error);
-        // TODO: May not always want to respond immediately
-        // TODO: We may need to wait for a response from the internal system
-        //string response_message = QueryStringParser::create(name, response);
-        //send_to(m[FILE_STRING], response_message);
     }
 
     void library_response(Event* e) {

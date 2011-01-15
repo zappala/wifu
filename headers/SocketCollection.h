@@ -214,7 +214,6 @@ public:
 
         // We simply want to mark the collection dirty so we will re-sort it
         mark_dirty();
-        cout << "SOCKET COLLECTION UPDATE, MARK DIRTY" << endl;
     }
 
 };

@@ -161,7 +161,6 @@ public:
     // processed.
 
     virtual void library_connect(Event* e) {
-        cout << "Library Connect" << endl;
         ConnectEvent* event = (ConnectEvent*) e;
 
         Socket* socket = event->get_socket();
@@ -177,7 +176,6 @@ public:
     }
 
     virtual void library_accept(Event* e) {
-        cout << "Library Accept" << endl;
         AcceptEvent* event = (AcceptEvent*) e;
 
         Socket* socket = event->get_socket();
@@ -193,7 +191,6 @@ public:
     }
 
     virtual void send(Event* e) {
-        cout << "Protocol: Send" << endl;
         SendPacketEvent* event = (SendPacketEvent*) e;
 
         Socket* socket = event->get_socket();
@@ -209,7 +206,6 @@ public:
 
     virtual void udp_receive(Event* e) {
         UDPReceivePacketEvent* event = (UDPReceivePacketEvent*) e;
-        cout << "Packet received in Protocol!" << endl;
 
         Socket* socket = event->get_socket();
 
@@ -218,7 +214,6 @@ public:
             return;
         }
 
-        cout << "Protocol udp_receive(), Socket found" << endl;
 
         // TODO: Error check
         Packet* p = event->get_packet();
@@ -228,7 +223,6 @@ public:
 
     virtual void connection_established(Event* e) {
         // TODO: a lot of this code is the same as in library_socket, refactor later
-        cout << "Connection Established" << endl;
         ConnectionEstablishedEvent* event = (ConnectionEstablishedEvent*) e;
 
         Socket* socket = event->get_socket();

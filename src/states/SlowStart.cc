@@ -11,7 +11,6 @@ SlowStart::~SlowStart() {
 
 void SlowStart::send(Context* c, Socket* s, Packet* p) {
     // Send immediately for now
-    cout << "SlowStart: send on socket: " << s->get_socket_id() << endl;
     CongestionControlContext* ccc = (CongestionControlContext*) c;
     UDPSendPacketEvent* e = new UDPSendPacketEvent(s, p);
     Dispatcher::instance().enqueue(e);

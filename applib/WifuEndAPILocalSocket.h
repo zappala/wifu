@@ -101,8 +101,6 @@ public:
         if(!response_[NAME_STRING].compare(WIFU_ACCEPT_NAME)) {
             string address = response_[ADDRESS_STRING];
             u_int16_t port = atoi(response_[PORT_STRING].c_str());
-            cout << "ADDRESS: " << address << endl;
-            cout << "PORT:    " << port << endl;
             AddressPort* ap = new AddressPort(address, port);
             sockets.get(socket)->set_address_port(ap);
         }
@@ -281,13 +279,11 @@ public:
         }
 
         string message = QueryStringParser::create(WIFU_ACCEPT_NAME, m);
-        cout << "Sending message: " << message << endl;
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
 
-        cout << "Done waiting" << endl;
 
         socklen_t length = data->get_length();
         memcpy(addr_len, &length, sizeof(socklen_t));
@@ -389,7 +385,6 @@ public:
         m[LENGTH_STRING] = Utils::itoa(len);
 
         string message = QueryStringParser::create(WIFU_CONNECT_NAME, m);
-        cout << "Sending connect event: " << message << endl;
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);

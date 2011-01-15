@@ -24,7 +24,6 @@ void SynReceived::receive(Context* c, Socket* s, Packet* p) {
     assert(packet->is_tcp_ack());
 
     if (packet->is_tcp_ack()) {
-        cout << "SynReceived::receive(), processing ACK" << endl;
 
         Socket* new_socket = new Socket(s->get_domain(),
                                             s->get_type(),
@@ -34,12 +33,6 @@ void SynReceived::receive(Context* c, Socket* s, Packet* p) {
 
         ConnectionEstablishedEvent* e = new ConnectionEstablishedEvent(cmc->get_accept_event(), new_socket);
         Dispatcher::instance().enqueue(e);
-
-        cout << "SynReceived Socket Local Address: " << s->get_local_address_port()->to_s() << endl;
-        cout << "SynReceived Socket Remote Address: " << s->get_remote_address_port()->to_s() << endl;
-        cout << "Packet source address: " << packet->get_source()->to_s() << endl;
-        cout << "Packet destination address: " << packet->get_destination()->to_s() << endl;
-
         cmc->set_state(new Listen());
 
         return;

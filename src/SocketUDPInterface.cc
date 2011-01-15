@@ -34,7 +34,6 @@ SocketUDPInterface * SocketUDPInterface::instance() {
 }
 
 void SocketUDPInterface::receive(string & message) {
-    cout << "UDPInterface Receive: " << message << endl;
     if(message.find("<connect>", 0) != string::npos) {
         sleep(2);
         string reply("<connected> localhost");

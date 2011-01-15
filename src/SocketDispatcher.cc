@@ -38,7 +38,6 @@ SocketDispatcher & SocketDispatcher::instance() {
 }
 
 void SocketDispatcher::receive(string & message) {
-    cout << "Dispatcher Receive: " << message << endl;
 
     for(int i = 0; i < modules_.size(); i++) {
 

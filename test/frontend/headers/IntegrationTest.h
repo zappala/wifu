@@ -139,7 +139,6 @@ namespace {
         struct var* v = (struct var*) args;
         AddressPort* to_bind = v->to_bind_;
         Semaphore* sem = v->sem_;
-        cout << "In thread" << endl;
 
         // Create server
         int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
@@ -147,7 +146,6 @@ namespace {
         CHECK_EQUAL(0, result);
         result = wifu_listen(server, 5);
         CHECK_EQUAL(0, result);
-        cout << "Listening on: " << to_bind->to_s() << endl;
         sem->post();
 
 
@@ -171,7 +169,6 @@ namespace {
     }
 
     void connect_test() {
-        cout << "Connect Test" << endl;
         AddressPort to_connect("127.0.0.1", 5002);
 
         struct var v;
@@ -190,8 +187,6 @@ namespace {
 
         // Make sure that we are in the accept state
         usleep(50000);
-
-        cout << "Connecting to: " << to_connect.to_s() << endl;
 
         // Create client
         int client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
