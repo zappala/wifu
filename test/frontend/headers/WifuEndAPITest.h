@@ -160,6 +160,7 @@ namespace {
             CHECK_EQUAL(expected, result);
             AddressPort exp("127.0.0.1", 9000);
             AddressPort act(&s);
+            CHECK_EQUAL(exp.to_s(), act.to_s());
             
 
             // Do everything on new socket

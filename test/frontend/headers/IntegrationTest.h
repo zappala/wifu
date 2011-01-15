@@ -160,7 +160,7 @@ namespace {
             CHECK(false);
         }
 
-        // TODO: Check the socket
+        // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
         //            n = recv(sd2, buf, sizeof (buf), 0);
         //            while (n > 0) {
