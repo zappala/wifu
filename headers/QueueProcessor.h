@@ -100,7 +100,7 @@ public:
      * @param object The element to enqueue.
      * @param signal If true, raises a SIG_ENQUEUE_EVENT signal.
      */
-    virtual void enqueue(T object, bool signal = false) {
+    void enqueue(T object, bool signal = false) {
         queue_->enqueue(object, signal);
     }
 
