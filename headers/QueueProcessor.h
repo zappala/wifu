@@ -101,7 +101,21 @@ public:
      * @param signal If true, raises a SIG_ENQUEUE_EVENT signal.
      */
     void enqueue(T object, bool signal = false) {
+        if(!should_enqueue(object)) {
+            return;
+        }
         queue_->enqueue(object, signal);
+    }
+
+    /**
+     * Determine if object should be enqueued for processing
+     * This function returns true always, overriding classes could change this.
+     *
+     * @param object The object to test whether it should be enqueued or not.
+     * @return Whether this object should be enqueued for later processing.
+     */
+    virtual bool should_enqueue(T object) {
+        return true;
     }
 
     /**
