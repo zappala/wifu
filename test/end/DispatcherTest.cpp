@@ -8,7 +8,7 @@
 #ifndef DISPATCHERTEST_H_
 #define DISPATCHERTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/Dispatcher.h"
 
 using namespace std;

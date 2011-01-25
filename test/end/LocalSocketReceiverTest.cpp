@@ -8,7 +8,7 @@
 #ifndef LOCALSOCKETRECEIVERTEST_H_
 #define LOCALSOCKETRECEIVERTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/LocalSocketReceiver.h"
 
 using namespace std;

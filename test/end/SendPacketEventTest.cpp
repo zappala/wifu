@@ -8,7 +8,7 @@
 #ifndef SENDPACKETEVENTTEST_H_
 #define SENDPACKETEVENTTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/events/SendPacketEvent.h"
 #include "../headers/IModule.h"
 #include "../headers/Socket.h"

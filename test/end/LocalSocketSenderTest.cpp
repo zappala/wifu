@@ -8,7 +8,7 @@
 #ifndef LOCALSOCKETSENDERTEST_H_
 #define LOCALSOCKETSENDERTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/LocalSocketSender.h"
 
 using namespace std;

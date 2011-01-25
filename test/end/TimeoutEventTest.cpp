@@ -8,7 +8,7 @@
 #ifndef TIMEOUTEVENTTEST_H_
 #define TIMEOUTEVENTTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/events/TimeoutEvent.h"
 #include "../headers/IModule.h"
 #include "../headers/Socket.h"

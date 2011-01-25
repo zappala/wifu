@@ -8,7 +8,7 @@
 #ifndef OPTIONPARSERTEST_H_
 #define OPTIONPARSERTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/OptionParser.h"
 
 using namespace std;

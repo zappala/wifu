@@ -8,7 +8,7 @@
 #ifndef SOCKETDATATEST_H_
 #define SOCKETDATATEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../applib/SocketData.h"
 
 using namespace std;

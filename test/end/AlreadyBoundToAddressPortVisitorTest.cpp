@@ -13,7 +13,7 @@
 #include "../headers/SocketCollection.h"
 #include "../headers/Utils.h"
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 
 #define sc SocketCollection::instance()
 #define count 256

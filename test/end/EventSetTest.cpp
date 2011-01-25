@@ -8,7 +8,7 @@
 #ifndef EVENTSETTEST_H_
 #define EVENTSETTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/events/EventSet.h"
 
 using namespace std;

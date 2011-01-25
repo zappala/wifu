@@ -8,7 +8,7 @@
 #ifndef _TEMPTEST_H
 #define	_TEMPTEST_H
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 
 #include "Module.h"
 

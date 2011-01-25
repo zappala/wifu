@@ -8,7 +8,7 @@
 #ifndef QUEUEPROCESSORTEST_H_
 #define QUEUEPROCESSORTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/QueueProcessor.h"
 
 using namespace std;

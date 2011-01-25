@@ -8,7 +8,7 @@
 #ifndef NUMBERGENERATORTEST_H_
 #define NUMBERGENERATORTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "RandomNumberSet.h"
 
 using namespace std;

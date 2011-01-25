@@ -8,7 +8,7 @@
 #ifndef MAINSEMAPHORETEST_H_
 #define MAINSEMAPHORETEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/MainSemaphore.h"
 
 using namespace std;

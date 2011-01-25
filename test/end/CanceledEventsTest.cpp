@@ -8,7 +8,7 @@
 #ifndef CANCELEDEVENTSTEST_H_
 #define CANCELEDEVENTSTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/events/CanceledEvents.h"
 
 using namespace std;

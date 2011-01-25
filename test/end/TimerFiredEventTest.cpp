@@ -8,7 +8,7 @@
 #ifndef TIMERFIREDEVENTTEST_H_
 #define TIMERFIREDEVENTTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/events/TimerFiredEvent.h"
 #include "../headers/IModule.h"
 #include "../headers/Socket.h"

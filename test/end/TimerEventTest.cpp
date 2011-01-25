@@ -8,7 +8,7 @@
 #ifndef TIMEREVENTTEST_H_
 #define TIMEREVENTTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/TimerEvent.h"
 
 using namespace std;

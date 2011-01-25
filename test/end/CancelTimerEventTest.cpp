@@ -8,7 +8,7 @@
 #ifndef CANCELTIMEREVENTTEST_H_
 #define CANCELTIMEREVENTTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/events/CancelTimerEvent.h"
 #include "../headers/IModule.h"
 #include "../headers/Socket.h"

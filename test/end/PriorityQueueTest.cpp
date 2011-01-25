@@ -8,7 +8,7 @@
 #ifndef PRIORITYQUEUETEST_H_
 #define PRIORITYQUEUETEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "PriorityQueue.h"
 #include "../headers/Socket.h"
 #include "events/TimeoutEvent.h"

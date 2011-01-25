@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/AddressPort.h"
 #include "../headers/UDPSocket.h"
 

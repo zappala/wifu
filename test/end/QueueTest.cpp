@@ -13,7 +13,7 @@
 #include <vector>
 #include <signal.h>
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/Queue.h"
 #include "../headers/IQueue.h"
 

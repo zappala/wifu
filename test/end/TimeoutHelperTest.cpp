@@ -8,7 +8,7 @@
 #ifndef TIMEOUTHELPERTEST_H_
 #define TIMEOUTHELPERTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/TimeoutHelper.h"
 
 using namespace std;

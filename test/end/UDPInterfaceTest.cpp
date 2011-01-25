@@ -15,7 +15,7 @@
 #include <time.h>
 #include <cstdlib>
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/UDPInterface.h"
 #include "../headers/Module.h"
 #include "../headers/AddressPort.h"

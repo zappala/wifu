@@ -8,7 +8,7 @@
 #ifndef WIFUBACKENDLIBRARYTEST_H_
 #define WIFUBACKENDLIBRARYTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/WifuEndBackEndLibrary.h"
 
 using namespace std;

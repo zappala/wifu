@@ -8,7 +8,7 @@
 #ifndef SOCKETMANAGERTEST_H_
 #define SOCKETMANAGERTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/SocketManager.h"
 
 using namespace std;

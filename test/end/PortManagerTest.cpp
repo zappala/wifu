@@ -8,7 +8,7 @@
 #ifndef PORTMANAGERTEST_H_
 #define PORTMANAGERTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/PortManager.h"
 
 using namespace std;

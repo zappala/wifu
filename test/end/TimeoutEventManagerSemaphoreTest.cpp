@@ -8,7 +8,7 @@
 #ifndef TIMEOUTEVENTMANAGERSEMAPHORETEST_H_
 #define TIMEOUTEVENTMANAGERSEMAPHORETEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/TimeoutEventManagerSemaphore.h"
 
 using namespace std;

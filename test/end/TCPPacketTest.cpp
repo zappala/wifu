@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/TCPPacket.h"
 #include "../headers/RandomNumberSet.h"
 

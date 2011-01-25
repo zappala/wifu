@@ -8,7 +8,7 @@
 #ifndef PACKETRECEIVEDEVENTTEST_H_
 #define PACKETRECEIVEDEVENTTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/events/PacketReceivedEvent.h"
 #include "../headers/Socket.h"
 #include "../headers/IModule.h"

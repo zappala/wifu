@@ -8,7 +8,7 @@
 #ifndef UTILSTEST_H_
 #define UTILSTEST_H_
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/Utils.h"
 
 using namespace std;

@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 
 #define DATA_LENGTH 16
 

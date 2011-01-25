@@ -8,7 +8,7 @@
 #ifndef _SOCKETCOLLECTIONTEST_H
 #define	_SOCKETCOLLECTIONTEST_H
 
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 
 #include "../headers/SocketCollection.h"
 #include "../headers/AddressPort.h"
