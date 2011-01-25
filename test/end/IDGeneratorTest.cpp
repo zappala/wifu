@@ -21,7 +21,6 @@ using namespace std;
 
 namespace {
 	TEST(IDGeneratorTest, all) {
-		UNITTEST_TIME_CONSTRAINT(1);
 		int id0 = IDGenerator::instance().get();
 		int id1 = IDGenerator::instance().get();
 

@@ -9,7 +9,7 @@
 #define TIMEREVENTTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/TimerEvent.h"
+#include "../headers/events/TimerEvent.h"
 
 using namespace std;
 

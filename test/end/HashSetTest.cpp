@@ -15,6 +15,8 @@
 #include <vector>
 
 #include "gtest/gtest.h"
+#include "../headers/events/Event.h"
+#include "../headers/events/TimeoutEvent.h"
 
 using namespace std;
 
@@ -82,12 +84,12 @@ namespace {
 		}
 	}
 
-	TEST(Event*HashSetTest, Empty) {
+	TEST(EventPointerHashSetTest, Empty) {
 		HashSet<Event*> set;
 		ASSERT_EQ(0, set.size());
 	}
 
-	TEST(Event*HashSetTest, InsertContains) {
+	TEST(EventPointerHashSetTest, InsertContains) {
 		HashSet<Event*> set;
 		Event* e = new TimeoutEvent(0,1,0);
 
@@ -97,7 +99,7 @@ namespace {
 		delete e;
 	}
 
-	TEST(Event*HashSetTest, InsertContainsMany) {
+	TEST(EventPointerHashSetTest, InsertContainsMany) {
 		HashSet<Event*> set;
 
 		int count = 1000;
@@ -117,7 +119,7 @@ namespace {
 		}
 	}
 
-	TEST(Event*HashSetTest, Remove) {
+	TEST(EventPointerHashSetTest, Remove) {
 		HashSet<Event*> set;
 		Event* e = new TimeoutEvent(0,0,1);
 
@@ -129,7 +131,7 @@ namespace {
 		ASSERT_EQ(0, set.size());
 	}
 
-	TEST(Event*HashSetTest, RemoveMany) {
+	TEST(EventPointerHashSetTest, RemoveMany) {
 		HashSet<Event*> set;
 
 		int count = 1000;
