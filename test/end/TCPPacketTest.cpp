@@ -59,60 +59,60 @@ namespace {
             TCPPacket* p = get_packet();
 
             p->set_tcp_urg(true);
-            CHECK(p->is_tcp_urg());
+            ASSERT_TRUE(p->is_tcp_urg());
 
             p->set_tcp_urg(false);
-            CHECK(!p->is_tcp_urg());
+            ASSERT_TRUE(!p->is_tcp_urg());
         }
 
         TEST(ACK) {
             TCPPacket* p = get_packet();
 
             p->set_tcp_ack(true);
-            CHECK(p->is_tcp_ack());
+            ASSERT_TRUE(p->is_tcp_ack());
 
             p->set_tcp_ack(false);
-            CHECK(!p->is_tcp_ack());
+            ASSERT_TRUE(!p->is_tcp_ack());
         }
 
         TEST(PSH) {
             TCPPacket* p = get_packet();
 
             p->set_tcp_psh(true);
-            CHECK(p->is_tcp_psh());
+            ASSERT_TRUE(p->is_tcp_psh());
 
             p->set_tcp_psh(false);
-            CHECK(!p->is_tcp_psh());
+            ASSERT_TRUE(!p->is_tcp_psh());
         }
 
         TEST(RST) {
             TCPPacket* p = get_packet();
 
             p->set_tcp_rst(true);
-            CHECK(p->is_tcp_rst());
+            ASSERT_TRUE(p->is_tcp_rst());
 
             p->set_tcp_rst(false);
-            CHECK(!p->is_tcp_rst());
+            ASSERT_TRUE(!p->is_tcp_rst());
         }
 
         TEST(SYN) {
             TCPPacket* p = get_packet();
 
             p->set_tcp_syn(true);
-            CHECK(p->is_tcp_syn());
+            ASSERT_TRUE(p->is_tcp_syn());
 
             p->set_tcp_syn(false);
-            CHECK(!p->is_tcp_syn());
+            ASSERT_TRUE(!p->is_tcp_syn());
         }
 
         TEST(FIN) {
             TCPPacket* p = get_packet();
 
             p->set_tcp_fin(true);
-            CHECK(p->is_tcp_fin());
+            ASSERT_TRUE(p->is_tcp_fin());
 
             p->set_tcp_fin(false);
-            CHECK(!p->is_tcp_fin());
+            ASSERT_TRUE(!p->is_tcp_fin());
         }
 
         TEST(ReceiveWindowTest) {

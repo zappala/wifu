@@ -31,7 +31,7 @@ namespace {
             HashSet<int> set;
             int zero = 0;
             set.insert(zero);
-            CHECK(set.contains(zero));
+            ASSERT_TRUE(set.contains(zero));
         }
 
         TEST(InsertContainsMany) {
@@ -42,7 +42,7 @@ namespace {
             }
             
             for(int i = 0; i < 1000; i++) {
-                CHECK(set.contains(i));
+                ASSERT_TRUE(set.contains(i));
             }
         }
 
@@ -50,10 +50,10 @@ namespace {
             HashSet<int> set;
             int zero = 0;
             set.insert(zero);
-            CHECK(set.contains(zero));
+            ASSERT_TRUE(set.contains(zero));
 
             set.remove(zero);
-            CHECK(!set.contains(zero));
+            ASSERT_TRUE(!set.contains(zero));
             ASSERT_EQ(0, set.size());
         }
 
@@ -65,7 +65,7 @@ namespace {
             }
 
             for(int i = 0; i < 1000; i++) {
-                CHECK(set.contains(i));
+                ASSERT_TRUE(set.contains(i));
             }
 
             for(int i = 0; i < 1000; i++) {
@@ -77,10 +77,10 @@ namespace {
             ASSERT_EQ(500, set.size());
             for(int i = 0; i < 1000; i++) {
                 if(i % 2 == 0) {
-                    CHECK(!set.contains(i));
+                    ASSERT_TRUE(!set.contains(i));
                 }
                 else {
-                    CHECK(set.contains(i));
+                    ASSERT_TRUE(set.contains(i));
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace {
             Event* e = new TimeoutEvent(0,1,0);
 
             set.insert(e);
-            CHECK(set.contains(e));
+            ASSERT_TRUE(set.contains(e));
 
             delete e;
         }
@@ -114,7 +114,7 @@ namespace {
             }
 
             for(int i = 0; i < count; i++) {
-                CHECK(set.contains(events[i]));
+                ASSERT_TRUE(set.contains(events[i]));
             }
 
             for(int i = 0; i < count; i++) {
@@ -127,10 +127,10 @@ namespace {
             Event* e = new TimeoutEvent(0,0,1);
             
             set.insert(e);
-            CHECK(set.contains(e));
+            ASSERT_TRUE(set.contains(e));
 
             set.remove(e);
-            CHECK(!set.contains(e));
+            ASSERT_TRUE(!set.contains(e));
             ASSERT_EQ(0, set.size());
         }
 
@@ -147,7 +147,7 @@ namespace {
             }
 
             for(int i = 0; i < count; i++) {
-                CHECK(set.contains(events[i]));
+                ASSERT_TRUE(set.contains(events[i]));
             }
 
             for(int i = 0; i < count; i++) {
@@ -159,10 +159,10 @@ namespace {
             ASSERT_EQ(count / 2, set.size());
             for(int i = 0; i < count; i++) {
                 if(i % 2 == 0) {
-                    CHECK(!set.contains(events[i]));
+                    ASSERT_TRUE(!set.contains(events[i]));
                 }
                 else {
-                    CHECK(set.contains(events[i]));
+                    ASSERT_TRUE(set.contains(events[i]));
                 }
             }
 

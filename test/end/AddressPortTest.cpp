@@ -70,7 +70,7 @@ namespace {
 
             ASSERT_EQ(ap.get_address(), copy.get_address());
             ASSERT_EQ(ap.get_port(), copy.get_port());
-            CHECK(ap.get_network_struct_ptr() != copy.get_network_struct_ptr());
+            ASSERT_TRUE(ap.get_network_struct_ptr() != copy.get_network_struct_ptr());
         }
 
         TEST(AddressOperatorEqualsConstructor) {
@@ -80,14 +80,14 @@ namespace {
             AddressPort ap(address, port);
             AddressPort copy(ap);
 
-            CHECK(ap == copy);
+            ASSERT_TRUE(ap == copy);
 
             copy = AddressPort(address.c_str(), 5001);
-            CHECK(!(ap == copy));
+            ASSERT_TRUE(!(ap == copy));
 
             address = "127.0.0.2";
             copy = AddressPort(address, 5000);
-            CHECK(!(ap == copy));
+            ASSERT_TRUE(!(ap == copy));
         }
 
         TEST(AddressOperatorNotEqualsConstructor) {
@@ -97,14 +97,14 @@ namespace {
             AddressPort ap(address, port);
             AddressPort copy(ap);
 
-            CHECK(!(ap != copy));
+            ASSERT_TRUE(!(ap != copy));
 
             copy = AddressPort(address.c_str(), 5001);
-            CHECK(ap != copy);
+            ASSERT_TRUE(ap != copy);
 
             address = "127.0.0.2";
             copy = AddressPort(address, 5000);
-            CHECK(ap != copy);
+            ASSERT_TRUE(ap != copy);
         }
 
         TEST(AddressToString) {

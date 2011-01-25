@@ -34,13 +34,13 @@ namespace {
 
 		TEST(timeout) {
 			IModuleDummyImplementation dummyImodule;
-			CHECK(dummyImodule.timedout == false);
+			ASSERT_TRUE(dummyImodule.timedout == false);
 
                         Socket* s = new Socket(0,1,2);
 			TimeoutEvent timeoutEvent(s, 1, 0);
 			timeoutEvent.execute(&dummyImodule);
 
-			CHECK(dummyImodule.timedout == true);
+			ASSERT_TRUE(dummyImodule.timedout == true);
 		}
 
 		TEST(get_timeout_time) {
@@ -50,7 +50,7 @@ namespace {
                         Socket* s = new Socket(0,1,2);
 			TimeoutEvent timeoutEvent(s, 2, 0);
 
-			CHECK(timeoutEvent.get_timeout_time().tv_sec > ts.tv_sec);
+			ASSERT_TRUE(timeoutEvent.get_timeout_time().tv_sec > ts.tv_sec);
 		}
 	}
 }

@@ -37,7 +37,7 @@ namespace {
             // I have not tested what happens when we call new.
             //cout << "Starting processing." << endl;
             usleep(5000);
-            CHECK(true);
+            ASSERT_TRUE(true);
 
         }
 

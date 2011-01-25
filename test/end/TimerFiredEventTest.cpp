@@ -35,14 +35,14 @@ namespace {
 
         TEST(timer_fired) {
             IModuleDummyImplementation dummyImodule;
-            CHECK(dummyImodule.timerFired == false);
+            ASSERT_TRUE(dummyImodule.timerFired == false);
 
             Socket* s = new Socket(1, 2, 3);
             TimeoutEvent timeoutEvent(s, 1, 0);
             TimerFiredEvent timerFiredEvent(&timeoutEvent);
             timerFiredEvent.execute(&dummyImodule);
 
-            CHECK(dummyImodule.timerFired == true);
+            ASSERT_TRUE(dummyImodule.timerFired == true);
         }
     }
 }

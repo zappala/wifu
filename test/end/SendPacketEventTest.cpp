@@ -35,7 +35,7 @@ namespace {
 
         TEST(send) {
             IModuleDummyImplementation dummyImodule;
-            CHECK(dummyImodule.sent == false);
+            ASSERT_TRUE(dummyImodule.sent == false);
             Packet* p;
             Socket* s = new Socket(1, 2, 3);
             SendPacketEvent sendPacketEvent(s, p);

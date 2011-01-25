@@ -22,7 +22,7 @@ namespace {
             set.add(e);
 
             ASSERT_EQ(1, set.size());
-            CHECK(set.contains(e));
+            ASSERT_TRUE(set.contains(e));
 
             delete e;
         }
@@ -33,10 +33,10 @@ namespace {
             set.add(e);
 
             ASSERT_EQ(1, set.size());
-            CHECK(set.contains(e));
+            ASSERT_TRUE(set.contains(e));
 
             Event* e2 = new TimeoutEvent(0,2,0);
-            CHECK(!set.contains(e2));
+            ASSERT_TRUE(!set.contains(e2));
 
             delete e;
             delete e2;
@@ -48,15 +48,15 @@ namespace {
             set.add(e);
 
             ASSERT_EQ(1, set.size());
-            CHECK(set.contains(e));
+            ASSERT_TRUE(set.contains(e));
 
             Event* e2 = new TimeoutEvent(0,2,0);
-            CHECK(!set.contains(e2));
+            ASSERT_TRUE(!set.contains(e2));
 
 
             set.remove(e);
             ASSERT_EQ(0, set.size());
-            CHECK(!set.contains(e));
+            ASSERT_TRUE(!set.contains(e));
 
             delete e;
             delete e2;
@@ -75,18 +75,18 @@ namespace {
             set.add(e3);
 
             ASSERT_EQ(4, set.size());
-            CHECK(set.contains(e));
-            CHECK(set.contains(e1));
-            CHECK(set.contains(e2));
-            CHECK(set.contains(e3));
+            ASSERT_TRUE(set.contains(e));
+            ASSERT_TRUE(set.contains(e1));
+            ASSERT_TRUE(set.contains(e2));
+            ASSERT_TRUE(set.contains(e3));
 
             set.remove(e2);
             ASSERT_EQ(3, set.size());
-            CHECK(!set.contains(e2));
+            ASSERT_TRUE(!set.contains(e2));
 
-            CHECK(set.contains(e));
-            CHECK(set.contains(e1));
-            CHECK(set.contains(e3));
+            ASSERT_TRUE(set.contains(e));
+            ASSERT_TRUE(set.contains(e1));
+            ASSERT_TRUE(set.contains(e3));
 
             delete e;
             delete e1;

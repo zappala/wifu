@@ -81,13 +81,13 @@ namespace {
         TEST(PacketGetSourceTest) {
             PacketFixture f;
 
-            CHECK(*(f.source_) == *(f.packet->get_source()));
+            ASSERT_TRUE(*(f.source_) == *(f.packet->get_source()));
         }
 
         TEST(PacketGetDestTest) {
             PacketFixture f;
 
-            CHECK(*(f.dest_) == *(f.packet->get_destination()));
+            ASSERT_TRUE(*(f.dest_) == *(f.packet->get_destination()));
         }
 
         TEST(PacketGetDataTest) {

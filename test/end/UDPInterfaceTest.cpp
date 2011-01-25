@@ -107,8 +107,8 @@ namespace {
 
                 ASSERT_EQ(data.c_str(), (const char*) temp.p->get_data());
                 ASSERT_EQ(packet_size, temp.p->data_length());
-                CHECK(*dest == *(temp.p->get_destination()));
-                CHECK(*source == *(temp.p->get_source()));
+                ASSERT_TRUE(*dest == *(temp.p->get_destination()));
+                ASSERT_TRUE(*source == *(temp.p->get_source()));
             }
             cout << "Local AddressPort only, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
 
@@ -131,8 +131,8 @@ namespace {
 
                 ASSERT_EQ(data.c_str(), (const char*) temp.p->get_data());
                 ASSERT_EQ(packet_size, temp.p->data_length());
-                CHECK(*dest == *(temp.p->get_destination()));
-                CHECK(*source == *(temp.p->get_source()));
+                ASSERT_TRUE(*dest == *(temp.p->get_destination()));
+                ASSERT_TRUE(*source == *(temp.p->get_source()));
             }
             cout << "Local and Remote AddressPort, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
         }

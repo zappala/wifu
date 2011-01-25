@@ -23,7 +23,7 @@ namespace {
 
         TEST(DNE) {
             collection.clear();
-            CHECK(NULL == collection.get_by_id(9));
+            ASSERT_TRUE(NULL == collection.get_by_id(9));
         }
 
         TEST(Integer) {
@@ -53,7 +53,7 @@ namespace {
 
                 // try a few unused ones
                 u_int16_t unused = SocketManager::instance().get();
-                CHECK(NULL == collection.get_by_id(unused));
+                ASSERT_TRUE(NULL == collection.get_by_id(unused));
                 SocketManager::instance().remove(unused);
             }
 
@@ -94,7 +94,7 @@ namespace {
                 ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
                 temp = new AddressPort("192.1.0.1", i);
-                CHECK(NULL == collection.get_by_local_ap(temp));
+                ASSERT_TRUE(NULL == collection.get_by_local_ap(temp));
                 delete temp;
             }
 
@@ -139,7 +139,7 @@ namespace {
                 ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
                 remote = new AddressPort("0.0.0.0", i + 6);
-                CHECK(NULL == collection.get_by_local_and_remote_ap(local, remote));
+                ASSERT_TRUE(NULL == collection.get_by_local_and_remote_ap(local, remote));
                 delete remote;
             }
 
@@ -184,7 +184,7 @@ namespace {
 
                 // try a few unused ones
                 u_int16_t unused = SocketManager::instance().get();
-                CHECK(NULL == collection.get_by_id(unused));
+                ASSERT_TRUE(NULL == collection.get_by_id(unused));
                 SocketManager::instance().remove(unused);
 
                 // get by local
@@ -200,7 +200,7 @@ namespace {
                 ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
                 temp = new AddressPort("192.1.0.1", i);
-                CHECK(NULL == collection.get_by_local_ap(temp));
+                ASSERT_TRUE(NULL == collection.get_by_local_ap(temp));
                 delete temp;
                 
                 // get by local & remote
@@ -218,7 +218,7 @@ namespace {
                 ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
                 remote = new AddressPort("0.0.0.0", i + 6);
-                CHECK(NULL == collection.get_by_local_and_remote_ap(local, remote));
+                ASSERT_TRUE(NULL == collection.get_by_local_and_remote_ap(local, remote));
                 delete remote;
             }
 

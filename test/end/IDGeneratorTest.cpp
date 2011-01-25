@@ -27,7 +27,7 @@ namespace {
             int id0 = IDGenerator::instance().get();
             int id1 = IDGenerator::instance().get();
 
-            CHECK(id0 != id1);
+            ASSERT_TRUE(id0 != id1);
 
             IDGenerator::instance().remove(id0);
 

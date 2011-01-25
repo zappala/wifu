@@ -33,13 +33,13 @@ namespace {
 
 		TEST(receive) {
 			IModuleDummyImplementation dummyImodule;
-			CHECK(dummyImodule.received == false);
+			ASSERT_TRUE(dummyImodule.received == false);
 
                         Socket* s = new Socket(1, 2, 3);
 			PacketReceivedEvent packetReceivedEvent(s);
 			packetReceivedEvent.execute(&dummyImodule);
 
-			CHECK(dummyImodule.received == true);
+			ASSERT_TRUE(dummyImodule.received == true);
 		}
 	}
 }

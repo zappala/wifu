@@ -42,7 +42,7 @@ namespace {
                 AlreadyBoundToAddressPortVisitor v(&to_check);
 
                 sc.accept(&v);
-                CHECK(!v.is_bound());
+                ASSERT_TRUE(!v.is_bound());
             }
 
 
@@ -69,7 +69,7 @@ namespace {
                 AlreadyBoundToAddressPortVisitor v(&to_check);
 
                 sc.accept(&v);
-                CHECK(v.is_bound());
+                ASSERT_TRUE(v.is_bound());
             }
 
 
@@ -104,7 +104,7 @@ namespace {
                 AlreadyBoundToAddressPortVisitor v(&to_check);
 
                 sc.accept(&v);
-                CHECK(!v.is_bound());
+                ASSERT_TRUE(!v.is_bound());
             }
 
 
@@ -138,7 +138,7 @@ namespace {
                 AlreadyBoundToAddressPortVisitor v(&to_check);
 
                 sc.accept(&v);
-                CHECK(v.is_bound());
+                ASSERT_TRUE(v.is_bound());
             }
 
 

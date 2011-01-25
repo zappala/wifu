@@ -40,22 +40,22 @@ namespace {
             signaled = false;
             q->enqueue(value);
 
-            CHECK(!signaled);
+            ASSERT_TRUE(!signaled);
             ASSERT_EQ(1, q->size());
-            CHECK(!q->isEmpty());
+            ASSERT_TRUE(!q->isEmpty());
             ASSERT_EQ(value, q->dequeue());
             ASSERT_EQ(0, q->size());
-            CHECK(q->isEmpty());
+            ASSERT_TRUE(q->isEmpty());
 
             signaled = false;
             q->enqueue(value, true);
 
-            CHECK(signaled);
+            ASSERT_TRUE(signaled);
             ASSERT_EQ(1, q->size());
-            CHECK(!q->isEmpty());
+            ASSERT_TRUE(!q->isEmpty());
             ASSERT_EQ(value, q->dequeue());
             ASSERT_EQ(0, q->size());
-            CHECK(q->isEmpty());
+            ASSERT_TRUE(q->isEmpty());
 
             delete q;
         }
