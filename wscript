@@ -25,9 +25,9 @@ def configure(conf):
 	print('→ configuring the project')
 	# conf.check_tool('compiler_cxx')
 	conf.check_tool('gcc g++')
-	conf.env['LIBPATH'] += ['../lib/unittest++']
+	conf.env['LIBPATH'] += ['../lib/gtest']
 	conf.env['LIB_PTHREAD'] = ['pthread']
-	conf.env['STATICLIB'] += ['UnitTest++']
+	conf.env['STATICLIB'] += ['gtest']
 	conf.env['LIB_RT'] = ['rt']
 	conf.env.PREFIX = ".."
 
@@ -125,32 +125,22 @@ def build_wifu(bld):
         target='wifu-end')
 
 def build_wifu_end_test(bld):
-	test_end_files = bld.glob('test/end/*.cc')
-	src_files = bld.glob('src/*.cc')
-        src_files += bld.glob('src/contexts/*.cc')
-        src_files += bld.glob('src/states/*.cc')
-	src_files += bld.glob('src/observer/*.cc')
-	src_files += bld.glob('preliminary/Timer.cc')
-
-	all_files = src_files
-	all_files += test_end_files
-	all_files.remove("src/main.cc")
+	test_end_files = bld.glob('test/end/*.cpp')
 
 	test_end = bld(features='cxx cprogram',
-        source=all_files,
-        includes='preliminary headers test/end/headers lib/gc/include lib/unittest++/include headers/contexts headers/states headers/observer',
+        source=test_end_files,
+        includes='preliminary headers lib/gc/include lib/gtest/include headers/contexts headers/states headers/observer',
         uselib='PTHREAD RT',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp','gc','cord'],
 		target='wifu-end-test')
 		
 def build_wifu_frontend_test(bld):
-	test_frontend_files = bld.glob('test/frontend/*.cc')
-	test_frontend_files += bld.glob('preliminary/Timer.cc')
+	test_frontend_files = bld.glob('test/frontend/*.cpp')
 
 	test_frontend = bld(features='cxx cprogram',
 		source=test_frontend_files,
-		includes='preliminary test/frontend/headers lib/unittest++/include',
+		includes='preliminary lib/gc/include lib/gtest/include',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp', 'gc', 'cord'],
 		uselib_local='wifu-end-api',
