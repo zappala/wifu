@@ -24,35 +24,35 @@ namespace {
 
         TEST(BinarySemaphoreConstructorTest) {
             BinarySemaphore bs;
-            CHECK_EQUAL(0, bs.get_value());
+            ASSERT_EQ(0, bs.get_value());
         }
 
         TEST(BinarySemaphoreInitTest) {
             BinarySemaphore bs;
 
             bs.init(0);
-            CHECK_EQUAL(0, bs.get_value());
+            ASSERT_EQ(0, bs.get_value());
 
             BinarySemaphore bs1;
             bs1.init(1);
-            CHECK_EQUAL(1, bs1.get_value());
+            ASSERT_EQ(1, bs1.get_value());
 
             BinarySemaphore bs2;
             bs2.init(2);
-            CHECK_EQUAL(1, bs2.get_value());
+            ASSERT_EQ(1, bs2.get_value());
         }
 
         TEST(BinarySemaphorePostTest) {
             BinarySemaphore bs;
 
             bs.init(0);
-            CHECK_EQUAL(0, bs.get_value());
+            ASSERT_EQ(0, bs.get_value());
 
             bs.post();
-            CHECK_EQUAL(1, bs.get_value());
+            ASSERT_EQ(1, bs.get_value());
 
             bs.post();
-            CHECK_EQUAL(1, bs.get_value());
+            ASSERT_EQ(1, bs.get_value());
         }
     }
 }

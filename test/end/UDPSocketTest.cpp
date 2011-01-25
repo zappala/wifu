@@ -86,9 +86,9 @@ namespace {
 //                cout << "Error closing receiver (errno): " << errno << endl;
 //            }
 
-            CHECK_EQUAL(message.length(), count);
-            CHECK_EQUAL(message, callback.get_message());
-            CHECK_EQUAL(ap.get_address(), callback.get_ap()->get_address());
+            ASSERT_EQ(message.length(), count);
+            ASSERT_EQ(message, callback.get_message());
+            ASSERT_EQ(ap.get_address(), callback.get_ap()->get_address());
 
         }
     }

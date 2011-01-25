@@ -41,7 +41,7 @@ namespace {
             SendPacketEvent sendPacketEvent(s, p);
             sendPacketEvent.execute(&dummyImodule);
 
-            CHECK_EQUAL(true, dummyImodule.sent);
+            ASSERT_EQ(true, dummyImodule.sent);
         }
     }
 }

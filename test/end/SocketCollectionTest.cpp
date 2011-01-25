@@ -37,19 +37,19 @@ namespace {
                 collection.push(sockets[i]);
             }
 
-            CHECK_EQUAL(number, collection.size());
+            ASSERT_EQ(number, collection.size());
 
             collection.shuffle();
 
             for (int i = 0; i < number; i++) {
                 Socket* expected = sockets[i];
                 Socket* result = collection.get_by_id(expected->get_socket_id());
-                CHECK_EQUAL(expected->get_socket_id(), result->get_socket_id());
-                CHECK_EQUAL(expected->get_domain(), result->get_domain());
-                CHECK_EQUAL(expected->get_type(), result->get_type());
-                CHECK_EQUAL(expected->get_protocol(), result->get_protocol());
-                CHECK_EQUAL(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
-                CHECK_EQUAL(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
+                ASSERT_EQ(expected->get_socket_id(), result->get_socket_id());
+                ASSERT_EQ(expected->get_domain(), result->get_domain());
+                ASSERT_EQ(expected->get_type(), result->get_type());
+                ASSERT_EQ(expected->get_protocol(), result->get_protocol());
+                ASSERT_EQ(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
+                ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
                 // try a few unused ones
                 u_int16_t unused = SocketManager::instance().get();
@@ -77,7 +77,7 @@ namespace {
                 collection.push(sockets[i]);
             }
 
-            CHECK_EQUAL(number, collection.size());
+            ASSERT_EQ(number, collection.size());
 
             collection.shuffle();
 
@@ -86,12 +86,12 @@ namespace {
                 AddressPort* temp = sockets[i]->get_local_address_port();
                 Socket* result = collection.get_by_local_ap(temp);
 
-                CHECK_EQUAL(expected->get_socket_id(), result->get_socket_id());
-                CHECK_EQUAL(expected->get_domain(), result->get_domain());
-                CHECK_EQUAL(expected->get_type(), result->get_type());
-                CHECK_EQUAL(expected->get_protocol(), result->get_protocol());
-                CHECK_EQUAL(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
-                CHECK_EQUAL(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
+                ASSERT_EQ(expected->get_socket_id(), result->get_socket_id());
+                ASSERT_EQ(expected->get_domain(), result->get_domain());
+                ASSERT_EQ(expected->get_type(), result->get_type());
+                ASSERT_EQ(expected->get_protocol(), result->get_protocol());
+                ASSERT_EQ(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
+                ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
                 temp = new AddressPort("192.1.0.1", i);
                 CHECK(NULL == collection.get_by_local_ap(temp));
@@ -120,7 +120,7 @@ namespace {
                 collection.push(sockets[i]);
             }
 
-            CHECK_EQUAL(number, collection.size());
+            ASSERT_EQ(number, collection.size());
 
             collection.shuffle();
 
@@ -131,12 +131,12 @@ namespace {
 
                 Socket* result = collection.get_by_local_and_remote_ap(local, remote);
 
-                CHECK_EQUAL(expected->get_socket_id(), result->get_socket_id());
-                CHECK_EQUAL(expected->get_domain(), result->get_domain());
-                CHECK_EQUAL(expected->get_type(), result->get_type());
-                CHECK_EQUAL(expected->get_protocol(), result->get_protocol());
-                CHECK_EQUAL(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
-                CHECK_EQUAL(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
+                ASSERT_EQ(expected->get_socket_id(), result->get_socket_id());
+                ASSERT_EQ(expected->get_domain(), result->get_domain());
+                ASSERT_EQ(expected->get_type(), result->get_type());
+                ASSERT_EQ(expected->get_protocol(), result->get_protocol());
+                ASSERT_EQ(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
+                ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
                 remote = new AddressPort("0.0.0.0", i + 6);
                 CHECK(NULL == collection.get_by_local_and_remote_ap(local, remote));
@@ -166,7 +166,7 @@ namespace {
                 collection.push(sockets[i]);
             }
 
-            CHECK_EQUAL(number, collection.size());
+            ASSERT_EQ(number, collection.size());
 
             collection.shuffle();
 
@@ -175,12 +175,12 @@ namespace {
                 // get by int
                 Socket* expected = sockets[i];
                 Socket* result = collection.get_by_id(expected->get_socket_id());
-                CHECK_EQUAL(expected->get_socket_id(), result->get_socket_id());
-                CHECK_EQUAL(expected->get_domain(), result->get_domain());
-                CHECK_EQUAL(expected->get_type(), result->get_type());
-                CHECK_EQUAL(expected->get_protocol(), result->get_protocol());
-                CHECK_EQUAL(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
-                CHECK_EQUAL(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
+                ASSERT_EQ(expected->get_socket_id(), result->get_socket_id());
+                ASSERT_EQ(expected->get_domain(), result->get_domain());
+                ASSERT_EQ(expected->get_type(), result->get_type());
+                ASSERT_EQ(expected->get_protocol(), result->get_protocol());
+                ASSERT_EQ(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
+                ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
                 // try a few unused ones
                 u_int16_t unused = SocketManager::instance().get();
@@ -192,12 +192,12 @@ namespace {
                 AddressPort* temp = sockets[i]->get_local_address_port();
                 result = collection.get_by_local_ap(temp);
 
-                CHECK_EQUAL(expected->get_socket_id(), result->get_socket_id());
-                CHECK_EQUAL(expected->get_domain(), result->get_domain());
-                CHECK_EQUAL(expected->get_type(), result->get_type());
-                CHECK_EQUAL(expected->get_protocol(), result->get_protocol());
-                CHECK_EQUAL(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
-                CHECK_EQUAL(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
+                ASSERT_EQ(expected->get_socket_id(), result->get_socket_id());
+                ASSERT_EQ(expected->get_domain(), result->get_domain());
+                ASSERT_EQ(expected->get_type(), result->get_type());
+                ASSERT_EQ(expected->get_protocol(), result->get_protocol());
+                ASSERT_EQ(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
+                ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
                 temp = new AddressPort("192.1.0.1", i);
                 CHECK(NULL == collection.get_by_local_ap(temp));
@@ -210,12 +210,12 @@ namespace {
 
                 result = collection.get_by_local_and_remote_ap(local, remote);
 
-                CHECK_EQUAL(expected->get_socket_id(), result->get_socket_id());
-                CHECK_EQUAL(expected->get_domain(), result->get_domain());
-                CHECK_EQUAL(expected->get_type(), result->get_type());
-                CHECK_EQUAL(expected->get_protocol(), result->get_protocol());
-                CHECK_EQUAL(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
-                CHECK_EQUAL(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
+                ASSERT_EQ(expected->get_socket_id(), result->get_socket_id());
+                ASSERT_EQ(expected->get_domain(), result->get_domain());
+                ASSERT_EQ(expected->get_type(), result->get_type());
+                ASSERT_EQ(expected->get_protocol(), result->get_protocol());
+                ASSERT_EQ(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
+                ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
                 remote = new AddressPort("0.0.0.0", i + 6);
                 CHECK(NULL == collection.get_by_local_and_remote_ap(local, remote));

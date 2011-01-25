@@ -26,7 +26,7 @@ namespace {
     SUITE(QueueTest) {
 
         void signal_handler(int signal) {
-            CHECK_EQUAL(SIG_ENQUEUE_EVENT, signal);
+            ASSERT_EQ(SIG_ENQUEUE_EVENT, signal);
             signaled = true;
         }
 
@@ -41,20 +41,20 @@ namespace {
             q->enqueue(value);
 
             CHECK(!signaled);
-            CHECK_EQUAL(1, q->size());
+            ASSERT_EQ(1, q->size());
             CHECK(!q->isEmpty());
-            CHECK_EQUAL(value, q->dequeue());
-            CHECK_EQUAL(0, q->size());
+            ASSERT_EQ(value, q->dequeue());
+            ASSERT_EQ(0, q->size());
             CHECK(q->isEmpty());
 
             signaled = false;
             q->enqueue(value, true);
 
             CHECK(signaled);
-            CHECK_EQUAL(1, q->size());
+            ASSERT_EQ(1, q->size());
             CHECK(!q->isEmpty());
-            CHECK_EQUAL(value, q->dequeue());
-            CHECK_EQUAL(0, q->size());
+            ASSERT_EQ(value, q->dequeue());
+            ASSERT_EQ(0, q->size());
             CHECK(q->isEmpty());
 
             delete q;

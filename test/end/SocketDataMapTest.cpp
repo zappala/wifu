@@ -35,17 +35,17 @@ namespace {
             SocketDataMap::instance().put(2, data);
 
             SocketData* instance = SocketDataMap::instance().get(2);
-            CHECK_EQUAL(2, instance->get_return_value());
+            ASSERT_EQ(2, instance->get_return_value());
 
             instance = SocketDataMap::instance().get(0);
-            CHECK_EQUAL(0, instance->get_return_value());
+            ASSERT_EQ(0, instance->get_return_value());
 
             SocketDataMap::instance().erase_at(0);
             SocketDataMap::instance().delete_at(2);
             SocketDataMap::instance().put(2, instance);
 
             instance = SocketDataMap::instance().get(2);
-            CHECK_EQUAL(0, instance->get_return_value());
+            ASSERT_EQ(0, instance->get_return_value());
 
             
         }

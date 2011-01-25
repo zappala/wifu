@@ -27,58 +27,58 @@ namespace {
         TEST(SemaphoreConstructor) {
             Semaphore s;
             int val = s.get_value();
-            CHECK_EQUAL(0, val);
+            ASSERT_EQ(0, val);
         }
 
         TEST(SemaphoreInit) {
             Semaphore s;
             s.init(1);
             int val = s.get_value();
-            CHECK_EQUAL(1, val);
+            ASSERT_EQ(1, val);
         }
 
         TEST(SemaphorePost) {
             Semaphore s;
             s.init(1);
             int val = s.get_value();
-            CHECK_EQUAL(1, val);
+            ASSERT_EQ(1, val);
 
             s.post();
             val = s.get_value();
-            CHECK_EQUAL(2, val);
+            ASSERT_EQ(2, val);
         }
 
         TEST(SemaphoreWait) {
             Semaphore s;
             s.init(1);
             int val = s.get_value();
-            CHECK_EQUAL(1, val);
+            ASSERT_EQ(1, val);
 
             s.wait();
             val = s.get_value();
-            CHECK_EQUAL(0, val);
+            ASSERT_EQ(0, val);
         }
 
         TEST(SemaphoreTryWait) {
             Semaphore s;
             s.init(1);
             int val = s.get_value();
-            CHECK_EQUAL(1, val);
+            ASSERT_EQ(1, val);
 
             s.try_wait();
             val = s.get_value();
-            CHECK_EQUAL(0, val);
+            ASSERT_EQ(0, val);
 
             s.try_wait();
             val = s.get_value();
-            CHECK_EQUAL(0, val);
+            ASSERT_EQ(0, val);
         }
 
         TEST(SemaphoreTimedWait) {
             Semaphore s;
             s.init(1);
             int val = s.get_value();
-            CHECK_EQUAL(1, val);
+            ASSERT_EQ(1, val);
 
             struct timespec timer;
 
@@ -98,7 +98,7 @@ namespace {
             Semaphore s;
             s.init(1);
             int val = s.get_value();
-            CHECK_EQUAL(1, val);
+            ASSERT_EQ(1, val);
         }
     }
 }

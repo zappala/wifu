@@ -30,24 +30,24 @@ namespace {
 
             string result = QueryStringParser::create(name, values);
             string expected = "name?";
-            CHECK_EQUAL(expected, result);
+            ASSERT_EQ(expected, result);
 
             values["a"] = "a";
             result = QueryStringParser::create(name, values);
             expected = "name?a=a&";
-            CHECK_EQUAL(expected, result);
+            ASSERT_EQ(expected, result);
 
             sprintf(buf, "%d", 95);
             values["a"] = buf;
             result = QueryStringParser::create(name, values);
             expected = "name?a=95&";
-            CHECK_EQUAL(expected, result);
+            ASSERT_EQ(expected, result);
 
             sprintf(buf, "%d", 4);
             values["b"] = buf;
             result = QueryStringParser::create(name, values);
             expected = "name?a=95&b=4&";
-            CHECK_EQUAL(expected, result);
+            ASSERT_EQ(expected, result);
         }
 
         TEST(QueryStringParserParseTest) {
@@ -58,16 +58,16 @@ namespace {
             QueryStringParser::parse(query, values);
 
             string expected = "name";
-            CHECK_EQUAL(expected, values["name"]);
+            ASSERT_EQ(expected, values["name"]);
 
             expected = "9";
-            CHECK_EQUAL(expected, values["a"]);
+            ASSERT_EQ(expected, values["a"]);
 
             expected = "1234";
-            CHECK_EQUAL(expected, values["c"]);
+            ASSERT_EQ(expected, values["c"]);
 
             expected = "bob";
-            CHECK_EQUAL(expected, values["b"]);
+            ASSERT_EQ(expected, values["b"]);
         }
     }
 }

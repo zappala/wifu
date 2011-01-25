@@ -78,7 +78,7 @@ namespace {
             udp.start(ap);
             usleep(10000);
 
-            CHECK_EQUAL(address, udp.get_bound_ip_address());
+            ASSERT_EQ(address, udp.get_bound_ip_address());
 
             dispatcher.map_event(type_name(UDPReceivePacketEvent), &temp);
             dispatcher.map_event(type_name(UDPSendPacketEvent), &udp);
@@ -105,8 +105,8 @@ namespace {
                 t.stop();
                 time += t.get_duration_microseconds();
 
-                CHECK_EQUAL(data.c_str(), (const char*) temp.p->get_data());
-                CHECK_EQUAL(packet_size, temp.p->data_length());
+                ASSERT_EQ(data.c_str(), (const char*) temp.p->get_data());
+                ASSERT_EQ(packet_size, temp.p->data_length());
                 CHECK(*dest == *(temp.p->get_destination()));
                 CHECK(*source == *(temp.p->get_source()));
             }
@@ -129,8 +129,8 @@ namespace {
                 t.stop();
                 time += t.get_duration_microseconds();
 
-                CHECK_EQUAL(data.c_str(), (const char*) temp.p->get_data());
-                CHECK_EQUAL(packet_size, temp.p->data_length());
+                ASSERT_EQ(data.c_str(), (const char*) temp.p->get_data());
+                ASSERT_EQ(packet_size, temp.p->data_length());
                 CHECK(*dest == *(temp.p->get_destination()));
                 CHECK(*source == *(temp.p->get_source()));
             }

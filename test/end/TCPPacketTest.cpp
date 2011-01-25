@@ -33,7 +33,7 @@ namespace {
 
             u_int32_t value = random.get();
             p->set_tcp_sequence_number(value);
-            CHECK_EQUAL(value, p->get_tcp_sequence_number());
+            ASSERT_EQ(value, p->get_tcp_sequence_number());
         }
 
         TEST(AckNumberTest) {
@@ -42,17 +42,17 @@ namespace {
 
             u_int32_t value = random.get();
             p->set_tcp_ack_number(value);
-            CHECK_EQUAL(value, p->get_tcp_ack_number());
+            ASSERT_EQ(value, p->get_tcp_ack_number());
         }
 
         TEST(TCPHeaderLengthBytesTest) {
             TCPPacket* p = get_packet();
-            CHECK_EQUAL(TCP_HEADER_SIZE, p->get_tcp_header_length_bytes());
+            ASSERT_EQ(TCP_HEADER_SIZE, p->get_tcp_header_length_bytes());
         }
 
         TEST(TCPHeaderLengthTest) {
             TCPPacket* p = get_packet();
-            CHECK_EQUAL(TCP_HEADER_SIZE / 4, p->get_tcp_header_length());
+            ASSERT_EQ(TCP_HEADER_SIZE / 4, p->get_tcp_header_length());
         }
 
         TEST(URG) {
@@ -121,7 +121,7 @@ namespace {
 
             u_int16_t value = random.get();
             p->set_tcp_receive_window_size(value);
-            CHECK_EQUAL(value, p->get_tcp_receive_window_size());
+            ASSERT_EQ(value, p->get_tcp_receive_window_size());
         }
 
         TEST(ChecksumTest) {
@@ -130,7 +130,7 @@ namespace {
 
             u_int16_t value = random.get();
             p->set_tcp_checksum(value);
-            CHECK_EQUAL(value, p->get_tcp_checksum());
+            ASSERT_EQ(value, p->get_tcp_checksum());
         }
 
         TEST(UrgentPointerTest) {
@@ -139,7 +139,7 @@ namespace {
 
             u_int16_t value = random.get();
             p->set_tcp_urgent_pointer(value);
-            CHECK_EQUAL(value, p->get_tcp_urgent_pointer());
+            ASSERT_EQ(value, p->get_tcp_urgent_pointer());
         }
     }
 }

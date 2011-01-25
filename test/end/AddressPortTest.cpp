@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-#include "gtest/gtest.h"
+#include "UnitTest++.h"
 #include "../headers/AddressPort.h"
 
 using namespace std;
@@ -27,8 +27,8 @@ namespace {
 
             AddressPort ap(address, port);
 
-            CHECK_EQUAL(address, ap.get_address());
-            CHECK_EQUAL(port, ap.get_port());
+            ASSERT_EQ(address, ap.get_address());
+            ASSERT_EQ(port, ap.get_port());
         }
 
         TEST(AddressPortCharStarConstructor) {
@@ -37,8 +37,8 @@ namespace {
 
             AddressPort ap(address, port);
 
-            CHECK_EQUAL(string(address), ap.get_address());
-            CHECK_EQUAL(port, ap.get_port());
+            ASSERT_EQ(string(address), ap.get_address());
+            ASSERT_EQ(port, ap.get_port());
         }
 
         TEST(AddressPortSockaddrConstructor) {
@@ -57,8 +57,8 @@ namespace {
 
             AddressPort ap(&addr);
 
-            CHECK_EQUAL(address, ap.get_address());
-            CHECK_EQUAL(port, ap.get_port());
+            ASSERT_EQ(address, ap.get_address());
+            ASSERT_EQ(port, ap.get_port());
         }
 
         TEST(AddressCopyConstructor) {
@@ -68,8 +68,8 @@ namespace {
             AddressPort ap(address, port);
             AddressPort copy(ap);
 
-            CHECK_EQUAL(ap.get_address(), copy.get_address());
-            CHECK_EQUAL(ap.get_port(), copy.get_port());
+            ASSERT_EQ(ap.get_address(), copy.get_address());
+            ASSERT_EQ(ap.get_port(), copy.get_port());
             CHECK(ap.get_network_struct_ptr() != copy.get_network_struct_ptr());
         }
 
@@ -115,7 +115,7 @@ namespace {
             int port = 5000;
 
             AddressPort ap(address, port);
-            CHECK_EQUAL(expected, ap.to_s());
+            ASSERT_EQ(expected, ap.to_s());
         }
     }
 }

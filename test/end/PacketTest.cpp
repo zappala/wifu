@@ -59,23 +59,23 @@ namespace {
 
             // Check header
             struct wifu_end_header* to_check = (struct wifu_end_header*) bytes;
-            CHECK_EQUAL(header.virtual_dest_port, to_check->virtual_dest_port);
-            CHECK_EQUAL(header.virtual_src_port, to_check->virtual_src_port);
+            ASSERT_EQ(header.virtual_dest_port, to_check->virtual_dest_port);
+            ASSERT_EQ(header.virtual_src_port, to_check->virtual_src_port);
 
             // Check data
             const char* message_to_check = (const char*)(bytes + sizeof(struct wifu_end_header));
-            CHECK_EQUAL(f.message, message_to_check);
+            ASSERT_EQ(f.message, message_to_check);
         }
 
 
         TEST(PacketPacketLengthTest) {
             PacketFixture f;
-            CHECK_EQUAL(f.data_length + sizeof(struct wifu_end_header), f.packet->packet_length());
+            ASSERT_EQ(f.data_length + sizeof(struct wifu_end_header), f.packet->packet_length());
         }
 
         TEST(PacketDataLengthTest) {
             PacketFixture f;
-            CHECK_EQUAL(f.data_length, f.packet->data_length());
+            ASSERT_EQ(f.data_length, f.packet->data_length());
         }
 
         TEST(PacketGetSourceTest) {
@@ -92,7 +92,7 @@ namespace {
 
         TEST(PacketGetDataTest) {
             PacketFixture f;
-            CHECK_EQUAL(f.message, (const char*)f.packet->get_data());
+            ASSERT_EQ(f.message, (const char*)f.packet->get_data());
         }
     }
 }

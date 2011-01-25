@@ -21,7 +21,7 @@ namespace {
             Event* e = new TimeoutEvent(0,1,0);
             set.add(e);
 
-            CHECK_EQUAL(1, set.size());
+            ASSERT_EQ(1, set.size());
             CHECK(set.contains(e));
 
             delete e;
@@ -32,7 +32,7 @@ namespace {
             Event* e = new TimeoutEvent(0,1,0);
             set.add(e);
 
-            CHECK_EQUAL(1, set.size());
+            ASSERT_EQ(1, set.size());
             CHECK(set.contains(e));
 
             Event* e2 = new TimeoutEvent(0,2,0);
@@ -47,7 +47,7 @@ namespace {
             Event* e = new TimeoutEvent(0,1,0);
             set.add(e);
 
-            CHECK_EQUAL(1, set.size());
+            ASSERT_EQ(1, set.size());
             CHECK(set.contains(e));
 
             Event* e2 = new TimeoutEvent(0,2,0);
@@ -55,7 +55,7 @@ namespace {
 
 
             set.remove(e);
-            CHECK_EQUAL(0, set.size());
+            ASSERT_EQ(0, set.size());
             CHECK(!set.contains(e));
 
             delete e;
@@ -74,14 +74,14 @@ namespace {
             set.add(e2);
             set.add(e3);
 
-            CHECK_EQUAL(4, set.size());
+            ASSERT_EQ(4, set.size());
             CHECK(set.contains(e));
             CHECK(set.contains(e1));
             CHECK(set.contains(e2));
             CHECK(set.contains(e3));
 
             set.remove(e2);
-            CHECK_EQUAL(3, set.size());
+            ASSERT_EQ(3, set.size());
             CHECK(!set.contains(e2));
 
             CHECK(set.contains(e));

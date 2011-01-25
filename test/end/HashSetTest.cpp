@@ -24,7 +24,7 @@ namespace {
 
         TEST(Empty) {
             HashSet<int> set;
-            CHECK_EQUAL(0, set.size());
+            ASSERT_EQ(0, set.size());
         }
 
         TEST(InsertContains) {
@@ -54,7 +54,7 @@ namespace {
 
             set.remove(zero);
             CHECK(!set.contains(zero));
-            CHECK_EQUAL(0, set.size());
+            ASSERT_EQ(0, set.size());
         }
 
         TEST(RemoveMany) {
@@ -74,7 +74,7 @@ namespace {
                 }
             }
 
-            CHECK_EQUAL(500, set.size());
+            ASSERT_EQ(500, set.size());
             for(int i = 0; i < 1000; i++) {
                 if(i % 2 == 0) {
                     CHECK(!set.contains(i));
@@ -89,7 +89,7 @@ namespace {
     SUITE(HashSetPointer) {
         TEST(Empty) {
             HashSet<Event*> set;
-            CHECK_EQUAL(0, set.size());
+            ASSERT_EQ(0, set.size());
         }
 
         TEST(InsertContains) {
@@ -131,7 +131,7 @@ namespace {
 
             set.remove(e);
             CHECK(!set.contains(e));
-            CHECK_EQUAL(0, set.size());
+            ASSERT_EQ(0, set.size());
         }
 
         TEST(RemoveMany) {
@@ -156,7 +156,7 @@ namespace {
                 }
             }
 
-            CHECK_EQUAL(count / 2, set.size());
+            ASSERT_EQ(count / 2, set.size());
             for(int i = 0; i < count; i++) {
                 if(i % 2 == 0) {
                     CHECK(!set.contains(events[i]));

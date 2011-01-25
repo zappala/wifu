@@ -66,8 +66,8 @@ namespace {
 
             usleep(5000);
 
-            CHECK_EQUAL(message.size(), sent);
-            CHECK_EQUAL(message, s1.get_last_received());
+            ASSERT_EQ(message.size(), sent);
+            ASSERT_EQ(message, s1.get_last_received());
 
             
         }
