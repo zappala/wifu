@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(Dispatcher) {
-
-	}
-
 }
 
 #endif /* DISPATCHERTEST_H_ */

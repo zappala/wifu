@@ -17,41 +17,38 @@
 using namespace std;
 
 namespace {
-	SUITE(TimeoutEvent) {
-
-		class IModuleDummyImplementation : public IModule {
-		public:
-			IModuleDummyImplementation() {
-				timedout = false;
-			}
-
-			void timeout(Event* e) {
-				timedout = true;
-			}
-
-			bool timedout;
-		};
-
-		TEST(timeout) {
-			IModuleDummyImplementation dummyImodule;
-			ASSERT_TRUE(dummyImodule.timedout == false);
-
-                        Socket* s = new Socket(0,1,2);
-			TimeoutEvent timeoutEvent(s, 1, 0);
-			timeoutEvent.execute(&dummyImodule);
-
-			ASSERT_TRUE(dummyImodule.timedout == true);
+	class IModuleDummyImplementation : public IModule {
+	public:
+		IModuleDummyImplementation() {
+			timedout = false;
 		}
 
-		TEST(get_timeout_time) {
-			timespec ts;
-			clock_gettime(CLOCK_REALTIME, &ts);
-
-                        Socket* s = new Socket(0,1,2);
-			TimeoutEvent timeoutEvent(s, 2, 0);
-
-			ASSERT_TRUE(timeoutEvent.get_timeout_time().tv_sec > ts.tv_sec);
+		void timeout(Event* e) {
+			timedout = true;
 		}
+
+		bool timedout;
+	};
+
+	TEST(timeout) {
+		IModuleDummyImplementation dummyImodule;
+		ASSERT_TRUE(dummyImodule.timedout == false);
+
+					Socket* s = new Socket(0,1,2);
+		TimeoutEvent timeoutEvent(s, 1, 0);
+		timeoutEvent.execute(&dummyImodule);
+
+		ASSERT_TRUE(dummyImodule.timedout == true);
+	}
+
+	TEST(get_timeout_time) {
+		timespec ts;
+		clock_gettime(CLOCK_REALTIME, &ts);
+
+					Socket* s = new Socket(0,1,2);
+		TimeoutEvent timeoutEvent(s, 2, 0);
+
+		ASSERT_TRUE(timeoutEvent.get_timeout_time().tv_sec > ts.tv_sec);
 	}
 }
 

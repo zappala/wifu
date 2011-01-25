@@ -20,19 +20,16 @@
 using namespace std;
 
 namespace {
+	TEST(IDGeneratorTest) {
+		UNITTEST_TIME_CONSTRAINT(1);
+		int id0 = IDGenerator::instance().get();
+		int id1 = IDGenerator::instance().get();
 
-    SUITE(IDGenerator) {
-        TEST(IDGeneratorTest) {
-            UNITTEST_TIME_CONSTRAINT(1);
-            int id0 = IDGenerator::instance().get();
-            int id1 = IDGenerator::instance().get();
+		ASSERT_TRUE(id0 != id1);
 
-            ASSERT_TRUE(id0 != id1);
+		IDGenerator::instance().remove(id0);
 
-            IDGenerator::instance().remove(id0);
-
-        }
-    }
+	}
 }
 
 #endif	/* _IDGENERATORTEST_H */

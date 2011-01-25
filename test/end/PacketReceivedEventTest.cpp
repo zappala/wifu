@@ -16,31 +16,28 @@
 using namespace std;
 
 namespace {
-	SUITE(PacketReceivedEvent) {
-
-		class IModuleDummyImplementation : public IModule {
-		public:
-			IModuleDummyImplementation() {
-				received = false;
-			}
-
-			void receive(Event* e) {
-				received = true;
-			}
-
-			bool received;
-		};
-
-		TEST(receive) {
-			IModuleDummyImplementation dummyImodule;
-			ASSERT_TRUE(dummyImodule.received == false);
-
-                        Socket* s = new Socket(1, 2, 3);
-			PacketReceivedEvent packetReceivedEvent(s);
-			packetReceivedEvent.execute(&dummyImodule);
-
-			ASSERT_TRUE(dummyImodule.received == true);
+	class IModuleDummyImplementation : public IModule {
+	public:
+		IModuleDummyImplementation() {
+			received = false;
 		}
+
+		void receive(Event* e) {
+			received = true;
+		}
+
+		bool received;
+	};
+
+	TEST(receive) {
+		IModuleDummyImplementation dummyImodule;
+		ASSERT_TRUE(dummyImodule.received == false);
+
+					Socket* s = new Socket(1, 2, 3);
+		PacketReceivedEvent packetReceivedEvent(s);
+		packetReceivedEvent.execute(&dummyImodule);
+
+		ASSERT_TRUE(dummyImodule.received == true);
 	}
 }
 

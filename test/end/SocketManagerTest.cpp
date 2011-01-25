@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(SocketManager) {
-
-	}
-
 }
 
 #endif /* SOCKETMANAGERTEST_H_ */

@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(TimeoutEventManager) {
-
-	}
-
 }
 
 #endif /* TIMEOUTEVENTMANAGERTEST_H_ */

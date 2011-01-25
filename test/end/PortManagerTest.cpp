@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(PortManager) {
-
-	}
-
 }
 
 #endif /* PORTMANAGERTEST_H_ */

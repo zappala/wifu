@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(QueueProcessor) {
-
-	}
-
 }
 
 #endif /* QUEUEPROCESSORTEST_H_ */

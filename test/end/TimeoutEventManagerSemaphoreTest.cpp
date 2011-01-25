@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(TimeoutEventManagerSemaphore) {
-
-	}
-
 }
 
 #endif /* TIMEOUTEVENTMANAGERSEMAPHORETEST_H_ */

@@ -16,35 +16,31 @@
 using namespace std;
 
 namespace {
+	class IModuleDummyImplementation : public IModule {
+	public:
 
-    SUITE(TimerFiredEvent) {
+		IModuleDummyImplementation() {
+			timerFired = false;
+		}
 
-        class IModuleDummyImplementation : public IModule {
-        public:
+		void timer_fired(Event* e) {
+			timerFired = true;
+		}
 
-            IModuleDummyImplementation() {
-                timerFired = false;
-            }
+		bool timerFired;
+	};
 
-            void timer_fired(Event* e) {
-                timerFired = true;
-            }
+	TEST(timer_fired) {
+		IModuleDummyImplementation dummyImodule;
+		ASSERT_TRUE(dummyImodule.timerFired == false);
 
-            bool timerFired;
-        };
+		Socket* s = new Socket(1, 2, 3);
+		TimeoutEvent timeoutEvent(s, 1, 0);
+		TimerFiredEvent timerFiredEvent(&timeoutEvent);
+		timerFiredEvent.execute(&dummyImodule);
 
-        TEST(timer_fired) {
-            IModuleDummyImplementation dummyImodule;
-            ASSERT_TRUE(dummyImodule.timerFired == false);
-
-            Socket* s = new Socket(1, 2, 3);
-            TimeoutEvent timeoutEvent(s, 1, 0);
-            TimerFiredEvent timerFiredEvent(&timeoutEvent);
-            timerFiredEvent.execute(&dummyImodule);
-
-            ASSERT_TRUE(dummyImodule.timerFired == true);
-        }
-    }
+		ASSERT_TRUE(dummyImodule.timerFired == true);
+	}
 }
 
 #endif /* TIMERFIREDEVENTTEST_H_ */

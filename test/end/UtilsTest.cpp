@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(Utils) {
-
-	}
-
 }
 
 #endif /* UTILSTEST_H_ */

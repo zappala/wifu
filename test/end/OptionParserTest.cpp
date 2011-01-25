@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(OptionParser) {
-		//check options in different orders
-	}
-
 }
 
 #endif /* OPTIONPARSERTEST_H_ */

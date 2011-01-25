@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(RandomNumberSet) {
-
-	}
-
 }
 
 #endif /* NUMBERGENERATORTEST_H_ */

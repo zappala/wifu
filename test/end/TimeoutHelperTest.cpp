@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(TimeoutHelper) {
-
-	}
-
 }
 
 #endif /* TIMEOUTHELPERTEST_H_ */

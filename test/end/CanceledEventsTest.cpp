@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(CanceledEvents) {
-
-	}
-
 }
 
 #endif /* CANCELEDEVENTSTEST_H_ */

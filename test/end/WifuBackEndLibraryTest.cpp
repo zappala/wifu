@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(WifuEndBackEndLibrary) {
-
-	}
-
 }
 
 #endif /* WIFUBACKENDLIBRARYTEST_H_ */

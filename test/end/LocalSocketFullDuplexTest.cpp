@@ -19,9 +19,6 @@
 
 using namespace std;
 
-
-
-
 namespace {
 
     class LocalSocketFullDuplexImpl1 : public LocalSocketFullDuplex {
@@ -47,33 +44,27 @@ namespace {
 
     };
 
+	TEST(LocalSocketFullDuplexTest) {
+
+		string file1("LSFDF1");
+
+		LocalSocketFullDuplexImpl1 s1(file1);
+
+		string message = "This is a test message";
+
+		ssize_t sent = s1.send_to(file1, message);
+
+		if(sent < 0) {
+			cout << "Error in sending: " << errno << endl;
+		}
+
+		usleep(5000);
+
+		ASSERT_EQ(message.size(), sent);
+		ASSERT_EQ(message, s1.get_last_received());
 
 
-    SUITE(LocalSocketFullDuplexTestSuite) {
-        TEST(LocalSocketFullDuplexTest) {
-
-            string file1("LSFDF1");
-
-            LocalSocketFullDuplexImpl1 s1(file1);
-
-            string message = "This is a test message";
-
-            ssize_t sent = s1.send_to(file1, message);
-
-            if(sent < 0) {
-                cout << "Error in sending: " << errno << endl;
-            }
-
-            usleep(5000);
-
-            ASSERT_EQ(message.size(), sent);
-            ASSERT_EQ(message, s1.get_last_received());
-
-            
-        }
-
-
-    }
+	}
 }
 
 #endif	/* LOCALSOCKETFULLDUPLEXTEST_H */

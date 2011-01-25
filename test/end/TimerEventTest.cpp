@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(TimerEvent) {
-
-	}
-
 }
 
 #endif /* TIMEREVENTTEST_H_ */

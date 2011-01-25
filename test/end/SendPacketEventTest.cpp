@@ -16,34 +16,30 @@
 using namespace std;
 
 namespace {
+	class IModuleDummyImplementation : public IModule {
+	public:
 
-    SUITE(SendPacketEvent) {
+		IModuleDummyImplementation() {
+			sent = false;
+		}
 
-        class IModuleDummyImplementation : public IModule {
-        public:
+		void send(Event* e) {
+			sent = true;
+		}
 
-            IModuleDummyImplementation() {
-                sent = false;
-            }
+		bool sent;
+	};
 
-            void send(Event* e) {
-                sent = true;
-            }
+	TEST(send) {
+		IModuleDummyImplementation dummyImodule;
+		ASSERT_TRUE(dummyImodule.sent == false);
+		Packet* p;
+		Socket* s = new Socket(1, 2, 3);
+		SendPacketEvent sendPacketEvent(s, p);
+		sendPacketEvent.execute(&dummyImodule);
 
-            bool sent;
-        };
-
-        TEST(send) {
-            IModuleDummyImplementation dummyImodule;
-            ASSERT_TRUE(dummyImodule.sent == false);
-            Packet* p;
-            Socket* s = new Socket(1, 2, 3);
-            SendPacketEvent sendPacketEvent(s, p);
-            sendPacketEvent.execute(&dummyImodule);
-
-            ASSERT_EQ(true, dummyImodule.sent);
-        }
-    }
+		ASSERT_EQ(true, dummyImodule.sent);
+	}
 }
 
 #endif /* SENDPACKETEVENTTEST_H_ */

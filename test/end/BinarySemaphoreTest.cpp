@@ -19,42 +19,38 @@
 using namespace std;
 
 namespace {
+	TEST(BinarySemaphoreConstructorTest) {
+		BinarySemaphore bs;
+		ASSERT_EQ(0, bs.get_value());
+	}
 
-    SUITE(BinarySemaphore) {
+	TEST(BinarySemaphoreInitTest) {
+		BinarySemaphore bs;
 
-        TEST(BinarySemaphoreConstructorTest) {
-            BinarySemaphore bs;
-            ASSERT_EQ(0, bs.get_value());
-        }
+		bs.init(0);
+		ASSERT_EQ(0, bs.get_value());
 
-        TEST(BinarySemaphoreInitTest) {
-            BinarySemaphore bs;
+		BinarySemaphore bs1;
+		bs1.init(1);
+		ASSERT_EQ(1, bs1.get_value());
 
-            bs.init(0);
-            ASSERT_EQ(0, bs.get_value());
+		BinarySemaphore bs2;
+		bs2.init(2);
+		ASSERT_EQ(1, bs2.get_value());
+	}
 
-            BinarySemaphore bs1;
-            bs1.init(1);
-            ASSERT_EQ(1, bs1.get_value());
+	TEST(BinarySemaphorePostTest) {
+		BinarySemaphore bs;
 
-            BinarySemaphore bs2;
-            bs2.init(2);
-            ASSERT_EQ(1, bs2.get_value());
-        }
+		bs.init(0);
+		ASSERT_EQ(0, bs.get_value());
 
-        TEST(BinarySemaphorePostTest) {
-            BinarySemaphore bs;
+		bs.post();
+		ASSERT_EQ(1, bs.get_value());
 
-            bs.init(0);
-            ASSERT_EQ(0, bs.get_value());
-
-            bs.post();
-            ASSERT_EQ(1, bs.get_value());
-
-            bs.post();
-            ASSERT_EQ(1, bs.get_value());
-        }
-    }
+		bs.post();
+		ASSERT_EQ(1, bs.get_value());
+	}
 }
 
 

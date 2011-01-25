@@ -55,28 +55,26 @@ private:
 
 namespace {
 
-    SUITE(UDPSocket) {
+	TEST(UDPSocket) {
 
-        TEST(UDPSocket) {
+		UDPSocket sender;
+		UDPSocket receiver;
+		UDPSocketCallbackImpl callback;
 
-            UDPSocket sender;
-            UDPSocket receiver;
-            UDPSocketCallbackImpl callback;
+		string address("127.0.0.1");
+		int port = 5000;
+		string message("message");
+		AddressPort ap(address, port);
 
-            string address("127.0.0.1");
-            int port = 5000;
-            string message("message");
-            AddressPort ap(address, port);
+		receiver.bind_socket(ap);
+		receiver.receive(&callback);
 
-            receiver.bind_socket(ap);
-            receiver.receive(&callback);
+		usleep(5000);
 
-            usleep(5000);
+		sender.makeNonBlocking();
+		size_t count = sender.send(ap, message);
 
-            sender.makeNonBlocking();
-            size_t count = sender.send(ap, message);
-
-            usleep(5000);
+		usleep(5000);
 
 //            if (sender.closeSocket() < 0) {
 //                cout << "Error closing sender (errno): " << errno << endl;
@@ -86,12 +84,11 @@ namespace {
 //                cout << "Error closing receiver (errno): " << errno << endl;
 //            }
 
-            ASSERT_EQ(message.length(), count);
-            ASSERT_EQ(message, callback.get_message());
-            ASSERT_EQ(ap.get_address(), callback.get_ap()->get_address());
+		ASSERT_EQ(message.length(), count);
+		ASSERT_EQ(message, callback.get_message());
+		ASSERT_EQ(ap.get_address(), callback.get_ap()->get_address());
 
-        }
-    }
+	}
 }
 
 

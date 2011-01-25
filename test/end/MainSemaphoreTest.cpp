@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(MainSemaphore) {
-
-	}
-
 }
 
 #endif /* MAINSEMAPHORETEST_H_ */

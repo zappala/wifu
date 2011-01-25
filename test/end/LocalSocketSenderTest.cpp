@@ -15,10 +15,6 @@ using namespace std;
 
 namespace {
 
-	SUITE(LocalSocketSender) {
-
-	}
-
 }
 
 #endif /* LOCALSOCKETSENDERTEST_H_ */

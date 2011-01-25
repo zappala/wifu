@@ -18,7 +18,7 @@
 
 using namespace std;
 
-SUITE(PriorityQueue) {
+namespace {
 
     bool signalRaised;
 

@@ -16,35 +16,31 @@
 using namespace std;
 
 namespace {
+	class IModuleDummyImplementation : public IModule {
+	public:
 
-    SUITE(CancelTimerEvent) {
+		IModuleDummyImplementation() {
+			timerCanceled = false;
+		}
 
-        class IModuleDummyImplementation : public IModule {
-        public:
+		void cancel_timer(Event* e) {
+			timerCanceled = true;
+		}
 
-            IModuleDummyImplementation() {
-                timerCanceled = false;
-            }
+		bool timerCanceled;
+	};
 
-            void cancel_timer(Event* e) {
-                timerCanceled = true;
-            }
+	TEST(cancel_timer) {
+		IModuleDummyImplementation dummyImodule;
+		ASSERT_TRUE(dummyImodule.timerCanceled == false);
 
-            bool timerCanceled;
-        };
+		Socket* s = new Socket(0, 1, 2);
+		TimeoutEvent timeoutEvent(s, 1, 0);
+		CancelTimerEvent cancelTimerEvent(&timeoutEvent);
+		cancelTimerEvent.execute(&dummyImodule);
 
-        TEST(cancel_timer) {
-            IModuleDummyImplementation dummyImodule;
-            ASSERT_TRUE(dummyImodule.timerCanceled == false);
-
-            Socket* s = new Socket(0, 1, 2);
-            TimeoutEvent timeoutEvent(s, 1, 0);
-            CancelTimerEvent cancelTimerEvent(&timeoutEvent);
-            cancelTimerEvent.execute(&dummyImodule);
-
-            ASSERT_TRUE(dummyImodule.timerCanceled == true);
-        }
-    }
+		ASSERT_TRUE(dummyImodule.timerCanceled == true);
+	}
 }
 
 #endif /* CANCELTIMEREVENTTEST_H_ */
