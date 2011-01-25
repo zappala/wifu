@@ -10,6 +10,7 @@
 
 #include "IModule.h"
 #include "Event.h"
+#include "TimeoutEvent.h"
 
 /**
  * Container class which simply holds a pointer to a TimeoutEvent.

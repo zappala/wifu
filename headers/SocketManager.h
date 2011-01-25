@@ -9,6 +9,7 @@
 #define	_SOCKETMANAGER_H
 
 #include "RandomNumberSet.h"
+#include <stdint.h>
 
 class SocketManager : public RandomNumberSet<uint16_t> {
 private:
