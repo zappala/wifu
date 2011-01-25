@@ -19,19 +19,19 @@
 using namespace std;
 
 namespace {
-	TEST(Empty) {
+	TEST(IntHashSetTest, Empty) {
 		HashSet<int> set;
 		ASSERT_EQ(0, set.size());
 	}
 
-	TEST(InsertContains) {
+	TEST(IntHashSetTest, InsertContains) {
 		HashSet<int> set;
 		int zero = 0;
 		set.insert(zero);
 		ASSERT_TRUE(set.contains(zero));
 	}
 
-	TEST(InsertContainsMany) {
+	TEST(IntHashSetTest, InsertContainsMany) {
 		HashSet<int> set;
 
 		for(int i = 0; i < 1000; i++) {
@@ -43,7 +43,7 @@ namespace {
 		}
 	}
 
-	TEST(Remove) {
+	TEST(IntHashSetTest, Remove) {
 		HashSet<int> set;
 		int zero = 0;
 		set.insert(zero);
@@ -54,7 +54,7 @@ namespace {
 		ASSERT_EQ(0, set.size());
 	}
 
-	TEST(RemoveMany) {
+	TEST(IntHashSetTest, RemoveMany) {
 		HashSet<int> set;
 
 		for(int i = 0; i < 1000; i++) {
@@ -81,15 +81,13 @@ namespace {
 			}
 		}
 	}
-}
 
-SUITE(HashSetPointer) {
-	TEST(Empty) {
+	TEST(Event*HashSetTest, Empty) {
 		HashSet<Event*> set;
 		ASSERT_EQ(0, set.size());
 	}
 
-	TEST(InsertContains) {
+	TEST(Event*HashSetTest, InsertContains) {
 		HashSet<Event*> set;
 		Event* e = new TimeoutEvent(0,1,0);
 
@@ -99,7 +97,7 @@ SUITE(HashSetPointer) {
 		delete e;
 	}
 
-	TEST(InsertContainsMany) {
+	TEST(Event*HashSetTest, InsertContainsMany) {
 		HashSet<Event*> set;
 
 		int count = 1000;
@@ -119,7 +117,7 @@ SUITE(HashSetPointer) {
 		}
 	}
 
-	TEST(Remove) {
+	TEST(Event*HashSetTest, Remove) {
 		HashSet<Event*> set;
 		Event* e = new TimeoutEvent(0,0,1);
 
@@ -131,7 +129,7 @@ SUITE(HashSetPointer) {
 		ASSERT_EQ(0, set.size());
 	}
 
-	TEST(RemoveMany) {
+	TEST(Event*HashSetTest, RemoveMany) {
 		HashSet<Event*> set;
 
 		int count = 1000;

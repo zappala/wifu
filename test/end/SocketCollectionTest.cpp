@@ -18,12 +18,12 @@
 using namespace std;
 
 namespace {
-	TEST(DNE) {
+	TEST(SocketCollectionTest, DNE) {
 		collection.clear();
 		ASSERT_TRUE(NULL == collection.get_by_id(9));
 	}
 
-	TEST(Integer) {
+	TEST(SocketCollectionTest, Integer) {
 		collection.clear();
 
 		int number = 1000;
@@ -60,7 +60,7 @@ namespace {
 
 	}
 
-	TEST(LocalOnly) {
+	TEST(SocketCollectionTest, LocalOnly) {
 		collection.clear();
 
 		int number = 1000;
@@ -100,7 +100,7 @@ namespace {
 		}
 	}
 
-	TEST(LocalAndRemote) {
+	TEST(SocketCollectionTest, LocalAndRemote) {
 		collection.clear();
 
 		int number = 1000;
@@ -145,7 +145,7 @@ namespace {
 		}
 	}
 
-	TEST(MIX) {
+	TEST(SocketCollectionTest, MIX) {
 		collection.clear();
 
 		// TODO: cannot set number to be large as it will cause it to sort many times

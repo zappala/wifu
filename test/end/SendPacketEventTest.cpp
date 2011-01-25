@@ -30,7 +30,7 @@ namespace {
 		bool sent;
 	};
 
-	TEST(send) {
+	TEST(SendPacketEventTest, send) {
 		IModuleDummyImplementation dummyImodule;
 		ASSERT_TRUE(dummyImodule.sent == false);
 		Packet* p;

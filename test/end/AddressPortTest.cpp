@@ -18,7 +18,7 @@
 using namespace std;
 
 namespace {
-	TEST(AddressPortStringConstructor) {
+	TEST(AddpressPortTest, StringConstructor) {
 		string address("127.0.0.1");
 		int port = 5000;
 
@@ -28,7 +28,7 @@ namespace {
 		ASSERT_EQ(port, ap.get_port());
 	}
 
-	TEST(AddressPortCharStarConstructor) {
+	TEST(AddpressPortTest, CharStarConstructor) {
 		const char* address = "127.0.0.1";
 		int port = 5000;
 
@@ -38,7 +38,7 @@ namespace {
 		ASSERT_EQ(port, ap.get_port());
 	}
 
-	TEST(AddressPortSockaddrConstructor) {
+	TEST(AddpressPortTest, SockaddrConstructor) {
 		string address("127.0.0.1");
 		int port = 5000;
 
@@ -58,7 +58,7 @@ namespace {
 		ASSERT_EQ(port, ap.get_port());
 	}
 
-	TEST(AddressCopyConstructor) {
+	TEST(AddpressPortTest, CopyConstructor) {
 		string address("127.0.0.1");
 		int port = 5000;
 
@@ -70,7 +70,7 @@ namespace {
 		ASSERT_TRUE(ap.get_network_struct_ptr() != copy.get_network_struct_ptr());
 	}
 
-	TEST(AddressOperatorEqualsConstructor) {
+	TEST(AddpressPortTest, OperatorEqualsConstructor) {
 		string address("127.0.0.1");
 		int port = 5000;
 
@@ -87,7 +87,7 @@ namespace {
 		ASSERT_TRUE(!(ap == copy));
 	}
 
-	TEST(AddressOperatorNotEqualsConstructor) {
+	TEST(AddpressPortTest, OperatorNotEqualsConstructor) {
 		string address("127.0.0.1");
 		int port = 5000;
 
@@ -104,7 +104,7 @@ namespace {
 		ASSERT_TRUE(ap != copy);
 	}
 
-	TEST(AddressToString) {
+	TEST(AddpressPortTest, ToString) {
 
 		string expected = "Address: 127.0.0.1 Port: 5000";
 

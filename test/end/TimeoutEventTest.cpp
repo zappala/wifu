@@ -30,7 +30,7 @@ namespace {
 		bool timedout;
 	};
 
-	TEST(timeout) {
+	TEST(TimeoutEventTest, timeout) {
 		IModuleDummyImplementation dummyImodule;
 		ASSERT_TRUE(dummyImodule.timedout == false);
 
@@ -41,7 +41,7 @@ namespace {
 		ASSERT_TRUE(dummyImodule.timedout == true);
 	}
 
-	TEST(get_timeout_time) {
+	TEST(TimeoutEventTest, get_timeout_time) {
 		timespec ts;
 		clock_gettime(CLOCK_REALTIME, &ts);
 

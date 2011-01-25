@@ -18,10 +18,8 @@
 
 using namespace std;
 
-
-
 namespace {
-	TEST(SocketMapTest) {
+	TEST(SocketDataMapTest, SocketMapTest) {
 		SocketData* data = new SocketData();
 		data->set_return_value(0);
 
@@ -47,7 +45,7 @@ namespace {
 
 	}
 
-	TEST(MapTest) {
+	TEST(SocketDataMapTest, MapTest) {
 		map<int, int*> m;
 
 		int a = 0;

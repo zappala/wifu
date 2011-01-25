@@ -20,7 +20,7 @@
 using namespace std;
 
 namespace {
-	TEST(IDGeneratorTest) {
+	TEST(IDGeneratorTest, all) {
 		UNITTEST_TIME_CONSTRAINT(1);
 		int id0 = IDGenerator::instance().get();
 		int id1 = IDGenerator::instance().get();
@@ -28,7 +28,6 @@ namespace {
 		ASSERT_TRUE(id0 != id1);
 
 		IDGenerator::instance().remove(id0);
-
 	}
 }
 

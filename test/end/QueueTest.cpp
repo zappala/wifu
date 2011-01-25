@@ -27,7 +27,7 @@ namespace {
 		signaled = true;
 	}
 
-	TEST(QueueTest) {
+	TEST(QueueTest, all) {
 
 		signal(SIG_ENQUEUE_EVENT, signal_handler);
 

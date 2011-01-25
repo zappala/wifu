@@ -14,7 +14,7 @@
 using namespace std;
 
 namespace {
-	TEST(CONTAINS) {
+	TEST(EventSetTest, CONTAINS) {
 		EventSet set;
 		Event* e = new TimeoutEvent(0,1,0);
 		set.add(e);
@@ -25,7 +25,7 @@ namespace {
 		delete e;
 	}
 
-	TEST(DOESNTCONTAIN) {
+	TEST(EventSetTest, DOESNTCONTAIN) {
 		EventSet set;
 		Event* e = new TimeoutEvent(0,1,0);
 		set.add(e);
@@ -40,7 +40,7 @@ namespace {
 		delete e2;
 	}
 
-	TEST(REMOVE) {
+	TEST(EventSetTest, REMOVE) {
 		EventSet set;
 		Event* e = new TimeoutEvent(0,1,0);
 		set.add(e);
@@ -60,7 +60,7 @@ namespace {
 		delete e2;
 	}
 
-	TEST(MULTIPLE) {
+	TEST(EventSetTest, MULTIPLE) {
 		EventSet set;
 		Event* e = new TimeoutEvent(0,1,0);
 		Event* e1 = new TimeoutEvent(0,2,0);
@@ -90,7 +90,6 @@ namespace {
 		delete e1;
 		delete e2;
 		delete e3;
-
 	}
 }
 

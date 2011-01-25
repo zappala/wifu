@@ -17,45 +17,43 @@
 
 using namespace std;
 
-class UDPSocketCallbackImpl : public UDPSocketCallback {
-public:
-
-    UDPSocketCallbackImpl() : UDPSocketCallback(), ap_(0) {
-
-    }
-
-    virtual ~UDPSocketCallbackImpl() {
-        if (ap_) {
-            delete ap_;
-        }
-    }
-
-    void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
-        if (ap_) {
-            delete ap_;
-        }
-
-        ap_ = new AddressPort(ap.get_network_struct_ptr());
-        message_ = string((char*) buffer);
-    }
-
-    AddressPort* get_ap() {
-        return ap_;
-    }
-
-    string& get_message() {
-        return message_;
-    }
-
-private:
-    AddressPort* ap_;
-    string message_;
-};
-
-
 namespace {
+	class UDPSocketCallbackImpl : public UDPSocketCallback {
+	public:
 
-	TEST(UDPSocket) {
+		UDPSocketCallbackImpl() : UDPSocketCallback(), ap_(0) {
+
+		}
+
+		virtual ~UDPSocketCallbackImpl() {
+			if (ap_) {
+				delete ap_;
+			}
+		}
+
+		void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
+			if (ap_) {
+				delete ap_;
+			}
+
+			ap_ = new AddressPort(ap.get_network_struct_ptr());
+			message_ = string((char*) buffer);
+		}
+
+		AddressPort* get_ap() {
+			return ap_;
+		}
+
+		string& get_message() {
+			return message_;
+		}
+
+	private:
+		AddressPort* ap_;
+		string message_;
+	};
+
+	TEST(UDPSocketTest, all) {
 
 		UDPSocket sender;
 		UDPSocket receiver;

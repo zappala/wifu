@@ -29,7 +29,7 @@ namespace {
 		bool received;
 	};
 
-	TEST(receive) {
+	TEST(PacketReceivedEventTest, receive) {
 		IModuleDummyImplementation dummyImodule;
 		ASSERT_TRUE(dummyImodule.received == false);
 

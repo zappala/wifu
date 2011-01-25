@@ -21,20 +21,20 @@
 using namespace std;
 
 namespace {
-	TEST(SemaphoreConstructor) {
+	TEST(SemaphoreTest, Constructor) {
 		Semaphore s;
 		int val = s.get_value();
 		ASSERT_EQ(0, val);
 	}
 
-	TEST(SemaphoreInit) {
+	TEST(SemaphoreTest, Init) {
 		Semaphore s;
 		s.init(1);
 		int val = s.get_value();
 		ASSERT_EQ(1, val);
 	}
 
-	TEST(SemaphorePost) {
+	TEST(SemaphoreTest, Post) {
 		Semaphore s;
 		s.init(1);
 		int val = s.get_value();
@@ -45,7 +45,7 @@ namespace {
 		ASSERT_EQ(2, val);
 	}
 
-	TEST(SemaphoreWait) {
+	TEST(SemaphoreTest, Wait) {
 		Semaphore s;
 		s.init(1);
 		int val = s.get_value();
@@ -56,7 +56,7 @@ namespace {
 		ASSERT_EQ(0, val);
 	}
 
-	TEST(SemaphoreTryWait) {
+	TEST(SemaphoreTest, TryWait) {
 		Semaphore s;
 		s.init(1);
 		int val = s.get_value();
@@ -71,7 +71,7 @@ namespace {
 		ASSERT_EQ(0, val);
 	}
 
-	TEST(SemaphoreTimedWait) {
+	TEST(SemaphoreTest, TimedWait) {
 		Semaphore s;
 		s.init(1);
 		int val = s.get_value();
@@ -91,15 +91,13 @@ namespace {
 		ASSERT_TRUE(timedout);
 	}
 
-	TEST(SemaphoreGetValue) {
+	TEST(SemaphoreTest, GetValue) {
 		Semaphore s;
 		s.init(1);
 		int val = s.get_value();
 		ASSERT_EQ(1, val);
 	}
 }
-
-
 
 #endif	/* _SEMAPHORETEST_H */
 

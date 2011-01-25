@@ -30,7 +30,7 @@ namespace {
 		bool timerCanceled;
 	};
 
-	TEST(cancel_timer) {
+	TEST(CancelTimerEventTest, cancel_timer) {
 		IModuleDummyImplementation dummyImodule;
 		ASSERT_TRUE(dummyImodule.timerCanceled == false);
 

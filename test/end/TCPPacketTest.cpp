@@ -24,7 +24,7 @@ namespace {
 		return new TCPPacket(source, dest, (unsigned char*) data.c_str(), data.size());
 	}
 
-	TEST(SequenceNumberTest) {
+	TEST(TCPPacketTest, SequenceNumberTest) {
 		RandomNumberSet<u_int32_t> random;
 		TCPPacket* p = get_packet();
 
@@ -33,7 +33,7 @@ namespace {
 		ASSERT_EQ(value, p->get_tcp_sequence_number());
 	}
 
-	TEST(AckNumberTest) {
+	TEST(TCPPacketTest, AckNumberTest) {
 		RandomNumberSet<u_int32_t> random;
 		TCPPacket* p = get_packet();
 
@@ -42,17 +42,17 @@ namespace {
 		ASSERT_EQ(value, p->get_tcp_ack_number());
 	}
 
-	TEST(TCPHeaderLengthBytesTest) {
+	TEST(TCPPacketTest, TCPHeaderLengthBytesTest) {
 		TCPPacket* p = get_packet();
 		ASSERT_EQ(TCP_HEADER_SIZE, p->get_tcp_header_length_bytes());
 	}
 
-	TEST(TCPHeaderLengthTest) {
+	TEST(TCPPacketTest, TCPHeaderLengthTest) {
 		TCPPacket* p = get_packet();
 		ASSERT_EQ(TCP_HEADER_SIZE / 4, p->get_tcp_header_length());
 	}
 
-	TEST(URG) {
+	TEST(TCPPacketTest, URG) {
 		TCPPacket* p = get_packet();
 
 		p->set_tcp_urg(true);
@@ -62,7 +62,7 @@ namespace {
 		ASSERT_TRUE(!p->is_tcp_urg());
 	}
 
-	TEST(ACK) {
+	TEST(TCPPacketTest, ACK) {
 		TCPPacket* p = get_packet();
 
 		p->set_tcp_ack(true);
@@ -72,7 +72,7 @@ namespace {
 		ASSERT_TRUE(!p->is_tcp_ack());
 	}
 
-	TEST(PSH) {
+	TEST(TCPPacketTest, PSH) {
 		TCPPacket* p = get_packet();
 
 		p->set_tcp_psh(true);
@@ -82,7 +82,7 @@ namespace {
 		ASSERT_TRUE(!p->is_tcp_psh());
 	}
 
-	TEST(RST) {
+	TEST(TCPPacketTest, RST) {
 		TCPPacket* p = get_packet();
 
 		p->set_tcp_rst(true);
@@ -92,7 +92,7 @@ namespace {
 		ASSERT_TRUE(!p->is_tcp_rst());
 	}
 
-	TEST(SYN) {
+	TEST(TCPPacketTest, SYN) {
 		TCPPacket* p = get_packet();
 
 		p->set_tcp_syn(true);
@@ -102,7 +102,7 @@ namespace {
 		ASSERT_TRUE(!p->is_tcp_syn());
 	}
 
-	TEST(FIN) {
+	TEST(TCPPacketTest, FIN) {
 		TCPPacket* p = get_packet();
 
 		p->set_tcp_fin(true);
@@ -112,7 +112,7 @@ namespace {
 		ASSERT_TRUE(!p->is_tcp_fin());
 	}
 
-	TEST(ReceiveWindowTest) {
+	TEST(TCPPacketTest, ReceiveWindowTest) {
 		RandomNumberSet<u_int16_t> random;
 		TCPPacket* p = get_packet();
 
@@ -121,7 +121,7 @@ namespace {
 		ASSERT_EQ(value, p->get_tcp_receive_window_size());
 	}
 
-	TEST(ChecksumTest) {
+	TEST(TCPPacketTest, ChecksumTest) {
 		RandomNumberSet<u_int16_t> random;
 		TCPPacket* p = get_packet();
 
@@ -130,7 +130,7 @@ namespace {
 		ASSERT_EQ(value, p->get_tcp_checksum());
 	}
 
-	TEST(UrgentPointerTest) {
+	TEST(TCPPacketTest, UrgentPointerTest) {
 		RandomNumberSet<u_int16_t> random;
 		TCPPacket* p = get_packet();
 
@@ -139,7 +139,6 @@ namespace {
 		ASSERT_EQ(value, p->get_tcp_urgent_pointer());
 	}
 }
-
 
 #endif	/* _TCPPACKETTEST_H */
 

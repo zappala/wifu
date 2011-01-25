@@ -27,7 +27,7 @@ namespace {
             signalRaised = true;
     }
 
-    TEST(enqueue) {
+    TEST(PriorityQueueTest, enqueue) {
         PriorityQueue<Event*, EventComparator> priorityQueue;
         ASSERT_TRUE(priorityQueue.size() == 0);
         ASSERT_TRUE(priorityQueue.isEmpty() == true);
@@ -59,7 +59,7 @@ namespace {
         pQueue->enqueue(&event1, true);
     }
 
-    TEST(dequeue) {
+    TEST(PriorityQueueTest, dequeue) {
         pthread_t enqueueThread;
         PriorityQueue<Event*, EventComparator> priorityQueue;
         ASSERT_TRUE(priorityQueue.size() == 0);

@@ -44,7 +44,7 @@ namespace {
 
     };
 
-	TEST(LocalSocketFullDuplexTest) {
+	TEST(LocalSocketFullDuplexTest, all) {
 
 		string file1("LSFDF1");
 

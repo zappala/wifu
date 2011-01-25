@@ -19,7 +19,7 @@
 using namespace std;
 
 namespace {
-	TEST(QueryStringParserCreateTest) {
+	TEST(QueryStringParserTest, Create) {
 
 		char buf[(sizeof(int)*8+1)];
 
@@ -48,7 +48,7 @@ namespace {
 		ASSERT_EQ(expected, result);
 	}
 
-	TEST(QueryStringParserParseTest) {
+	TEST(QueryStringParserTest, moreCreate) {
 
 		map<string, string> values;
 		string query = "name?a=9&b=bob&c=1234&";

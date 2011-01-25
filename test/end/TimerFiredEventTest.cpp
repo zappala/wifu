@@ -30,7 +30,7 @@ namespace {
 		bool timerFired;
 	};
 
-	TEST(timer_fired) {
+	TEST(TimerFiredEventTest, timer_fired) {
 		IModuleDummyImplementation dummyImodule;
 		ASSERT_TRUE(dummyImodule.timerFired == false);
 

@@ -21,7 +21,7 @@
 using namespace std;
 
 namespace {
-	TEST(PortCheckUnique) {
+	TEST(AlreadyBoundToAddressPortVisitorTest, PortCheckUnique) {
 		sc.clear();
 		Socket * sockets[count];
 
@@ -48,7 +48,7 @@ namespace {
 		}
 	}
 
-	TEST(PortCheckNotUnique) {
+	TEST(AlreadyBoundToAddressPortVisitorTest, PortCheckNotUnique) {
 		sc.clear();
 		Socket * sockets[count];
 
@@ -75,7 +75,7 @@ namespace {
 		}
 	}
 
-	TEST(AddressCheckUnique) {
+	TEST(AlreadyBoundToAddressPortVisitorTest, AddressCheckUnique) {
 		sc.clear();
 		Socket * sockets[count];
 
@@ -110,7 +110,7 @@ namespace {
 		}
 	}
 
-	TEST(AddressCheckNotUnique) {
+	TEST(AlreadyBoundToAddressPortVisitorTest, AddressCheckNotUnique) {
 		sc.clear();
 		Socket * sockets[count];
 

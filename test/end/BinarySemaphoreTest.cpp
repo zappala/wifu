@@ -19,12 +19,12 @@
 using namespace std;
 
 namespace {
-	TEST(BinarySemaphoreConstructorTest) {
+	TEST(BinarySemaphoreTest, Constructor) {
 		BinarySemaphore bs;
 		ASSERT_EQ(0, bs.get_value());
 	}
 
-	TEST(BinarySemaphoreInitTest) {
+	TEST(BinarySemaphoreTest, Init) {
 		BinarySemaphore bs;
 
 		bs.init(0);
@@ -39,7 +39,7 @@ namespace {
 		ASSERT_EQ(1, bs2.get_value());
 	}
 
-	TEST(BinarySemaphorePostTest) {
+	TEST(BinarySemaphoreTest, Post) {
 		BinarySemaphore bs;
 
 		bs.init(0);

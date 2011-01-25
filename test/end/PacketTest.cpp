@@ -46,7 +46,7 @@ namespace {
 	};
 
 
-	TEST(PacketToBytesTest) {
+	TEST(PacketTest, PacketToBytes) {
 		PacketFixture f;
 
 		unsigned char* bytes = f.packet->to_bytes();
@@ -65,29 +65,29 @@ namespace {
 	}
 
 
-	TEST(PacketPacketLengthTest) {
+	TEST(PacketTest, PacketLength) {
 		PacketFixture f;
 		ASSERT_EQ(f.data_length + sizeof(struct wifu_end_header), f.packet->packet_length());
 	}
 
-	TEST(PacketDataLengthTest) {
+	TEST(PacketTest, PacketDataLength) {
 		PacketFixture f;
 		ASSERT_EQ(f.data_length, f.packet->data_length());
 	}
 
-	TEST(PacketGetSourceTest) {
+	TEST(PacketTest, PacketGetSource) {
 		PacketFixture f;
 
 		ASSERT_TRUE(*(f.source_) == *(f.packet->get_source()));
 	}
 
-	TEST(PacketGetDestTest) {
+	TEST(PacketTest, PacketGetDest) {
 		PacketFixture f;
 
 		ASSERT_TRUE(*(f.dest_) == *(f.packet->get_destination()));
 	}
 
-	TEST(PacketGetDataTest) {
+	TEST(PacketTest, PacketGetData) {
 		PacketFixture f;
 		ASSERT_EQ(f.message, (const char*)f.packet->get_data());
 	}

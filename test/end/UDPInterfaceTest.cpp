@@ -32,24 +32,23 @@
 
 using namespace std;
 
-class TempUDPModule : public Module {
-public:
-
-    TempUDPModule() : Module() {
-        s.init(0);
-    }
-
-    void udp_receive(Event* e) {
-        UDPReceivePacketEvent* event = (UDPReceivePacketEvent*) e;
-        p = event->get_packet();
-        s.post();
-    }
-
-    Packet* p;
-    Semaphore s;
-};
-
 namespace {
+	class TempUDPModule : public Module {
+	public:
+
+		TempUDPModule() : Module() {
+			s.init(0);
+		}
+
+		void udp_receive(Event* e) {
+			UDPReceivePacketEvent* event = (UDPReceivePacketEvent*) e;
+			p = event->get_packet();
+			s.post();
+		}
+
+		Packet* p;
+		Semaphore s;
+	};
 
 	string get_data(int packet_size) {
 		string data = "";
@@ -65,7 +64,7 @@ namespace {
 		return data;
 	}
 
-	TEST(UDPInterfaceTest) {
+	TEST(UDPInterfaceTest, all) {
 		int num_packets = 100;
 		int packet_size = 1450;
 		TempUDPModule temp;
