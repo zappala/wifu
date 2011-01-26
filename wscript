@@ -29,8 +29,8 @@ def configure(conf):
 	conf.env['LIB_PTHREAD'] = ['pthread']
 	conf.env['STATICLIB'] += ['UnitTest++']
 	conf.env['LIB_RT'] = ['rt']
-	conf.env['CXXFLAGS'] += ['--cs-include-path=/home/erickson/Desktop/FallWork/framework/test/end', '--cs-include-path=/home/erickson/Desktop/FallWork/framework/headers']
-	conf.env['LINKFLAGS'] += ['--cs-include-path=/home/erickson/Desktop/FallWork/framework/test/end', '--cs-include-path=/home/erickson/Desktop/FallWork/framework/headers']
+	conf.env['CXXFLAGS'] += ['--cs-include-path=../test/end', '--cs-include-path=../headers'] #--cs-off
+	conf.env['LINKFLAGS'] += ['--cs-include-path=../test/end', '--cs-include-path=../headers'] #--cs-off
 	conf.env.PREFIX = ".."
 
 	if Options.options.bit_32:
