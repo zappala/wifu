@@ -55,6 +55,7 @@
 
 #include "AlreadyBoundToAddressPortVisitorTest.h"
 #include "TempTest.h"
+#include "SourceGetterTest.h"
 
 
 using namespace UnitTest;
