@@ -58,6 +58,9 @@
 
 #define SIMPLE_TCP 1000
 
+#define PAYLOAD_SIZE 1500
+#define MAX_TTL 65
+
 typedef const char * event_name;
 
 #endif	/* _INCLUDES_H */
