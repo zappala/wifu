@@ -1,7 +1,4 @@
-#include <map>
-
 #include "../headers/SourceGetter.h"
-#include "AddressPort.h"
 
 // public functions
 
@@ -29,8 +26,6 @@ string SourceGetter::get_source_address(string& dest_address) {
     AddressPort dest(dest_address, 0);
     in_addr_t destination = dest.get_network_struct().sin_addr.s_addr;
 
-    in_addr_t mask;
-
     infos_.clear();
     if (get_address_info(infos_)) {
         return "";
@@ -38,26 +33,18 @@ string SourceGetter::get_source_address(string& dest_address) {
 
     string result;
     for (int i = 0; i < infos_.size(); ++i) {
-        mask = get_bitmask((const char*) infos_.at(i).if_name);
+        in_addr_t mask = get_bitmask((const char*) infos_.at(i).if_name);
         in_addr addr;
         addr.s_addr = infos_.at(i).dest_addr;
 
-        in_addr a;
-        a.s_addr = destination;
-
         if ((destination & mask) == addr.s_addr) {
-            char buffer[BUFSIZE];
-            memset(buffer, 0, BUFSIZE);
             addr.s_addr = infos_.at(i).src_addr;
-            sprintf(buffer, "%s", inet_ntoa(addr));
-            result = buffer;
+            result = inet_ntoa(addr);
             cache_[dest_address] = result;
             break;
         }
     }
     return result;
-
-
 }
 
 // private functions
@@ -78,7 +65,6 @@ SourceGetter::SourceGetter() {
 
 in_addr_t SourceGetter::get_bitmask(const char* interface) {
     struct ifreq ifr;
-
     strcpy(ifr.ifr_name, interface);
 
     if (!ioctl(udp_socket_, SIOCGIFNETMASK, &ifr)) {
@@ -103,18 +89,15 @@ int SourceGetter::get_address_info(vector<address_info>& infos) {
     /* Fill in the nlmsg header*/
     nlMsg->nlmsg_len = NLMSG_LENGTH(sizeof (struct rtmsg)); // Length of message.
     nlMsg->nlmsg_type = RTM_GETROUTE; // Get the routes from kernel routing table .
-
     nlMsg->nlmsg_flags = NLM_F_DUMP | NLM_F_REQUEST; // The message is a request for dump.
     nlMsg->nlmsg_seq = msgSeq++; // Sequence of the message packet.
     nlMsg->nlmsg_pid = getpid(); // PID of process sending the request.
 
-    /* Send the request */
     if (send(netlink_socket_, nlMsg, nlMsg->nlmsg_len, 0) < 0) {
         printf("Write To Socket Failed...\n");
         return -1;
     }
 
-    /* Read the response */
     if ((len = read_response(netlink_socket_, msgBuf, msgSeq)) < 0) {
         printf("Read From Socket Failed...\n");
         return -1;
@@ -127,7 +110,6 @@ int SourceGetter::get_address_info(vector<address_info>& infos) {
             infos.push_back(info);
         }
     }
-
     return 0;
 }
 
@@ -138,7 +120,6 @@ int SourceGetter::read_response(int sock, char* buffer, int seq) {
     int pid = getpid();
 
     do {
-        /* Recieve response from the kernel */
         if ((readLen = recv(sock, buffer, BUFSIZE - msgLen, 0)) < 0) {
             perror("SOCK READ: ");
             return -1;

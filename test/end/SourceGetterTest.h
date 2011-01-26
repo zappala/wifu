@@ -20,6 +20,10 @@ namespace {
 
     SUITE(SourceGetter) {
 
+        // TODO: These tests can only be run on ilab1
+        // We should make it generic
+        // Also, we need to test it on the mesh nodes (or another machine with more than one interface)
+
         TEST(SourceGetterLocalHost) {
             string destination = "127.0.0.1";
             string expected = "127.0.0.1";
@@ -28,10 +32,16 @@ namespace {
         }
 
         TEST(AddressResolve) {
-            string destination = "192.168.21.102";
             string expected = "192.168.21.101";
-            string result = sg.get_source_address(destination);
-            CHECK_EQUAL(expected, result);
+            for (int i = 1; i < 8; i++) {
+                char buffer[1000];
+                memset(buffer, 0, 1000);
+                sprintf(buffer, "192.168.21.10%d", i);
+                
+                string destination = buffer;
+                string result = sg.get_source_address(destination);
+                CHECK_EQUAL(expected, result);
+            }
         }
 
         TEST(AddressResolveCache) {
