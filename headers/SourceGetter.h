@@ -49,13 +49,9 @@ public:
 
 private:
     SourceGetter();
-
     in_addr_t get_bitmask(const char* interface);
-
     int get_address_info(vector<address_info>& info);
-
     int read_response(int sock, char* buffer, int seq);
-
     void parse_routes(struct nlmsghdr* headder, struct address_info* info);
 
     // key = destination, value = source
