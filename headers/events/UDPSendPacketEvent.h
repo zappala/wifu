@@ -13,7 +13,7 @@
 
 class UDPSendPacketEvent : public PacketEvent {
 public:
-    UDPSendPacketEvent(Socket* socket, Packet* packet) : PacketEvent(socket, packet) {
+    UDPSendPacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {
 
     }
 

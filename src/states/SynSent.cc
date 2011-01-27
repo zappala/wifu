@@ -16,9 +16,9 @@ void SynSent::exit(Context* c) {
 
 }
 
-void SynSent::receive(Context* c, Socket* s, Packet* p) {
+void SynSent::receive(Context* c, Socket* s, WiFuPacket* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
-    TCPPacket* packet = (TCPPacket*) p;
+    TCPPacket* packet = new TCPPacket(*p);
 
     assert(packet->is_tcp_syn());
     assert(packet->is_tcp_ack());
@@ -26,10 +26,10 @@ void SynSent::receive(Context* c, Socket* s, Packet* p) {
     if (packet->is_tcp_syn() && packet->is_tcp_ack()) {
 
         unsigned char* data = (unsigned char*) "";
-        AddressPort* source = packet->get_destination();
-        AddressPort* destination = packet->get_source();
+        AddressPort* source = packet->get_source_address_port();
+        AddressPort* destination = packet->get_dest_address_port();
 
-        TCPPacket* response = new TCPPacket(source, destination, data, 0);
+        TCPPacket* response;// = new TCPPacket(source, destination, data, 0);
         response->set_tcp_ack(true);
 
         SendPacketEvent* e = new SendPacketEvent(s, response);

@@ -14,7 +14,6 @@
 
 #include "AddressPort.h"
 #include "Socket.h"
-#include "Packet.h"
 #include "../events/ConnectEvent.h"
 #include "../events/AcceptEvent.h"
 
@@ -58,7 +57,7 @@ public:
     virtual void connection_established(Context* c, Socket* s) {
     }
 
-    virtual void receive(Context* c, Socket* s, Packet* p) {
+    virtual void receive(Context* c, Socket* s, WiFuPacket* p) {
     }
 
     virtual void timeout(Context* c) {
@@ -70,7 +69,7 @@ public:
     virtual void close(Context* c) {
     }
 
-    virtual void send(Context* c, Socket* s, Packet* p) {
+    virtual void send(Context* c, Socket* s, WiFuPacket* p) {
     }
 
     void enter_state(string state) {

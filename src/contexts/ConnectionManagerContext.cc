@@ -26,11 +26,11 @@ void ConnectionManagerContext::close() {
     get_state()->close(this);
 }
 
-void ConnectionManagerContext::receive(Socket* s, Packet* p) {
+void ConnectionManagerContext::receive(Socket* s, WiFuPacket* p) {
     get_state()->receive(this, s, p);
 }
 
-void ConnectionManagerContext::send(Socket* s, Packet* p) {
+void ConnectionManagerContext::send(Socket* s, WiFuPacket* p) {
     get_state()->send(this, s, p);
 }
 

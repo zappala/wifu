@@ -25,7 +25,7 @@ void Closed::connect(Context* c, ConnectEvent* e) {
 
 
     unsigned char* data = (unsigned char*) "";
-    TCPPacket* p = new TCPPacket(s->get_local_address_port(), e->get_destination(), data, 0);
+    TCPPacket* p;// = new TCPPacket(s->get_local_address_port(), e->get_destination(), data, 0);
     p->set_tcp_syn(true);
     SendPacketEvent* event = new SendPacketEvent(s, p);
     Dispatcher::instance().enqueue(event);

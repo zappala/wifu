@@ -9,7 +9,7 @@
 #define	_SENDPACKETEVENT_H
 
 #include "Event.h"
-#include "Packet.h"
+#include "../headers/packet/WiFuPacket.h"
 
 using namespace std;
 
@@ -24,9 +24,9 @@ public:
      * Constructs a SendPacketEvent.
      *
      * @param socket The socket, which represents a unique connection, to use for this Event
-     * @param packet The Packet object to send
+     * @param packet The WiFuPacket object to send
      */
-    SendPacketEvent(Socket* socket, Packet* packet) : Event(socket), packet_(packet) {
+    SendPacketEvent(Socket* socket, WiFuPacket* packet) : Event(socket), packet_(packet) {
 
     }
 
@@ -41,9 +41,9 @@ public:
     }
 
     /**
-     * @return The Packet to send
+     * @return The WiFuPacket to send
      */
-    Packet* get_packet() {
+    WiFuPacket* get_packet() {
         return packet_;
     }
 
@@ -51,7 +51,7 @@ private:
     /**
      * Pointer to the packet to be sent
      */
-    Packet* packet_;
+    WiFuPacket* packet_;
 };
 
 #endif	/* _SENDSYNEVENT_H */

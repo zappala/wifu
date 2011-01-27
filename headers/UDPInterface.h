@@ -13,7 +13,6 @@
 #include "events/TimeoutEvent.h"
 #include "events/PacketReceivedEvent.h"
 #include "events/UDPSendPacketEvent.h"
-#include "Packet.h"
 #include "UDPSocket.h"
 #include "UDPSocketCallback.h"
 #include "AddressPort.h"
@@ -62,9 +61,9 @@ public:
      * @see UDPSocketCallback::receive()
      */
     void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
-        struct wifu_end_header* header = (struct wifu_end_header*) buffer;
-        AddressPort* remote = new AddressPort(ap.get_address(), header->virtual_src_port);
-        AddressPort* local = new AddressPort(socket_.get_bound_address_port()->get_address(), header->virtual_dest_port);
+        WiFuPacket* p = new WiFuPacket(buffer, length);
+        AddressPort* remote = p->get_source_address_port();
+        AddressPort* local = p->get_dest_address_port();
 
         Socket* s = SocketCollection::instance().get_by_local_and_remote_ap(local, remote);
 
@@ -79,7 +78,7 @@ public:
         }
 
         
-        Packet* p = new Packet(remote, local, buffer + END_HEADER_SIZE, length - END_HEADER_SIZE);
+        
         Event* e = new UDPReceivePacketEvent(s, p);
         Dispatcher::instance().enqueue(e);
     }
@@ -91,9 +90,10 @@ public:
      */
     void udp_send(Event* e) {
         UDPSendPacketEvent* event = (UDPSendPacketEvent*) e;
-        Packet* p = event->get_packet();
-        AddressPort destination(p->get_destination()->get_address(), WIFU_PORT);
-        socket_.send(destination, p->to_bytes(), p->packet_length());
+        WiFuPacket* p = event->get_packet();
+        string dest = p->get_ip_destination_address_s();
+        AddressPort destination(dest, WIFU_PORT);
+        socket_.send(destination, p->get_payload(), p->get_ip_datagram_length());
     }
 
     string& get_bound_ip_address() {

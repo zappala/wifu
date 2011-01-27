@@ -51,8 +51,6 @@ namespace {
             string result = sg.get_source_address(destination);
             CHECK_EQUAL(expected, result);
         }
-
-
     }
 }
 

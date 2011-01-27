@@ -12,6 +12,8 @@
 #include <netinet/ip.h>
 #include "defines.h"
 #include "GarbageCollector.h"
+#include <string>
+#include <string.h>
 
 using namespace std;
 
@@ -19,12 +21,14 @@ class IPPacket : public gc {
 public:
 
     IPPacket();
-    IPPacket(IPPacket const&);
+    IPPacket(IPPacket&);
     IPPacket(unsigned char* buffer, int length);
 
     ~IPPacket();
 
     unsigned char* get_payload();
+
+    unsigned char* get_next_header();
 
     // Gets the IP version of this packet
     u_int8_t get_ip_version();

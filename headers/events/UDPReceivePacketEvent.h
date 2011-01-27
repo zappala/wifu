@@ -14,7 +14,7 @@
 class UDPReceivePacketEvent : public PacketEvent {
 public:
 
-    UDPReceivePacketEvent(Socket* socket, Packet* packet) : PacketEvent(socket, packet) {
+    UDPReceivePacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {
 
     }
 

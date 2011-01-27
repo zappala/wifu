@@ -216,7 +216,7 @@ public:
 
 
         // TODO: Error check
-        Packet* p = event->get_packet();
+        WiFuPacket* p = event->get_packet();
 
         itr->second->receive(socket, p);
     }

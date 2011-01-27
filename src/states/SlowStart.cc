@@ -9,14 +9,14 @@ SlowStart::~SlowStart() {
 
 }
 
-void SlowStart::send(Context* c, Socket* s, Packet* p) {
+void SlowStart::send(Context* c, Socket* s, WiFuPacket* p) {
     // Send immediately for now
     CongestionControlContext* ccc = (CongestionControlContext*) c;
     UDPSendPacketEvent* e = new UDPSendPacketEvent(s, p);
     Dispatcher::instance().enqueue(e);
 }
 
-void SlowStart::receive(Context* c, Socket* s, Packet* p) {
+void SlowStart::receive(Context* c, Socket* s, WiFuPacket* p) {
 
 }
 

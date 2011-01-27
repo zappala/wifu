@@ -15,7 +15,7 @@
 #include "states/Listen.h"
 #include "states/SynSent.h"
 #include "../AddressPort.h"
-#include "../TCPPacket.h"
+#include "../headers/packet/TCPPacket.h"
 #include "../events/SendPacketEvent.h"
 #include "../events/ConnectEvent.h"
 

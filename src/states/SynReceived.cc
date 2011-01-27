@@ -17,7 +17,7 @@ void SynReceived::exit(Context* c) {
 
 }
 
-void SynReceived::receive(Context* c, Socket* s, Packet* p) {
+void SynReceived::receive(Context* c, Socket* s, WiFuPacket* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
@@ -29,7 +29,7 @@ void SynReceived::receive(Context* c, Socket* s, Packet* p) {
                                             s->get_type(),
                                             s->get_protocol(),
                                             s->get_local_address_port(),
-                                            packet->get_source());
+                                            packet->get_source_address_port());
 
         ConnectionEstablishedEvent* e = new ConnectionEstablishedEvent(cmc->get_accept_event(), new_socket);
         Dispatcher::instance().enqueue(e);

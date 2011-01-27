@@ -24,8 +24,8 @@ public:
     SlowStart();
     virtual ~SlowStart();
 
-    void send(Context* c, Socket* s, Packet* p);
-    void receive(Context* c, Socket* s, Packet* p);
+    void send(Context* c, Socket* s, WiFuPacket* p);
+    void receive(Context* c, Socket* s, WiFuPacket* p);
     void enter(Context* c);
     void exit(Context* c);
 };

@@ -10,7 +10,7 @@ IPPacket::IPPacket() {
     set_ip_ttl(MAX_TTL);
 }
 
-IPPacket::IPPacket(IPPacket const& p) {
+IPPacket::IPPacket(IPPacket& p) {
     ip_ = (struct iphdr*) payload_;
 
     memcpy(payload_, p.payload_, p.get_ip_datagram_length());
@@ -27,6 +27,10 @@ IPPacket::~IPPacket() {
 
 unsigned char* IPPacket::get_payload() {
     return payload_;
+}
+
+unsigned char* IPPacket::get_next_header() {
+    return get_payload() + get_ip_length_bytes();
 }
 
 u_int8_t IPPacket::get_ip_version() {

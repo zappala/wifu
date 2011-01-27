@@ -9,6 +9,7 @@
 #define	_WIFUPACKET_H
 
 #include "IPPacket.h"
+#include "AddressPort.h"
 
 using namespace std;
 
@@ -20,7 +21,7 @@ struct wifu_packet_header {
 class WiFuPacket : public IPPacket {
 public:
     WiFuPacket();
-    WiFuPacket(WiFuPacket const&);
+    WiFuPacket(IPPacket&);
     WiFuPacket(unsigned char* buffer, int length);
     ~WiFuPacket();
 
