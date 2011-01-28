@@ -137,7 +137,7 @@ public:
 
 private:
 
-    WifuEndBackEndLibrary() : LocalSocketFullDuplex("WS"), Module() {
+    WifuEndBackEndLibrary() : LocalSocketFullDuplex("/tmp/WS"), Module() {
 
     }
 

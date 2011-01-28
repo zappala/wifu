@@ -169,7 +169,7 @@ def build(bld):
 	build_wifu_end_test(bld)
 	build_wifu_frontend_test(bld)
 
-	bld.add_post_fun(post)
+	#bld.add_post_fun(post)
 
 def get_files(dir, regex):
         list = []

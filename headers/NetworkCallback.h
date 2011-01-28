@@ -11,6 +11,11 @@
 #include "packet/WiFuPacket.h"
 
 class NetworkCallback {
+
+    /**
+     * Callback function to be called when a packet is received from the network.
+     *
+     */
     virtual void receive(WiFuPacket* p) = 0;
 };
 

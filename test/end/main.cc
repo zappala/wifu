@@ -21,6 +21,7 @@
 #include "QueueTest.h"
 
 #include "LocalSocketFullDuplexTest.h"
+
 #include "QueryStringParserTest.h"
 #include "SocketDataMapTest.h"
 
@@ -58,6 +59,8 @@
 #include "packet/IPPacketTest.h"
 #include "packet/WiFuPacketTest.h"
 #include "packet/TCPPacketTest.h"
+
+#include "RawSocketListenerTest.h"
 
 using namespace UnitTest;
 
