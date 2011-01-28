@@ -37,13 +37,21 @@ void WiFuPacket::set_destination_port(u_int16_t port) {
 }
 
 AddressPort* WiFuPacket::get_source_address_port() {
-    return new AddressPort(get_ip_source_address_s().c_str(), get_source_port());
+    if(!source_) {
+        source_ = new AddressPort(get_ip_source_address_s().c_str(), get_source_port());
+    }
+    return source_;
 }
 
 AddressPort* WiFuPacket::get_dest_address_port() {
-    return new AddressPort(get_ip_destination_address_s().c_str(), get_destination_port());
+    if(!dest_) {
+        dest_ = new AddressPort(get_ip_destination_address_s().c_str(), get_destination_port());
+    }
+    return dest_;
 }
 
 void WiFuPacket::init() {
     ports_ = (struct wifu_packet_header*) get_next_header();
+    source_ = 0;
+    dest_ = 0;
 }

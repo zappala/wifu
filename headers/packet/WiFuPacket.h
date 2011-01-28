@@ -47,6 +47,8 @@ public:
 
 private:
     struct wifu_packet_header* ports_;
+    AddressPort* source_;
+    AddressPort* dest_;
 };
 
 #endif	/* _WIFUPACKET_H */
