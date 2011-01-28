@@ -56,7 +56,8 @@
 #include "SourceGetterTest.h"
 
 #include "packet/IPPacketTest.h"
-
+#include "packet/WiFuPacketTest.h"
+#include "packet/TCPPacketTest.h"
 
 using namespace UnitTest;
 

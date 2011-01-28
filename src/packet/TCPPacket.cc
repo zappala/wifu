@@ -19,6 +19,10 @@ TCPPacket::~TCPPacket() {
 
 }
 
+unsigned char* TCPPacket::get_data() {
+    return get_next_header() + sizeof(struct tcphdr);
+}
+
 u_int32_t TCPPacket::get_tcp_sequence_number() {
     return tcp_->seq;
 }

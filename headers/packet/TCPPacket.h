@@ -19,6 +19,8 @@ public:
     TCPPacket(unsigned char* buffer, int length);
     ~TCPPacket();
 
+    virtual unsigned char* get_data();
+    
     u_int32_t get_tcp_sequence_number();
     void set_tcp_sequence_number(u_int32_t seq_num);
     u_int32_t get_tcp_ack_number();

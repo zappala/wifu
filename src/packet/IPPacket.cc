@@ -29,6 +29,10 @@ unsigned char* IPPacket::get_payload() {
     return payload_;
 }
 
+unsigned char* IPPacket::get_data() {
+    return get_next_header();
+}
+
 unsigned char* IPPacket::get_next_header() {
     return get_payload() + get_ip_length_bytes();
 }

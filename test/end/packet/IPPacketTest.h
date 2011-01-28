@@ -104,6 +104,12 @@ namespace {
             CHECK(!memcmp(helper.get_buffer(), p.get_payload(), helper.length()));
         }
 
+        TEST(GetData) {
+            IPPacketHelper helper;
+            IPPacket p(helper.get_buffer(), helper.length());
+            CHECK(!strncmp(helper.get_data(), (const char*) p.get_data(), strlen(helper.get_data())));
+        }
+
         TEST(GetNextHeader) {
             IPPacketHelper helper;
             IPPacket p(helper.get_buffer(), helper.length());

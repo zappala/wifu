@@ -16,6 +16,10 @@ WiFuPacket::~WiFuPacket() {
 
 }
 
+unsigned char* WiFuPacket::get_data() {
+    return get_next_header() + sizeof(struct wifu_packet_header);
+}
+
 u_int16_t WiFuPacket::get_source_port() {
     return ports_->sport;
 }

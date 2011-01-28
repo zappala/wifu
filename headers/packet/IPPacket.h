@@ -28,6 +28,8 @@ public:
 
     unsigned char* get_payload();
 
+    virtual unsigned char* get_data();
+
     unsigned char* get_next_header();
 
     // Gets the IP version of this packet

@@ -25,6 +25,8 @@ public:
     WiFuPacket(unsigned char* buffer, int length);
     ~WiFuPacket();
 
+    virtual unsigned char* get_data();
+
     // Gets the source port of this packet
     u_int16_t get_source_port();
 
