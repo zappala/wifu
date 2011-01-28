@@ -82,7 +82,7 @@ namespace {
             CHECK_EQUAL(helper.length(), p.get_ip_datagram_length());
             CHECK_EQUAL(10, p.get_ip_ttl());
             CHECK_EQUAL(11, p.get_ip_version());
-            CHECK(!strncmp(helper.get_data(), (const char*) p.get_next_header(), strlen(helper.get_data())));
+            CHECK(!strncmp(helper.get_data(), (const char*) p.get_data(), strlen(helper.get_data())));
         }
 
         TEST(BufferConstructor) {

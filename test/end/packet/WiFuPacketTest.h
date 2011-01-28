@@ -84,6 +84,7 @@ namespace {
 
         TEST(EmptyConstructor) {
             WiFuPacket p;
+            // TODO: Nothing to test?
         }
 
         void test_constructor(WiFuPacket & p, WiFuPacketHelper & helper) {

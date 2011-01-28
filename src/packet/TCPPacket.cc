@@ -125,4 +125,5 @@ void TCPPacket::set_tcp_urgent_pointer(u_int16_t urg_ptr) {
 
 void TCPPacket::init() {
     tcp_ = (struct tcphdr*) get_next_header();
+    set_tcp_header_length(sizeof(struct tcphdr) / 4);
 }
