@@ -104,9 +104,9 @@ namespace {
 
         TEST(CopyConstructor) {
             WiFuPacketHelper helper;
-            //            WiFuPacket p(helper.get_buffer(), helper.length());
-            //            WiFuPacket c(p);
-            //            test_constructor(c, helper);
+            WiFuPacket p(helper.get_buffer(), helper.length());
+            WiFuPacket c(p);
+            test_constructor(c, helper);
         }
 
         TEST(SourcePort) {
