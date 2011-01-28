@@ -45,6 +45,8 @@ public:
     u_int16_t get_tcp_urgent_pointer();
     void set_tcp_urgent_pointer(u_int16_t urg_ptr);
 
+    void init();
+
 private:
     struct tcphdr* tcp_;
 

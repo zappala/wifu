@@ -4,7 +4,7 @@ IPPacket::IPPacket() {
     ip_ = (struct iphdr*) payload_;
 
     set_ip_version(4);
-    set_ip_length(sizeof(struct iphdr));
+    set_ip_length(sizeof(struct iphdr) / 4);
     set_ip_tos(0);
     set_ip_fragmentation_offset(0);
     set_ip_ttl(MAX_TTL);
@@ -145,4 +145,8 @@ string IPPacket::get_ip_destination_address_s() {
 
 void IPPacket::set_ip_destination_address_s(string daddr) {
     inet_pton(AF_INET, daddr.c_str(), &ip_->daddr);
+}
+
+void IPPacket::init() {
+    
 }

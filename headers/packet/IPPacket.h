@@ -111,6 +111,8 @@ public:
     // Sets a string representation of the destination IP address of this packet
     void set_ip_destination_address_s(string daddr);
 
+    void init();
+
 
 private:
     unsigned char payload_[PAYLOAD_SIZE];

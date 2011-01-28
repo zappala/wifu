@@ -4,15 +4,15 @@
 #include "packet/WiFuPacket.h"
 
 TCPPacket::TCPPacket() : WiFuPacket() {
-    tcp_ = (struct tcphdr*) get_next_header();
+    init();
 }
 
 TCPPacket::TCPPacket(IPPacket& p) : WiFuPacket(p) {
-    tcp_ = (struct tcphdr*) get_next_header();
+    init();
 }
 
 TCPPacket::TCPPacket(unsigned char* buffer, int length) : WiFuPacket(buffer, length) {
-    tcp_ = (struct tcphdr*) get_next_header();
+    init();
 }
 
 TCPPacket::~TCPPacket() {
@@ -117,4 +117,8 @@ u_int16_t TCPPacket::get_tcp_urgent_pointer() {
 
 void TCPPacket::set_tcp_urgent_pointer(u_int16_t urg_ptr) {
     tcp_->urg_ptr = urg_ptr;
+}
+
+void TCPPacket::init() {
+    tcp_ = (struct tcphdr*) get_next_header();
 }

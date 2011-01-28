@@ -19,8 +19,6 @@
 #include "BinarySemaphoreTest.h"
 #include "IDGeneratorTest.h"
 #include "QueueTest.h"
-#include "PacketTest.h"
-#include "TCPPacketTest.h"
 
 #include "LocalSocketFullDuplexTest.h"
 #include "QueryStringParserTest.h"
@@ -56,6 +54,8 @@
 #include "AlreadyBoundToAddressPortVisitorTest.h"
 #include "TempTest.h"
 #include "SourceGetterTest.h"
+
+#include "packet/IPPacketTest.h"
 
 
 using namespace UnitTest;

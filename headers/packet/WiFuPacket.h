@@ -41,6 +41,8 @@ public:
     
     AddressPort* get_dest_address_port();
 
+    void init();
+
 private:
     struct wifu_packet_header* ports_;
 };
