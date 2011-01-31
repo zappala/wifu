@@ -128,6 +128,9 @@ void* listener(void* arg) {
 
         read_fd_set = active_fd_set;
         if (select(max_fd, &read_fd_set, NULL, NULL, NULL) < 0) {
+            if(errno == EINTR) {
+                continue;
+            }
             perror("RawSocketListener: select()");
             exit(EXIT_FAILURE);
         }

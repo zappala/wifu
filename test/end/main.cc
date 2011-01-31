@@ -61,6 +61,7 @@
 #include "packet/TCPPacketTest.h"
 
 #include "RawSocketsTest.h"
+#include "NetworkInterfaceTest.h"
 
 using namespace UnitTest;
 

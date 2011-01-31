@@ -23,6 +23,10 @@ unsigned char* TCPPacket::get_data() {
     return get_next_header() + sizeof (struct tcphdr);
 }
 
+int TCPPacket::get_data_length_bytes() {
+    return get_ip_datagram_length() - get_ip_length_bytes() - sizeof(struct tcphdr);
+}
+
 void TCPPacket::set_data(unsigned char* data, int length) {
     memcpy(get_data(), data, length);
     set_ip_datagram_length(get_ip_length_bytes() + sizeof (struct tcphdr) + length);

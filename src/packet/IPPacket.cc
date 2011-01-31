@@ -33,6 +33,10 @@ unsigned char* IPPacket::get_data() {
     return get_next_header();
 }
 
+int IPPacket::get_data_length_bytes() {
+    return get_ip_datagram_length() - get_ip_length_bytes();
+}
+
 void IPPacket::set_data(unsigned char* data, int length) {
     memcpy(get_data(), data, length);
     set_ip_datagram_length(get_ip_length_bytes() + length);

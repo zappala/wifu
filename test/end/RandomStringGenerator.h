@@ -29,5 +29,7 @@ public:
     }
 };
 
+#define random_string(x) RandomStringGenerator::get_data(x)
+
 #endif	/* _RANDOMSTRINGGENERATOR_H */
 

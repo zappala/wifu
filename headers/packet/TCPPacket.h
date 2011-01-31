@@ -21,6 +21,7 @@ public:
     ~TCPPacket();
 
     virtual unsigned char* get_data();
+    virtual int get_data_length_bytes();
 
     virtual void set_data(unsigned char* data, int length);
     

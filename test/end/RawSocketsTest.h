@@ -18,8 +18,6 @@
 #include "../headers/WiFuPacketFactory.h"
 #include "RandomStringGenerator.h"
 
-#define random_string(x) RandomStringGenerator::get_data(x)
-
 using namespace std;
 
 class NetworkCallbackImpl : public NetworkCallback {
@@ -58,8 +56,6 @@ private:
     Semaphore sem_;
 };
 
-
-
 WiFuPacket* make_packet(string& data) {
     WiFuPacket* p = new WiFuPacket();
 
@@ -91,16 +87,12 @@ namespace {
             listener.register_protocol(100, new WiFuPacketFactory());
             listener.start(&callback);
 
-            string data = random_string(1000);
-
-            sender.send(make_packet(data));
-
-            callback.get_sem().wait();
-
-            CHECK_EQUAL(data, callback.get_message());
-
-
-
+            for (int i = 0; i < 100; i++) {
+                string data = random_string(1000);
+                sender.send(make_packet(data));
+                callback.get_sem().wait();
+                CHECK_EQUAL(data, callback.get_message());
+            }
         }
     }
 }

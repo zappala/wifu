@@ -17,12 +17,16 @@ WiFuPacket::~WiFuPacket() {
 }
 
 unsigned char* WiFuPacket::get_data() {
-    return get_next_header() + sizeof(struct wifu_packet_header);
+    return get_next_header() + sizeof (struct wifu_packet_header);
+}
+
+int WiFuPacket::get_data_length_bytes() {
+    return get_ip_datagram_length() - get_ip_length_bytes() - sizeof (struct wifu_packet_header);
 }
 
 void WiFuPacket::set_data(unsigned char* data, int length) {
     memcpy(get_data(), data, length);
-    set_ip_datagram_length(get_ip_length_bytes() + sizeof(struct wifu_packet_header) + length);
+    set_ip_datagram_length(get_ip_length_bytes() + sizeof (struct wifu_packet_header) + length);
 }
 
 u_int16_t WiFuPacket::get_source_port() {
@@ -42,14 +46,14 @@ void WiFuPacket::set_destination_port(u_int16_t port) {
 }
 
 AddressPort* WiFuPacket::get_source_address_port() {
-    if(!source_) {
+    if (!source_) {
         source_ = new AddressPort(get_ip_source_address_s().c_str(), get_source_port());
     }
     return source_;
 }
 
 AddressPort* WiFuPacket::get_dest_address_port() {
-    if(!dest_) {
+    if (!dest_) {
         dest_ = new AddressPort(get_ip_destination_address_s().c_str(), get_destination_port());
     }
     return dest_;
