@@ -20,6 +20,8 @@
 #include <errno.h>
 #include <arpa/inet.h>
 
+#include "packet/WiFuPacket.h"
+
 using namespace std;
 
 class RawSocketSender {
@@ -31,15 +33,16 @@ public:
     }
 
     ssize_t send(WiFuPacket* p) {
+        cout << "Sending to: " << p->get_dest_address_port()->to_s() << endl;
         int ret = sendto(socket_,
                 p->get_payload(),
-                p->get_ip_length_bytes(),
+                p->get_ip_datagram_length(),
                 0,
                 (struct sockaddr*) p->get_dest_address_port(),
                 (sizeof (struct sockaddr_in)));
 
         if (ret < 0) {
-            perror("NetworkInterface: Error Sending Packet");
+            perror("RawSocketSender: Error Sending Packet");
             // TODO: What should we do on a fail?
         }
         return ret;
