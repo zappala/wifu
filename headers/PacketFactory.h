@@ -9,8 +9,9 @@
 #define	_PACKETFACTORY_H
 
 #include "packet/WiFuPacket.h"
+#include "GarbageCollector.h"
 
-class PacketFactory {
+class PacketFactory : public gc {
 public:
     virtual WiFuPacket* create() = 0;
 };

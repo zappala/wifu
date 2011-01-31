@@ -38,7 +38,7 @@ public:
                 p->get_payload(),
                 p->get_ip_datagram_length(),
                 0,
-                (struct sockaddr*) p->get_dest_address_port(),
+                (struct sockaddr*) p->get_dest_address_port()->get_network_struct_ptr(),
                 (sizeof (struct sockaddr_in)));
 
         if (ret < 0) {

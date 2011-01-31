@@ -11,7 +11,7 @@
 #include "packet/WiFuPacket.h"
 
 class NetworkCallback {
-
+public:
     /**
      * Callback function to be called when a packet is received from the network.
      *

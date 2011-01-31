@@ -15,6 +15,7 @@
 #include "../headers/RawSocketSender.h"
 #include "../headers/PacketFactory.h"
 #include "../headers/packet/WiFuPacket.h"
+#include "../headers/WiFuPacketFactory.h"
 
 using namespace std;
 
@@ -54,13 +55,6 @@ private:
     Semaphore sem_;
 };
 
-class PacketFactoryImpl : public PacketFactory {
-
-    WiFuPacket* create() {
-        return new WiFuPacket();
-    }
-};
-
 void get_packet(AddressPort& destination, unsigned char* datagram) {
     struct iphdr *iph = (struct iphdr *) datagram;
     struct tcphdr* tcp = (struct tcphdr*) (datagram + sizeof (struct ip));
@@ -98,6 +92,7 @@ WiFuPacket* make_packet() {
     get_packet(dest, buffer);
     
     WiFuPacket* p = new WiFuPacket(buffer, 1500);
+    p->set_ip_protocol(100);
     return p;
     
 }
@@ -113,7 +108,7 @@ namespace {
             RawSocketListener listener;
             NetworkCallbackImpl callback;
 
-            listener.register_protocol(100, new PacketFactoryImpl);
+            listener.register_protocol(100, new WiFuPacketFactory());
             listener.start(&callback);
 
             sender.send(make_packet());

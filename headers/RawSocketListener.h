@@ -26,6 +26,8 @@
 #include "defines.h"
 #include "PacketFactory.h"
 
+using namespace std;
+
 
 void* listener(void* arg);
 void handle_receive(int fd, NetworkCallback* callback);
@@ -71,6 +73,7 @@ public:
         FD_SET(fd, &active_fd_set_);
 
         factories_[fd] = pf;
+        cout << "Registered protocol: " << protocol << endl;
     }
 
     void start(NetworkCallback* callback) {
@@ -127,12 +130,13 @@ void* listener(void* arg) {
             perror("RawSocketListener: select()");
             exit(EXIT_FAILURE);
         }
-        
+
         for (int fd = min_fd; fd < max_fd; ++fd) {
             if (FD_ISSET(fd, &read_fd_set)) {
                 WiFuPacket* packet = factories->operator [](fd)->create();
                 ret = recv(fd, packet->get_payload(), PAYLOAD_SIZE, 0);
                 packet->set_ip_datagram_length(ret);
+                callback->receive(packet);
 
             }
         }
