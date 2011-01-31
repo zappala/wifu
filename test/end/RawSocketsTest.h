@@ -86,15 +86,25 @@ void get_packet(AddressPort& destination, unsigned char* datagram) {
     tcp->dest = destination.get_port();
 }
 
-WiFuPacket* make_packet() {
-    unsigned char buffer[1500];
-    AddressPort dest("127.0.0.1", 5000);
-    get_packet(dest, buffer);
-    
-    WiFuPacket* p = new WiFuPacket(buffer, 1500);
+WiFuPacket* make_packet(string& data) {
+    WiFuPacket* p = new WiFuPacket();
+
+    p->set_ip_length(5);
+    p->set_ip_version(4);
+    p->set_ip_tos(0);
+    p->set_ip_destination_address_s("127.0.0.1");
+    p->set_destination_port(5000);
     p->set_ip_protocol(100);
+    p->set_source_port(5001);
+    p->set_ip_ttl(65);
+
+    int length = sizeof(struct iphdr) + sizeof(struct wifu_packet_header) + data.length();
+    p->set_ip_datagram_length(length);
+
+    strncpy((char*) p->get_data(), data.c_str(), data.length());
     return p;
     
+
 }
 
 
@@ -111,9 +121,13 @@ namespace {
             listener.register_protocol(100, new WiFuPacketFactory());
             listener.start(&callback);
 
-            sender.send(make_packet());
+            string data = "This is some data";
+
+            sender.send(make_packet(data));
 
             callback.get_sem().wait();
+
+            CHECK_EQUAL(data, callback.get_message());
 
 
 

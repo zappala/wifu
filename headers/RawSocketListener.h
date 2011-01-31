@@ -73,7 +73,6 @@ public:
         FD_SET(fd, &active_fd_set_);
 
         factories_[fd] = pf;
-        cout << "Registered protocol: " << protocol << endl;
     }
 
     void start(NetworkCallback* callback) {
@@ -122,8 +121,10 @@ void* listener(void* arg) {
     sem->post();
 
     int ret;
-
+    WiFuPacket* packet;
+    PacketFactory* factory;
     while (1) {
+
 
         read_fd_set = active_fd_set;
         if (select(max_fd, &read_fd_set, NULL, NULL, NULL) < 0) {
@@ -133,11 +134,14 @@ void* listener(void* arg) {
 
         for (int fd = min_fd; fd < max_fd; ++fd) {
             if (FD_ISSET(fd, &read_fd_set)) {
-                WiFuPacket* packet = factories->operator [](fd)->create();
+                factory = factories->operator [](fd);
+                packet = factory->create();
                 ret = recv(fd, packet->get_payload(), PAYLOAD_SIZE, 0);
+                if(ret <= 0) {
+                    assert(false);
+                }
                 packet->set_ip_datagram_length(ret);
                 callback->receive(packet);
-
             }
         }
     }

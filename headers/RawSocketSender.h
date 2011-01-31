@@ -33,7 +33,6 @@ public:
     }
 
     ssize_t send(WiFuPacket* p) {
-        cout << "Sending to: " << p->get_dest_address_port()->to_s() << endl;
         int ret = sendto(socket_,
                 p->get_payload(),
                 p->get_ip_datagram_length(),
