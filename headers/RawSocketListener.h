@@ -134,6 +134,7 @@ void* listener(void* arg) {
             if (ret <= 0) {
                 assert(false);
             }
+            
             packet->set_ip_datagram_length(ret);
             callback->receive(packet);
         }
