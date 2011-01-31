@@ -20,11 +20,14 @@
 #include <iostream>
 #include <errno.h>
 #include <math.h>
+#include <sys/epoll.h>
 
 #include "NetworkCallback.h"
 #include "Semaphore.h"
 #include "defines.h"
 #include "PacketFactory.h"
+
+#define MAX_EVENTS 1000
 
 using namespace std;
 
@@ -34,10 +37,7 @@ void handle_receive(int fd, NetworkCallback* callback);
 
 struct listen_data {
     NetworkCallback* callback;
-    fd_set active_fd_set;
-    fd_set read_fd_set;
-    int max_fd;
-    int min_fd;
+    int epfd;
     Semaphore* sem;
     map<int, PacketFactory*>* factories;
 };
@@ -45,10 +45,10 @@ struct listen_data {
 class RawSocketListener {
 public:
 
-    RawSocketListener() : max_fd_(-1), min_fd_(pow(2, 30)), started_(false) {
-        FD_ZERO(&active_fd_set_);
+    RawSocketListener() : started_(false) {
         sem_ = new Semaphore();
         sem_->init(0);
+        epfd_ = epoll_create(1);
     }
 
     void register_protocol(int protocol, PacketFactory* pf) {
@@ -64,27 +64,20 @@ public:
             exit(EXIT_FAILURE);
         }
 
-        if (fd > max_fd_) {
-            max_fd_ = fd;
-        }
-        if (fd < min_fd_) {
-            min_fd_ = fd;
-        }
-        FD_SET(fd, &active_fd_set_);
+        struct epoll_event event;
+        event.events = EPOLLIN;
+        event.data.fd = fd;
+        epoll_ctl(epfd_, EPOLL_CTL_ADD, fd, &event);
 
         factories_[fd] = pf;
     }
 
     void start(NetworkCallback* callback) {
         started_ = true;
-        max_fd_ += 1;
 
         struct listen_data data;
-        data.active_fd_set = active_fd_set_;
         data.callback = callback;
-        data.max_fd = max_fd_;
-        data.min_fd = min_fd_;
-        data.read_fd_set = read_fd_set_;
+        data.epfd = epfd_;
         data.sem = sem_;
         data.factories = &factories_;
 
@@ -97,12 +90,8 @@ public:
     }
 
 private:
-    map<int, int> fds_;
     map<int, PacketFactory*> factories_;
-    fd_set active_fd_set_;
-    fd_set read_fd_set_;
-    int max_fd_;
-    int min_fd_;
+    int epfd_;
     Semaphore* sem_;
     bool started_;
     pthread_t thread_;
@@ -110,11 +99,8 @@ private:
 
 void* listener(void* arg) {
     struct listen_data* data = (struct listen_data*) arg;
-    fd_set active_fd_set = data->active_fd_set;
-    fd_set read_fd_set = data->read_fd_set;
     NetworkCallback* callback = data->callback;
-    int max_fd = data->max_fd;
-    int min_fd = data->min_fd;
+    int epfd = data->epfd;
     Semaphore* sem = data->sem;
     map<int, PacketFactory*>* factories = data->factories;
 
@@ -123,29 +109,33 @@ void* listener(void* arg) {
     int ret;
     WiFuPacket* packet;
     PacketFactory* factory;
+    struct epoll_event events[MAX_EVENTS];
+    int nfds, fd;
+
     while (1) {
+        nfds = epoll_wait(epfd, events, MAX_EVENTS, -1);
 
-
-        read_fd_set = active_fd_set;
-        if (select(max_fd, &read_fd_set, NULL, NULL, NULL) < 0) {
-            if(errno == EINTR) {
+        if (nfds < 0) {
+            if (errno == EINTR) {
                 continue;
             }
-            perror("RawSocketListener: select()");
+            perror("RawSocketListener: epoll_wait()");
             exit(EXIT_FAILURE);
         }
 
-        for (int fd = min_fd; fd < max_fd; ++fd) {
-            if (FD_ISSET(fd, &read_fd_set)) {
-                factory = factories->operator [](fd);
-                packet = factory->create();
-                ret = recv(fd, packet->get_payload(), PAYLOAD_SIZE, 0);
-                if(ret <= 0) {
-                    assert(false);
-                }
-                packet->set_ip_datagram_length(ret);
-                callback->receive(packet);
+        for (int i = 0; i < nfds; ++i) {
+
+            fd = events[i].data.fd;
+
+            factory = factories->operator [](fd);
+            packet = factory->create();
+            
+            ret = recv(fd, packet->get_payload(), PAYLOAD_SIZE, 0);
+            if (ret <= 0) {
+                assert(false);
             }
+            packet->set_ip_datagram_length(ret);
+            callback->receive(packet);
         }
     }
 }
