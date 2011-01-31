@@ -30,6 +30,8 @@ public:
 
     virtual unsigned char* get_data();
 
+    virtual void set_data(unsigned char* data, int length);
+
     unsigned char* get_next_header();
 
     // Gets the IP version of this packet

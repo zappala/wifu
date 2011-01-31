@@ -27,6 +27,8 @@ public:
 
     virtual unsigned char* get_data();
 
+    virtual void set_data(unsigned char* data, int length);
+
     // Gets the source port of this packet
     u_int16_t get_source_port();
 

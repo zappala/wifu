@@ -20,7 +20,12 @@ TCPPacket::~TCPPacket() {
 }
 
 unsigned char* TCPPacket::get_data() {
-    return get_next_header() + sizeof(struct tcphdr);
+    return get_next_header() + sizeof (struct tcphdr);
+}
+
+void TCPPacket::set_data(unsigned char* data, int length) {
+    memcpy(get_data(), data, length);
+    set_ip_datagram_length(get_ip_length_bytes() + sizeof (struct tcphdr) + length);
 }
 
 u_int32_t TCPPacket::get_tcp_sequence_number() {
@@ -125,5 +130,5 @@ void TCPPacket::set_tcp_urgent_pointer(u_int16_t urg_ptr) {
 
 void TCPPacket::init() {
     tcp_ = (struct tcphdr*) get_next_header();
-    set_tcp_header_length(sizeof(struct tcphdr) / 4);
+    set_tcp_header_length(sizeof (struct tcphdr) / 4);
 }

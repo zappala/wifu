@@ -21,6 +21,8 @@ public:
     ~TCPPacket();
 
     virtual unsigned char* get_data();
+
+    virtual void set_data(unsigned char* data, int length);
     
     u_int32_t get_tcp_sequence_number();
     void set_tcp_sequence_number(u_int32_t seq_num);

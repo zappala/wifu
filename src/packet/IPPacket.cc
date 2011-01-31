@@ -33,6 +33,11 @@ unsigned char* IPPacket::get_data() {
     return get_next_header();
 }
 
+void IPPacket::set_data(unsigned char* data, int length) {
+    memcpy(get_data(), data, length);
+    set_ip_datagram_length(get_ip_length_bytes() + length);
+}
+
 unsigned char* IPPacket::get_next_header() {
     return get_payload() + get_ip_length_bytes();
 }

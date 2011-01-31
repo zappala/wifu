@@ -20,6 +20,11 @@ unsigned char* WiFuPacket::get_data() {
     return get_next_header() + sizeof(struct wifu_packet_header);
 }
 
+void WiFuPacket::set_data(unsigned char* data, int length) {
+    memcpy(get_data(), data, length);
+    set_ip_datagram_length(get_ip_length_bytes() + sizeof(struct wifu_packet_header) + length);
+}
+
 u_int16_t WiFuPacket::get_source_port() {
     return ports_->sport;
 }
