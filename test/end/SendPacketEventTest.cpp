@@ -33,7 +33,7 @@ namespace {
 	TEST(SendPacketEventTest, send) {
 		IModuleDummyImplementation dummyImodule;
 		ASSERT_TRUE(dummyImodule.sent == false);
-		Packet* p;
+		WiFuPacket* p;
 		Socket* s = new Socket(1, 2, 3);
 		SendPacketEvent sendPacketEvent(s, p);
 		sendPacketEvent.execute(&dummyImodule);
