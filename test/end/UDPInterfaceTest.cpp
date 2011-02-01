@@ -23,7 +23,7 @@
 #include "../headers/events/UDPReceivePacketEvent.h"
 #include "../headers/events/UDPSendPacketEvent.h"
 #include "../headers/Socket.h"
-#include "../preliminary/Timer.h"
+#include "../headers/Timer.h"
 #include "../headers/Semaphore.h"
 #include "../headers/Packet.h"
 
