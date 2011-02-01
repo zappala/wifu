@@ -15,6 +15,7 @@
 #include "Module.h"
 #include "RawSocketListener.h"
 #include "AddressPort.h"
+#include "SocketCollection.h"
 
 class NetworkInterface : public Module, public NetworkCallback {
 public:
