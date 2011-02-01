@@ -114,7 +114,7 @@ def build_wifu(bld):
         src_files = bld.glob('src/*.cc')
         src_files += bld.glob('src/contexts/*.cc')
         src_files += bld.glob('src/states/*.cc')
-	src_files += bld.glob('src/observer/*.cc')
+        src_files += bld.glob('src/observer/*.cc')
 
 	exe = bld(features='cxx cprogram',
         source=src_files,
@@ -125,10 +125,18 @@ def build_wifu(bld):
         target='wifu-end')
 
 def build_wifu_end_test(bld):
-	test_end_files = bld.glob('test/end/*.cpp')
+	test_files = bld.glob('test/end/*.cpp')
+	
+	project_files = bld.glob('src/*.cc')
+	project_files.remove('src/main.cc')
+	project_files += bld.glob('src/observer/*.cc')
+	project_files += bld.glob('src/contexts/*.cc')
+	project_files += bld.glob('src/states/*.cc')
+	
+	filesToUse = test_files + project_files
 
 	test_end = bld(features='cxx cprogram',
-        source=test_end_files,
+        source=filesToUse,
         includes='preliminary headers lib/gc/include lib/gtest/include headers/contexts headers/states headers/observer',
         uselib='PTHREAD RT',
 		libpath = '../lib/gc',
