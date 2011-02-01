@@ -19,6 +19,7 @@
 
 #include "../headers/LocalSocketFullDuplex.h"
 #include "../headers/RandomNumberSet.h"
+#include "Utils.h"
 
 using namespace std;
 
