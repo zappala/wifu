@@ -26,92 +26,35 @@ enum HowSorted {
 
 // functions used in sorting
 
-bool id_cmp(Socket* a, Socket* b) {
-    return a->get_socket_id() < b->get_socket_id();
-}
+bool id_cmp(Socket* a, Socket* b);
 
-bool ap_cmp(Socket* a, Socket* b) {
-    string astring = a->get_local_address_port()->to_s();
-    string bstring = b->get_local_address_port()->to_s();
-
-    if (astring < bstring) {
-        return true;
-    } else if (astring == bstring) {
-        return a->get_remote_address_port()->to_s() < b->get_remote_address_port()->to_s();
-    }
-
-    return false;
-}
+bool ap_cmp(Socket* a, Socket* b);
 
 // functions used in binary search
 
-int bsearch_id_cmp(int& value, Socket* s) {
-    return value - s->get_socket_id();
-}
+int bsearch_id_cmp(int& value, Socket* s);
 
-int b_search_local_cmp(AddressPort* local, Socket* s) {
-    return local->to_s().compare(s->get_local_address_port()->to_s());
-}
+int b_search_local_cmp(AddressPort* local, Socket* s);
 
 // first element in pair is local, second is remote
 
-int b_search_local_remote_cmp(pair<AddressPort*, AddressPort*>& aps, Socket* s) {
-    AddressPort* local = aps.first;
-    AddressPort* remote = aps.second;
-
-    int value = local->to_s().compare(s->get_local_address_port()->to_s());
-    if (value < 0) {
-        return -1;
-    } else if (value > 0) {
-        return 1;
-    }
-
-    // locals are the same, compare remote
-    return remote->to_s().compare(s->get_remote_address_port()->to_s());
-
-}
+int b_search_local_remote_cmp(pair<AddressPort*, AddressPort*>& aps, Socket* s);
 
 class SocketCollection : public Visitable, public Observer {
 private:
 
-    SocketCollection() : how_sorted_(RE_SORT) {
-        mutex_.init(1);
-    }
+    SocketCollection();
 
-    SocketCollection & operator=(const SocketCollection& other) {
-    }
+    SocketCollection& operator=(const SocketCollection& other);
 
-    SocketCollection(const SocketCollection& other) {
-    }
+    SocketCollection(const SocketCollection& other);
 
-    template<typename Type, typename Type2>
-    Socket* binary_search(Type target, int(*compare)(Type2, Socket*)) {
-        typedef vector<Socket*>::iterator itr;
-        itr begin = collection_.begin();
-        itr end = collection_.end();
+    template<typename Type1, typename Type2>
+    Socket* binary_search(Type1 target, int (*compare)(Type2, Socket*));
 
-        while (begin < end) {
-            itr middle = begin + (end - begin - 1) / 2;
-            int value = compare(target, *middle);
+    void socket_sort(bool(*f)(Socket*, Socket*));
 
-            if (value < 0) {
-                end = middle;
-            } else if (value > 0) {
-                begin = middle + 1;
-            } else {
-                return *middle;
-            }
-        }
-        return NULL;
-    }
-
-    void socket_sort(bool(*f)(Socket*, Socket*)) {
-        sort(collection_.begin(), collection_.end(), f);
-    }
-
-    void mark_dirty() {
-        how_sorted_ = RE_SORT;
-    }
+    void mark_dirty();
 
     vector<Socket*> collection_;
     Semaphore mutex_;
@@ -119,107 +62,28 @@ private:
 
 public:
 
-    static SocketCollection& instance() {
-        static SocketCollection instance_;
-        return instance_;
-    }
+    static SocketCollection& instance();
 
-    virtual ~SocketCollection() {
-    }
+    virtual ~SocketCollection();
 
-    Socket* get_by_id(int id) {
-        assert(id >= 0);
+    Socket* get_by_id(int id);
 
-        mutex_.wait();
-        if (how_sorted_ != ID) {
-            socket_sort(id_cmp);
-            how_sorted_ = ID;
-        }
-        Socket* value = binary_search(id, bsearch_id_cmp);
-        mutex_.post();
-        return value;
-    }
+    Socket* get_by_local_ap(AddressPort* local);
 
-    Socket* get_by_local_ap(AddressPort* local) {
-        assert(local != NULL);
+    Socket* get_by_local_and_remote_ap(AddressPort* local, AddressPort* remote);
 
-        mutex_.wait();
-        if (how_sorted_ != AP) {
-            socket_sort(ap_cmp);
-            how_sorted_ = AP;
-        }
+    void push(Socket* s);
 
-        Socket* value = binary_search(local, b_search_local_cmp);
-        mutex_.post();
-        return value;
-    }
+    int size();
 
-    Socket* get_by_local_and_remote_ap(AddressPort* local, AddressPort* remote) {
-        assert(local != NULL);
-        assert(remote != NULL);
+    int clear();
 
-        mutex_.wait();
-        if (how_sorted_ != AP) {
-            socket_sort(ap_cmp);
-            how_sorted_ = AP;
-        }
+    void shuffle();
 
-        pair<AddressPort*, AddressPort*> p = make_pair(local, remote);
-        Socket* value = binary_search(p, b_search_local_remote_cmp);
-        mutex_.post();
-        return value;
-    }
+    virtual void accept(Visitor* v);
 
-    void push(Socket* s) {
-        mutex_.wait();
-        s->add_observer(this);
-        collection_.push_back(s);
-        how_sorted_ = RE_SORT;
-        mutex_.post();
-    }
-
-    int size() {
-        mutex_.wait();
-        int val = collection_.size();
-        mutex_.post();
-        return val;
-    }
-
-    int clear() {
-        mutex_.wait();
-        collection_.clear();
-        how_sorted_ = RE_SORT;
-        mutex_.post();
-    }
-
-    void shuffle() {
-        mutex_.wait();
-        random_shuffle(collection_.begin(), collection_.end());
-        mutex_.post();
-    }
-
-    virtual void accept(Visitor* v) {
-        mutex_.wait();
-        int size = collection_.size();
-        for (int i = 0; i < size; i++) {
-            v->visit(collection_[i]);
-            if (v->stop()) {
-                break;
-            }
-        }
-        mutex_.post();
-    }
-
-    void update(Observable* o) {
-        // TODO: assert that o is an instance of Socket*
-
-        // We simply want to mark the collection dirty so we will re-sort it
-        mark_dirty();
-    }
+    void update(Observable* o);
 
 };
 
-
-
 #endif	/* _SOCKETCOLLECTION_H */
-
