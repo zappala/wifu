@@ -25,7 +25,7 @@
 #include "../headers/Socket.h"
 #include "../headers/Timer.h"
 #include "../headers/Semaphore.h"
-#include "../headers/Packet.h"
+#include "../headers/packet/WiFuPacket.h"
 
 #define udp UDPInterface::instance()
 #define dispatcher Dispatcher::instance()
@@ -46,7 +46,7 @@ namespace {
 			s.post();
 		}
 
-		Packet* p;
+		WiFuPacket* p;
 		Semaphore s;
 	};
 
