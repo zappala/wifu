@@ -47,14 +47,15 @@ namespace {
 
     };
 
+
 	TEST(LocalSocketFullDuplexTest, all) {
 
-		string file1("LSFDF1");
+		RandomNumberSet<u_int16_t> numbers;
+		string file1("/tmp/LSFDF1");
+		file1.append(Utils::itoa(numbers.get()));
+		LocalSocketFullDuplexImpl1 s1(file1);
 
-        RandomNumberSet<u_int16_t> numbers;
-        string file1("/tmp/LSFDF1");
-        file1.append(Utils::itoa(numbers.get()));
-        LocalSocketFullDuplexImpl1 s1(file1);
+		string message = "This is a test message";
 
 		ssize_t sent = s1.send_to(file1, message);
 
@@ -64,14 +65,12 @@ namespace {
 
 		usleep(5000);
 
-        usleep(5000);
+		ASSERT_EQ(message.size(), sent);
+		ASSERT_EQ(message, s1.get_last_received());
 
-        ASSERT_EQ(message.size(), sent);
-        ASSERT_EQ(message, s1.get_last_received());
+		unlink(file1.c_str());
 
-        unlink(file1.c_str());
-    }
+	}
 }
 
 #endif	/* LOCALSOCKETFULLDUPLEXTEST_H */
-
