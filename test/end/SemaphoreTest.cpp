@@ -81,7 +81,6 @@ namespace {
 
 		{
 			Utils::get_timespec_future_time(0, 500000, &timer);
-			UNITTEST_TIME_CONSTRAINT(50);
 			bool timedout = s.timed_wait(&timer);
 			ASSERT_TRUE(!timedout);
 		}
