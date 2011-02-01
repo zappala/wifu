@@ -5,8 +5,8 @@
  *      Author: erickson
  */
 
-#ifndef WIFUBACKENDLIBRARYTEST_H_
-#define WIFUBACKENDLIBRARYTEST_H_
+#ifndef WIFUBANDENDLIBRARYTEST
+#define WIFUBANDENDLIBRARYTEST
 
 #include "gtest/gtest.h"
 #include "../headers/WifuEndBackEndLibrary.h"
@@ -15,6 +15,10 @@ using namespace std;
 
 namespace {
 
+	TEST(WifuEndBackEndLibraryTest, all) {
+
+	}
+
 }
 
-#endif /* WIFUBACKENDLIBRARYTEST_H_ */
+#endif
