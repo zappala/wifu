@@ -44,18 +44,7 @@ namespace {
 		}
 
 	    virtual void start_backend() {
-//	    	bool notFound;
-//	    	string ls = getOutputFromCommand("ls wifu-end");
-//	    	int returned = ls.find("No such file or directory");
-//	    	notFound = returned == string::npos ? true : false;
-//
-	    	string commandToExecute;
-//	    	if (notFound)
-//	    		commandToExecute = "./bin/wifu-end";
-//	    	else
-//	    		commandToExecute = "./wifu-end";
-//	    	commandToExecute = "wifu-end";
-	    	commandToExecute = "./bin/wifu-end";
+	    	string commandToExecute = "./wifu-end";
 
 	        int value = system(commandToExecute.c_str());
 	        if (value < 0)

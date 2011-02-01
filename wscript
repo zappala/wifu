@@ -141,7 +141,7 @@ def build_wifu_end_test(bld):
 
 	test_end = bld(features='cxx cprogram',
         source=filesToUse,
-        includes='preliminary headers lib/gc/include lib/gtest/include headers/contexts headers/states headers/observer headers/packet',
+        includes='preliminary headers lib/gc/include lib/gtest/include headers/contexts headers/states headers/observer headers/packet test/end/headers',
         uselib='PTHREAD RT',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp','gc','cord'],

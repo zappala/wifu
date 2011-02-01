@@ -5,10 +5,7 @@
  * Created on January 28, 2011, 2:12 PM
  */
 
-#ifndef _RAWSOCKETLISTENERTEST_H
-#define	_RAWSOCKETLISTENERTEST_H
-
-#include "UnitTest++.h"
+#include "gtest/gtest.h"
 #include "../headers/AddressPort.h"
 #include "../headers/NetworkCallback.h"
 #include "../headers/RawSocketListener.h"
@@ -75,27 +72,20 @@ WiFuPacket* make_packet(string& data) {
 
 
 namespace {
+	TEST(RawSockets, all) {
 
-    SUITE(RawSockets) {
+		RawSocketSender sender;
+		RawSocketListener listener;
+		NetworkCallbackImpl callback;
 
-        TEST(RawSockets) {
+		listener.register_protocol(100, new WiFuPacketFactory());
+		listener.start(&callback);
 
-            RawSocketSender sender;
-            RawSocketListener listener;
-            NetworkCallbackImpl callback;
-
-            listener.register_protocol(100, new WiFuPacketFactory());
-            listener.start(&callback);
-
-            for (int i = 0; i < 100; i++) {
-                string data = random_string(1000);
-                sender.send(make_packet(data));
-                callback.get_sem().wait();
-                CHECK_EQUAL(data, callback.get_message());
-            }
-        }
-    }
+		for (int i = 0; i < 100; i++) {
+			string data = random_string(1000);
+			sender.send(make_packet(data));
+			callback.get_sem().wait();
+			ASSERT_EQ(data, callback.get_message());
+		}
+	}
 }
-
-#endif	/* _RAWSOCKETLISTENERTEST_H */
-
