@@ -33,7 +33,7 @@ public:
     }
 
     ssize_t send(WiFuPacket* p) {
-        cout << "Raw Packet about to be sent" << endl;
+//        cout << "Raw Packet about to be sent" << endl;
         int ret = sendto(socket_,
                 p->get_payload(),
                 p->get_ip_datagram_length(),
@@ -45,7 +45,7 @@ public:
             perror("RawSocketSender: Error Sending Packet");
             // TODO: What should we do on a fail?
         }
-        cout << "Raw Packet Sent" << endl;
+//        cout << "Raw Packet Sent" << endl;
         return ret;
     }
 

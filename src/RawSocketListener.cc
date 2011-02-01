@@ -27,7 +27,7 @@ void* listener(void* arg) {
             exit(EXIT_FAILURE);
         }
 
-        cout << "NFDS: " << nfds << endl;
+        //cout << "NFDS: " << nfds << endl;
 
         for (int i = 0; i < nfds; ++i) {
 

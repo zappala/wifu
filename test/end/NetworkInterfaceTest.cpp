@@ -14,7 +14,7 @@
 #include "../headers/Module.h"
 #include "../headers/events/NetworkReceivePacketEvent.h"
 #include "../headers/events/NetworkSendPacketEvent.h"
-#include "RandomStringGenerator.h"
+#include "headers/RandomStringGenerator.h"
 #include "Timer.h"
 
 using namespace std;
@@ -23,103 +23,108 @@ using namespace std;
 #define dispatcher Dispatcher::instance()
 
 namespace {
-	class FakeNetworkModule : public Module {
-	public:
 
-		FakeNetworkModule() : Module() {
-			s.init(0);
-		}
+    class FakeNetworkModule : public Module {
+    public:
 
-		void network_receive(Event* e) {
-			NetworkReceivePacketEvent* event = (NetworkReceivePacketEvent*) e;
-			p = event->get_packet();
-			s.post();
-		}
+        FakeNetworkModule() : Module() {
+            s.init(0);
+        }
 
-		WiFuPacket* p;
-		Semaphore s;
-	};
+        void network_receive(Event* e) {
+            NetworkReceivePacketEvent* event = (NetworkReceivePacketEvent*) e;
+            p = event->get_packet();
+            s.post();
+        }
 
-	WiFuPacket * make_packet(int protocol, string & data, AddressPort* source, AddressPort* dest) {
-		WiFuPacket* p = new WiFuPacket();
-		p->set_ip_destination_address_s(dest->get_address());
-		p->set_destination_port(dest->get_port());
-		p->set_ip_source_address_s(source->get_address());
-		p->set_source_port(source->get_port());
-		p->set_ip_protocol(protocol);
-		p->set_data((unsigned char*) data.c_str(), data.length());
-		return p;
-	}
+        WiFuPacket* p;
+        Semaphore s;
+    };
 
-	TEST(NetworkInterface, all) {
+    WiFuPacket * make_packet(int protocol, string & data, AddressPort* source, AddressPort* dest) {
+        WiFuPacket* p = new WiFuPacket();
+        p->set_ip_destination_address_s(dest->get_address());
+        p->set_destination_port(dest->get_port());
+        p->set_ip_source_address_s(source->get_address());
+        p->set_source_port(source->get_port());
+        p->set_ip_protocol(protocol);
+        p->set_data((unsigned char*) data.c_str(), data.length());
+        return p;
+    }
 
-		int protocol = 101;
-		int num_packets = 100;
-		int packet_size = 1450;
+    TEST(NetworkInterface, all) {
 
-		network.register_protocol(protocol, new WiFuPacketFactory());
-		network.start();
-		usleep(10000);
+        int protocol = 101;
+        int num_packets = 100;
+        int packet_size = 1450;
 
-		FakeNetworkModule fnm;
-		dispatcher.map_event(type_name(NetworkReceivePacketEvent), &fnm);
-		dispatcher.map_event(type_name(NetworkSendPacketEvent), &network);
-		dispatcher.start_processing();
+        network.register_protocol(protocol, new WiFuPacketFactory());
+        network.start();
+        usleep(10000);
 
-		AddressPort* source = new AddressPort("127.0.0.1", 5000);
-		AddressPort* dest = new AddressPort("127.0.0.1", 5001);
+        FakeNetworkModule fnm;
+        dispatcher.map_event(type_name(NetworkReceivePacketEvent), &fnm);
+        dispatcher.map_event(type_name(NetworkSendPacketEvent), &network);
+        dispatcher.start_processing();
 
-		Socket* s = new Socket(0, 0, 0, dest);
-		SocketCollection::instance().clear();
-		SocketCollection::instance().push(s);
+        AddressPort* source = new AddressPort("127.0.0.1", 5000);
+        AddressPort* dest = new AddressPort("127.0.0.1", 5001);
 
-		// only by local address/port
-		int time = 0;
-		for (int i = 0; i < num_packets; i++) {
+        Socket* s = new Socket(0, 0, 0, dest);
+        SocketCollection::instance().clear();
+        SocketCollection::instance().push(s);
 
-			string data = random_string(packet_size);
+        // only by local address/port
+        int time = 0;
+        for (int i = 0; i < num_packets; i++) {
 
-			Timer t;
-			t.start();
-			WiFuPacket* p = make_packet(protocol, data, source, dest);
-			NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
-			dispatcher.enqueue(e);
-			fnm.s.wait();
-			t.stop();
-			time += t.get_duration_microseconds();
+            string data = random_string(packet_size);
 
-			ASSERT_EQ(data.c_str(), (const char*) fnm.p->get_data());
-			ASSERT_EQ(packet_size, fnm.p->get_data_length_bytes());
-			ASSERT_TRUE(*dest == *(fnm.p->get_dest_address_port()));
-			ASSERT_TRUE(*source == *(fnm.p->get_source_address_port()));
-		}
-		cout << "Local AddressPort only, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
+            Timer t;
+            t.start();
+            WiFuPacket* p = make_packet(protocol, data, source, dest);
+            NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
+            dispatcher.enqueue(e);
+            fnm.s.wait();
+            t.stop();
+            time += t.get_duration_microseconds();
 
-		// by local AND remote address/port
-		s->set_remote_address_port(source);
+            string expected = data.c_str();
+            string actual = (const char*) fnm.p->get_data();
+            ASSERT_EQ(expected, actual);
+            ASSERT_EQ(packet_size, fnm.p->get_data_length_bytes());
+            ASSERT_TRUE(*dest == *(fnm.p->get_dest_address_port()));
+            ASSERT_TRUE(*source == *(fnm.p->get_source_address_port()));
+        }
+        cout << "Local AddressPort only, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
 
-		time = 0;
-		for (int i = 0; i < num_packets; i++) {
+        // by local AND remote address/port
+        s->set_remote_address_port(source);
 
-			string data = random_string(packet_size);
+        time = 0;
+        for (int i = 0; i < num_packets; i++) {
 
-			Timer t;
-			t.start();
-			WiFuPacket* p = make_packet(protocol, data, source, dest);
-			NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
-			dispatcher.enqueue(e);
-			fnm.s.wait();
-			t.stop();
-			time += t.get_duration_microseconds();
+            string data = random_string(packet_size);
 
-			ASSERT_EQ(data.c_str(), (const char*) fnm.p->get_data());
-			ASSERT_EQ(packet_size, fnm.p->get_data_length_bytes());
-			ASSERT_TRUE(*dest == *(fnm.p->get_dest_address_port()));
-			ASSERT_TRUE(*source == *(fnm.p->get_source_address_port()));
-		}
-		cout << "Local and Remote AddressPort, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
+            Timer t;
+            t.start();
+            WiFuPacket* p = make_packet(protocol, data, source, dest);
+            NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
+            dispatcher.enqueue(e);
+            fnm.s.wait();
+            t.stop();
+            time += t.get_duration_microseconds();
 
-	}
+            string expected = data.c_str();
+            string actual = (const char*) fnm.p->get_data();
+            ASSERT_EQ(expected, actual);
+            ASSERT_EQ(packet_size, fnm.p->get_data_length_bytes());
+            ASSERT_TRUE(*dest == *(fnm.p->get_dest_address_port()));
+            ASSERT_TRUE(*source == *(fnm.p->get_source_address_port()));
+        }
+        cout << "Local and Remote AddressPort, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
+
+    }
 }
 
 

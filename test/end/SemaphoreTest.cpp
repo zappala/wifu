@@ -21,11 +21,6 @@
 using namespace std;
 
 namespace {
-	TEST(SemaphoreTest, Constructor) {
-		Semaphore s;
-		int val = s.get_value();
-		ASSERT_EQ(0, val);
-	}
 
 	TEST(SemaphoreTest, Init) {
 		Semaphore s;

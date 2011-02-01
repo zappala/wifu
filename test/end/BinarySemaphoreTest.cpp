@@ -19,10 +19,6 @@
 using namespace std;
 
 namespace {
-	TEST(BinarySemaphoreTest, Constructor) {
-		BinarySemaphore bs;
-		ASSERT_EQ(0, bs.get_value());
-	}
 
 	TEST(BinarySemaphoreTest, Init) {
 		BinarySemaphore bs;
