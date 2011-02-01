@@ -35,13 +35,13 @@ private:
      *
      * @param file The file which this object listens on (other local sockets can write to this file).
      */
-    WifuEndAPILocalSocket() : LocalSocketFullDuplex(get_filename().c_str()), write_file_("WS") {
+    WifuEndAPILocalSocket() : LocalSocketFullDuplex(get_filename().c_str()), write_file_("/tmp/WS") {
         socket_signal_.init(0);
         socket_mutex_.init(1);
 
     }
 
-    WifuEndAPILocalSocket(WifuEndAPILocalSocket const&) : LocalSocketFullDuplex(getFile()), write_file_("WS") {
+    WifuEndAPILocalSocket(WifuEndAPILocalSocket const&) : LocalSocketFullDuplex(getFile()), write_file_("/tmp/WS") {
 
     }
 
@@ -50,7 +50,7 @@ private:
     }
 
     string get_filename() {
-        string s("LS");
+        string s("/tmp/LS");
         // TODO: figure out a way to ensure a machine global value to append to the file
         int id = IDGenerator::instance().get();
         s.append(Utils::itoa(id));

@@ -128,7 +128,7 @@ namespace {
 
         TEST(WifuSocketTest) {
             // wifu_socket()
-            string file("WS");
+            string file("/tmp/WS");
             LocalSocketFullDuplexImpl localSocket(file);
 
             int socket = wifu_socket(1000, 1000, SIMPLE_TCP);

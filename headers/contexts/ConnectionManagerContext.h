@@ -13,7 +13,7 @@
 #include "states/Closed.h"
 #include "../AddressPort.h"
 #include "../Socket.h"
-#include "../Packet.h"
+#include "../packet/WiFuPacket.h"
 #include "../events/ConnectEvent.h"
 #include "../events/AcceptEvent.h"
 
@@ -33,8 +33,8 @@ public:
     void accept(AcceptEvent* e);
     void connection_established(Socket* s);
     void close();
-    void receive(Socket* s, Packet* p);
-    void send(Socket* s, Packet* p);
+    void receive(Socket* s, WiFuPacket* p);
+    void send(Socket* s, WiFuPacket* p);
 
     // Non-state methods
 

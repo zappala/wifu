@@ -22,7 +22,7 @@ public:
     virtual void enter(Context* c);
     virtual void exit(Context* c);
 
-    void receive(Context* c, Socket* s, Packet* p);
+    void receive(Context* c, Socket* s, WiFuPacket* p);
 };
 
 #endif	/* _ACCEPT_H */

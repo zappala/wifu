@@ -9,12 +9,12 @@
 #define	_PACKETEVENT_H
 
 #include "Event.h"
-#include "../headers/Packet.h"
+#include "../headers/packet/WiFuPacket.h"
 #include "../Socket.h"
 
 class PacketEvent : public Event {
 public:
-    PacketEvent(Socket* socket, Packet* p) : Event(socket), packet_(p) {
+    PacketEvent(Socket* socket, WiFuPacket* p) : Event(socket), packet_(p) {
         
     }
     
@@ -22,12 +22,12 @@ public:
 
     }
     
-    Packet* get_packet() {
+    WiFuPacket* get_packet() {
         return packet_;
     }
 
 private:
-    Packet* packet_;
+    WiFuPacket* packet_;
 };
 
 #endif	/* _PACKETEVENT_H */

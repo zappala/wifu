@@ -15,7 +15,7 @@
 #include "states/Listen.h"
 #include "states/SynSent.h"
 #include "../AddressPort.h"
-#include "../TCPPacket.h"
+#include "../headers/packet/TCPPacket.h"
 #include "../events/SendPacketEvent.h"
 #include "../events/ConnectEvent.h"
 
@@ -30,7 +30,7 @@ public:
     virtual void connect(Context* c, ConnectEvent* e);
     virtual void listen(Context* c, Socket* s, int back_log);
     virtual void connection_established(Context* c, Socket* s);
-    
+
 };
 
 #endif	/* CLOSED_H */

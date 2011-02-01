@@ -188,6 +188,7 @@ public:
     int clear() {
         mutex_.wait();
         collection_.clear();
+        how_sorted_ = RE_SORT;
         mutex_.post();
     }
 

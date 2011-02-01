@@ -12,10 +12,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <time.h>
+#include <math.h>
 
 #include "UnitTest++.h"
 
 #include "../headers/LocalSocketFullDuplex.h"
+#include "../headers/RandomNumberSet.h"
 
 using namespace std;
 
@@ -52,8 +55,9 @@ namespace {
     SUITE(LocalSocketFullDuplexTestSuite) {
         TEST(LocalSocketFullDuplexTest) {
 
-            string file1("LSFDF1");
-
+            RandomNumberSet<u_int16_t> numbers;
+            string file1("/tmp/LSFDF1");
+            file1.append(Utils::itoa(numbers.get()));
             LocalSocketFullDuplexImpl1 s1(file1);
 
             string message = "This is a test message";
@@ -69,6 +73,7 @@ namespace {
             CHECK_EQUAL(message.size(), sent);
             CHECK_EQUAL(message, s1.get_last_received());
 
+            unlink(file1.c_str());
             
         }
 

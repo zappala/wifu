@@ -54,9 +54,14 @@
 
 
 // WIFU_PORT is created from the phone number representaion of W-I-F-U
+// This is deprecated as of Raw Sockets
 #define WIFU_PORT 9438
 
-#define SIMPLE_TCP 1000
+// must fit in 8 bits
+#define SIMPLE_TCP 106
+
+#define PAYLOAD_SIZE 1500
+#define MAX_TTL 65
 
 typedef const char * event_name;
 

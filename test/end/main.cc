@@ -19,10 +19,9 @@
 #include "BinarySemaphoreTest.h"
 #include "IDGeneratorTest.h"
 #include "QueueTest.h"
-#include "PacketTest.h"
-#include "TCPPacketTest.h"
 
 #include "LocalSocketFullDuplexTest.h"
+
 #include "QueryStringParserTest.h"
 #include "SocketDataMapTest.h"
 
@@ -57,6 +56,12 @@
 #include "TempTest.h"
 #include "SourceGetterTest.h"
 
+#include "packet/IPPacketTest.h"
+#include "packet/WiFuPacketTest.h"
+#include "packet/TCPPacketTest.h"
+
+#include "RawSocketsTest.h"
+#include "NetworkInterfaceTest.h"
 
 using namespace UnitTest;
 

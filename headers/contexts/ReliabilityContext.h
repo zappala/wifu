@@ -14,6 +14,7 @@
 #include "../Socket.h"
 #include "../events/ConnectEvent.h"
 #include "../events/AcceptEvent.h"
+#include "../packet/WiFuPacket.h"
 
 class ReliabilityContext : public Context {
 public:
@@ -25,8 +26,8 @@ public:
     void accept(AcceptEvent* e);
     void connection_established(Socket* s);
     void close();
-    void receive(Socket* s, Packet* p);
-    void send(Socket* s, Packet* p);
+    void receive(Socket* s, WiFuPacket* p);
+    void send(Socket* s, WiFuPacket* p);
 };
 
 #endif	/* RELIABILITYCONTEXT_H */

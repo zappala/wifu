@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <string>
 
 #include "UnitTest++.h"
 
@@ -16,6 +17,7 @@
 #include "headers/IntegrationTest.h"
 
 using namespace UnitTest;
+using namespace std;
 
 void change_dir() {
     int size = 1000;

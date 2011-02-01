@@ -14,7 +14,7 @@
 #include "../AddressPort.h"
 #include "../Socket.h"
 #include "contexts/CongestionControlContext.h"
-#include "events/UDPSendPacketEvent.h"
+#include "events/NetworkSendPacketEvent.h"
 #include "events/ConnectEvent.h"
 #include "../Dispatcher.h"
 using namespace std;
@@ -24,8 +24,8 @@ public:
     SlowStart();
     virtual ~SlowStart();
 
-    void send(Context* c, Socket* s, Packet* p);
-    void receive(Context* c, Socket* s, Packet* p);
+    void send(Context* c, Socket* s, WiFuPacket* p);
+    void receive(Context* c, Socket* s, WiFuPacket* p);
     void enter(Context* c);
     void exit(Context* c);
 };

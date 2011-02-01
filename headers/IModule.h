@@ -72,6 +72,22 @@ public:
     }
 
     /**
+     * Called when e's execute() method determines that this IModule should respond to a network send action.
+     *
+     * @param e The event which triggered a network send action.
+     */
+    virtual void network_send(Event* e) {
+    }
+
+    /**
+     * Called when e's execute() method determines that this IModule should respond to a network receive action.
+     *
+     * @param e The event which triggered a network send action.
+     */
+    virtual void network_receive(Event* e) {
+    }
+
+    /**
      * Called when e's execute() method determines that this IModule should respond to a udp send action.
      *
      * @param e The event which triggered a udp send action.

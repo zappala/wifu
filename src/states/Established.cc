@@ -42,6 +42,6 @@ void Established::exit(Context* c) {
 
 }
 
-void Established::receive(Context* c, Socket* s, Packet* p) {
+void Established::receive(Context* c, Socket* s, WiFuPacket* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
 }

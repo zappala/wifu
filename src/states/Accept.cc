@@ -16,7 +16,7 @@ void Accept::exit(Context* c) {
 
 }
 
-void Accept::receive(Context* c, Socket* s, Packet* p) {
+void Accept::receive(Context* c, Socket* s, WiFuPacket* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
@@ -24,10 +24,10 @@ void Accept::receive(Context* c, Socket* s, Packet* p) {
 
     if(packet->is_tcp_syn()) {
         unsigned char* data = (unsigned char*) "";
-        AddressPort* source = packet->get_destination();
-        AddressPort* destination = packet->get_source();
+        //AddressPort* source = packet->get_destination();
+        //AddressPort* destination = packet->get_source();
 
-        TCPPacket* response = new TCPPacket(source, destination, data, 0);
+        TCPPacket* response;// = new TCPPacket(source, destination, data, 0);
         response->set_tcp_syn(true);
         response->set_tcp_ack(true);
 
