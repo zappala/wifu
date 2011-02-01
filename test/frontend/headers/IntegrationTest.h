@@ -58,6 +58,7 @@ namespace {
     };
 
     void socket_test() {
+        cout << "Socket Test" << endl;
         // socket
         for (int i = 0; i < 100; i++) {
             // Check valid
@@ -71,6 +72,7 @@ namespace {
     }
 
     void bind_test() {
+        cout << "Bind test" << endl;
         struct sockaddr_in to_bind;
         socklen_t length = sizeof (struct sockaddr_in);
         memset(&to_bind, 0, length);
@@ -101,6 +103,7 @@ namespace {
     }
 
     void listen_test() {
+        cout << "Listen Test" << endl;
         // Bad fd
         // TODO: need to close all the sockets opened up above as we may collide
         // (badfd may actually have been created above)
@@ -152,6 +155,7 @@ namespace {
         struct sockaddr_in addr;
         socklen_t length = sizeof (addr);
         int connection;
+        cout << "about to accept" << endl;
         if ((connection = wifu_accept(server, (struct sockaddr *) & addr, &length)) < 0) {
             cout << "Problem in Accept" << endl;
             CHECK(false);
@@ -161,6 +165,7 @@ namespace {
     }
 
     void connect_test() {
+        cout << "Connect Test" << endl;
         AddressPort to_connect("127.0.0.1", 5002);
 
         struct var v;
@@ -175,7 +180,11 @@ namespace {
             return;
         }
 
+        cout << "thread created" << endl;
+
         v.sem_->wait();
+
+        cout << "Done waiting from thread" << endl;
 
         // Make sure that the thread is in the accept state
         usleep(50000);
@@ -184,6 +193,7 @@ namespace {
         Timer timer;
         timer.start();
         int client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+        cout << "Created Socket: " << client << endl;
         int result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
         timer.stop();
         CHECK_EQUAL(0, result);
@@ -220,6 +230,7 @@ namespace {
     }
 
     void compare_test() {
+        
         AddressPort to_connect("127.0.0.1", 5002);
 
         struct var v;
@@ -258,9 +269,9 @@ namespace {
             socket_test();
             bind_test();
             listen_test();
-            connect_test();
-
-            compare_test();
+//            connect_test();
+//
+//            compare_test();
         }
     }
 }

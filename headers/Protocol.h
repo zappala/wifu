@@ -91,7 +91,8 @@ public:
         if (socket != NULL) {
 
             u_int16_t port = atoi(event->get_map()[PORT_STRING].c_str());
-            AddressPort* local = new AddressPort(event->get_map()[ADDRESS_STRING], port);
+            string address = event->get_map()[ADDRESS_STRING];
+            AddressPort* local = new AddressPort(address, port);
 
             // TODO: Check possible errors
             AlreadyBoundToAddressPortVisitor v(local);
@@ -171,7 +172,7 @@ public:
 
         // TODO: Error check
 
-
+        cout << "In library connect" << endl;
         itr->second->connect(event);
     }
 

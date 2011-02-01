@@ -14,7 +14,7 @@
 #include "../AddressPort.h"
 #include "../Socket.h"
 #include "contexts/CongestionControlContext.h"
-#include "events/UDPSendPacketEvent.h"
+#include "events/NetworkSendPacketEvent.h"
 #include "events/ConnectEvent.h"
 #include "../Dispatcher.h"
 using namespace std;

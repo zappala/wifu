@@ -64,7 +64,7 @@ public:
             exit(EXIT_FAILURE);
         }
 
-        struct epoll_event event;
+        static struct epoll_event event;
         event.events = EPOLLIN;
         event.data.fd = fd;
         epoll_ctl(epfd_, EPOLL_CTL_ADD, fd, &event);
@@ -109,10 +109,11 @@ void* listener(void* arg) {
     int ret;
     WiFuPacket* packet;
     PacketFactory* factory;
-    struct epoll_event events[MAX_EVENTS];
+    
     int nfds, fd;
 
     while (1) {
+        struct epoll_event events[MAX_EVENTS];
         nfds = epoll_wait(epfd, events, MAX_EVENTS, -1);
 
         if (nfds < 0) {
@@ -122,6 +123,8 @@ void* listener(void* arg) {
             perror("RawSocketListener: epoll_wait()");
             exit(EXIT_FAILURE);
         }
+
+        cout << "NFDS: " << nfds << endl;
 
         for (int i = 0; i < nfds; ++i) {
 
@@ -134,8 +137,8 @@ void* listener(void* arg) {
             if (ret <= 0) {
                 assert(false);
             }
-            
             packet->set_ip_datagram_length(ret);
+            
             callback->receive(packet);
         }
     }

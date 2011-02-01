@@ -25,8 +25,6 @@
 #include "UDPInterface.h"
 #include "PortManager.h"
 
-#define SOURCE_ADDRESS UDPInterface::instance().get_bound_ip_address()
-
 /**
  * Translates string messages received from the front-end library into Event objects
  * and enqueues them to the dispatcher (and visa-versa).
@@ -71,7 +69,7 @@ public:
             int protocol = atoi(m[PROTOCOL_STRING].c_str());
 
             if (ProtocolManager::instance().is_supported(domain, type, protocol)) {
-                Socket* socket = new Socket(domain, type, protocol, new AddressPort(SOURCE_ADDRESS, PortManager::instance().get()));
+                Socket* socket = new Socket(domain, type, protocol);
                 SocketCollection::instance().push(socket);
 
                 dispatch(new SocketEvent(message, getFile(), socket));

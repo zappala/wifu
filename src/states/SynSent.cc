@@ -17,6 +17,7 @@ void SynSent::exit(Context* c) {
 }
 
 void SynSent::receive(Context* c, Socket* s, WiFuPacket* p) {
+    cout << "In SynSent::receive()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = new TCPPacket(*p);
 

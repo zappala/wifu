@@ -34,12 +34,14 @@
 #include "../headers/events/SendPacketEvent.h"
 
 #include "events/SendPacketEvent.h"
-#include "events/UDPSendPacketEvent.h"
-#include "events/UDPReceivePacketEvent.h"
+#include "events/NetworkSendPacketEvent.h"
+#include "events/NetworkReceivePacketEvent.h"
 #include "events/TimeoutEvent.h"
 #include "events/TimerFiredEvent.h"
 #include "events/AcceptEvent.h"
 #include "events/ConnectionEstablishedEvent.h"
+#include "NetworkInterface.h"
+#include "TCPPacketFactory.h"
 
 using namespace std;
 
@@ -76,17 +78,6 @@ int main(int argc, char** argv) {
     register_signals();
     register_protocols();
 
-    // TODO: change this to be either an option passed in or INADDR_ANY
-    // In the latter case we will need ensure that we have compatability throughout.
-    // (It is likely that the SocketCollection will break.)
-    // It is also likely that we will need to figure out how to query the kernel for
-    // the local address as well.
-    // INADDR_ANY == 0.0.0.0
-    string address("127.0.0.1");
-    int port = WIFU_PORT;
-
-    AddressPort ap(address, port);
-
     // Start Dispatcher
     Dispatcher::instance().start_processing();
 
@@ -94,9 +85,10 @@ int main(int argc, char** argv) {
     WifuEndBackEndLibrary::instance();
 
     // Load Modules
-    UDPInterface::instance().start(ap);
+    NetworkInterface::instance().register_protocol(SIMPLE_TCP, new TCPPacketFactory());
+    NetworkInterface::instance().start();
 
-    dispatcher.map_event(type_name(UDPSendPacketEvent), &UDPInterface::instance());
+    dispatcher.map_event(type_name(NetworkSendPacketEvent), &NetworkInterface::instance());
     dispatcher.map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
     dispatcher.map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
 
@@ -107,7 +99,7 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(AcceptEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(ConnectionEstablishedEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(SendPacketEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(UDPReceivePacketEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(TimerFiredEvent), &SimpleTCP::instance());
 
     
