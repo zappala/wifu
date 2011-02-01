@@ -1,5 +1,5 @@
 /* 
- * File:   PacketTest.h
+ * File:   PacketFixture.h
  * Author: rbuck
  *
  * Created on November 19, 2010, 12:13 PM
@@ -22,10 +22,9 @@
 using namespace std;
 
 namespace {
-	class PacketFixture {
-	public:
-
-		PacketFixture() {
+	class PacketFixture : public ::testing::Test {
+	protected:
+		virtual void SetUp() {
 			data_length = DATA_LENGTH;
 
 			message = "this is the data";
@@ -37,6 +36,12 @@ namespace {
 			packet = new Packet(source_, dest_, data, data_length);
 		}
 
+		virtual void TearDown() {
+			delete source_;
+			delete dest_;
+			delete packet;
+		}
+
 		Packet* packet;
 		unsigned char data[DATA_LENGTH];
 		const char* message;
@@ -46,13 +51,11 @@ namespace {
 	};
 
 
-	TEST(PacketTest, PacketToBytes) {
-		PacketFixture f;
-
-		unsigned char* bytes = f.packet->to_bytes();
+	TEST_F(PacketFixture, PacketToBytes) {
+		unsigned char* bytes = packet->to_bytes();
 		struct wifu_end_header header;
-		header.virtual_dest_port = f.dest_->get_port();
-		header.virtual_src_port = f.source_->get_port();
+		header.virtual_dest_port = dest_->get_port();
+		header.virtual_src_port = source_->get_port();
 
 		// Check header
 		struct wifu_end_header* to_check = (struct wifu_end_header*) bytes;
@@ -61,35 +64,28 @@ namespace {
 
 		// Check data
 		const char* message_to_check = (const char*)(bytes + sizeof(struct wifu_end_header));
-		ASSERT_EQ(f.message, message_to_check);
+		ASSERT_EQ(message, message_to_check);
 	}
 
 
-	TEST(PacketTest, PacketLength) {
-		PacketFixture f;
-		ASSERT_EQ(f.data_length + sizeof(struct wifu_end_header), f.packet->packet_length());
+	TEST_F(PacketFixture, PacketLength) {
+		ASSERT_EQ(data_length + sizeof(struct wifu_end_header), packet->packet_length());
 	}
 
-	TEST(PacketTest, PacketDataLength) {
-		PacketFixture f;
-		ASSERT_EQ(f.data_length, f.packet->data_length());
+	TEST_F(PacketFixture, PacketDataLength) {
+		ASSERT_EQ(data_length, packet->data_length());
 	}
 
-	TEST(PacketTest, PacketGetSource) {
-		PacketFixture f;
-
-		ASSERT_TRUE(*(f.source_) == *(f.packet->get_source()));
+	TEST_F(PacketFixture, PacketGetSource) {
+		ASSERT_TRUE(*(source_) == *(packet->get_source()));
 	}
 
-	TEST(PacketTest, PacketGetDest) {
-		PacketFixture f;
-
-		ASSERT_TRUE(*(f.dest_) == *(f.packet->get_destination()));
+	TEST_F(PacketFixture, PacketGetDest) {
+		ASSERT_TRUE(*(dest_) == *(packet->get_destination()));
 	}
 
-	TEST(PacketTest, PacketGetData) {
-		PacketFixture f;
-		ASSERT_EQ(f.message, (const char*)f.packet->get_data());
+	TEST_F(PacketFixture, PacketGetData) {
+		ASSERT_EQ(message, (const char*)packet->get_data());
 	}
 }
 
