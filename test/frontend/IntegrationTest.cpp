@@ -44,7 +44,20 @@ namespace {
 		}
 
 	    virtual void start_backend() {
-	        int value = system("./bin/wifu-end");
+//	    	bool notFound;
+//	    	string ls = getOutputFromCommand("ls wifu-end");
+//	    	int returned = ls.find("No such file or directory");
+//	    	notFound = returned == string::npos ? true : false;
+//
+	    	string commandToExecute;
+//	    	if (notFound)
+//	    		commandToExecute = "./bin/wifu-end";
+//	    	else
+//	    		commandToExecute = "./wifu-end";
+//	    	commandToExecute = "wifu-end";
+	    	commandToExecute = "./bin/wifu-end";
+
+	        int value = system(commandToExecute.c_str());
 	        if (value < 0)
 	            FAIL() << "Error starting wifu-end";
 	        // We have to sleep so we can ensure the back end is up and running
@@ -55,6 +68,22 @@ namespace {
 	        int value = system("killall wifu-end");
 	        if (value < 0)
 	            FAIL() << "Error killing wifu-end";
+	    }
+
+	private:
+	    string getOutputFromCommand(char* cmd) {
+	    	//_popen on Windows
+	        FILE* pipe = popen(cmd, "r");
+	        if (!pipe)
+	        	ADD_FAILURE() << "Error opening pipe to find wifu-end";
+	        char buffer[128];
+	        std::string result = "";
+	        while(!feof(pipe))
+	        	if(fgets(buffer, 128, pipe) != NULL)
+	            	result += buffer;
+	        //_pclose on Windows
+	        pclose(pipe);
+	        return result;
 	    }
 	};
 
