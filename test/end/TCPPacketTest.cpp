@@ -11,8 +11,8 @@
 #include <iostream>
 
 #include "gtest/gtest.h"
-#include "../headers/TCPPacket.h"
-#include "../headers/RandomNumberSet.h"
+#include "TCPPacket.h"
+#include "RandomNumberSet.h"
 
 using namespace std;
 
