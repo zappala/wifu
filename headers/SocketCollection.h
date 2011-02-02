@@ -9,56 +9,30 @@
 #define	_SOCKETCOLLECTION_H
 
 #include <algorithm>
-#include <vector>
+#include <tr1/unordered_map>
+#include <string>
 
 #include "Socket.h"
 #include "visitors/Visitable.h"
 #include "visitors/Visitor.h"
+#include "visitors/SocketCollectionGetByIdVisitor.h"
 #include "observer/Observer.h"
 
 using namespace std;
-
-enum HowSorted {
-    ID,
-    AP,
-    RE_SORT
-};
-
-// functions used in sorting
-
-bool id_cmp(Socket* a, Socket* b);
-
-bool ap_cmp(Socket* a, Socket* b);
-
-// functions used in binary search
-
-int bsearch_id_cmp(int& value, Socket* s);
-
-int b_search_local_cmp(AddressPort* local, Socket* s);
-
-// first element in pair is local, second is remote
-
-int b_search_local_remote_cmp(pair<AddressPort*, AddressPort*>& aps, Socket* s);
 
 class SocketCollection : public Visitable, public Observer {
 private:
 
     SocketCollection();
 
-    SocketCollection& operator=(const SocketCollection& other);
+    SocketCollection & operator=(const SocketCollection& other);
 
     SocketCollection(const SocketCollection& other);
 
-    template<typename Type1, typename Type2>
-    Socket* binary_search(Type1 target, int (*compare)(Type2, Socket*));
-
-    void socket_sort(bool(*f)(Socket*, Socket*));
-
-    void mark_dirty();
-
-    vector<Socket*> collection_;
+    tr1::unordered_map<string, Socket*> collection_;
+    tr1::unordered_map<string, Socket*>::iterator itr_;
     Semaphore mutex_;
-    HowSorted how_sorted_;
+    Semaphore update_mutex_;
 
 public:
 
@@ -74,11 +48,11 @@ public:
 
     void push(Socket* s);
 
+    void remove(Socket* s);
+
     int size();
 
     int clear();
-
-    void shuffle();
 
     virtual void accept(Visitor* v);
 

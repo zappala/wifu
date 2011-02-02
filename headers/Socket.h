@@ -18,24 +18,25 @@
 
 using namespace std;
 // TODO: do we need to protect this with a Semaphore?
+
 class Socket : public Observable, public gc {
 public:
 
     /**
      * Creates a Socket object.
      */
-    Socket( int domain,
+    Socket(int domain,
             int type,
             int protocol,
             AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().get()),
             AddressPort* remote = new AddressPort("0.0.0.0", PortManager::instance().get())) :
-            socket_(SocketManager::instance().get()),
-            domain_(domain),
-            type_(type),
-            protocol_(protocol),
-            local_(local),
-            remote_(remote),
-            is_passive_(false) {
+    socket_(SocketManager::instance().get()),
+    domain_(domain),
+    type_(type),
+    protocol_(protocol),
+    local_(local),
+    remote_(remote),
+    is_passive_(false) {
 
     }
 
@@ -43,11 +44,11 @@ public:
      * Cleans up this Socket object.
      */
     virtual ~Socket() {
-        if(local_) {
+        if (local_) {
             delete local_;
         }
 
-        if(remote_) {
+        if (remote_) {
             delete remote_;
         }
 
@@ -91,7 +92,7 @@ public:
     }
 
     void set_local_address_port(AddressPort* local) {
-        if(local_) {
+        if (local_) {
             delete local_;
         }
         local_ = local;
@@ -99,7 +100,7 @@ public:
     }
 
     void set_remote_address_port(AddressPort* remote) {
-        if(remote_) {
+        if (remote_) {
             delete remote_;
         }
         remote_ = remote;
@@ -112,6 +113,16 @@ public:
 
     bool operator!=(const Socket& other) {
         return !(operator ==(other));
+    }
+
+    string get_key() {
+        return make_key(get_local_address_port(), get_remote_address_port());
+    }
+
+    static string make_key(AddressPort* local, AddressPort* remote) {
+        string local_s = local->to_s();
+        string remote_s = remote->to_s();
+        return local_s.append(remote_s);
     }
 
 

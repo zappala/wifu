@@ -9,11 +9,12 @@ Observable::~Observable() {
 }
 
 void Observable::add_observer(Observer* o) {
-    observers_.push_back(o);
+    observers_.insert(o);
 }
 
 void Observable::notify() {
-    for(int i = 0; i < observers_.size(); ++i) {
-        observers_[i]->update(this);
+    itr_ = observers_.begin();
+    for(; itr_ != observers_.end(); ++itr_) {
+        itr_->update(this);
     }
 }

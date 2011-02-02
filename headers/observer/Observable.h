@@ -9,13 +9,14 @@
 #define	_OBSERVABLE_H
 
 #include "Observer.h"
-#include <vector>
+#include <set>
 
 using namespace std;
 
 class Observable {
 private:
-    vector<class Observer*> observers_;
+    set<class Observer*> observers_;
+    set<class Observer*>::iterator itr_;
 
 public:
     Observable();
