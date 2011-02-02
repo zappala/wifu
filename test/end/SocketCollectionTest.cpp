@@ -12,6 +12,7 @@
 
 #include "SocketCollection.h"
 #include "AddressPort.h"
+#include "Utils.h"
 
 #define collection SocketCollection::instance()
 
@@ -22,6 +23,36 @@ namespace {
     TEST(SocketCollectionTest, DNE) {
         collection.clear();
         ASSERT_TRUE(NULL == collection.get_by_id(9));
+    }
+
+    TEST(SocketCollectionTest, SizePushRemove) {
+        int number = 1000;
+
+        collection.clear();
+        ASSERT_EQ(0, collection.size());
+
+        int ids[number];
+
+        for (int i = 0; i < number; ++i) {
+            Socket* s = new Socket(i, i, i);
+            ids[i] = s->get_socket_id();
+            collection.push(s);
+            ASSERT_EQ(i + 1, collection.size());
+        }
+
+        for (int i = 0; i < number; ++i) {
+            int id = ids[i];
+            Socket* s = collection.get_by_id(id);
+            ASSERT_TRUE(s != NULL);
+            ASSERT_EQ(id, s->get_socket_id());
+
+            collection.remove(s);
+            ASSERT_EQ(number - i - 1, collection.size());
+            ASSERT_EQ(NULL, collection.get_by_id(id));
+        }
+
+        collection.clear();
+        ASSERT_EQ(0, collection.size());
     }
 
     TEST(SocketCollectionTest, Integer) {
@@ -37,8 +68,6 @@ namespace {
 
         ASSERT_EQ(number, collection.size());
 
-        collection.shuffle();
-
         for (int i = 0; i < number; i++) {
             Socket* expected = sockets[i];
             Socket* result = collection.get_by_id(expected->get_socket_id());
@@ -49,17 +78,12 @@ namespace {
             ASSERT_EQ(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
             ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
+
             // try a few unused ones
-            //TODO: broken?
-            //			uint16_t unused = SocketManager::instance().get();
-            //			ASSERT_TRUE(NULL == collection.get_by_id(unused));
-            //			SocketManager::instance().remove(unused);
+            int invalidID = SocketManager::instance().get();
+            ASSERT_EQ(NULL, collection.get_by_id(invalidID));
+            SocketManager::instance().remove(invalidID);
         }
-
-        for (int i = 0; i < number; i++) {
-            delete sockets[i];
-        }
-
     }
 
     TEST(SocketCollectionTest, LocalOnly) {
@@ -71,14 +95,17 @@ namespace {
 
         for (int i = 0; i < number; i++) {
             sockets[i] = new Socket(i, i, i);
-            aps[i] = new AddressPort("192.0.0.1", i);
-            sockets[i]->set_local_address_port(aps[i]);
+            string address = "192.0.0.";
+            int n = i % 255;
+            address.append(Utils::itoa(n));
+            aps[i] = new AddressPort(address, i);
+
+            // cause update to happen
             collection.push(sockets[i]);
+            sockets[i]->set_local_address_port(aps[i]);
         }
 
         ASSERT_EQ(number, collection.size());
-
-        collection.shuffle();
 
         for (int i = 0; i < number; i++) {
             Socket* expected = sockets[i];
@@ -93,12 +120,7 @@ namespace {
             ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
             temp = new AddressPort("192.1.0.1", i);
-            ASSERT_TRUE(NULL == collection.get_by_local_ap(temp));
-            delete temp;
-        }
-
-        for (int i = 0; i < number; i++) {
-            delete sockets[i];
+            ASSERT_EQ(NULL, collection.get_by_local_ap(temp));
         }
     }
 
@@ -112,16 +134,19 @@ namespace {
 
         for (int i = 0; i < number; i++) {
             sockets[i] = new Socket(i, i, i);
-            locals[i] = new AddressPort("192.0.0.1", i);
-            remotes[i] = new AddressPort("192.1.1.1", i + 5);
+            string local_address = "192.0.0.";
+            string remote_address = "192.1.1.";
+            int n = i % 255;
+            local_address.append(Utils::itoa(n));
+            remote_address.append(Utils::itoa(n));
+            locals[i] = new AddressPort(local_address, i);
+            remotes[i] = new AddressPort(remote_address, i + 5);
             sockets[i]->set_local_address_port(locals[i]);
             sockets[i]->set_remote_address_port(remotes[i]);
             collection.push(sockets[i]);
         }
 
         ASSERT_EQ(number, collection.size());
-
-        collection.shuffle();
 
         for (int i = 0; i < number; i++) {
             Socket* expected = sockets[i];
@@ -138,36 +163,33 @@ namespace {
             ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
             remote = new AddressPort("0.0.0.0", i + 6);
-            ASSERT_TRUE(NULL == collection.get_by_local_and_remote_ap(local, remote));
-            delete remote;
-        }
-
-        for (int i = 0; i < number; i++) {
-            delete sockets[i];
+            ASSERT_EQ(NULL, collection.get_by_local_and_remote_ap(local, remote));
         }
     }
 
     TEST(SocketCollectionTest, MIX) {
         collection.clear();
 
-        // TODO: cannot set number to be large as it will cause it to sort many times
-        int number = 10;
+        int number = 1000;
         Socket * sockets[number];
         AddressPort * locals[number];
         AddressPort * remotes[number];
 
         for (int i = 0; i < number; i++) {
             sockets[i] = new Socket(i, i, i);
-            locals[i] = new AddressPort("192.0.0.1", i);
-            remotes[i] = new AddressPort("192.1.1.1", i + 5);
+            string local_address = "192.0.0.";
+            string remote_address = "192.1.1.";
+            int n = i % 255;
+            local_address.append(Utils::itoa(n));
+            remote_address.append(Utils::itoa(n));
+            locals[i] = new AddressPort(local_address, i);
+            remotes[i] = new AddressPort(remote_address, i + 5);
             sockets[i]->set_local_address_port(locals[i]);
             sockets[i]->set_remote_address_port(remotes[i]);
             collection.push(sockets[i]);
         }
 
         ASSERT_EQ(number, collection.size());
-
-        collection.shuffle();
 
         for (int i = 0; i < number; i++) {
 
@@ -199,10 +221,9 @@ namespace {
             ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
             temp = new AddressPort("192.1.0.1", i);
-            ASSERT_TRUE(NULL == collection.get_by_local_ap(temp));
-            delete temp;
+            ASSERT_EQ(NULL, collection.get_by_local_ap(temp));
 
-            // get by local & remote
+            // get by local && remote
             expected = sockets[i];
             AddressPort* local = sockets[i]->get_local_address_port();
             AddressPort* remote = sockets[i]->get_remote_address_port();
@@ -217,12 +238,7 @@ namespace {
             ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
 
             remote = new AddressPort("0.0.0.0", i + 6);
-            ASSERT_TRUE(NULL == collection.get_by_local_and_remote_ap(local, remote));
-            delete remote;
-        }
-
-        for (int i = 0; i < number; i++) {
-            delete sockets[i];
+            ASSERT_EQ(NULL, collection.get_by_local_and_remote_ap(local, remote));
         }
     }
 }

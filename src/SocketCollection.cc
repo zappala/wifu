@@ -103,7 +103,6 @@ void SocketCollection::accept(Visitor* v) {
 void SocketCollection::update(Observable* o) {
     // TODO: assert that o is an instance of Socket*
     update_mutex_.wait();
-    cout << "Updating SocketCollection" << endl;
     Socket* s = (Socket*) o;
     remove(s);
     push(s);

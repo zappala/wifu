@@ -15,6 +15,6 @@ void Observable::add_observer(Observer* o) {
 void Observable::notify() {
     itr_ = observers_.begin();
     for(; itr_ != observers_.end(); ++itr_) {
-        itr_->update(this);
+        (*itr_)->update(this);
     }
 }
