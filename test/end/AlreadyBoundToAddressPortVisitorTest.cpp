@@ -8,10 +8,10 @@
 #ifndef ALREADYBOUNDTOADDRESSPORTVISITORTEST_H
 #define	ALREADYBOUNDTOADDRESSPORTVISITORTEST_H
 
-#include "../headers/visitors/AlreadyBoundToAddressPortVisitor.h"
-#include "../headers/Socket.h"
-#include "../headers/SocketCollection.h"
-#include "../headers/Utils.h"
+#include "visitors/AlreadyBoundToAddressPortVisitor.h"
+#include "Socket.h"
+#include "SocketCollection.h"
+#include "Utils.h"
 
 #include "gtest/gtest.h"
 
@@ -21,128 +21,129 @@
 using namespace std;
 
 namespace {
-	TEST(AlreadyBoundToAddressPortVisitorTest, PortCheckUnique) {
-		sc.clear();
-		Socket * sockets[count];
 
-		string address = "192.168.0.1";
+    TEST(AlreadyBoundToAddressPortVisitorTest, PortCheckUnique) {
+        sc.clear();
+        Socket * sockets[count];
 
-		for (int i = 0; i < count; i++) {
-			int port = i;
-			AddressPort* local = new AddressPort(address, port);
-			sockets[i] = new Socket(i, i, i, local);
-			sc.push(sockets[i]);
-		}
+        string address = "192.168.0.1";
 
-		for(int port = count; port < count*2; port++) {
-			AddressPort to_check(address, port);
-			AlreadyBoundToAddressPortVisitor v(&to_check);
+        for (int i = 0; i < count; i++) {
+            int port = i;
+            AddressPort* local = new AddressPort(address, port);
+            sockets[i] = new Socket(i, i, i, local);
+            sc.push(sockets[i]);
+        }
 
-			sc.accept(&v);
-			ASSERT_TRUE(!v.is_bound());
-		}
+        for (int port = count; port < count * 2; port++) {
+            AddressPort to_check(address, port);
+            AlreadyBoundToAddressPortVisitor v(&to_check);
 
-
-		for(int i = 0; i < count; i++) {
-			delete sockets[i];
-		}
-	}
-
-	TEST(AlreadyBoundToAddressPortVisitorTest, PortCheckNotUnique) {
-		sc.clear();
-		Socket * sockets[count];
-
-		string address = "192.168.0.1";
-
-		for (int i = 0; i < count; i++) {
-			int port = i;
-			AddressPort* local = new AddressPort(address, port);
-			sockets[i] = new Socket(i, i, i, local);
-			sc.push(sockets[i]);
-		}
-
-		for(int port = 0; port < count; port++) {
-			AddressPort to_check(address, port);
-			AlreadyBoundToAddressPortVisitor v(&to_check);
-
-			sc.accept(&v);
-			ASSERT_TRUE(v.is_bound());
-		}
+            sc.accept(&v);
+            ASSERT_TRUE(!v.is_bound());
+        }
 
 
-		for(int i = 0; i < count; i++) {
-			delete sockets[i];
-		}
-	}
+        for (int i = 0; i < count; i++) {
+            delete sockets[i];
+        }
+    }
 
-	TEST(AlreadyBoundToAddressPortVisitorTest, AddressCheckUnique) {
-		sc.clear();
-		Socket * sockets[count];
+    TEST(AlreadyBoundToAddressPortVisitorTest, PortCheckNotUnique) {
+        sc.clear();
+        Socket * sockets[count];
 
-		int port = 5000;
+        string address = "192.168.0.1";
 
-		for (int i = 0; i < count; i++) {
-			string subnet = Utils::itoa(i);
-			string address = "192.168.0.";
-			address.append(subnet);
+        for (int i = 0; i < count; i++) {
+            int port = i;
+            AddressPort* local = new AddressPort(address, port);
+            sockets[i] = new Socket(i, i, i, local);
+            sc.push(sockets[i]);
+        }
 
-			AddressPort* local = new AddressPort(address, port);
-			sockets[i] = new Socket(i, i, i, local);
-			sc.push(sockets[i]);
-		}
+        for (int port = 0; port < count; port++) {
+            AddressPort to_check(address, port);
+            AlreadyBoundToAddressPortVisitor v(&to_check);
 
-		for(int i = count; i < count; i++) {
-			string address = Utils::itoa(i);
-			string rest = ".168.0.1";
-
-			address.append(rest);
-
-			AddressPort to_check(address, port);
-			AlreadyBoundToAddressPortVisitor v(&to_check);
-
-			sc.accept(&v);
-			ASSERT_TRUE(!v.is_bound());
-		}
+            sc.accept(&v);
+            ASSERT_TRUE(v.is_bound());
+        }
 
 
-		for(int i = 0; i < count; i++) {
-			delete sockets[i];
-		}
-	}
+        for (int i = 0; i < count; i++) {
+            delete sockets[i];
+        }
+    }
 
-	TEST(AlreadyBoundToAddressPortVisitorTest, AddressCheckNotUnique) {
-		sc.clear();
-		Socket * sockets[count];
+    TEST(AlreadyBoundToAddressPortVisitorTest, AddressCheckUnique) {
+        sc.clear();
+        Socket * sockets[count];
 
-		int port = 5000;
+        int port = 5000;
 
-		for (int i = 0; i < count; i++) {
-			string subnet = Utils::itoa(i);
-			string address = "192.168.0.";
-			address.append(subnet);
+        for (int i = 0; i < count; i++) {
+            string subnet = Utils::itoa(i);
+            string address = "192.168.0.";
+            address.append(subnet);
 
-			AddressPort* local = new AddressPort(address, port);
-			sockets[i] = new Socket(i, i, i, local);
-			sc.push(sockets[i]);
-		}
+            AddressPort* local = new AddressPort(address, port);
+            sockets[i] = new Socket(i, i, i, local);
+            sc.push(sockets[i]);
+        }
 
-		for(int i = count; i < count; i++) {
-			string subnet = Utils::itoa(i);
-			string address = "192.168.0.";
-			address.append(subnet);
+        for (int i = count; i < count; i++) {
+            string address = Utils::itoa(i);
+            string rest = ".168.0.1";
 
-			AddressPort to_check(address, port);
-			AlreadyBoundToAddressPortVisitor v(&to_check);
+            address.append(rest);
 
-			sc.accept(&v);
-			ASSERT_TRUE(v.is_bound());
-		}
+            AddressPort to_check(address, port);
+            AlreadyBoundToAddressPortVisitor v(&to_check);
+
+            sc.accept(&v);
+            ASSERT_TRUE(!v.is_bound());
+        }
 
 
-		for(int i = 0; i < count; i++) {
-			delete sockets[i];
-		}
-	}
+        for (int i = 0; i < count; i++) {
+            delete sockets[i];
+        }
+    }
+
+    TEST(AlreadyBoundToAddressPortVisitorTest, AddressCheckNotUnique) {
+        sc.clear();
+        Socket * sockets[count];
+
+        int port = 5000;
+
+        for (int i = 0; i < count; i++) {
+            string subnet = Utils::itoa(i);
+            string address = "192.168.0.";
+            address.append(subnet);
+
+            AddressPort* local = new AddressPort(address, port);
+            sockets[i] = new Socket(i, i, i, local);
+            sc.push(sockets[i]);
+        }
+
+        for (int i = count; i < count; i++) {
+            string subnet = Utils::itoa(i);
+            string address = "192.168.0.";
+            address.append(subnet);
+
+            AddressPort to_check(address, port);
+            AlreadyBoundToAddressPortVisitor v(&to_check);
+
+            sc.accept(&v);
+            ASSERT_TRUE(v.is_bound());
+        }
+
+
+        for (int i = 0; i < count; i++) {
+            delete sockets[i];
+        }
+    }
 }
 
 #endif	/* ALREADYBOUNDTOADDRESSPORTVISITORTEST_H */

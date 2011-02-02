@@ -9,7 +9,7 @@
 #define	_NETWORKRECEIVEPACKETEVENT_H
 
 #include "PacketEvent.h"
-#include "../Socket.h"
+#include "Socket.h"
 
 class NetworkReceivePacketEvent : public PacketEvent {
 public:

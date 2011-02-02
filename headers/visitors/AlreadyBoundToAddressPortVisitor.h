@@ -8,7 +8,7 @@
 #ifndef ALREADYBOUNDTOADDRESSPORTVISITOR_H
 #define	ALREADYBOUNDTOADDRESSPORTVISITOR_H
 
-#include "visitors/Visitor.h"
+#include "Visitor.h"
 
 /**
  * Visitor used to check if any Sockets are already bound to an AddressPort or not

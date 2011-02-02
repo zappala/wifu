@@ -13,107 +13,108 @@
 #include <vector>
 
 #include "gtest/gtest.h"
-#include "../headers/AddressPort.h"
+#include "AddressPort.h"
 
 using namespace std;
 
 namespace {
-	TEST(AddpressPortTest, StringConstructor) {
-		string address("127.0.0.1");
-		int port = 5000;
 
-		AddressPort ap(address, port);
+    TEST(AddpressPortTest, StringConstructor) {
+        string address("127.0.0.1");
+        int port = 5000;
 
-		ASSERT_EQ(address, ap.get_address());
-		ASSERT_EQ(port, ap.get_port());
-	}
+        AddressPort ap(address, port);
 
-	TEST(AddpressPortTest, CharStarConstructor) {
-		const char* address = "127.0.0.1";
-		int port = 5000;
+        ASSERT_EQ(address, ap.get_address());
+        ASSERT_EQ(port, ap.get_port());
+    }
 
-		AddressPort ap(address, port);
+    TEST(AddpressPortTest, CharStarConstructor) {
+        const char* address = "127.0.0.1";
+        int port = 5000;
 
-		ASSERT_EQ(string(address), ap.get_address());
-		ASSERT_EQ(port, ap.get_port());
-	}
+        AddressPort ap(address, port);
 
-	TEST(AddpressPortTest, SockaddrConstructor) {
-		string address("127.0.0.1");
-		int port = 5000;
+        ASSERT_EQ(string(address), ap.get_address());
+        ASSERT_EQ(port, ap.get_port());
+    }
 
-		struct sockaddr_in addr;
+    TEST(AddpressPortTest, SockaddrConstructor) {
+        string address("127.0.0.1");
+        int port = 5000;
 
-		addr.sin_family = AF_INET;
-		addr.sin_port = htons(port);
+        struct sockaddr_in addr;
 
-		if (!inet_aton(address.c_str(), &addr.sin_addr)) {
-			cout << "error converting ip address to binary" << endl;
-			assert(false);
-		}
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(port);
 
-		AddressPort ap(&addr);
+        if (!inet_aton(address.c_str(), &addr.sin_addr)) {
+            cout << "error converting ip address to binary" << endl;
+            assert(false);
+        }
 
-		ASSERT_EQ(address, ap.get_address());
-		ASSERT_EQ(port, ap.get_port());
-	}
+        AddressPort ap(&addr);
 
-	TEST(AddpressPortTest, CopyConstructor) {
-		string address("127.0.0.1");
-		int port = 5000;
+        ASSERT_EQ(address, ap.get_address());
+        ASSERT_EQ(port, ap.get_port());
+    }
 
-		AddressPort ap(address, port);
-		AddressPort copy(ap);
+    TEST(AddpressPortTest, CopyConstructor) {
+        string address("127.0.0.1");
+        int port = 5000;
 
-		ASSERT_EQ(ap.get_address(), copy.get_address());
-		ASSERT_EQ(ap.get_port(), copy.get_port());
-		ASSERT_TRUE(ap.get_network_struct_ptr() != copy.get_network_struct_ptr());
-	}
+        AddressPort ap(address, port);
+        AddressPort copy(ap);
 
-	TEST(AddpressPortTest, OperatorEqualsConstructor) {
-		string address("127.0.0.1");
-		int port = 5000;
+        ASSERT_EQ(ap.get_address(), copy.get_address());
+        ASSERT_EQ(ap.get_port(), copy.get_port());
+        ASSERT_TRUE(ap.get_network_struct_ptr() != copy.get_network_struct_ptr());
+    }
 
-		AddressPort ap(address, port);
-		AddressPort copy(ap);
+    TEST(AddpressPortTest, OperatorEqualsConstructor) {
+        string address("127.0.0.1");
+        int port = 5000;
 
-		ASSERT_TRUE(ap == copy);
+        AddressPort ap(address, port);
+        AddressPort copy(ap);
 
-		copy = AddressPort(address.c_str(), 5001);
-		ASSERT_TRUE(!(ap == copy));
+        ASSERT_TRUE(ap == copy);
 
-		address = "127.0.0.2";
-		copy = AddressPort(address, 5000);
-		ASSERT_TRUE(!(ap == copy));
-	}
+        copy = AddressPort(address.c_str(), 5001);
+        ASSERT_TRUE(!(ap == copy));
 
-	TEST(AddpressPortTest, OperatorNotEqualsConstructor) {
-		string address("127.0.0.1");
-		int port = 5000;
+        address = "127.0.0.2";
+        copy = AddressPort(address, 5000);
+        ASSERT_TRUE(!(ap == copy));
+    }
 
-		AddressPort ap(address, port);
-		AddressPort copy(ap);
+    TEST(AddpressPortTest, OperatorNotEqualsConstructor) {
+        string address("127.0.0.1");
+        int port = 5000;
 
-		ASSERT_TRUE(!(ap != copy));
+        AddressPort ap(address, port);
+        AddressPort copy(ap);
 
-		copy = AddressPort(address.c_str(), 5001);
-		ASSERT_TRUE(ap != copy);
+        ASSERT_TRUE(!(ap != copy));
 
-		address = "127.0.0.2";
-		copy = AddressPort(address, 5000);
-		ASSERT_TRUE(ap != copy);
-	}
+        copy = AddressPort(address.c_str(), 5001);
+        ASSERT_TRUE(ap != copy);
 
-	TEST(AddpressPortTest, ToString) {
+        address = "127.0.0.2";
+        copy = AddressPort(address, 5000);
+        ASSERT_TRUE(ap != copy);
+    }
 
-		string expected = "Address: 127.0.0.1 Port: 5000";
+    TEST(AddpressPortTest, ToString) {
 
-		string address("127.0.0.1");
-		int port = 5000;
+        string expected = "Address: 127.0.0.1 Port: 5000";
 
-		AddressPort ap(address, port);
-		ASSERT_EQ(expected, ap.to_s());
-	}
+        string address("127.0.0.1");
+        int port = 5000;
+
+        AddressPort ap(address, port);
+        ASSERT_EQ(expected, ap.to_s());
+    }
 }
 
 

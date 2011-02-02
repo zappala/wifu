@@ -9,7 +9,7 @@
 #define	_UDPRECEIVEPACKETEVENT_H
 
 #include "PacketEvent.h"
-#include "../Socket.h"
+#include "Socket.h"
 
 class UDPReceivePacketEvent : public PacketEvent {
 public:

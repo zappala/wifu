@@ -11,12 +11,12 @@
 #include <string>
 
 #include "contexts/Context.h"
-#include "../AddressPort.h"
-#include "../Socket.h"
+#include "AddressPort.h"
+#include "Socket.h"
 #include "contexts/CongestionControlContext.h"
 #include "events/NetworkSendPacketEvent.h"
 #include "events/ConnectEvent.h"
-#include "../Dispatcher.h"
+#include "Dispatcher.h"
 using namespace std;
 
 class SlowStart : public State {

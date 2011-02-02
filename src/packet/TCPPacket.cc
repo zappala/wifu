@@ -1,6 +1,6 @@
 #include <netinet/tcp.h>
 
-#include "../headers/packet/TCPPacket.h"
+#include "packet/TCPPacket.h"
 #include "packet/WiFuPacket.h"
 
 TCPPacket::TCPPacket() : WiFuPacket() {

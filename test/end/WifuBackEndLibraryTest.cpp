@@ -9,7 +9,7 @@
 #define WIFUBANDENDLIBRARYTEST
 
 #include "gtest/gtest.h"
-#include "../headers/WifuEndBackEndLibrary.h"
+#include "WifuEndBackEndLibrary.h"
 
 using namespace std;
 

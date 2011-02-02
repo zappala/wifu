@@ -9,7 +9,7 @@
 #define	_SENDPACKETEVENT_H
 
 #include "Event.h"
-#include "../headers/packet/WiFuPacket.h"
+#include "packet/WiFuPacket.h"
 
 using namespace std;
 

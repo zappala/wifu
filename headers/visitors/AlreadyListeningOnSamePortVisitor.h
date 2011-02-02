@@ -8,7 +8,7 @@
 #ifndef _ALREADYLISTENINGONSAMEPORTVISITOR_H
 #define	_ALREADYLISTENINGONSAMEPORTVISITOR_H
 
-#include "visitors/Visitor.h"
+#include "Visitor.h"
 
 /**
  * Visitor used to check if any Sockets are already listening on a port

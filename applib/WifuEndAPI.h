@@ -10,6 +10,7 @@
 
 #include <sys/types.h>
 #include <unistd.h>
+
 #include "WifuEndAPILocalSocket.h"
 #include "wifu_socket.h"
 #define end_socket WifuEndAPILocalSocket::instance()

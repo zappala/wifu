@@ -6,13 +6,13 @@
  */
 
 #include "gtest/gtest.h"
-#include "../headers/AddressPort.h"
-#include "../headers/NetworkCallback.h"
-#include "../headers/RawSocketListener.h"
-#include "../headers/RawSocketSender.h"
-#include "../headers/PacketFactory.h"
-#include "../headers/packet/WiFuPacket.h"
-#include "../headers/WiFuPacketFactory.h"
+#include "AddressPort.h"
+#include "NetworkCallback.h"
+#include "RawSocketListener.h"
+#include "RawSocketSender.h"
+#include "PacketFactory.h"
+#include "packet/WiFuPacket.h"
+#include "WiFuPacketFactory.h"
 #include "RandomStringGenerator.h"
 
 using namespace std;
@@ -72,20 +72,21 @@ WiFuPacket* make_packet(string& data) {
 
 
 namespace {
-	TEST(RawSockets, all) {
 
-		RawSocketSender sender;
-		RawSocketListener listener;
-		NetworkCallbackImpl callback;
+    TEST(RawSockets, all) {
 
-		listener.register_protocol(100, new WiFuPacketFactory());
-		listener.start(&callback);
+        RawSocketSender sender;
+        RawSocketListener listener;
+        NetworkCallbackImpl callback;
 
-		for (int i = 0; i < 100; i++) {
-			string data = random_string(1000);
-			sender.send(make_packet(data));
-			callback.get_sem().wait();
-			ASSERT_EQ(data, callback.get_message());
-		}
-	}
+        listener.register_protocol(100, new WiFuPacketFactory());
+        listener.start(&callback);
+
+        for (int i = 0; i < 100; i++) {
+            string data = random_string(1000);
+            sender.send(make_packet(data));
+            callback.get_sem().wait();
+            ASSERT_EQ(data, callback.get_message());
+        }
+    }
 }

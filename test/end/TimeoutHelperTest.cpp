@@ -9,7 +9,7 @@
 #define TIMEOUTHELPERTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/TimeoutHelper.h"
+#include "TimeoutHelper.h"
 
 using namespace std;
 

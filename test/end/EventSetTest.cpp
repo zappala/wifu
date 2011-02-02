@@ -9,9 +9,9 @@
 #define EVENTSETTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/events/EventSet.h"
-#include "../headers/events/Event.h"
-#include "../headers/events/TimeoutEvent.h"
+#include "events/EventSet.h"
+#include "events/Event.h"
+#include "events/TimeoutEvent.h"
 
 using namespace std;
 

@@ -1,4 +1,4 @@
-#include "../headers/packet/WiFuPacket.h"
+#include "packet/WiFuPacket.h"
 
 WiFuPacket::WiFuPacket() : IPPacket() {
     init();

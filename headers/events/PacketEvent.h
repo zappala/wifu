@@ -9,8 +9,8 @@
 #define	_PACKETEVENT_H
 
 #include "Event.h"
-#include "../headers/packet/WiFuPacket.h"
-#include "../Socket.h"
+#include "packet/WiFuPacket.h"
+#include "Socket.h"
 
 class PacketEvent : public Event {
 public:

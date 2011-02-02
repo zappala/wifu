@@ -9,7 +9,7 @@
 #define TIMEOUTEVENTMANAGERTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/TimeoutEventManager.h"
+#include "TimeoutEventManager.h"
 
 using namespace std;
 

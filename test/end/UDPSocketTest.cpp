@@ -12,8 +12,8 @@
 #include <vector>
 
 #include "gtest/gtest.h"
-#include "../headers/AddressPort.h"
-#include "../headers/UDPSocket.h"
+#include "AddressPort.h"
+#include "UDPSocket.h"
 
 using namespace std;
 

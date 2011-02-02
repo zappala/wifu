@@ -9,7 +9,7 @@
 #define PORTMANAGERTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/PortManager.h"
+#include "PortManager.h"
 
 using namespace std;
 

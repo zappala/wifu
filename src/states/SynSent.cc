@@ -1,4 +1,4 @@
-#include "../headers/states/SynSent.h"
+#include "states/SynSent.h"
 
 SynSent::SynSent() {
 

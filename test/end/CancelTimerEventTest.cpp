@@ -9,39 +9,40 @@
 #define CANCELTIMEREVENTTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/events/TimeoutEvent.h"
-#include "../headers/events/CancelTimerEvent.h"
-#include "../headers/IModule.h"
-#include "../headers/Socket.h"
+#include "events/TimeoutEvent.h"
+#include "events/CancelTimerEvent.h"
+#include "IModule.h"
+#include "Socket.h"
 
 using namespace std;
 
 namespace {
-	class IModuleDummyImplementation : public IModule {
-	public:
 
-		IModuleDummyImplementation() {
-			timerCanceled = false;
-		}
+    class IModuleDummyImplementation : public IModule {
+    public:
 
-		void cancel_timer(Event* e) {
-			timerCanceled = true;
-		}
+        IModuleDummyImplementation() {
+            timerCanceled = false;
+        }
 
-		bool timerCanceled;
-	};
+        void cancel_timer(Event* e) {
+            timerCanceled = true;
+        }
 
-	TEST(CancelTimerEventTest, cancel_timer) {
-		IModuleDummyImplementation dummyImodule;
-		ASSERT_TRUE(dummyImodule.timerCanceled == false);
+        bool timerCanceled;
+    };
 
-		Socket* s = new Socket(0, 1, 2);
-		TimeoutEvent timeoutEvent(s, 1, 0);
-		CancelTimerEvent cancelTimerEvent(&timeoutEvent);
-		cancelTimerEvent.execute(&dummyImodule);
+    TEST(CancelTimerEventTest, cancel_timer) {
+        IModuleDummyImplementation dummyImodule;
+        ASSERT_TRUE(dummyImodule.timerCanceled == false);
 
-		ASSERT_TRUE(dummyImodule.timerCanceled == true);
-	}
+        Socket* s = new Socket(0, 1, 2);
+        TimeoutEvent timeoutEvent(s, 1, 0);
+        CancelTimerEvent cancelTimerEvent(&timeoutEvent);
+        cancelTimerEvent.execute(&dummyImodule);
+
+        ASSERT_TRUE(dummyImodule.timerCanceled == true);
+    }
 }
 
 #endif /* CANCELTIMEREVENTTEST_H_ */

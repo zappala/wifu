@@ -10,14 +10,14 @@
 
 #include <iostream>
 
-#include "../contexts/Context.h"
+#include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
 #include "states/Listen.h"
 #include "states/SynSent.h"
-#include "../AddressPort.h"
-#include "../headers/packet/TCPPacket.h"
-#include "../events/SendPacketEvent.h"
-#include "../events/ConnectEvent.h"
+#include "AddressPort.h"
+#include "packet/TCPPacket.h"
+#include "events/SendPacketEvent.h"
+#include "events/ConnectEvent.h"
 
 using namespace std;
 

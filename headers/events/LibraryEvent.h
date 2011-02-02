@@ -15,7 +15,7 @@
 #include "defines.h"
 #include "Event.h"
 #include "QueryStringParser.h"
-#include "../Utils.h"
+#include "Utils.h"
 
 using namespace std;
 

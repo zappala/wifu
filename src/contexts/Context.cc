@@ -1,4 +1,4 @@
-#include "../headers/contexts/Context.h"
+#include "contexts/Context.h"
 
 Context::Context() : IContext(), current_(0) {
 

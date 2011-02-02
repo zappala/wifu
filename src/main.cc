@@ -31,8 +31,8 @@
 #include "MainSemaphore.h"
 #include "ProtocolManager.h"
 #include "SimpleTCP.h"
-#include "../headers/events/SendPacketEvent.h"
 
+#include "events/SendPacketEvent.h"
 #include "events/SendPacketEvent.h"
 #include "events/NetworkSendPacketEvent.h"
 #include "events/NetworkReceivePacketEvent.h"

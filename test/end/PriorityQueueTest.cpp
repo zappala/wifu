@@ -10,7 +10,7 @@
 
 #include "gtest/gtest.h"
 #include "PriorityQueue.h"
-#include "../headers/Socket.h"
+#include "Socket.h"
 #include "events/TimeoutEvent.h"
 #include "defines.h"
 #include <pthread.h>

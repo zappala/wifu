@@ -8,15 +8,15 @@
 #ifndef HASHSETTEST_H
 #define	HASHSETTEST_H
 
-#include "../headers/HashSet.h"
+#include "HashSet.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
 
 #include "gtest/gtest.h"
-#include "../headers/events/Event.h"
-#include "../headers/events/TimeoutEvent.h"
+#include "events/Event.h"
+#include "events/TimeoutEvent.h"
 
 using namespace std;
 

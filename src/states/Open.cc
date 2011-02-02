@@ -1,5 +1,5 @@
-#include "../headers/states/Closed.h"
-#include "../headers/states/Open.h"
+#include "states/Closed.h"
+#include "states/Open.h"
 
 Open::Open() : State() {
 

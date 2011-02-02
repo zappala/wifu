@@ -10,9 +10,9 @@
 
 #include <string.h>
 
-#include "../headers/Semaphore.h"
-#include "../headers/defines.h"
-#include "../headers/AddressPort.h"
+#include "Semaphore.h"
+#include "defines.h"
+#include "AddressPort.h"
 
 class SocketData {
 public:

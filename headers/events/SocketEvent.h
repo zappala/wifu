@@ -9,7 +9,7 @@
 #define	SOCKETEVENT_H
 
 #include "LibraryEvent.h"
-#include "../Socket.h"
+#include "Socket.h"
 
 class SocketEvent : public LibraryEvent {
 public:

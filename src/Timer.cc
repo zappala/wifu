@@ -42,13 +42,13 @@ void Timer::adjust_stop_time(int microseconds) {
 }
 
 void Timer::set_start_time_to_be_stop_time() {
-    memcpy(&start_time, &stop_time, sizeof(struct timeval));
+    memcpy(&start_time, &stop_time, sizeof (struct timeval));
     stop_set = false;
 }
 
 u_int64_t Timer::get_start_time() {
     //assert(start_set);
-    if(!start_set) {
+    if (!start_set) {
         return 0;
     }
 
@@ -58,28 +58,28 @@ u_int64_t Timer::get_start_time() {
 u_int64_t Timer::get_stop_time() {
     //assert(stop_set);
 
-    if(!stop_set) {
+    if (!stop_set) {
         return 0;
     }
-    
+
     return to_microseconds(&stop_time);
 }
 
 u_int64_t Timer::get_duration_microseconds() {
     u_int64_t start_time = get_start_time();
 
-    if(start_time == 0) {
+    if (start_time == 0) {
         return 0;
     }
 
     u_int64_t stop_time = get_stop_time();
-    
+
     stop_time -= start_time;
     return stop_time;
 }
 
 double Timer::get_duration_seconds() {
-    u_int64_t duration = get_duration_microseconds();
+    long long int duration = get_duration_microseconds();
 
     int bufsize = 1000;
     char buf[bufsize];

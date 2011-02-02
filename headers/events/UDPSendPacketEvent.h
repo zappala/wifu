@@ -9,7 +9,7 @@
 #define	_UDPSENDPACKETEVENT_H
 
 #include "PacketEvent.h"
-#include "../Socket.h"
+#include "Socket.h"
 
 class UDPSendPacketEvent : public PacketEvent {
 public:

@@ -9,7 +9,7 @@
 #define LOCALSOCKETSENDERTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/LocalSocketSender.h"
+#include "LocalSocketSender.h"
 
 using namespace std;
 

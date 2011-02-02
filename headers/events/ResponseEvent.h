@@ -13,7 +13,7 @@
 
 #include "Event.h"
 #include "QueryStringParser.h"
-#include "../Socket.h"
+#include "Socket.h"
 
 using namespace std;
 

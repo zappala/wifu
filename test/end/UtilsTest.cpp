@@ -9,7 +9,7 @@
 #define UTILSTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/Utils.h"
+#include "Utils.h"
 
 using namespace std;
 

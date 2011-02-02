@@ -9,7 +9,7 @@
 #define SOCKETMANAGERTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/SocketManager.h"
+#include "SocketManager.h"
 
 using namespace std;
 

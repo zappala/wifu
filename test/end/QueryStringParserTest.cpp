@@ -14,59 +14,60 @@
 #include <stdlib.h>
 
 #include "gtest/gtest.h"
-#include "../headers/QueryStringParser.h"
+#include "QueryStringParser.h"
 
 using namespace std;
 
 namespace {
-	TEST(QueryStringParserTest, Create) {
 
-		char buf[(sizeof(int)*8+1)];
+    TEST(QueryStringParserTest, Create) {
 
-		string name = "name";
-		map<string, string> values;
+        char buf[(sizeof (int) *8 + 1)];
 
-		string result = QueryStringParser::create(name, values);
-		string expected = "name?";
-		ASSERT_EQ(expected, result);
+        string name = "name";
+        map<string, string> values;
 
-		values["a"] = "a";
-		result = QueryStringParser::create(name, values);
-		expected = "name?a=a&";
-		ASSERT_EQ(expected, result);
+        string result = QueryStringParser::create(name, values);
+        string expected = "name?";
+        ASSERT_EQ(expected, result);
 
-		sprintf(buf, "%d", 95);
-		values["a"] = buf;
-		result = QueryStringParser::create(name, values);
-		expected = "name?a=95&";
-		ASSERT_EQ(expected, result);
+        values["a"] = "a";
+        result = QueryStringParser::create(name, values);
+        expected = "name?a=a&";
+        ASSERT_EQ(expected, result);
 
-		sprintf(buf, "%d", 4);
-		values["b"] = buf;
-		result = QueryStringParser::create(name, values);
-		expected = "name?a=95&b=4&";
-		ASSERT_EQ(expected, result);
-	}
+        sprintf(buf, "%d", 95);
+        values["a"] = buf;
+        result = QueryStringParser::create(name, values);
+        expected = "name?a=95&";
+        ASSERT_EQ(expected, result);
 
-	TEST(QueryStringParserTest, moreCreate) {
+        sprintf(buf, "%d", 4);
+        values["b"] = buf;
+        result = QueryStringParser::create(name, values);
+        expected = "name?a=95&b=4&";
+        ASSERT_EQ(expected, result);
+    }
 
-		map<string, string> values;
-		string query = "name?a=9&b=bob&c=1234&";
+    TEST(QueryStringParserTest, moreCreate) {
 
-		QueryStringParser::parse(query, values);
+        map<string, string> values;
+        string query = "name?a=9&b=bob&c=1234&";
 
-		string expected = "name";
-		ASSERT_EQ(expected, values["name"]);
+        QueryStringParser::parse(query, values);
 
-		expected = "9";
-		ASSERT_EQ(expected, values["a"]);
+        string expected = "name";
+        ASSERT_EQ(expected, values["name"]);
 
-		expected = "1234";
-		ASSERT_EQ(expected, values["c"]);
+        expected = "9";
+        ASSERT_EQ(expected, values["a"]);
 
-		expected = "bob";
-		ASSERT_EQ(expected, values["b"]);
-	}
+        expected = "1234";
+        ASSERT_EQ(expected, values["c"]);
+
+        expected = "bob";
+        ASSERT_EQ(expected, values["b"]);
+    }
 }
 
 #endif	/* QUERYSTRINGPARSERTEST_H */

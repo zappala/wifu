@@ -9,36 +9,38 @@
 #define PACKETRECEIVEDEVENTTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/events/PacketReceivedEvent.h"
-#include "../headers/Socket.h"
-#include "../headers/IModule.h"
+#include "events/PacketReceivedEvent.h"
+#include "Socket.h"
+#include "IModule.h"
 
 using namespace std;
 
 namespace {
-	class IModuleDummyImplementation : public IModule {
-	public:
-		IModuleDummyImplementation() {
-			received = false;
-		}
 
-		void receive(Event* e) {
-			received = true;
-		}
+    class IModuleDummyImplementation : public IModule {
+    public:
 
-		bool received;
-	};
+        IModuleDummyImplementation() {
+            received = false;
+        }
 
-	TEST(PacketReceivedEventTest, receive) {
-		IModuleDummyImplementation dummyImodule;
-		ASSERT_TRUE(dummyImodule.received == false);
+        void receive(Event* e) {
+            received = true;
+        }
 
-					Socket* s = new Socket(1, 2, 3);
-		PacketReceivedEvent packetReceivedEvent(s);
-		packetReceivedEvent.execute(&dummyImodule);
+        bool received;
+    };
 
-		ASSERT_TRUE(dummyImodule.received == true);
-	}
+    TEST(PacketReceivedEventTest, receive) {
+        IModuleDummyImplementation dummyImodule;
+        ASSERT_TRUE(dummyImodule.received == false);
+
+        Socket* s = new Socket(1, 2, 3);
+        PacketReceivedEvent packetReceivedEvent(s);
+        packetReceivedEvent.execute(&dummyImodule);
+
+        ASSERT_TRUE(dummyImodule.received == true);
+    }
 }
 
 #endif /* PACKETRECEIVEDEVENTTEST_H_ */

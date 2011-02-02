@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-#include "../contexts/Context.h"
+#include "contexts/Context.h"
 
 
 using namespace std;

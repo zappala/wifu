@@ -9,7 +9,7 @@
 #define MAINSEMAPHORETEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/MainSemaphore.h"
+#include "MainSemaphore.h"
 
 using namespace std;
 

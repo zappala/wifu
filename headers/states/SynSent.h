@@ -12,7 +12,7 @@
 #include "contexts/ConnectionManagerContext.h"
 #include "Established.h"
 #include "events/ConnectEvent.h"
-#include "../Dispatcher.h"
+#include "Dispatcher.h"
 
 using namespace std;
 

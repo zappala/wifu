@@ -1,4 +1,4 @@
-#include "../headers/SourceGetter.h"
+#include "SourceGetter.h"
 
 // public functions
 

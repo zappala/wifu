@@ -8,19 +8,21 @@
 #ifndef _WIFUENDAPILOCALSOCKET_H
 #define	_WIFUENDAPILOCALSOCKET_H
 
-#include "SocketData.h"
+
 
 #include <sstream>
 
-#include "../headers/QueryStringParser.h"
-#include "../headers/LocalSocketFullDuplex.h"
-#include "../headers/LocalSocketReceiverCallback.h"
-#include "../headers/BinarySemaphore.h"
-#include "../headers/Utils.h"
-#include "../headers/AddressPort.h"
-#include "../headers/defines.h"
-#include "../headers/IDGenerator.h"
+#include "QueryStringParser.h"
+#include "LocalSocketFullDuplex.h"
+#include "LocalSocketReceiverCallback.h"
+#include "BinarySemaphore.h"
+#include "Utils.h"
+#include "AddressPort.h"
+#include "defines.h"
+#include "IDGenerator.h"
 #include "SocketDataMap.h"
+#include "SocketData.h"
+
 
 #define sockets SocketDataMap::instance()
 

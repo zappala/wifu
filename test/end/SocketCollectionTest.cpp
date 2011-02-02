@@ -10,8 +10,8 @@
 
 #include "gtest/gtest.h"
 
-#include "../headers/SocketCollection.h"
-#include "../headers/AddressPort.h"
+#include "SocketCollection.h"
+#include "AddressPort.h"
 
 #define collection SocketCollection::instance()
 

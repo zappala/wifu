@@ -1,4 +1,4 @@
-#include "../headers/packet/IPPacket.h"
+#include "packet/IPPacket.h"
 
 IPPacket::IPPacket() {
     ip_ = (struct iphdr*) payload_;

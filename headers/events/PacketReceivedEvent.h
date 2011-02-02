@@ -9,7 +9,7 @@
 #define	_PACKETRECEIVEDEVENT_H
 
 #include "Event.h"
-#include "../Socket.h"
+#include "Socket.h"
 
 /**
  * Event which represents receipt of a packet.

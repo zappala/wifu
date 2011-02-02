@@ -9,7 +9,7 @@
 #define DISPATCHERTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/Dispatcher.h"
+#include "Dispatcher.h"
 
 using namespace std;
 

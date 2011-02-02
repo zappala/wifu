@@ -14,11 +14,11 @@
 #include "IContext.h"
 #include "Context.h"
 #include "ContextContainer.h"
-#include "../AddressPort.h"
-#include "../Socket.h"
-#include "../packet/WiFuPacket.h"
-#include "../events/ConnectEvent.h"
-#include "../events/AcceptEvent.h"
+#include "AddressPort.h"
+#include "Socket.h"
+#include "packet/WiFuPacket.h"
+#include "events/ConnectEvent.h"
+#include "events/AcceptEvent.h"
 
 using namespace std;
 

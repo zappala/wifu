@@ -9,7 +9,7 @@
 #define TIMEOUTEVENTMANAGERSEMAPHORETEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/TimeoutEventManagerSemaphore.h"
+#include "TimeoutEventManagerSemaphore.h"
 
 using namespace std;
 

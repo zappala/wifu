@@ -8,8 +8,8 @@
 #ifndef _IDGENERATORTEST_H
 #define	_IDGENERATORTEST_H
 
-#include "../headers/IDGenerator.h"
-#include "../headers/PortManager.h"
+#include "IDGenerator.h"
+#include "PortManager.h"
 
 #include <iostream>
 #include <string>
@@ -20,14 +20,15 @@
 using namespace std;
 
 namespace {
-	TEST(IDGeneratorTest, all) {
-		int id0 = IDGenerator::instance().get();
-		int id1 = IDGenerator::instance().get();
 
-		ASSERT_TRUE(id0 != id1);
+    TEST(IDGeneratorTest, all) {
+        int id0 = IDGenerator::instance().get();
+        int id1 = IDGenerator::instance().get();
 
-		IDGenerator::instance().remove(id0);
-	}
+        ASSERT_TRUE(id0 != id1);
+
+        IDGenerator::instance().remove(id0);
+    }
 }
 
 #endif	/* _IDGENERATORTEST_H */

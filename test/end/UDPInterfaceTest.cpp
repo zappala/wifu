@@ -16,16 +16,16 @@
 #include <cstdlib>
 
 #include "gtest/gtest.h"
-#include "../headers/UDPInterface.h"
-#include "../headers/Module.h"
-#include "../headers/AddressPort.h"
-#include "../headers/Dispatcher.h"
-#include "../headers/events/UDPReceivePacketEvent.h"
-#include "../headers/events/UDPSendPacketEvent.h"
-#include "../headers/Socket.h"
-#include "../headers/Timer.h"
-#include "../headers/Semaphore.h"
-#include "../headers/packet/WiFuPacket.h"
+#include "UDPInterface.h"
+#include "Module.h"
+#include "AddressPort.h"
+#include "Dispatcher.h"
+#include "events/UDPReceivePacketEvent.h"
+#include "events/UDPSendPacketEvent.h"
+#include "Socket.h"
+#include "Timer.h"
+#include "Semaphore.h"
+#include "packet/WiFuPacket.h"
 
 #define udp UDPInterface::instance()
 #define dispatcher Dispatcher::instance()

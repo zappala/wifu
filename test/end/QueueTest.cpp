@@ -14,48 +14,49 @@
 #include <signal.h>
 
 #include "gtest/gtest.h"
-#include "../headers/Queue.h"
-#include "../headers/IQueue.h"
+#include "Queue.h"
+#include "IQueue.h"
 
 using namespace std;
 
 bool signaled;
 
 namespace {
-	void signal_handler(int signal) {
-		ASSERT_EQ(SIG_ENQUEUE_EVENT, signal);
-		signaled = true;
-	}
 
-	TEST(QueueTest, all) {
+    void signal_handler(int signal) {
+        ASSERT_EQ(SIG_ENQUEUE_EVENT, signal);
+        signaled = true;
+    }
 
-		signal(SIG_ENQUEUE_EVENT, signal_handler);
+    TEST(QueueTest, all) {
 
-		IQueue<int>* q = new Queue<int>();
-		int value = 0;
+        signal(SIG_ENQUEUE_EVENT, signal_handler);
 
-		signaled = false;
-		q->enqueue(value);
+        IQueue<int>* q = new Queue<int>();
+        int value = 0;
 
-		ASSERT_TRUE(!signaled);
-		ASSERT_EQ(1, q->size());
-		ASSERT_TRUE(!q->isEmpty());
-		ASSERT_EQ(value, q->dequeue());
-		ASSERT_EQ(0, q->size());
-		ASSERT_TRUE(q->isEmpty());
+        signaled = false;
+        q->enqueue(value);
 
-		signaled = false;
-		q->enqueue(value, true);
+        ASSERT_TRUE(!signaled);
+        ASSERT_EQ(1, q->size());
+        ASSERT_TRUE(!q->isEmpty());
+        ASSERT_EQ(value, q->dequeue());
+        ASSERT_EQ(0, q->size());
+        ASSERT_TRUE(q->isEmpty());
 
-		ASSERT_TRUE(signaled);
-		ASSERT_EQ(1, q->size());
-		ASSERT_TRUE(!q->isEmpty());
-		ASSERT_EQ(value, q->dequeue());
-		ASSERT_EQ(0, q->size());
-		ASSERT_TRUE(q->isEmpty());
+        signaled = false;
+        q->enqueue(value, true);
 
-		delete q;
-	}
+        ASSERT_TRUE(signaled);
+        ASSERT_EQ(1, q->size());
+        ASSERT_TRUE(!q->isEmpty());
+        ASSERT_EQ(value, q->dequeue());
+        ASSERT_EQ(0, q->size());
+        ASSERT_TRUE(q->isEmpty());
+
+        delete q;
+    }
 }
 
 #endif	/* _QUEUETEST_H */

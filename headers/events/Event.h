@@ -12,7 +12,7 @@
 
 #include "GarbageCollector.h"
 #include "IModule.h"
-#include "../Socket.h"
+#include "Socket.h"
 
 class IModule;
 

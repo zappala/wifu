@@ -9,7 +9,7 @@
 #define CANCELEDEVENTSTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/events/CanceledEvents.h"
+#include "events/CanceledEvents.h"
 
 using namespace std;
 

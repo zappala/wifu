@@ -9,7 +9,7 @@
 #define QUEUEPROCESSORTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/QueueProcessor.h"
+#include "QueueProcessor.h"
 
 using namespace std;
 

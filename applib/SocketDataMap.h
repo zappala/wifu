@@ -9,7 +9,7 @@
 #define	SOCKETMAP_H
 
 #include <map>
-#include "../headers/BinarySemaphore.h"
+#include "BinarySemaphore.h"
 #include "SocketData.h"
 
 using namespace std;

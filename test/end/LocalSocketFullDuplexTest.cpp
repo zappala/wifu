@@ -17,8 +17,8 @@
 
 #include "gtest/gtest.h"
 
-#include "../headers/LocalSocketFullDuplex.h"
-#include "../headers/RandomNumberSet.h"
+#include "LocalSocketFullDuplex.h"
+#include "RandomNumberSet.h"
 #include "Utils.h"
 
 using namespace std;
@@ -27,6 +27,7 @@ namespace {
 
     class LocalSocketFullDuplexImpl1 : public LocalSocketFullDuplex {
     public:
+
         LocalSocketFullDuplexImpl1(string& file) : LocalSocketFullDuplex(file) {
 
         }
@@ -48,30 +49,29 @@ namespace {
 
     };
 
+    TEST(LocalSocketFullDuplexTest, all) {
 
-	TEST(LocalSocketFullDuplexTest, all) {
+        RandomNumberSet<u_int16_t> numbers;
+        string file1("/tmp/LSFDF1");
+        file1.append(Utils::itoa(numbers.get()));
+        LocalSocketFullDuplexImpl1 s1(file1);
 
-		RandomNumberSet<u_int16_t> numbers;
-		string file1("/tmp/LSFDF1");
-		file1.append(Utils::itoa(numbers.get()));
-		LocalSocketFullDuplexImpl1 s1(file1);
+        string message = "This is a test message";
 
-		string message = "This is a test message";
+        ssize_t sent = s1.send_to(file1, message);
 
-		ssize_t sent = s1.send_to(file1, message);
+        if (sent < 0) {
+            cout << "Error in sending: " << errno << endl;
+        }
 
-		if(sent < 0) {
-			cout << "Error in sending: " << errno << endl;
-		}
+        usleep(5000);
 
-		usleep(5000);
+        ASSERT_EQ(message.size(), sent);
+        ASSERT_EQ(message, s1.get_last_received());
 
-		ASSERT_EQ(message.size(), sent);
-		ASSERT_EQ(message, s1.get_last_received());
+        unlink(file1.c_str());
 
-		unlink(file1.c_str());
-
-	}
+    }
 }
 
 #endif	/* LOCALSOCKETFULLDUPLEXTEST_H */

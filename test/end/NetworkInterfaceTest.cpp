@@ -9,11 +9,11 @@
 #define	_NETWORKINTERFACETEST_H
 
 #include "gtest/gtest.h"
-#include "../headers/NetworkInterface.h"
-#include "../headers/WiFuPacketFactory.h"
-#include "../headers/Module.h"
-#include "../headers/events/NetworkReceivePacketEvent.h"
-#include "../headers/events/NetworkSendPacketEvent.h"
+#include "NetworkInterface.h"
+#include "WiFuPacketFactory.h"
+#include "Module.h"
+#include "events/NetworkReceivePacketEvent.h"
+#include "events/NetworkSendPacketEvent.h"
 #include "headers/RandomStringGenerator.h"
 #include "Timer.h"
 

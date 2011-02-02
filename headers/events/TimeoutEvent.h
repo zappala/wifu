@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <iostream>
-#include "../Socket.h"
+#include "Socket.h"
 
 
 using namespace std;

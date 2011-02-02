@@ -9,13 +9,13 @@
 #define	ICONTEXT_H
 
 #include <string>
-#include "../GarbageCollector.h"
+#include "GarbageCollector.h"
 
-#include "../headers/Socket.h"
-#include "../headers/AddressPort.h"
-#include "../headers/packet/WiFuPacket.h"
-#include "../events/ConnectEvent.h"
-#include "../events/AcceptEvent.h"
+#include "Socket.h"
+#include "AddressPort.h"
+#include "packet/WiFuPacket.h"
+#include "events/ConnectEvent.h"
+#include "events/AcceptEvent.h"
 
 using namespace std;
 

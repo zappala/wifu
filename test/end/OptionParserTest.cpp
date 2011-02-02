@@ -9,7 +9,7 @@
 #define OPTIONPARSERTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/OptionParser.h"
+#include "OptionParser.h"
 
 using namespace std;
 

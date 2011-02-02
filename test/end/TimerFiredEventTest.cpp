@@ -9,9 +9,9 @@
 #define TIMERFIREDEVENTTEST_H_
 
 #include "gtest/gtest.h"
-#include "../headers/events/TimerFiredEvent.h"
-#include "../headers/IModule.h"
-#include "../headers/Socket.h"
+#include "events/TimerFiredEvent.h"
+#include "IModule.h"
+#include "Socket.h"
 
 using namespace std;
 

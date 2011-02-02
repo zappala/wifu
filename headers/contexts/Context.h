@@ -14,8 +14,8 @@
 
 #include "AddressPort.h"
 #include "Socket.h"
-#include "../events/ConnectEvent.h"
-#include "../events/AcceptEvent.h"
+#include "events/ConnectEvent.h"
+#include "events/AcceptEvent.h"
 
 using namespace std;
 
