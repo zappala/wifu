@@ -8,14 +8,15 @@
 #ifndef _CANCELEDEVENTS_H
 #define	_CANCELEDEVENTS_H
 
-#include "EventSet.h"
+#include "HashSet.h"
+#include "events/Event.h"
 
 using namespace std;
 
 /**
  * Singleton class used by TimeoutEventManager to keep track of canceled TimeoutEvent objects.
  */
-class CanceledEvents : public EventSet {
+class CanceledEvents : public HashSet<Event*> {
 private:
     /**
      * Constructs a CanceledEvents object.

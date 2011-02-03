@@ -171,7 +171,8 @@ namespace {
 
         // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
     }
-
+//TODO: make sure we are canceling threads
+    
 //    TEST_F(BackEndTest, connectTest) {
 //        AddressPort to_connect("127.0.0.1", 5002);
 //

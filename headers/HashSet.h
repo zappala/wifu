@@ -17,6 +17,7 @@ using namespace std;
 template<class T>
 class HashSet {
 public:
+
     HashSet() {
         mutex_.init(1);
     }
@@ -27,7 +28,14 @@ public:
 
     void insert(T obj) {
         mutex_.wait();
-        set_.insert(obj);
+        try {
+            set_.insert(obj);
+        }        catch (...) {
+            cout << "Error in insert" << endl;
+            mutex_.post();
+            return;
+        }
+
         mutex_.post();
     }
 
@@ -49,6 +57,12 @@ public:
         int val = set_.size();
         mutex_.post();
         return val;
+    }
+
+    void clear() {
+        mutex_.wait();
+        set_.clear();
+        mutex_.post();
     }
 
 private:

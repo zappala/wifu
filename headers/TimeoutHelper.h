@@ -8,7 +8,7 @@
 #ifndef _TIMEOUTHELPER_H
 #define	_TIMEOUTHELPER_H
 
-#include "events/EventSet.h"
+#include "HashSet.h"
 #include "events/TimeoutEvent.h"
 #include "Dispatcher.h"
 #include "events/TimerFiredEvent.h"
@@ -21,13 +21,13 @@
  * this class helps filter and pass along only those which a corresponding TimeoutEvent was created by this class.
  */
 // TODO: Refactor this class to inherit from HashSet<Event*>
-class TimeoutHelper : public EventSet {
+class TimeoutHelper : public HashSet<Event*> {
 public:
 
     /**
      * Creates a TimeoutHelper object.
      */
-    TimeoutHelper() : EventSet() {
+    TimeoutHelper() : HashSet<Event*>() {
 
     }
 
@@ -44,7 +44,7 @@ public:
      * @param event The Event to keep track of.
      */
     void dispatch_timeout(Event* event) {
-        add(event);
+        insert(event);
         Dispatcher::instance().enqueue(event);
     }
 

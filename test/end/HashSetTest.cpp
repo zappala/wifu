@@ -21,152 +21,158 @@
 using namespace std;
 
 namespace {
-	TEST(IntHashSetTest, Empty) {
-		HashSet<int> set;
-		ASSERT_EQ(0, set.size());
-	}
 
-	TEST(IntHashSetTest, InsertContains) {
-		HashSet<int> set;
-		int zero = 0;
-		set.insert(zero);
-		ASSERT_TRUE(set.contains(zero));
-	}
+    TEST(IntHashSetTest, Empty) {
+        HashSet<int> set;
+        ASSERT_EQ(0, set.size());
+    }
 
-	TEST(IntHashSetTest, InsertContainsMany) {
-		HashSet<int> set;
+    TEST(IntHashSetTest, InsertContains) {
+        HashSet<int> set;
+        int zero = 0;
+        set.insert(zero);
+        ASSERT_TRUE(set.contains(zero));
+    }
 
-		for(int i = 0; i < 1000; i++) {
-			set.insert(i);
-		}
+    TEST(IntHashSetTest, InsertContainsMany) {
+        HashSet<int> set;
 
-		for(int i = 0; i < 1000; i++) {
-			ASSERT_TRUE(set.contains(i));
-		}
-	}
+        int count = 1000;
 
-	TEST(IntHashSetTest, Remove) {
-		HashSet<int> set;
-		int zero = 0;
-		set.insert(zero);
-		ASSERT_TRUE(set.contains(zero));
+        for (int i = 0; i < count; i++) {
+            set.insert(i);
+        }
 
-		set.remove(zero);
-		ASSERT_TRUE(!set.contains(zero));
-		ASSERT_EQ(0, set.size());
-	}
+        for (int i = 0; i < count; i++) {
+            ASSERT_TRUE(set.contains(i));
+        }
+    }
 
-	TEST(IntHashSetTest, RemoveMany) {
-		HashSet<int> set;
+    TEST(IntHashSetTest, Remove) {
+        HashSet<int> set;
+        int zero = 0;
+        set.insert(zero);
+        ASSERT_TRUE(set.contains(zero));
 
-		for(int i = 0; i < 1000; i++) {
-			set.insert(i);
-		}
+        set.remove(zero);
+        ASSERT_TRUE(!set.contains(zero));
+        ASSERT_EQ(0, set.size());
+    }
 
-		for(int i = 0; i < 1000; i++) {
-			ASSERT_TRUE(set.contains(i));
-		}
+    TEST(IntHashSetTest, RemoveMany) {
+        HashSet<int> set;
 
-		for(int i = 0; i < 1000; i++) {
-			if(i % 2 == 0) {
-				set.remove(i);
-			}
-		}
+        int count = 1000;
 
-		ASSERT_EQ(500, set.size());
-		for(int i = 0; i < 1000; i++) {
-			if(i % 2 == 0) {
-				ASSERT_TRUE(!set.contains(i));
-			}
-			else {
-				ASSERT_TRUE(set.contains(i));
-			}
-		}
-	}
+        for (int i = 0; i < count; i++) {
+            set.insert(i);
+        }
 
-	TEST(EventPointerHashSetTest, Empty) {
-		HashSet<Event*> set;
-		ASSERT_EQ(0, set.size());
-	}
+        for (int i = 0; i < count; i++) {
+            ASSERT_TRUE(set.contains(i));
+        }
 
-	TEST(EventPointerHashSetTest, InsertContains) {
-		HashSet<Event*> set;
-		Event* e = new TimeoutEvent(0,1,0);
+        for (int i = 0; i < count; i++) {
+            if (i % 2 == 0) {
+                set.remove(i);
+            }
+        }
 
-		set.insert(e);
-		ASSERT_TRUE(set.contains(e));
+        ASSERT_EQ(500, set.size());
+        for (int i = 0; i < 1000; i++) {
+            if (i % 2 == 0) {
+                ASSERT_TRUE(!set.contains(i));
+            } else {
+                ASSERT_TRUE(set.contains(i));
+            }
+        }
+    }
 
-		delete e;
-	}
+    TEST(EventPointerHashSetTest, Empty) {
+        HashSet<Event*> set;
+        ASSERT_EQ(0, set.size());
+    }
 
-	TEST(EventPointerHashSetTest, InsertContainsMany) {
-		HashSet<Event*> set;
+    TEST(EventPointerHashSetTest, InsertContains) {
+        HashSet<Event*> set;
+        Event* e = new TimeoutEvent(0, 1, 0);
 
-		int count = 1000;
-		Event* events[count];
+        set.insert(e);
+        ASSERT_TRUE(set.contains(e));
+    }
 
-		for(int i = 0; i < count; i++) {
-			events[i] = new TimeoutEvent(0,0,i);
-			set.insert(events[i]);
-		}
+    TEST(EventPointerHashSetTest, InsertContainsMany) {
+        HashSet<Event*> set;
 
-		for(int i = 0; i < count; i++) {
-			ASSERT_TRUE(set.contains(events[i]));
-		}
+        int count = 1000;
+        Event * events[count];
 
-		for(int i = 0; i < count; i++) {
-			delete events[i];
-		}
-	}
+        for (int i = 0; i < count; i++) {
+            events[i] = new TimeoutEvent(0, 0, i);
+            set.insert(events[i]);
+        }
 
-	TEST(EventPointerHashSetTest, Remove) {
-		HashSet<Event*> set;
-		Event* e = new TimeoutEvent(0,0,1);
+        for (int i = 0; i < count; i++) {
+            ASSERT_TRUE(set.contains(events[i]));
+        }
+    }
 
-		set.insert(e);
-		ASSERT_TRUE(set.contains(e));
+    TEST(EventPointerHashSetTest, Remove) {
+        HashSet<Event*> set;
+        Event* e = new TimeoutEvent(0, 0, 1);
 
-		set.remove(e);
-		ASSERT_TRUE(!set.contains(e));
-		ASSERT_EQ(0, set.size());
-	}
+        set.insert(e);
+        ASSERT_TRUE(set.contains(e));
 
-	TEST(EventPointerHashSetTest, RemoveMany) {
-		HashSet<Event*> set;
+        set.remove(e);
+        ASSERT_TRUE(!set.contains(e));
+        ASSERT_EQ(0, set.size());
+    }
 
-		int count = 1000;
-		Event* events[count];
+    TEST(EventPointerHashSetTest, RemoveMany) {
+        HashSet<Event*> set;
 
+        int count = 1000;
+        Event * events[count];
 
-		for(int i = 0; i < count; i++) {
-			events[i] = new TimeoutEvent(0,0,i);
-			set.insert(events[i]);
-		}
+        cout << "One" << endl;
 
-		for(int i = 0; i < count; i++) {
-			ASSERT_TRUE(set.contains(events[i]));
-		}
+        cout << "Size of SocketManager: ";
+        cout << SocketManager::instance().size() << endl;
+        cout << "Size of PortManager:   " << PortManager::instance().size() << endl;
 
-		for(int i = 0; i < count; i++) {
-			if(i % 2 == 0) {
-				set.remove(events[i]);
-			}
-		}
+        for (int i = 0; i < count; i++) {
+            events[i] = new TimeoutEvent(0, 0, i);
+            set.insert(events[i]);
+        }
 
-		ASSERT_EQ(count / 2, set.size());
-		for(int i = 0; i < count; i++) {
-			if(i % 2 == 0) {
-				ASSERT_TRUE(!set.contains(events[i]));
-			}
-			else {
-				ASSERT_TRUE(set.contains(events[i]));
-			}
-		}
+        cout << "Two" << endl;
 
-		for(int i = 0; i < count; i++) {
-			delete events[i];
-		}
-	}
+        for (int i = 0; i < count; i++) {
+            ASSERT_TRUE(set.contains(events[i]));
+        }
+
+        cout << "Three" << endl;
+
+        for (int i = 0; i < count; i++) {
+            if (i % 2 == 0) {
+                set.remove(events[i]);
+            }
+        }
+
+        cout << "Four" << endl;
+
+        ASSERT_EQ(count / 2, set.size());
+        for (int i = 0; i < count; i++) {
+            if (i % 2 == 0) {
+                ASSERT_TRUE(!set.contains(events[i]));
+            } else {
+                ASSERT_TRUE(set.contains(events[i]));
+            }
+        }
+        cout << "Five" << endl;
+
+    }
 }
 
 #endif	/* HASHSETTEST_H */

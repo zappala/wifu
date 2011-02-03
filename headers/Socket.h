@@ -38,7 +38,7 @@ public:
     remote_(remote),
     is_passive_(false) {
 
-    }
+        }
 
     /**
      * Cleans up this Socket object.

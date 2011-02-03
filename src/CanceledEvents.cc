@@ -2,7 +2,7 @@
 
 //private
 
-CanceledEvents::CanceledEvents() : EventSet() {
+CanceledEvents::CanceledEvents() : HashSet<Event*>() {
 
 }
 

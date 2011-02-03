@@ -51,12 +51,12 @@ namespace {
 
     void* enqueuer(void * priorityQueue) {
         Socket* s = new Socket(0,1,2);
-        TimeoutEvent event1(s, 5, 0);
+        TimeoutEvent* event1 = new TimeoutEvent(s, 5, 0);
         PriorityQueue<Event*, EventComparator>* pQueue =
                 (PriorityQueue<Event*, EventComparator>*) priorityQueue;
         signalRaised == false;
         usleep(100000);
-        pQueue->enqueue(&event1, true);
+        pQueue->enqueue(event1, true);
     }
 
     TEST(PriorityQueueTest, dequeue) {
@@ -114,12 +114,14 @@ namespace {
         ASSERT_TRUE(priorityQueue.size() == 0);
         ASSERT_TRUE(priorityQueue.isEmpty() == true);
 
+        pthread_cancel(enqueueThread);
         if (pthread_create(&enqueueThread, NULL, &enqueuer, &priorityQueue) != 0)
             ASSERT_TRUE(false);
         priorityQueue.dequeue();
         ASSERT_TRUE(priorityQueue.size() == 0);
         ASSERT_TRUE(priorityQueue.isEmpty() == true);
         ASSERT_TRUE(signalRaised == true);
+        pthread_cancel(enqueueThread);
     }
 
 }

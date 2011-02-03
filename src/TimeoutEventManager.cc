@@ -27,7 +27,7 @@ TimeoutEventManager::~TimeoutEventManager() {
 
 void TimeoutEventManager::cancel_timer(Event * e) {
     CancelTimerEvent* event = (CancelTimerEvent*) e;
-    CanceledEvents::instance().add(event->get_timeout_event());
+    CanceledEvents::instance().insert(event->get_timeout_event());
     raise(SIG_CANCEL_EVENT);
 }
 
