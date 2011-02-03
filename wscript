@@ -113,9 +113,9 @@ def build_staticlib(bld):
         target='wifu-end-api')
 
 def build_wifu(bld):
-        src_files = bld.glob('src/*.cc')
-        src_files += bld.glob('src/contexts/*.cc')
-        src_files += bld.glob('src/states/*.cc')
+	src_files = bld.glob('src/*.cc')
+	src_files += bld.glob('src/contexts/*.cc')
+	src_files += bld.glob('src/states/*.cc')
 	src_files += bld.glob('src/observer/*.cc')
 	src_files += bld.glob('src/packet/*.cc')
 
