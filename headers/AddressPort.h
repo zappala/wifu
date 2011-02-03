@@ -17,6 +17,7 @@
 #include <assert.h>
 #include <sstream>
 #include <iostream>
+#include "InvalidAddressException.h"
 
 #include "GarbageCollector.h"
 
@@ -185,10 +186,8 @@ private:
         data_.sin_family = AF_INET;
         data_.sin_port = htons(port);
 
-        if (!inet_aton(address, &data_.sin_addr)) {
-            cout << "error converting ip address to binary" << endl;
-            assert(false);
-        }
+        if (!inet_aton(address, &data_.sin_addr))
+            throw InvalidAddressException();
     }
 };
 

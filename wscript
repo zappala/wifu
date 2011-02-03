@@ -97,6 +97,7 @@ def build_sink(bld):
 def build_staticlib(bld):
     # shared files
 	src_files = bld.glob('src/*.cc')
+	src_files += bld.glob('src/exceptions/*.cc')
 
 	# shared library
 	api_files = bld.glob('applib/*.cc')
@@ -104,7 +105,7 @@ def build_staticlib(bld):
 
 	lib = bld(features='cxx cstaticlib',
         source=api_files,
-        includes='applib headers lib/gc/include',
+        includes='applib headers headers/exceptions lib/gc/include',
 		ccflags="-c -fPIC",
 		export_incdirs='applib lib/gc/include',
 		uselib='PTHREAD RT',
@@ -118,10 +119,11 @@ def build_wifu(bld):
 	src_files += bld.glob('src/states/*.cc')
 	src_files += bld.glob('src/observer/*.cc')
 	src_files += bld.glob('src/packet/*.cc')
+	src_files += bld.glob('src/exceptions/*.cc')
 
 	exe = bld(features='cxx cprogram',
         source=src_files,
-        includes='headers lib/gc/include headers/contexts headers/states headers/observer headers/packet',
+        includes='headers lib/gc/include headers/contexts headers/states headers/observer headers/packet headers/exceptions',
         uselib='PTHREAD RT',
 		libpath = ['../lib/gc'],
 		staticlib = ['gccpp','gc','cord'],
@@ -136,12 +138,13 @@ def build_wifu_end_test(bld):
 	project_files += bld.glob('src/contexts/*.cc')
 	project_files += bld.glob('src/states/*.cc')
 	project_files += bld.glob('src/packet/*.cc')
+	project_files += bld.glob('src/exceptions/*.cc')
 	
 	filesToUse = test_files + project_files
 
 	test_end = bld(features='cxx cprogram',
         source=filesToUse,
-        includes='preliminary headers lib/gc/include lib/gtest/include headers/contexts headers/states headers/observer headers/packet test/end/headers',
+        includes='preliminary headers lib/gc/include lib/gtest/include headers/contexts headers/states headers/observer headers/packet headers/exceptions test/end/headers',
         uselib='PTHREAD RT',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp','gc','cord'],
@@ -150,10 +153,11 @@ def build_wifu_end_test(bld):
 def build_wifu_frontend_test(bld):
 	test_frontend_files = bld.glob('test/frontend/*.cpp')
 	test_frontend_files += bld.glob('preliminary/Timer.cc')
+	test_frontend_files += bld.glob('src/exceptions/*.cc')
 
 	test_frontend = bld(features='cxx cprogram',
 		source=test_frontend_files,
-		includes='preliminary headers lib/gc/include lib/gtest/include',
+		includes='preliminary headers headers/exceptions lib/gc/include lib/gtest/include',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp', 'gc', 'cord'],
 		uselib_local='wifu-end-api',

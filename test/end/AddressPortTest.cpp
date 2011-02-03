@@ -14,12 +14,13 @@
 
 #include "gtest/gtest.h"
 #include "AddressPort.h"
+#include "InvalidAddressException.h"
 
 using namespace std;
 
 namespace {
 
-    TEST(AddpressPortTest, StringConstructor) {
+    TEST(AddressPort, StringConstructor) {
         string address("127.0.0.1");
         int port = 5000;
 
@@ -29,7 +30,7 @@ namespace {
         ASSERT_EQ(port, ap.get_port());
     }
 
-    TEST(AddpressPortTest, CharStarConstructor) {
+    TEST(AddressPort, CharStarConstructor) {
         const char* address = "127.0.0.1";
         int port = 5000;
 
@@ -37,9 +38,11 @@ namespace {
 
         ASSERT_EQ(string(address), ap.get_address());
         ASSERT_EQ(port, ap.get_port());
+
+        ASSERT_THROW(AddressPort("", 0), InvalidAddressException);
     }
 
-    TEST(AddpressPortTest, SockaddrConstructor) {
+    TEST(AddressPort, SockaddrConstructor) {
         string address("127.0.0.1");
         int port = 5000;
 
@@ -48,10 +51,8 @@ namespace {
         addr.sin_family = AF_INET;
         addr.sin_port = htons(port);
 
-        if (!inet_aton(address.c_str(), &addr.sin_addr)) {
-            cout << "error converting ip address to binary" << endl;
-            assert(false);
-        }
+        if (!inet_aton(address.c_str(), &addr.sin_addr))
+            FAIL() << "error converting ip address to binary";
 
         AddressPort ap(&addr);
 
@@ -59,7 +60,7 @@ namespace {
         ASSERT_EQ(port, ap.get_port());
     }
 
-    TEST(AddpressPortTest, CopyConstructor) {
+    TEST(AddressPort, CopyConstructor) {
         string address("127.0.0.1");
         int port = 5000;
 
@@ -71,7 +72,20 @@ namespace {
         ASSERT_TRUE(ap.get_network_struct_ptr() != copy.get_network_struct_ptr());
     }
 
-    TEST(AddpressPortTest, OperatorEqualsConstructor) {
+    TEST(AddressPort, AssignmentOperator) {
+    	string address("1.1.1.1");
+    	int port = 1;
+
+    	AddressPort one(address, port);
+    	ASSERT_EQ(one.get_address(), address);
+    	ASSERT_EQ(one.get_port(), port);
+
+        one = one;
+        ASSERT_EQ(one.get_address(), address);
+        ASSERT_EQ(one.get_port(), port);
+    }
+
+    TEST(AddressPort, OperatorEqualsConstructor) {
         string address("127.0.0.1");
         int port = 5000;
 
@@ -88,7 +102,7 @@ namespace {
         ASSERT_TRUE(!(ap == copy));
     }
 
-    TEST(AddpressPortTest, OperatorNotEqualsConstructor) {
+    TEST(AddressPort, OperatorNotEqualsConstructor) {
         string address("127.0.0.1");
         int port = 5000;
 
@@ -105,7 +119,7 @@ namespace {
         ASSERT_TRUE(ap != copy);
     }
 
-    TEST(AddpressPortTest, ToString) {
+    TEST(AddressPort, ToString) {
 
         string expected = "Address: 127.0.0.1 Port: 5000";
 
