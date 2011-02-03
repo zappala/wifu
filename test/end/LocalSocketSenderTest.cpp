@@ -15,6 +15,10 @@ using namespace std;
 
 namespace {
 
+	TEST(LocalSocketSender, all) {
+		SUCCEED();
+	}
+
 }
 
 #endif /* LOCALSOCKETSENDERTEST_H_ */

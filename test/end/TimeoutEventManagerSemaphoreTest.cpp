@@ -15,6 +15,10 @@ using namespace std;
 
 namespace {
 
+	TEST(TimeoutEventManagerSemaphore, all) {
+		SUCCEED();
+	}
+
 }
 
 #endif /* TIMEOUTEVENTMANAGERSEMAPHORETEST_H_ */
