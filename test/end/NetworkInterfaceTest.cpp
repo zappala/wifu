@@ -16,8 +16,6 @@
 #include "events/NetworkSendPacketEvent.h"
 #include "events/Event.h"
 #include "headers/RandomStringGenerator.h"
-#include "IModule.h"
-#include "QueueProcessor.h"
 #include "TimeoutHelper.h"
 #include "Queue.h"
 #include "Timer.h"
@@ -45,18 +43,6 @@ namespace {
         WiFuPacket* p;
         Semaphore s;
     };
-
-//    class FakeNetworkModule : public IModule, public QueueProcessor<Event*>{
-//    public:
-//        FakeNetworkModule() : IModule(), QueueProcessor<Event*>(new Queue<Event*>()){
-//            start_processing();
-//        }
-//
-//        virtual void process(Event* e) {
-//            e->execute(this);
-//        }
-//
-//    };
 
     WiFuPacket * make_packet(int protocol, string & data, AddressPort* source, AddressPort* dest) {
         WiFuPacket* p = new WiFuPacket();
