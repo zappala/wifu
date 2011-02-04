@@ -84,12 +84,6 @@ private:
      * Creates a TimeoutEventManager object.
      */
     TimeoutEventManager();
-
-    /**
-     * PriorityQueue passed to the parent QueueProcessor object.
-     */
-    PriorityQueue<Event*, EventComparator> queue_;
-
 };
 
 

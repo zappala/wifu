@@ -14,7 +14,7 @@
 
 #include "gtest/gtest.h"
 #include "AddressPort.h"
-#include "InvalidAddressException.h"
+#include "exceptions/InvalidAddressException.h"
 
 using namespace std;
 

@@ -7,7 +7,7 @@
 
 #include "TimeoutEventManager.h"
 
-TimeoutEventManager::TimeoutEventManager() : Module(&queue_) {
+TimeoutEventManager::TimeoutEventManager() : Module(new PriorityQueue<Event*, EventComparator>()) {
 
     //make sure singleton is created
     TimeoutManagerSemaphore;

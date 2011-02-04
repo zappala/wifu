@@ -29,7 +29,7 @@ public:
      * Uses a Queue as the internal data structure for the parent QueueProcessor object.
      * Starts up the parent QueueProcessor's listening thread.
      */
-    Module() : IModule(), QueueProcessor<Event*>(&queue_), TimeoutHelper() {
+    Module() : IModule(), QueueProcessor<Event*>(), TimeoutHelper() {
         start_processing();
     }
 
@@ -82,12 +82,7 @@ public:
     virtual void dispatch(Event* e) {
         Dispatcher::instance().enqueue(e);
     }
-    
-private:
-    /**
-     * Default IQueue object to be used by the parent QueueProcessor.
-     */
-    Queue<Event*> queue_;
+
 };
 
 

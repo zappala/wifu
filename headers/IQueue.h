@@ -8,11 +8,13 @@
 #ifndef _IQUEUE_H
 #define	_IQUEUE_H
 
+#include "GarbageCollector.h"
+
 /**
  * Interface for a queue.
  */
 template<class T>
-class IQueue {
+class IQueue : public gc {
 public:
     /**
      * Constructs an IQueue object.

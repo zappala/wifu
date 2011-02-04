@@ -17,7 +17,7 @@ def set_options(opt):
 
 	opt.add_option('--debug',
 					help=('Compile with debugging symbols.'),
-					action="store_true", default=False,
+					action="store_true", default=True,
 					dest='debug')
 
 
@@ -29,8 +29,10 @@ def configure(conf):
 	conf.env['LIB_PTHREAD'] = ['pthread']
 	conf.env['STATICLIB'] += ['gtest']
 	conf.env['LIB_RT'] = ['rt']
-	conf.env['CXXFLAGS'] += ['--cs-include-path=../headers'] #--cs-off
-	conf.env['LINKFLAGS'] += ['--cs-include-path=../headers'] #--cs-off
+	#conf.env['CXXFLAGS'] += ['--cs-off']
+	conf.env['CXXFLAGS'] += ['--cs-include-path=../headers']
+	#conf.env['LINKFLAGS'] += ['--cs-off']
+	conf.env['LINKFLAGS'] += ['--cs-include-path=../headers']
 	conf.env.PREFIX = ".."
 
 	if Options.options.bit_32:

@@ -17,7 +17,7 @@
 #include <assert.h>
 #include <sstream>
 #include <iostream>
-#include "InvalidAddressException.h"
+#include "exceptions/InvalidAddressException.h"
 
 #include "GarbageCollector.h"
 

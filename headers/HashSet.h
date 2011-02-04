@@ -28,14 +28,7 @@ public:
 
     void insert(T obj) {
         mutex_.wait();
-        try {
-            set_.insert(obj);
-        }        catch (...) {
-            cout << "Error in insert" << endl;
-            mutex_.post();
-            return;
-        }
-
+        set_.insert(obj);
         mutex_.post();
     }
 

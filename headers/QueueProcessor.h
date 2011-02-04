@@ -13,6 +13,8 @@
 #include <stdlib.h>
 
 #include "IQueue.h"
+#include "Queue.h"
+#include "events/Event.h"
 #include "DequeueCallback.h"
 #include "Semaphore.h"
 
@@ -63,7 +65,7 @@ public:
      *
      * @param queue A pointer to an IQueue which will be the underlying queue used.
      */
-    QueueProcessor(IQueue<T>* queue) : DequeueCallback<T>(), queue_(queue) {
+    QueueProcessor(IQueue<T>* queue = new Queue<Event*>()) : DequeueCallback<T>(), queue_(queue) {
 
         sem_.init(0);
         start_.init(0);
