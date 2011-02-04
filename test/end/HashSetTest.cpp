@@ -135,32 +135,20 @@ namespace {
         int count = 1000;
         Event * events[count];
 
-        cout << "One" << endl;
-
-        cout << "Size of SocketManager: ";
-        cout << SocketManager::instance().size() << endl;
-        cout << "Size of PortManager:   " << PortManager::instance().size() << endl;
-
         for (int i = 0; i < count; i++) {
             events[i] = new TimeoutEvent(0, 0, i);
             set.insert(events[i]);
         }
 
-        cout << "Two" << endl;
-
         for (int i = 0; i < count; i++) {
             ASSERT_TRUE(set.contains(events[i]));
         }
-
-        cout << "Three" << endl;
 
         for (int i = 0; i < count; i++) {
             if (i % 2 == 0) {
                 set.remove(events[i]);
             }
         }
-
-        cout << "Four" << endl;
 
         ASSERT_EQ(count / 2, set.size());
         for (int i = 0; i < count; i++) {
@@ -170,8 +158,6 @@ namespace {
                 ASSERT_TRUE(set.contains(events[i]));
             }
         }
-        cout << "Five" << endl;
-
     }
 }
 

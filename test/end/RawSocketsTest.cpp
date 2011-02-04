@@ -13,7 +13,7 @@
 #include "PacketFactory.h"
 #include "packet/WiFuPacket.h"
 #include "WiFuPacketFactory.h"
-#include "RandomStringGenerator.h"
+#include "headers/RandomStringGenerator.h"
 
 using namespace std;
 

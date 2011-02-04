@@ -14,9 +14,9 @@ void* listener(void* arg) {
     PacketFactory* factory;
 
     int nfds, fd;
-
+    struct epoll_event events[MAX_EVENTS];
+    
     while (1) {
-        struct epoll_event events[MAX_EVENTS];
         nfds = epoll_wait(epfd, events, MAX_EVENTS, -1);
 
         if (nfds < 0) {
@@ -26,8 +26,6 @@ void* listener(void* arg) {
             perror("RawSocketListener: epoll_wait()");
             exit(EXIT_FAILURE);
         }
-
-        //cout << "NFDS: " << nfds << endl;
 
         for (int i = 0; i < nfds; ++i) {
 

@@ -27,7 +27,7 @@
 #include "defines.h"
 #include "PacketFactory.h"
 
-#define MAX_EVENTS 1000
+#define MAX_EVENTS 100
 
 using namespace std;
 

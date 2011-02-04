@@ -92,7 +92,7 @@ namespace {
             t.stop();
             time += t.get_duration_microseconds();
 
-            string expected = data.c_str();
+            string expected = data;
             string actual = (const char*) fnm.p->get_data();
             ASSERT_EQ(expected, actual);
             ASSERT_EQ(packet_size, fnm.p->get_data_length_bytes());
@@ -118,7 +118,7 @@ namespace {
             t.stop();
             time += t.get_duration_microseconds();
 
-            string expected = data.c_str();
+            string expected = data;
             string actual = (const char*) fnm.p->get_data();
             ASSERT_EQ(expected, actual);
             ASSERT_EQ(packet_size, fnm.p->get_data_length_bytes());
