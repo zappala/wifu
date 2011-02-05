@@ -17,7 +17,7 @@ void SynSent::exit(Context* c) {
 }
 
 void SynSent::receive(Context* c, Socket* s, WiFuPacket* p) {
-    cout << "In SynSent::receive()" << endl;
+    cout << "SynSent::receive()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = new TCPPacket(*p);
 
@@ -25,23 +25,29 @@ void SynSent::receive(Context* c, Socket* s, WiFuPacket* p) {
     assert(packet->is_tcp_ack());
 
     if (packet->is_tcp_syn() && packet->is_tcp_ack()) {
-
+        cout << "SynSent::receive(): Packet is SYNACK" << endl;
         unsigned char* data = (unsigned char*) "";
-        AddressPort* source = packet->get_source_address_port();
-        AddressPort* destination = packet->get_dest_address_port();
+        AddressPort* destination = packet->get_source_address_port();
+        AddressPort* source = packet->get_dest_address_port();
 
-        TCPPacket* response;// = new TCPPacket(source, destination, data, 0);
+        TCPPacket* response = new TCPPacket();
+        response->set_ip_protocol(SIMPLE_TCP);
+        response->set_ip_destination_address_s(destination->get_address());
+        response->set_ip_source_address_s(source->get_address());
+
+        response->set_destination_port(destination->get_port());
+        response->set_source_port(source->get_port());
+        
         response->set_tcp_ack(true);
+        response->set_tcp_urg(true);
+        response->set_data(data, 0);
 
         SendPacketEvent* e = new SendPacketEvent(s, response);
         Dispatcher::instance().enqueue(e);
 
         cmc->set_state(new Established());
         return;
-
     }
 
-    // TODO: Ensure we receive a SYN, ACK
-    // TODO: Send an ACK
-    cmc->set_state(new Established());
+    assert(false);
 }

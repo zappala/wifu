@@ -169,8 +169,11 @@ namespace {
         socklen_t length = sizeof (addr);
         int connection;
         if ((connection = wifu_accept(server, (struct sockaddr *) & addr, &length)) < 0) {
+            // TODO: we need to check errors and make sure they happen when they should
             ADD_FAILURE() << "Problem in Accept";
         }
+
+        cout << "Connected!" << endl;
 
         // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
     }

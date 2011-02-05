@@ -10,6 +10,7 @@ Context::~Context() {
 
 void Context::set_state(State* s) {
 
+    // TODO: do we need a global sem to ensure that no one is caught without a context?
     if (current_) {
         current_->exit(this);
     }

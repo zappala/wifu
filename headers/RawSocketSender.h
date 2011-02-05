@@ -33,7 +33,8 @@ public:
     }
 
     ssize_t send(WiFuPacket* p) {
-//        cout << "Raw Packet about to be sent" << endl;
+        cout << "RawSocketSender::send(): Packet about to be sent" << endl;
+        cout << "RawSocketSender::send(): Packet size: " << p->get_ip_datagram_length() << endl;
         int ret = sendto(socket_,
                 p->get_payload(),
                 p->get_ip_datagram_length(),

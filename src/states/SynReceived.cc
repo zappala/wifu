@@ -10,7 +10,7 @@ SynReceived::~SynReceived() {
 }
 
 void SynReceived::enter(Context* c) {
-
+    cout << "Entering SynReceived State" << endl;
 }
 
 void SynReceived::exit(Context* c) {
@@ -18,6 +18,7 @@ void SynReceived::exit(Context* c) {
 }
 
 void SynReceived::receive(Context* c, Socket* s, WiFuPacket* p) {
+    cout << "SynReceived::receive()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 

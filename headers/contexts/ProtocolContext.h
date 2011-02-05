@@ -50,7 +50,7 @@ public:
     // TODO: can we refactor out this for loop in each of these methods?
     // Maybe we can put it in the ContextContainter?
     virtual void send(Socket* s, WiFuPacket* p) {
-        //cout << "Protocol: SEND" << endl;
+        cout << "Protocol: SEND" << endl;
         for(int i = 0; i < contexts_.size(); ++i) {
             contexts_[i]->send(s, p);
         }

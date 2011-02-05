@@ -49,9 +49,9 @@ public:
         return destination_;
     }
 
-    void set_socket_destination() {
-        get_socket()->set_remote_address_port(get_destination());
-    }
+//    void set_socket_destination() {
+//        get_socket()->set_remote_address_port(get_destination());
+//    }
 
 private:
     AddressPort* destination_;

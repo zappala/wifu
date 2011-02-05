@@ -49,13 +49,11 @@ void Closed::connect(Context* c, ConnectEvent* e) {
     p->set_tcp_syn(true);
     p->set_data(data, 0);
 
-    cout << "In Closed::connect(), sending packet" << endl;
     SendPacketEvent* event = new SendPacketEvent(s, p);
     Dispatcher::instance().enqueue(event);
 
     // TODO: move this earlier so we don't send and dequeue a packet while still in this (Closed) state
     // We don't want the FSM to be in between changing states either (see set_state).
-    cout << "In Closed::connect(), changing states" << endl;
     cmc->set_state(new SynSent());
 }
 

@@ -38,6 +38,7 @@ public:
     }
 
     void receive(WiFuPacket* p) {
+        cout << "NetworkInterface::receive(): Packet Received!" << endl;
         AddressPort* remote = p->get_source_address_port();
         AddressPort* local = p->get_dest_address_port();
 
@@ -52,12 +53,15 @@ public:
             return;
         }
 
+        cout << "Found the socket!" << endl;
+
         Event* e = new NetworkReceivePacketEvent(s, p);
         Dispatcher::instance().enqueue(e);
     }
 
     void network_send(Event* e) {
         NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
+        cout << "NetworkInterface::network_send()" << endl;
         // TODO: Check return value (bytes sent)?
         sender_.send(event->get_packet());
     }

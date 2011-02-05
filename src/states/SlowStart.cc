@@ -11,7 +11,7 @@ SlowStart::~SlowStart() {
 
 void SlowStart::send(Context* c, Socket* s, WiFuPacket* p) {
     // Send immediately for now
-    cout << "In SlowStart::send()" << endl;
+    cout << "SlowStart::send()" << endl;
     CongestionControlContext* ccc = (CongestionControlContext*) c;
     NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
     Dispatcher::instance().enqueue(e);

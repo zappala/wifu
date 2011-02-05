@@ -10,6 +10,7 @@ Established::~Established() {
 
 void Established::enter(Context* c) {
     // TODO: spawn new Socket.
+    cout << "Established::enter()" << endl;
 
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     ResponseEvent* response;
@@ -20,8 +21,6 @@ void Established::enter(Context* c) {
     switch (cmc->get_connection_type()) {
         case ACTIVE_OPEN:
 
-            event->set_socket_destination();
-            
             response = new ResponseEvent(event->get_socket(), event->get_name(), event->get_map()[FILE_STRING]);
             response->put(ERRNO, Utils::itoa(0));
             response->put(RETURN_VALUE_STRING, Utils::itoa(0));

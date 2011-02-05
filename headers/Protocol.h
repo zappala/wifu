@@ -14,6 +14,8 @@
 #include "events/SocketEvent.h"
 #include "events/BindEvent.h"
 #include "events/ListenEvent.h"
+#include "events/NetworkReceivePacketEvent.h"
+#include "events/Event.h"
 #include "HashSet.h"
 #include "Socket.h"
 #include "visitors/AlreadyListeningOnSamePortVisitor.h"
@@ -23,11 +25,10 @@
 #include "contexts/ProtocolContext.h"
 #include "contexts/ContextContainer.h"
 #include "events/SendPacketEvent.h"
-#include "events/UDPReceivePacketEvent.h"
 #include "events/ConnectEvent.h"
 #include "events/AcceptEvent.h"
 #include "events/ConnectionEstablishedEvent.h"
-
+#include "packet/TCPPacket.h"
 
 class Protocol : public Module {
 public:
@@ -205,8 +206,8 @@ public:
         itr->second->send(socket, event->get_packet());
     }
 
-    virtual void udp_receive(Event* e) {
-        UDPReceivePacketEvent* event = (UDPReceivePacketEvent*) e;
+    virtual void network_receive(Event* e) {
+        NetworkReceivePacketEvent* event = (NetworkReceivePacketEvent*) e;
 
         Socket* socket = event->get_socket();
 
