@@ -36,8 +36,8 @@ void ReliabilityContext::close() {
     get_state()->close(this);
 }
 
-void ReliabilityContext::receive(Socket* s, WiFuPacket* p) {
-    get_state()->receive(this, s, p);
+void ReliabilityContext::receive_packet(Socket* s, WiFuPacket* p) {
+    get_state()->receive_packet(this, s, p);
 }
 
 void ReliabilityContext::send_packet(Socket* s, WiFuPacket* p) {

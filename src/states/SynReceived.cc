@@ -17,8 +17,8 @@ void SynReceived::exit(Context* c) {
 
 }
 
-void SynReceived::receive(Context* c, Socket* s, WiFuPacket* p) {
-    cout << "SynReceived::receive()" << endl;
+void SynReceived::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
+    cout << "SynReceived::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 

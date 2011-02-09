@@ -17,7 +17,7 @@ void SlowStart::send_packet(Context* c, Socket* s, WiFuPacket* p) {
     Dispatcher::instance().enqueue(e);
 }
 
-void SlowStart::receive(Context* c, Socket* s, WiFuPacket* p) {
+void SlowStart::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
 
 }
 

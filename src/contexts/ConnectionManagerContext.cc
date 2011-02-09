@@ -37,8 +37,8 @@ void ConnectionManagerContext::close() {
     get_state()->close(this);
 }
 
-void ConnectionManagerContext::receive(Socket* s, WiFuPacket* p) {
-    get_state()->receive(this, s, p);
+void ConnectionManagerContext::receive_packet(Socket* s, WiFuPacket* p) {
+    get_state()->receive_packet(this, s, p);
 }
 
 void ConnectionManagerContext::send_packet(Socket* s, WiFuPacket* p) {

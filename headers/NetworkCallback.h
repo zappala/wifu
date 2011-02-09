@@ -16,7 +16,7 @@ public:
      * Callback function to be called when a packet is received from the network.
      *
      */
-    virtual void receive(WiFuPacket* p) = 0;
+    virtual void network_receive(WiFuPacket* p) = 0;
 };
 
 #endif	/* _NETWORKCALLBACK_H */

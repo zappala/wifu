@@ -37,7 +37,7 @@ public:
         listener_.register_protocol(protocol, pf);
     }
 
-    void receive(WiFuPacket* p) {
+    void network_receive(WiFuPacket* p) {
         AddressPort* remote = p->get_source_address_port();
         AddressPort* local = p->get_dest_address_port();
 

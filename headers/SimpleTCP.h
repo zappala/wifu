@@ -73,12 +73,12 @@ public:
         c->get_reliability()->listen(s, back_log);
     }
 
-    void receive(Socket* s, WiFuPacket* p) {
+    void receive_packet(Socket* s, WiFuPacket* p) {
         IContextContainer* c = get_context(s);
 
-        c->get_congestion_control()->receive(s, p);
-        c->get_connection_manager()->receive(s, p);
-        c->get_reliability()->receive(s, p);
+        c->get_congestion_control()->receive_packet(s, p);
+        c->get_connection_manager()->receive_packet(s, p);
+        c->get_reliability()->receive_packet(s, p);
     }
 
     void send_packet(Socket* s, WiFuPacket* p) {

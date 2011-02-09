@@ -158,7 +158,7 @@ void Protocol::network_receive(Event* e) {
 
     // TODO: Error check
     WiFuPacket* p = event->get_packet();
-    receive(socket, p);
+    receive_packet(socket, p);
 }
 
 void Protocol::connection_established(Event* e) {

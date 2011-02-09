@@ -36,7 +36,7 @@ public:
     void accept(AcceptEvent* e);
     void new_connection_established(Socket* s);
     void close();
-    void receive(Socket* s, WiFuPacket* p);
+    void receive_packet(Socket* s, WiFuPacket* p);
     void send_packet(Socket* s, WiFuPacket* p);
 
     // Non-state methods

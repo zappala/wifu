@@ -4,7 +4,7 @@ ReliabilityState::ReliabilityState() {}
 
 ReliabilityState::~ReliabilityState() {}
 
-void ReliabilityState::receive(Context* c, Socket* s, WiFuPacket* p) {
+void ReliabilityState::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
 
 }
 

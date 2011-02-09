@@ -65,7 +65,7 @@ public:
     virtual void new_connection_established(Context* c, Socket* s) {
     }
 
-    virtual void receive(Context* c, Socket* s, WiFuPacket* p) {
+    virtual void receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     }
 
     virtual void timeout(Context* c) {

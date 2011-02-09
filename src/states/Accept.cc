@@ -16,15 +16,15 @@ void Accept::exit(Context* c) {
 
 }
 
-void Accept::receive(Context* c, Socket* s, WiFuPacket* p) {
-    cout << "Accept::receive()" << endl;
+void Accept::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
+    cout << "Accept::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
     assert(packet->is_tcp_syn());
 
     if(packet->is_tcp_syn()) {
-        cout << "Accept::receive(): Packet is a SYN" << endl;
+        cout << "Accept::receive_packet(): Packet is a SYN" << endl;
         unsigned char* data = (unsigned char*) "";
         AddressPort* source = packet->get_dest_address_port();
         AddressPort* destination = packet->get_source_address_port();

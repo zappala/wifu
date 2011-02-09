@@ -32,8 +32,8 @@ void CongestionControlContext::close() {
     get_state()->close(this);
 }
 
-void CongestionControlContext::receive(Socket* s, WiFuPacket* p) {
-    get_state()->receive(this, s, p);
+void CongestionControlContext::receive_packet(Socket* s, WiFuPacket* p) {
+    get_state()->receive_packet(this, s, p);
 }
 
 void CongestionControlContext::send_packet(Socket* s, WiFuPacket* p) {

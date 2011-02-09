@@ -16,8 +16,8 @@ void SynSent::exit(Context* c) {
 
 }
 
-void SynSent::receive(Context* c, Socket* s, WiFuPacket* p) {
-    cout << "SynSent::receive()" << endl;
+void SynSent::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
+    cout << "SynSent::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = new TCPPacket(*p);
 
@@ -25,7 +25,7 @@ void SynSent::receive(Context* c, Socket* s, WiFuPacket* p) {
     assert(packet->is_tcp_ack());
 
     if (packet->is_tcp_syn() && packet->is_tcp_ack()) {
-        cout << "SynSent::receive(): Packet is SYNACK" << endl;
+        cout << "SynSent::receive_packet(): Packet is SYNACK" << endl;
         unsigned char* data = (unsigned char*) "";
         AddressPort* destination = packet->get_source_address_port();
         AddressPort* source = packet->get_dest_address_port();
