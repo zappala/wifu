@@ -44,6 +44,7 @@
 #include "OptionParser.h"
 #include "NetworkInterfaceFactory.h"
 #include "StandardNetworkInterfaceCreator.h"
+#include "MockNetworkInterfaceCreator.h"
 
 using namespace std;
 
@@ -76,7 +77,7 @@ void setup_network_interface(string& type) {
     }
     else if (type == "mock") {
         cout << "Using mock network interface" << endl;
-        NetworkInterfaceFactory::instance().set_creator(new StandardNetworkInterfaceCreator());
+        NetworkInterfaceFactory::instance().set_creator(new MockNetworkInterfaceCreator());
     }
 }
 
