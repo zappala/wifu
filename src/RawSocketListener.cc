@@ -40,7 +40,7 @@ void* listener(void* arg) {
             }
             packet->set_ip_datagram_length(ret);
 
-            callback->receive(packet);
+            callback->network_receive(packet);
         }
     }
 }

@@ -45,7 +45,7 @@ namespace {
         }
 
         virtual void start_backend() {
-            string commandToExecute = "./wifu-end";
+            string commandToExecute = "./wifu-end --network mock";
 
             int value = system(commandToExecute.c_str());
             if (value < 0)

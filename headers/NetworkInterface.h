@@ -11,13 +11,12 @@
 #include "events/NetworkSendPacketEvent.h"
 #include "events/NetworkReceivePacketEvent.h"
 #include "RawSocketSender.h"
-#include "NetworkCallback.h"
-#include "Module.h"
 #include "RawSocketListener.h"
 #include "AddressPort.h"
 #include "SocketCollection.h"
+#include "INetworkInterface.h"
 
-class NetworkInterface : public Module, public NetworkCallback {
+class NetworkInterface : public INetworkInterface {
 public:
 
     static NetworkInterface& instance() {
@@ -64,7 +63,7 @@ public:
 
 private:
 
-    NetworkInterface() : Module(), NetworkCallback() {
+    NetworkInterface() : INetworkInterface() {
 
     }
 

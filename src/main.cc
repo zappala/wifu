@@ -41,13 +41,16 @@
 #include "events/ConnectionEstablishedEvent.h"
 #include "NetworkInterface.h"
 #include "TCPPacketFactory.h"
+#include "OptionParser.h"
+#include "NetworkInterfaceFactory.h"
+#include "StandardNetworkInterfaceCreator.h"
 
 using namespace std;
 
 #define dispatcher Dispatcher::instance()
 
 void main_signal_manager(int signal) {
-    switch(signal) {
+    switch (signal) {
         case SIGINT:
         case SIGQUIT:
         case SIGTERM:
@@ -55,7 +58,7 @@ void main_signal_manager(int signal) {
     }
 }
 
-void register_signals(){
+void register_signals() {
     signal(SIGINT, main_signal_manager);
     signal(SIGQUIT, main_signal_manager);
     signal(SIGTERM, main_signal_manager);
@@ -66,11 +69,38 @@ void register_protocols() {
     ProtocolManager::instance().support(SIMPLE_TCP);
 }
 
+void setup_network_interface(string& type) {
+    if (type == "standard") {
+        cout << "Using standard network interface" << endl;
+        NetworkInterfaceFactory::instance().set_creator(new StandardNetworkInterfaceCreator());
+    }
+    else if (type == "mock") {
+        cout << "Using mock network interface" << endl;
+        NetworkInterfaceFactory::instance().set_creator(new StandardNetworkInterfaceCreator());
+    }
+}
+
 int main(int argc, char** argv) {
-	GC_INIT();
+    GC_INIT();
 
     //TODO: Change second argument to 0 once we have a logger in place
-    daemon(1,1);
+    daemon(1, 1);
+
+    string network_type = "standard";
+    string network = "network";
+
+    static struct option long_options[] = {
+        {network.c_str(), required_argument, NULL, 0},
+        {0, 0, 0, 0}
+    };
+    OptionParser op;
+    op.parse(argc, argv, long_options);
+    if (op.present(network.c_str())) {
+        network_type = op.argument(network.c_str());
+    }
+
+
+    setup_network_interface(network_type);
 
     MainSemaphore::instance().init(0);
 
@@ -84,10 +114,10 @@ int main(int argc, char** argv) {
     WifuEndBackEndLibrary::instance();
 
     // Load Modules
-    NetworkInterface::instance().register_protocol(SIMPLE_TCP, new TCPPacketFactory());
-    NetworkInterface::instance().start();
+    NetworkInterfaceFactory::instance().create().register_protocol(SIMPLE_TCP, new TCPPacketFactory());
+    NetworkInterfaceFactory::instance().create().start();
 
-    dispatcher.map_event(type_name(NetworkSendPacketEvent), &NetworkInterface::instance());
+    dispatcher.map_event(type_name(NetworkSendPacketEvent), &NetworkInterfaceFactory::instance().create());
     dispatcher.map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
     dispatcher.map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
 
@@ -101,9 +131,9 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(NetworkReceivePacketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(TimerFiredEvent), &SimpleTCP::instance());
 
-    
+
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
-    
+
     // Wait indefinitely
     MainSemaphore::instance().wait();
 
