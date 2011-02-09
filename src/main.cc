@@ -77,7 +77,9 @@ void setup_network_interface(string& type) {
     }
     else if (type == "mock") {
         cout << "Using mock network interface" << endl;
-        NetworkInterfaceFactory::instance().set_creator(new MockNetworkInterfaceCreator());
+        // TODO: implement the mock object
+        NetworkInterfaceFactory::instance().set_creator(new StandardNetworkInterfaceCreator());
+        //NetworkInterfaceFactory::instance().set_creator(new MockNetworkInterfaceCreator());
     }
 }
 
