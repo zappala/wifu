@@ -26,7 +26,6 @@
 #include "Socket.h"
 #include "UDPInterface.h"
 #include "defines.h"
-#include "events/PacketReceivedEvent.h"
 #include "WifuEndBackEndLibrary.h"
 #include "MainSemaphore.h"
 #include "ProtocolManager.h"

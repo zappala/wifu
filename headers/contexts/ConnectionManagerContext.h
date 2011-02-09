@@ -28,13 +28,16 @@ enum ConnectionType {
 class ConnectionManagerContext : public Context {
 public:
     ConnectionManagerContext();
+
+    void socket(Socket* s);
+    void bind(Socket* s, AddressPort* ap);
     void listen(Socket* s, int back_log);
     void connect(ConnectEvent* e);
     void accept(AcceptEvent* e);
-    void connection_established(Socket* s);
+    void new_connection_established(Socket* s);
     void close();
     void receive(Socket* s, WiFuPacket* p);
-    void send(Socket* s, WiFuPacket* p);
+    void send_packet(Socket* s, WiFuPacket* p);
 
     // Non-state methods
 

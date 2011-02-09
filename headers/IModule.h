@@ -63,13 +63,6 @@ public:
     virtual void cancel_timer(Event* e) {
     }
 
-    /**
-     * Called when e's execute() method determines that this IModule should respond to a connect action.
-     *
-     * @param e The event which triggered a connect action.
-     */
-    virtual void connect(Event* e) {
-    }
 
     /**
      * Called when e's execute() method determines that this IModule should respond to a network send action.
@@ -111,16 +104,8 @@ public:
     virtual void data(Event* e) {
     }
 
-    /**
-     * Called when e's execute() method determines that this IModule should respond to a receive action.
-     *
-     * @param e The event which triggered a receive action.
-     */
-    virtual void receive(Event* e) {
-    }
-
     virtual void send(Event* e) {
-
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="Library Methods">

@@ -4,13 +4,24 @@ ConnectionManagerContext::ConnectionManagerContext() : Context() {
     set_state(new Closed());
 }
 
+void ConnectionManagerContext::socket(Socket* s) {
+    get_state()->socket(this, s);
+}
+
+void ConnectionManagerContext::bind(Socket* s, AddressPort* ap) {
+    get_state()->bind(this, s, ap);
+}
+
 // TODO: move this method (and all others that we can) into Context
+
 
 void ConnectionManagerContext::listen(Socket* s, int back_log) {
     get_state()->listen(this, s, back_log);
 }
 
 void ConnectionManagerContext::connect(ConnectEvent* e) {
+    cout << "In ConnectionManagerContext::connect()" << endl;
+    cout << "Current State: " << type_name(*get_state()) << endl;
     get_state()->connect(this, e);
 }
 
@@ -18,8 +29,8 @@ void ConnectionManagerContext::accept(AcceptEvent* e) {
     get_state()->accept(this, e);
 }
 
-void ConnectionManagerContext::connection_established(Socket* s) {
-    get_state()->connection_established(this, s);
+void ConnectionManagerContext::new_connection_established(Socket* s) {
+    get_state()->new_connection_established(this, s);
 }
 
 void ConnectionManagerContext::close() {
@@ -30,8 +41,10 @@ void ConnectionManagerContext::receive(Socket* s, WiFuPacket* p) {
     get_state()->receive(this, s, p);
 }
 
-void ConnectionManagerContext::send(Socket* s, WiFuPacket* p) {
-    get_state()->send(this, s, p);
+void ConnectionManagerContext::send_packet(Socket* s, WiFuPacket* p) {
+    cout << "ConnectionManagerContext::send_packet()" << endl;
+    cout << "Current state: " << type_name(*get_state()) << endl;
+    get_state()->send_packet(this, s, p);
 }
 
 // Non-state methods

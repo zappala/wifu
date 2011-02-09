@@ -48,13 +48,21 @@ public:
     virtual void exit(Context* c) {
     }
 
+    virtual void socket(Context* c, Socket* s) {
+
+    }
+
+    virtual void bind(Context* c, Socket* s, AddressPort* ap) {
+
+    }
+
     virtual void listen(Context* c, Socket* s, int back_log) {
     }
 
     virtual void accept(Context* c, AcceptEvent* e) {
     }
 
-    virtual void connection_established(Context* c, Socket* s) {
+    virtual void new_connection_established(Context* c, Socket* s) {
     }
 
     virtual void receive(Context* c, Socket* s, WiFuPacket* p) {
@@ -69,7 +77,7 @@ public:
     virtual void close(Context* c) {
     }
 
-    virtual void send(Context* c, Socket* s, WiFuPacket* p) {
+    virtual void send_packet(Context* c, Socket* s, WiFuPacket* p) {
     }
 
     void enter_state(string state) {

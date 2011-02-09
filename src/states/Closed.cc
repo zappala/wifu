@@ -54,10 +54,12 @@ void Closed::connect(Context* c, ConnectEvent* e) {
 
     // TODO: move this earlier so we don't send and dequeue a packet while still in this (Closed) state
     // We don't want the FSM to be in between changing states either (see set_state).
+    cout << "Closed::connect(), switching to SynSent" << endl;
     cmc->set_state(new SynSent());
 }
 
 void Closed::listen(Context* c, Socket* s, int back_log) {
+    cout << "Closed::listen()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(PASSIVE_OPEN);
 

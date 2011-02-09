@@ -11,7 +11,6 @@
 #include "Module.h"
 #include "Dispatcher.h"
 #include "events/TimeoutEvent.h"
-#include "events/PacketReceivedEvent.h"
 #include "events/UDPSendPacketEvent.h"
 #include "UDPSocket.h"
 #include "UDPSocketCallback.h"

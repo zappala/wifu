@@ -17,7 +17,8 @@
 #include "observer/Observable.h"
 
 using namespace std;
-// TODO: do we need to protect this with a Semaphore?
+// TODO: do we need to protect this with a Semaphore, like a monitor?
+// TODO: what about when we need to call notify()?  How should that be protected, if at all?
 
 class Socket : public Observable, public gc {
 public:
