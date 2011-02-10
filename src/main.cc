@@ -46,6 +46,14 @@
 #include "StandardNetworkInterfaceCreator.h"
 #include "MockNetworkInterfaceCreator.h"
 
+#include "pantheios/pantheios.hpp"      /* The root header for Panthieos when using the C++-API. */
+#include "pantheios/inserters.hpp"      /* Includes all headers for inserters, incl. integer, real, character */
+#include "pantheios/frontends/stock.h"  /* Declares the process identity symbol PANTHEIOS_FE_PROCESS_IDENTITY */
+#include "pantheios/backends/bec.file.h"      // be.file header
+
+const PAN_CHAR_T PANTHEIOS_FE_PROCESS_IDENTITY[] = "wifu-end";
+#define PantheiosString(x) PANTHEIOS_LITERAL_STRING(x)
+
 using namespace std;
 
 #define dispatcher Dispatcher::instance()
@@ -85,6 +93,11 @@ void setup_network_interface(string& type) {
 
 int main(int argc, char** argv) {
     GC_INIT();
+
+    //the following line does not have to be THE first call to the logger; it can be later and the logger will still recognize it and use the correct file
+    pantheios_be_file_setFilePath(PantheiosString("wifu-end.log"), PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BEID_ALL);
+    pantheios::log_DEBUG("main(", pantheios::args(argc, argv), ")");
+    pantheios::log_INFORMATIONAL("Welcome");
 
     //TODO: Change second argument to 0 once we have a logger in place
     daemon(1, 1);
