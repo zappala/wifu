@@ -94,7 +94,7 @@ void setup_network_interface(string& type) {
 int main(int argc, char** argv) {
     GC_INIT();
 
-    //the following line does not have to be THE first call to the logger; it can be later and the logger will still recognize it and use the correct file
+    // The following line does not have to be THE first call to the logger; it can be anywhere and the logger will still recognize it and use the filename
     pantheios_be_file_setFilePath(PantheiosString("wifu-end.log"), PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BEID_ALL);
     pantheios::log_DEBUG("main(", pantheios::args(argc, argv), ")");
     pantheios::log_INFORMATIONAL("Welcome");
@@ -152,6 +152,10 @@ int main(int argc, char** argv) {
 
     // Wait indefinitely
     MainSemaphore::instance().wait();
+
+    // This probably is not be needed but it's here in case it turns out to be
+    // Closes the file by setting the path to NULL
+    // pantheios_be_file_setFilePath(NULL, PANTHEIOS_BEID_ALL);
 
     return (EXIT_SUCCESS);
 }
