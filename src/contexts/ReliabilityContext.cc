@@ -43,3 +43,15 @@ void ReliabilityContext::receive_packet(Socket* s, WiFuPacket* p) {
 void ReliabilityContext::send_packet(Socket* s, WiFuPacket* p) {
     get_state()->send_packet(this, s, p);
 }
+
+void ReliabilityContext::timer_fired_event(TimerFiredEvent* e) {
+    get_state()->timer_fired(this, e);
+}
+
+TCPPacket* ReliabilityContext::get_saved_packet() {
+    return saved_packet_;
+}
+
+void ReliabilityContext::set_saved_packet(TCPPacket* p) {
+    saved_packet_ = p;
+}

@@ -41,6 +41,7 @@ public:
     /**
      * Called when e's execute() method determines that this IModule should respond to a timeout action.
      * This method should call my_timer_fired() upon determining that e is for this IModule.
+     * This only occurs in the TimeoutEventManager
      *
      * @param e The event which triggered a timeout action.
      */

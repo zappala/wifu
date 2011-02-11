@@ -65,6 +65,8 @@ public:
     virtual void network_receive(Event* e);
 
     virtual void connection_established(Event* e);
+
+    virtual void timer_fired(Event* e);
     
 private:
     int protocol_;

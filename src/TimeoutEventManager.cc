@@ -32,6 +32,7 @@ void TimeoutEventManager::cancel_timer(Event * e) {
 }
 
 void TimeoutEventManager::timeout(Event* e) {
+    cout << "In timeout() in TimeoutEventManager\n";
     TimeoutEvent* event = (TimeoutEvent*) e;
 
     if (CanceledEvents::instance().contains(event)) {
@@ -43,6 +44,7 @@ void TimeoutEventManager::timeout(Event* e) {
     bool timedout = TimeoutManagerSemaphore.timed_wait(&event->get_timeout_time());
 
     if (timedout) {
+        cout << "Timed out!\n";
         Dispatcher::instance().enqueue(new TimerFiredEvent(event));
         return;
     }
@@ -53,6 +55,7 @@ void TimeoutEventManager::timeout(Event* e) {
 
 void TimeoutEventManager::enqueue(Event* e, bool signal) {
     TimeoutEvent* event = (TimeoutEvent*) e;
+    cout << "We're enqueuing in TimeoutEventManager.\n";
     this->QueueProcessor<Event*>::enqueue(event, signal);
 }
 

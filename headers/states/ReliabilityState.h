@@ -13,6 +13,7 @@
 #include "Socket.h"
 #include "events/ConnectEvent.h"
 #include <string>
+#include "events/TimerFiredEvent.h"
 
 using namespace std;
 
@@ -20,11 +21,12 @@ class ReliabilityState : public State {
 public:
     ReliabilityState();
     virtual ~ReliabilityState();
+
     void receive_packet(Context* c, Socket* s, WiFuPacket* p);
     void enter(Context* c);
     void exit(Context* c);
-    void connect(Context* c, ConnectEvent* e);
-
+    void send_packet(Context* c, Socket* s, WiFuPacket* p);
+    void timer_fired(Context* c, TimerFiredEvent* e);
 };
 
 #endif	/* RELIABILITYSTATE_H */

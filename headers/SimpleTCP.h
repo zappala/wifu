@@ -122,6 +122,14 @@ public:
     void close() {
     }
 
+    void timer_fired_event(TimerFiredEvent* e) {
+        cout << "In SimpleTCP::timer_fired()\n";
+        IContextContainer* c = get_context(e->get_socket());
+
+        c->get_congestion_control()->timer_fired_event(e);
+        c->get_connection_manager()->timer_fired_event(e);
+        c->get_reliability()->timer_fired_event(e);
+    }
 };
 
 #endif	/* SIMPLETCP_H */

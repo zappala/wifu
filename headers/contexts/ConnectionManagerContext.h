@@ -16,6 +16,7 @@
 #include "packet/WiFuPacket.h"
 #include "events/ConnectEvent.h"
 #include "events/AcceptEvent.h"
+#include "events/TimerFiredEvent.h"
 
 using namespace std;
 
@@ -38,6 +39,7 @@ public:
     void close();
     void receive_packet(Socket* s, WiFuPacket* p);
     void send_packet(Socket* s, WiFuPacket* p);
+    void timer_fired_event(TimerFiredEvent* e);
 
     // Non-state methods
 
