@@ -20,14 +20,14 @@ using namespace std;
 namespace {
 
     TEST(SocketCollectionTest, DNE) {
-        collection.clear();
+        collection.reset();
         ASSERT_TRUE(NULL == collection.get_by_id(9));
     }
 
     TEST(SocketCollectionTest, SizePushRemove) {
         int number = 1000;
 
-        collection.clear();
+        collection.reset();
         ASSERT_EQ(0, collection.size());
 
         int ids[number];
@@ -56,7 +56,7 @@ namespace {
     }
 
     TEST(SocketCollectionTest, Integer) {
-        collection.clear();
+        collection.reset();
 
         int number = 1000;
         Socket * sockets[number];
@@ -87,7 +87,7 @@ namespace {
     }
 
     TEST(SocketCollectionTest, LocalOnly) {
-        collection.clear();
+        collection.reset();
 
         int number = 1000;
         Socket * sockets[number];
@@ -125,7 +125,7 @@ namespace {
     }
 
     TEST(SocketCollectionTest, LocalAndRemote) {
-        collection.clear();
+        collection.reset();
 
         int number = 1000;
         Socket * sockets[number];
@@ -168,7 +168,7 @@ namespace {
     }
 
     TEST(SocketCollectionTest, MIX) {
-        collection.clear();
+        collection.reset();
 
         int number = 1000;
         Socket * sockets[number];
