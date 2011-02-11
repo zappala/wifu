@@ -88,6 +88,9 @@ public:
         c->get_congestion_control()->send_packet(s, p);
         c->get_connection_manager()->send_packet(s, p);
         c->get_reliability()->send_packet(s, p);
+
+        NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
+        Dispatcher::instance().enqueue(e);
     }
 
     void connect(ConnectEvent* e) {
