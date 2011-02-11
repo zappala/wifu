@@ -56,6 +56,7 @@ void TimeoutEventManager::timeout(Event* e) {
 void TimeoutEventManager::enqueue(Event* e, bool signal) {
     TimeoutEvent* event = (TimeoutEvent*) e;
     cout << "We're enqueuing in TimeoutEventManager.\n";
+
     this->QueueProcessor<Event*>::enqueue(event, signal);
 }
 

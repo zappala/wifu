@@ -73,7 +73,7 @@ public:
      * @see DequeueCallback<T>::process()
      */
     void process(Event * e) {
-//        cout << "Event name: " << type_name(*e) << endl;
+        cout << "Event name: " << type_name(*e) << endl;
         vector<QueueProcessor<Event*>*>* queue_processors = map_[type_name(*e)];
 
         if (queue_processors == NULL) {
