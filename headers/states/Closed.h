@@ -29,7 +29,7 @@ public:
     virtual void exit(Context* c);
     virtual void connect(Context* c, ConnectEvent* e);
     virtual void listen(Context* c, Socket* s, int back_log);
-    virtual void connection_established(Context* c, Socket* s);
+    virtual void new_connection_established(Context* c, Socket* s);
 
 };
 

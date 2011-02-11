@@ -110,9 +110,9 @@ public:
         save_socket(s);
         IContextContainer* c = get_context(s);
         
-        c->get_congestion_control()->socket(s);
-        c->get_connection_manager()->socket(s);
-        c->get_reliability()->socket(s);
+        c->get_congestion_control()->new_connection_established(s);
+        c->get_connection_manager()->new_connection_established(s);
+        c->get_reliability()->new_connection_established(s);
 
     }
 

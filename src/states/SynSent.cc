@@ -39,7 +39,6 @@ void SynSent::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
         response->set_source_port(source->get_port());
         
         response->set_tcp_ack(true);
-        response->set_tcp_urg(true);
         response->set_data(data, 0);
 
         SendPacketEvent* e = new SendPacketEvent(s, response);
