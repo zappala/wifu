@@ -22,11 +22,12 @@ namespace {
     class TimeoutEventManagerHelper : public Module {
     private:
 
+        Semaphore sem;
+
         TimeoutEventManagerHelper() {
             sem.init(0);
         }
 
-        Semaphore sem;
     public:
 
         static TimeoutEventManagerHelper& instance() {

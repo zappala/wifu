@@ -15,7 +15,7 @@
 #include "events/CancelTimerEvent.h"
 
 /**
- * Class wich aides a Module in filtering TimerFiredEvent objects.
+ * Class which aides a Module in filtering TimerFiredEvent objects.
  *
  * Due to the fact that every Module will receive all TimerFiredEvent objects,
  * this class helps filter and pass along only those which a corresponding TimeoutEvent was created by this class.

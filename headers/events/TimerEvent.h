@@ -8,7 +8,6 @@
 #ifndef _TIMEREVENT_H
 #define	_TIMEREVENT_H
 
-#include "IModule.h"
 #include "Event.h"
 #include "TimeoutEvent.h"
 

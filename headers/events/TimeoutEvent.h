@@ -47,7 +47,7 @@ public:
     }
 
     /**
-     * Determines of this TimeoutEvent's absolute timeout time is earlier than e's.
+     * Determines if this TimeoutEvent's absolute timeout time is earlier than e's.
      *
      * @param e The (Timeout)Event to compare this TimeoutEvent to.
      * @return True if this TimeoutEvent is less than e's, false otherwise.

@@ -59,12 +59,13 @@ public:
     virtual void post(void);
 
     /**
-     * Just like wait(), except that, in case of blocking,
-     * if the absolute time represented by ts occurs before
-     * post() is called, this method returns.
+     * Nearly the same as wait(). The difference is that if this call is going
+     * to block, ts specifies an absolute time by which it will unblock and
+     * return. If it can unblock before that time it does so and returns like
+     * normal.
      *
-     * @param ts The absolute time (in the future) which represents the latest point which this call will block.
-     * @return True if this method timed out, false if this method sucessfully decremented the internal count.
+     * @param ts An absolute time (in the future) which represents the latest point which this call will block.
+     * @return True if this method timed out, false if this method successfully decremented the internal count.
      * @see wait()
      */
     bool timed_wait(struct timespec * ts);

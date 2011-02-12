@@ -28,11 +28,12 @@ void Semaphore::try_wait(void) {
 
 bool Semaphore::timed_wait(timespec* ts) {
     sem_timedwait(&sem_, ts);
-    bool value = errno == ETIMEDOUT;
-    if(value) {
+
+    bool failed = errno == ETIMEDOUT;
+    if (failed) {
         errno = 0;
     }
-    return value;
+    return failed;
 }
 
 int Semaphore::get_value() {
