@@ -68,7 +68,7 @@ void Closed::listen(Context* c, Socket* s, int back_log) {
     cmc->set_state(new Listen());
 }
 
-void Closed::connection_established(Context* c, Socket* s) {
+void Closed::new_connection_established(Context* c, Socket* s) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(ESTABLISHED);
     c->set_state(new Established());

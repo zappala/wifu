@@ -12,13 +12,14 @@
 #include <time.h>
 #include <iostream>
 #include <errno.h>
+#include "GarbageCollector.h"
 
 using namespace std;
 
 /**
  * This is a counting semaphore.  This class simply wraps a a sem_t object.
  */
-class Semaphore {
+class Semaphore : public gc {
 public:
 
     /**

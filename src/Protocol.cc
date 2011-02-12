@@ -189,3 +189,16 @@ void Protocol::connection_established(Event* e) {
 
     dispatch(response);
 }
+
+void Protocol::timer_fired(Event* e) {
+    cout << "Protocol::timer_fired droid\n";
+    TimerFiredEvent* event = (TimerFiredEvent*) e;
+    Socket* socket = event->get_socket();
+
+    if (!sockets_.contains(socket)) {
+        cout << "Protocol::timerfired: We don't have this socket...\n";
+        return;
+    }
+
+    timer_fired_event(event);
+}

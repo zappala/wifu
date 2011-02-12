@@ -85,9 +85,7 @@ void setup_network_interface(string& type) {
     }
     else if (type == "mock") {
         cout << "Using mock network interface" << endl;
-        // TODO: implement the mock object
-        NetworkInterfaceFactory::instance().set_creator(new StandardNetworkInterfaceCreator());
-        //NetworkInterfaceFactory::instance().set_creator(new MockNetworkInterfaceCreator());
+        NetworkInterfaceFactory::instance().set_creator(new MockNetworkInterfaceCreator());
     }
 }
 
@@ -130,10 +128,11 @@ int main(int argc, char** argv) {
     WifuEndBackEndLibrary::instance();
 
     // Load Modules
-    NetworkInterfaceFactory::instance().create().register_protocol(SIMPLE_TCP, new TCPPacketFactory());
-    NetworkInterfaceFactory::instance().create().start();
+    INetworkInterface* network_interface = &(NetworkInterfaceFactory::instance().create());
+    network_interface->register_protocol(SIMPLE_TCP, new TCPPacketFactory());
+    network_interface->start();
 
-    dispatcher.map_event(type_name(NetworkSendPacketEvent), &NetworkInterfaceFactory::instance().create());
+    dispatcher.map_event(type_name(NetworkSendPacketEvent), network_interface);
     dispatcher.map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
     dispatcher.map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
 

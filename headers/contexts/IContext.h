@@ -16,6 +16,7 @@
 #include "packet/WiFuPacket.h"
 #include "events/ConnectEvent.h"
 #include "events/AcceptEvent.h"
+#include "events/TimerFiredEvent.h"
 
 using namespace std;
 
@@ -31,6 +32,8 @@ public:
     virtual void accept(AcceptEvent* e) = 0;
     virtual void new_connection_established(Socket* s) = 0;
     virtual void close() = 0;
+
+    virtual void timer_fired_event(TimerFiredEvent* e) = 0;
 };
 
 #endif	/* ICONTEXT_H */

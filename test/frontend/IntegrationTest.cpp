@@ -45,7 +45,7 @@ namespace {
         }
 
         virtual void start_backend() {
-            string commandToExecute = "./wifu-end --network mock";
+            string commandToExecute = get_command();
 
             int value = system(commandToExecute.c_str());
             if (value < 0)
@@ -58,6 +58,10 @@ namespace {
             int value = system("killall wifu-end");
             if (value < 0)
                 FAIL() << "Error killing wifu-end";
+        }
+
+        virtual string get_command() {
+            return "./wifu-end --network standard";
         }
 
     private:
@@ -75,6 +79,12 @@ namespace {
             //_pclose on Windows
             pclose(pipe);
             return result;
+        }
+    };
+
+    class BackEndMockTest : public BackEndTest {
+        virtual string get_command() {
+            return "./wifu-end --network mock";
         }
     };
 
@@ -183,7 +193,7 @@ namespace {
     }
     //TODO: make sure we are canceling threads
 
-    TEST_F(BackEndTest, connectTest) {
+    void connect_test() {
         AddressPort to_connect("127.0.0.1", 5002);
 
         struct var v;
@@ -211,61 +221,69 @@ namespace {
         cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
     }
 
-//    void* compare_thread(void* args) {
-//
-//        struct var* v = (struct var*) args;
-//        AddressPort* to_bind = v->to_bind_;
-//        Semaphore* sem = v->sem_;
-//
-//        // Create server
-//        int server = socket(AF_INET, SOCK_STREAM, 0);
-//        int result = bind(server, (const struct sockaddr *) to_bind->get_network_struct_ptr(), sizeof (struct sockaddr_in));
-//        EXPECT_EQ(0, result);
-//        result = listen(server, 5);
-//        EXPECT_EQ(0, result);
-//        sem->post();
-//
-//        struct sockaddr_in addr;
-//        socklen_t length = sizeof (addr);
-//        int connection;
-//        if ((connection = accept(server, (struct sockaddr *) & addr, &length)) < 0)
-//            ADD_FAILURE() << "Problem in Accept";
-//
-//        close(connection);
-//        close(server);
-//
-//        // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
-//    }
-//
-//    TEST_F(BackEndTest, compareTest) {
-//        AddressPort to_connect("127.0.0.1", 5002);
-//
-//        struct var v;
-//        v.sem_ = new Semaphore();
-//        v.sem_->init(0);
-//        v.to_bind_ = new AddressPort("127.0.0.1", 5002);
-//
-//        pthread_t t;
-//        if (pthread_create(&t, NULL, &compare_thread, &v) != 0)
-//            FAIL() << "Error creating new thread in IntegrationTest.h";
-//
-//        v.sem_->wait();
-//
-//        // Make sure that the thread is in the accept state
-//        usleep(50000);
-//
-//        // Create client
-//        Timer timer;
-//        timer.start();
-//        int client = socket(AF_INET, SOCK_STREAM, 0);
-//        int result = connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
-//        timer.stop();
-//        ASSERT_EQ(0, result);
-//
-//        cout << "Duration (us) to create a socket and connect on localhost via kernel: " << timer.get_duration_microseconds() << endl;
-//        close(client);
-//        close(result);
-//    }
+    TEST_F(BackEndTest, connectTest) {
+        connect_test();
+    }
+
+    TEST_F(BackEndMockTest, mockConnectTest) {
+        connect_test();
+    }
+
+    //    void* compare_thread(void* args) {
+    //
+    //        struct var* v = (struct var*) args;
+    //        AddressPort* to_bind = v->to_bind_;
+    //        Semaphore* sem = v->sem_;
+    //
+    //        // Create server
+    //        int server = socket(AF_INET, SOCK_STREAM, 0);
+    //        int result = bind(server, (const struct sockaddr *) to_bind->get_network_struct_ptr(), sizeof (struct sockaddr_in));
+    //        EXPECT_EQ(0, result);
+    //        result = listen(server, 5);
+    //        EXPECT_EQ(0, result);
+    //        sem->post();
+    //
+    //        struct sockaddr_in addr;
+    //        socklen_t length = sizeof (addr);
+    //        int connection;
+    //        if ((connection = accept(server, (struct sockaddr *) & addr, &length)) < 0)
+    //            ADD_FAILURE() << "Problem in Accept";
+    //
+    //        close(connection);
+    //        close(server);
+    //
+    //        // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
+    //    }
+    //
+    //    TEST_F(BackEndTest, compareTest) {
+    //        AddressPort to_connect("127.0.0.1", 5002);
+    //
+    //        struct var v;
+    //        v.sem_ = new Semaphore();
+    //        v.sem_->init(0);
+    //        v.to_bind_ = new AddressPort("127.0.0.1", 5002);
+    //
+    //        pthread_t t;
+    //        if (pthread_create(&t, NULL, &compare_thread, &v) != 0)
+    //            FAIL() << "Error creating new thread in IntegrationTest.h";
+    //
+    //        v.sem_->wait();
+    //
+    //        // Make sure that the thread is in the accept state
+    //        usleep(50000);
+    //
+    //        // Create client
+    //        Timer timer;
+    //        timer.start();
+    //        int client = socket(AF_INET, SOCK_STREAM, 0);
+    //        int result = connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+    //        timer.stop();
+    //        ASSERT_EQ(0, result);
+    //
+    //        cout << "Duration (us) to create a socket and connect on localhost via kernel: " << timer.get_duration_microseconds() << endl;
+    //        close(client);
+    //        close(result);
+    //    }
 
 }
 

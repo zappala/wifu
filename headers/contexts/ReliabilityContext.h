@@ -15,6 +15,8 @@
 #include "events/ConnectEvent.h"
 #include "events/AcceptEvent.h"
 #include "packet/WiFuPacket.h"
+#include "packet/TCPPacket.h"
+#include "events/TimerFiredEvent.h"
 
 class ReliabilityContext : public Context {
 public:
@@ -30,6 +32,13 @@ public:
     void close();
     void receive_packet(Socket* s, WiFuPacket* p);
     void send_packet(Socket* s, WiFuPacket* p);
+    void timer_fired_event(TimerFiredEvent* e);
+
+    void set_saved_packet(TCPPacket* p);
+    TCPPacket* get_saved_packet();
+
+private:
+    TCPPacket* saved_packet_;
 };
 
 #endif	/* RELIABILITYCONTEXT_H */

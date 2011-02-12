@@ -16,6 +16,7 @@
 #include "Socket.h"
 #include "events/ConnectEvent.h"
 #include "events/AcceptEvent.h"
+#include "events/TimerFiredEvent.h"
 
 using namespace std;
 
@@ -68,7 +69,7 @@ public:
     virtual void receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     }
 
-    virtual void timeout(Context* c) {
+    virtual void timer_fired(Context* c, TimerFiredEvent* e) {
     }
 
     virtual void connect(Context* c, ConnectEvent* e) {

@@ -16,6 +16,7 @@
 #include "visitors/Visitable.h"
 #include "visitors/Visitor.h"
 #include "visitors/SocketCollectionGetByIdVisitor.h"
+#include "visitors/SocketCollectionGetByLocalAddressPortVisitor.h"
 #include "observer/Observer.h"
 
 using namespace std;
@@ -31,8 +32,8 @@ private:
 
     tr1::unordered_map<string, Socket*> collection_;
     tr1::unordered_map<string, Socket*>::iterator itr_;
-    Semaphore mutex_;
-    Semaphore update_mutex_;
+    Semaphore* mutex_;
+    Semaphore* update_mutex_;
 
 public:
 
@@ -57,6 +58,8 @@ public:
     virtual void accept(Visitor* v);
 
     void update(Observable* o);
+
+    void reset();
 
 };
 

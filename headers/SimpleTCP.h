@@ -88,6 +88,9 @@ public:
         c->get_congestion_control()->send_packet(s, p);
         c->get_connection_manager()->send_packet(s, p);
         c->get_reliability()->send_packet(s, p);
+
+        NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
+        Dispatcher::instance().enqueue(e);
     }
 
     void connect(ConnectEvent* e) {
@@ -110,15 +113,23 @@ public:
         save_socket(s);
         IContextContainer* c = get_context(s);
         
-        c->get_congestion_control()->socket(s);
-        c->get_connection_manager()->socket(s);
-        c->get_reliability()->socket(s);
+        c->get_congestion_control()->new_connection_established(s);
+        c->get_connection_manager()->new_connection_established(s);
+        c->get_reliability()->new_connection_established(s);
 
     }
 
     void close() {
     }
 
+    void timer_fired_event(TimerFiredEvent* e) {
+        cout << "In SimpleTCP::timer_fired()\n";
+        IContextContainer* c = get_context(e->get_socket());
+
+        c->get_congestion_control()->timer_fired_event(e);
+        c->get_connection_manager()->timer_fired_event(e);
+        c->get_reliability()->timer_fired_event(e);
+    }
 };
 
 #endif	/* SIMPLETCP_H */
