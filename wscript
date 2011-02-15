@@ -26,8 +26,16 @@ def configure(conf):
 	# conf.check_tool('compiler_cxx')
 	conf.check_tool('gcc g++')
 	conf.env['LIBPATH'] += ['../lib/gtest']
+	conf.env['LIBPATH'] += ['../lib/pantheios']
 	conf.env['LIB_PTHREAD'] = ['pthread']
 	conf.env['STATICLIB'] += ['gtest']
+	
+	conf.env['STATICLIB'] += ['pantheios.1.core.gcc44']
+	conf.env['STATICLIB'] += ['pantheios.1.be.file.gcc44']
+	conf.env['STATICLIB'] += ['pantheios.1.bec.file.gcc44']
+	conf.env['STATICLIB'] += ['pantheios.1.fe.all.gcc44']
+	conf.env['STATICLIB'] += ['pantheios.1.util.gcc44']
+	
 	conf.env['LIB_RT'] = ['rt']
 	#conf.env['CXXFLAGS'] += ['--cs-off']
 	conf.env['CXXFLAGS'] += ['--cs-include-path=../headers']
@@ -99,6 +107,7 @@ def build_sink(bld):
 def build_staticlib(bld):
     # shared files
 	src_files = bld.glob('src/*.cc')
+	src_files.remove('src/main.cc')
 	src_files += bld.glob('src/exceptions/*.cc')
 
 	# shared library
@@ -125,7 +134,7 @@ def build_wifu(bld):
 
 	exe = bld(features='cxx cprogram',
         source=src_files,
-        includes='headers lib/gc/include headers/contexts headers/states headers/observer headers/packet headers/exceptions',
+        includes='headers lib/gc/include lib/pantheios/include lib/stlsoft/include headers/contexts headers/states headers/observer headers/packet headers/exceptions',
         uselib='PTHREAD RT',
 		libpath = ['../lib/gc'],
 		staticlib = ['gccpp','gc','cord'],
