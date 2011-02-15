@@ -19,53 +19,21 @@
 class NetworkInterface : public INetworkInterface {
 public:
 
-    static NetworkInterface& instance() {
-        static NetworkInterface instance_;
-        return instance_;
-    }
+    static NetworkInterface& instance();
 
-    virtual ~NetworkInterface() {
+    virtual ~NetworkInterface();
 
-    }
+    void start();
 
-    void start() {
-        listener_.start(this);
-    }
+    void register_protocol(int, PacketFactory*);
 
-    void register_protocol(int protocol, PacketFactory* pf) {
-        listener_.register_protocol(protocol, pf);
-    }
+    void network_receive(WiFuPacket*);
 
-    void network_receive(WiFuPacket* p) {
-        AddressPort* remote = p->get_source_address_port();
-        AddressPort* local = p->get_dest_address_port();
-
-        Socket* s = SocketCollection::instance().get_by_local_and_remote_ap(local, remote);
-
-        if (!s) {
-            s = SocketCollection::instance().get_by_local_ap(local);
-        }
-
-        if (!s) {
-            // No bound local socket
-            return;
-        }
-
-        Event* e = new NetworkReceivePacketEvent(s, p);
-        Dispatcher::instance().enqueue(e);
-    }
-
-    void network_send(Event* e) {
-        NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
-        // TODO: Check return value (bytes sent)?
-        sender_.send(event->get_packet());
-    }
+    void network_send(Event*);
 
 private:
 
-    NetworkInterface() : INetworkInterface() {
-
-    }
+    NetworkInterface();
 
     int socket_;
     map<int, PacketFactory*> protocols_;
