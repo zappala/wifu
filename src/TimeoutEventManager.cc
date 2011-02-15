@@ -27,6 +27,10 @@ TimeoutEventManager::~TimeoutEventManager() {
 
 void TimeoutEventManager::cancel_timer(Event * e) {
     CancelTimerEvent* event = (CancelTimerEvent*) e;
+    // TODO: ensure that all CancelTimerEvent objs are going to the front of the queue.
+    // Easiest way will be to make the two events inherit from the same object
+    // and implement less_than.  For instance, the CancelTimerEvent can have a timer of 0, so it
+    // is the smallest one on the queue.
     CanceledEvents::instance().insert(event->get_timeout_event());
     raise(SIG_CANCEL_EVENT);
 }
