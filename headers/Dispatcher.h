@@ -28,21 +28,12 @@ public:
     /**
      * @return A reference to the static instance of this Dispatcher object.
      */
-    static Dispatcher & instance() {
-        static Dispatcher instance_;
-        return instance_;
-    }
+    static Dispatcher & instance();
 
     /**
      * Cleans up this Dispatcher object.
      */
-    ~Dispatcher() {
-        tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*>::iterator itr = map_.begin();
-        for (; itr != map_.end(); ++itr) {
-            vector<QueueProcessor<Event*>*>* v = itr->second;
-            delete v;
-        }
-    }
+    ~Dispatcher();
 
     /**
      * Maps an event name to a QueueProcessor object.
@@ -50,18 +41,7 @@ public:
      * @param name The name of the Event.
      * @param q Pointer to a QueuProcessor object which wants to receive Event objects denoted by name.
      */
-    void map_event(event_name name, QueueProcessor<Event*>* q) {
-        if (map_[name] == NULL) {
-            map_[name] = new vector<QueueProcessor<Event*>*>;
-        }
-
-        vector<QueueProcessor<Event*>*>::iterator itr = find(map_[name]->begin(), map_[name]->end(), q);
-        if(itr != map_[name]->end()) {
-            return;
-        }
-
-        map_[name]->push_back(q);
-    }
+    void map_event(event_name, QueueProcessor<Event*>*);
 
     /**
      * Callback function which is called upon a dequeue of an Event pointer on this object.
@@ -72,19 +52,7 @@ public:
      *
      * @see DequeueCallback<T>::process()
      */
-    void process(Event * e) {
-        cout << "Event name: " << type_name(*e) << endl;
-        vector<QueueProcessor<Event*>*>* queue_processors = map_[type_name(*e)];
-
-        if (queue_processors == NULL) {
-            return;
-        }
-
-        for (int i = 0; i < queue_processors->size(); i++) {
-            //cout << "Processing: " << type_name(*e) << endl;
-            queue_processors->at(i)->enqueue(e);
-        }
-    }
+    void process(Event*);
 
 private:
     /**
@@ -95,9 +63,7 @@ private:
     /**
      * Constructs a Dispatcher object.
      */
-    Dispatcher() : QueueProcessor<Event*>() {
-
-    }
+    Dispatcher();
 };
 
 #endif	/* _DISPATCHER_H */
