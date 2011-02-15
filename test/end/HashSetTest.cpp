@@ -27,6 +27,17 @@ namespace {
         ASSERT_EQ(0, set.size());
     }
 
+    TEST(IntHashSetTest, Clear) {
+    	HashSet<int> set;
+    	set.insert(5);
+    	set.insert(6);
+    	set.insert(8);
+    	ASSERT_EQ(set.size(), 3);
+
+    	set.clear();
+    	ASSERT_EQ(set.size(), 0);
+    }
+
     TEST(IntHashSetTest, InsertContains) {
         HashSet<int> set;
         int zero = 0;
