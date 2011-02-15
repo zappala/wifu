@@ -44,8 +44,10 @@ Dispatcher::Dispatcher() : QueueProcessor<Event*>() {}
 
 void Dispatcher::clear() {
 	tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*>::iterator itr = map_.begin();
-	for (; itr != map_.end(); ++itr) {
+	while (itr != map_.end()) {
 		vector<QueueProcessor<Event*>*>* v = itr->second;
 		delete v;
+		++itr;
 	}
+	map_.clear();
 }
