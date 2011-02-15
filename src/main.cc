@@ -55,6 +55,7 @@ const PAN_CHAR_T PANTHEIOS_FE_PROCESS_IDENTITY[] = "wifu-end";
 #define PantheiosString(x) PANTHEIOS_LITERAL_STRING(x)
 
 using namespace std;
+using namespace pantheios;
 
 #define dispatcher Dispatcher::instance()
 
@@ -94,8 +95,8 @@ int main(int argc, char** argv) {
 
     // The following line does not have to be THE first call to the logger; it can be anywhere and the logger will still recognize it and use the filename
     pantheios_be_file_setFilePath(PantheiosString("wifu-end.log"), PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BEID_ALL);
-    pantheios::log_DEBUG("main(", pantheios::args(argc, argv), ")");
-    pantheios::log_INFORMATIONAL("Welcome");
+    log_DEBUG("main(", pantheios::args(argc, argv), ")");
+    log_INFORMATIONAL("Welcome");
 
     //TODO: Change second argument to 0 once we have a logger in place
     daemon(1, 1);
