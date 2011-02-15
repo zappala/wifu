@@ -27,6 +27,7 @@ void NetworkInterface::network_receive(WiFuPacket* p) {
 
 	if (!s) {
 		// No bound local socket
+		//TODO: should it really just return like this or should it throw an exception? -Scott
 		return;
 	}
 
