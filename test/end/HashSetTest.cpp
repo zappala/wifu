@@ -30,6 +30,7 @@ namespace {
     TEST(IntHashSetTest, Clear) {
     	HashSet<int> set;
     	set.insert(5);
+
     	set.insert(6);
     	set.insert(8);
     	ASSERT_EQ(set.size(), 3);
