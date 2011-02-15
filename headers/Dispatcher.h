@@ -44,6 +44,11 @@ public:
     void map_event(event_name, QueueProcessor<Event*>*);
 
     /**
+     * Resets all mappings from event name to QueueProcessors and deletes the QueueProcessors.
+     */
+    void reset();
+
+    /**
      * Callback function which is called upon a dequeue of an Event pointer on this object.
      * After dequeing the Event pointer, a copy of the pointer is enqueued into all registered QueueProcessor objects.
      * The enqueing to each QueueProcessor object is done in the order of registration.
@@ -64,6 +69,11 @@ private:
      * Constructs a Dispatcher object.
      */
     Dispatcher();
+
+    /**
+     * Is called by reset() and the destructor.
+     */
+    void clear();
 };
 
 #endif	/* _DISPATCHER_H */

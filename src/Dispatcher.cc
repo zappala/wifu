@@ -6,11 +6,7 @@ Dispatcher& Dispatcher::instance() {
 }
 
 Dispatcher::~Dispatcher() {
-	tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*>::iterator itr = map_.begin();
-	for (; itr != map_.end(); ++itr) {
-		vector<QueueProcessor<Event*>*>* v = itr->second;
-		delete v;
-	}
+	clear();
 }
 
 void Dispatcher::map_event(event_name name, QueueProcessor<Event*>* q) {
@@ -24,6 +20,10 @@ void Dispatcher::map_event(event_name name, QueueProcessor<Event*>* q) {
 	}
 
 	map_[name]->push_back(q);
+}
+
+void Dispatcher::reset() {
+	clear();
 }
 
 void Dispatcher::process(Event * e) {
@@ -41,3 +41,11 @@ void Dispatcher::process(Event * e) {
 }
 
 Dispatcher::Dispatcher() : QueueProcessor<Event*>() {}
+
+void Dispatcher::clear() {
+	tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*>::iterator itr = map_.begin();
+	for (; itr != map_.end(); ++itr) {
+		vector<QueueProcessor<Event*>*>* v = itr->second;
+		delete v;
+	}
+}
