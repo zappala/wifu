@@ -40,8 +40,15 @@ namespace {
             s.post();
         }
 
+        void network_send(Event* event) {
+        	NetworkSendPacketEvent* sendEvent = (NetworkSendPacketEvent*) event;
+        	sender.send(sendEvent->get_packet());
+        	s.post();
+        }
+
         WiFuPacket* p;
         Semaphore s;
+        RawSocketSender sender;
     };
 
     WiFuPacket * make_packet(int protocol, string & data, AddressPort* source, AddressPort* dest) {
@@ -73,20 +80,20 @@ namespace {
         AddressPort* source = new AddressPort("127.0.0.1", 5000);
         AddressPort* dest = new AddressPort("127.0.0.1", 5001);
 
-        Socket* s = new Socket(0, 0, 0, dest);
+        Socket* socket = new Socket(0, 0, 0, dest);
+
         SocketCollection::instance().clear();
-        SocketCollection::instance().push(s);
+        SocketCollection::instance().push(socket);
 
         // only by local address/port
         int time = 0;
         for (int i = 0; i < num_packets; i++) {
-
-            string data = random_string(packet_size);
+        	string data = random_string(packet_size);
 
             Timer t;
             t.start();
             WiFuPacket* p = make_packet(protocol, data, source, dest);
-            NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
+            NetworkSendPacketEvent* e = new NetworkSendPacketEvent(socket, p);
             dispatcher.enqueue(e);
             fnm.s.wait();
             t.stop();
@@ -102,7 +109,7 @@ namespace {
         cout << "Local AddressPort only, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
 
         // by local AND remote address/port
-        s->set_remote_address_port(source);
+        socket->set_remote_address_port(source);
 
         time = 0;
         for (int i = 0; i < num_packets; i++) {
@@ -112,7 +119,7 @@ namespace {
             Timer t;
             t.start();
             WiFuPacket* p = make_packet(protocol, data, source, dest);
-            NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
+            NetworkSendPacketEvent* e = new NetworkSendPacketEvent(socket, p);
             dispatcher.enqueue(e);
             fnm.s.wait();
             t.stop();
@@ -127,6 +134,32 @@ namespace {
         }
         cout << "Local and Remote AddressPort, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
 
+    }
+
+    TEST(NetworkInterface, unboundLocalSocket) {
+    	dispatcher.reset();
+
+    	FakeNetworkModule fnm;
+    	dispatcher.map_event(type_name(NetworkSendPacketEvent), &fnm);
+        dispatcher.map_event(type_name(NetworkReceivePacketEvent), &network);
+
+        int protocol = 101;
+        int packet_size = 1450;
+
+        SocketCollection::instance().clear();
+
+        AddressPort* source = new AddressPort("127.0.0.1", 5000);
+        AddressPort* dest = new AddressPort("127.0.0.1", 5001);
+
+        Socket* socket = new Socket(0, 0, 0, dest);
+
+		//This tests for an "unbound" local socket in the NetworkInterface
+		//TODO: I don't know if this is a realistic test for an unbound socket, so it may need to be modified -Scott
+		string data = random_string(packet_size);
+		WiFuPacket* worthlessPacket = make_packet(protocol, data, source, dest);
+		NetworkSendPacketEvent* event = new NetworkSendPacketEvent(socket, worthlessPacket);
+		dispatcher.enqueue(event);
+		fnm.s.wait();
     }
 }
 
