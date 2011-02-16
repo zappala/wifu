@@ -118,7 +118,7 @@ namespace {
         dispatcher.enqueue(cancel_event);
 
         struct timespec t;
-        Utils::get_timespec_future_time(seconds, nano * 50, &t);
+        Utils::get_timespec_future_time(seconds, nano * 10, &t);
 
         bool timedout = helper.get_sem()->timed_wait(&t);
         ASSERT_TRUE(timedout);

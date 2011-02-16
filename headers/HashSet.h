@@ -9,7 +9,6 @@
 #define	_NUMBERSET_H
 
 #include <tr1/unordered_set>
-
 #include "Semaphore.h"
 
 using namespace std;
@@ -19,7 +18,7 @@ class HashSet {
 public:
 
     HashSet() {
-        mutex_.init(1);
+        reset();
     }
 
     virtual ~HashSet() {
@@ -27,39 +26,45 @@ public:
     }
 
     void insert(T obj) {
-        mutex_.wait();
+        mutex_->wait();
         set_.insert(obj);
-        mutex_.post();
+        mutex_->post();
     }
 
     void remove(T obj) {
-        mutex_.wait();
+        mutex_->wait();
         set_.erase(obj);
-        mutex_.post();
+        mutex_->post();
     }
 
     bool contains(T obj) {
-        mutex_.wait();
+        mutex_->wait();
         bool val = set_.find(obj) != set_.end();
-        mutex_.post();
+        mutex_->post();
         return val;
     }
 
     int size() {
-        mutex_.wait();
+        mutex_->wait();
         int val = set_.size();
-        mutex_.post();
+        mutex_->post();
         return val;
     }
 
     void clear() {
-        mutex_.wait();
+        mutex_->wait();
         set_.clear();
-        mutex_.post();
+        mutex_->post();
+    }
+
+    void reset() {
+        mutex_ = new Semaphore();
+        mutex_->init(1);
+        clear();
     }
 
 private:
-    Semaphore mutex_;
+    Semaphore* mutex_;
     tr1::unordered_set<T> set_;
 };
 

@@ -30,104 +30,43 @@ public:
             int type,
             int protocol,
             AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().get()),
-            AddressPort* remote = new AddressPort("0.0.0.0", PortManager::instance().get())) :
-    socket_(SocketManager::instance().get()),
-    domain_(domain),
-    type_(type),
-    protocol_(protocol),
-    local_(local),
-    remote_(remote),
-    is_passive_(false) {
-
-        }
+            AddressPort* remote = new AddressPort("0.0.0.0", PortManager::instance().get()));
 
     /**
      * Cleans up this Socket object.
      */
-    virtual ~Socket() {
-        if (local_) {
-            delete local_;
-        }
-
-        if (remote_) {
-            delete remote_;
-        }
-
-        SocketManager::instance().remove(socket_);
-    }
+    virtual ~Socket();
 
     /**
      * @return The int which represents this Socket.
      */
-    int get_socket_id() const {
-        return socket_;
-    }
+    int get_socket_id() const;
 
-    int get_domain() const {
-        return domain_;
-    }
+    int get_domain() const;
 
-    int get_type() const {
-        return type_;
-    }
+    int get_type() const;
 
-    int get_protocol() const {
-        return protocol_;
-    }
+    int get_protocol() const;
 
-    void make_passive() {
-        is_passive_ = true;
-    }
+    void make_passive();
 
-    bool is_passive() const {
-        return is_passive_;
-    }
+    bool is_passive() const;
 
-    AddressPort* get_local_address_port() {
-        assert(local_);
-        return local_;
-    }
+    AddressPort* get_local_address_port();
 
-    AddressPort* get_remote_address_port() {
-        return remote_;
-    }
+    AddressPort* get_remote_address_port();
 
-    void set_local_address_port(AddressPort* local) {
-        if (local_) {
-            delete local_;
-        }
-        local_ = local;
-        notify();
-    }
+    void set_local_address_port(AddressPort* local);
 
-    void set_remote_address_port(AddressPort* remote) {
-        if (remote_) {
-            delete remote_;
-        }
-        remote_ = remote;
-        notify();
-    }
+    void set_remote_address_port(AddressPort* remote);
 
-    bool operator==(const Socket& other) {
-        return get_socket_id() == other.get_socket_id();
-    }
+    bool operator==(const Socket& other);
 
-    bool operator!=(const Socket& other) {
-        return !(operator ==(other));
-    }
+    bool operator!=(const Socket& other);
 
-    string get_key() {
-        return make_key(get_local_address_port(), get_remote_address_port());
-    }
+    string get_key();
 
-    static string make_key(AddressPort* local, AddressPort* remote) {
-        string local_s = local->to_s();
-        string remote_s = remote->to_s();
-        return local_s.append(remote_s);
-    }
-
-
-
+    static string make_key(AddressPort* local, AddressPort* remote);
 
 private:
     AddressPort* local_;

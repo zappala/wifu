@@ -17,9 +17,13 @@
  */
 class ProtocolManager : public HashSet<int> {
 private:
-    ProtocolManager() {}
+    ProtocolManager() {
+        mutex_.init(1);
+    }
     ProtocolManager(ProtocolManager const&){}
     ProtocolManager& operator=(ProtocolManager const&){}
+
+    Semaphore mutex_;
 
 public:
     virtual ~ProtocolManager() {}
@@ -37,11 +41,16 @@ public:
         // TODO: determine whether or not it is supported
         // TODO: This means that the class will need to map the
         // TODO: three-tuple to a protocol
-        return contains(protocol);
+        mutex_.wait();
+        bool value = contains(protocol);
+        mutex_.post();
+        return value;
     }
 
     void support(int protocol) {
+        mutex_.wait();
         insert(protocol);
+        mutex_.post();
     }
 
 };

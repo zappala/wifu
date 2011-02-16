@@ -20,6 +20,7 @@ class RandomNumberSet : public HashSet<N> {
 public:
 
     RandomNumberSet() {
+        mutex_.init(1);
         reset_seed();
     }
 
@@ -28,6 +29,7 @@ public:
     }
 
     virtual N get() {
+        mutex_.wait();
         N random;
 
         do {
@@ -36,14 +38,20 @@ public:
 
         // TODO: ensure that we are removing these ids at some point
         insert(random);
+        mutex_.post();
         return random;
     }
 
     void reset_seed() {
+        mutex_.wait();
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         srand(ts.tv_nsec);
+        mutex_.post();
     }
+
+private:
+    Semaphore mutex_;
 
 };
 

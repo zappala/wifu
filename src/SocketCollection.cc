@@ -109,11 +109,11 @@ void SocketCollection::update(Observable* o) {
 }
 
 void SocketCollection::reset() {
-    collection_.clear();
-
     mutex_ = new Semaphore();
     update_mutex_ = new Semaphore();
 
     mutex_->init(1);
     update_mutex_->init(1);
+
+    collection_.clear();
 }
