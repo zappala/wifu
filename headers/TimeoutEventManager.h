@@ -12,7 +12,6 @@
 #include "events/TimeoutEvent.h"
 #include "defines.h"
 #include "TimeoutEventManagerSemaphore.h"
-#include "events/CanceledEvents.h"
 #include "Module.h"
 #include "events/CancelTimerEvent.h"
 
@@ -84,6 +83,11 @@ private:
      * Creates a TimeoutEventManager object.
      */
     TimeoutEventManager();
+
+    /**
+     * TimeoutEvents which have been canceled
+     */
+    HashSet<TimeoutEvent*> canceled_events_;
 };
 
 

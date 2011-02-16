@@ -20,7 +20,6 @@
 #include "events/TimeoutEvent.h"
 #include "TimeoutEventManager.h"
 #include "Semaphore.h"
-#include "events/CanceledEvents.h"
 #include "Dispatcher.h"
 #include "events/ConnectEvent.h"
 #include "Socket.h"

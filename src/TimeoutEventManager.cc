@@ -13,7 +13,6 @@ TimeoutEventManager::TimeoutEventManager() : Module(new PriorityQueue<Event*, Ev
     TimeoutManagerSemaphore;
 
     signal(SIG_ENQUEUE_EVENT, signal_manager);
-    signal(SIG_CANCEL_EVENT, signal_manager);
 }
 
 TimeoutEventManager& TimeoutEventManager::instance() {
@@ -26,22 +25,17 @@ TimeoutEventManager::~TimeoutEventManager() {
 }
 
 void TimeoutEventManager::cancel_timer(Event * e) {
+    cout << "Cancelling Timer" << endl;
     CancelTimerEvent* event = (CancelTimerEvent*) e;
-    // TODO: ensure that all CancelTimerEvent objs are going to the front of the queue.
-    // Easiest way will be to make the two events inherit from the same object
-    // and implement less_than.  For instance, the CancelTimerEvent can have a timer of 0, so it
-    // is the smallest one on the queue.
-    CanceledEvents::instance().insert(event->get_timeout_event());
-    raise(SIG_CANCEL_EVENT);
+    canceled_events_.insert(event->get_timeout_event());
 }
 
 void TimeoutEventManager::timeout(Event* e) {
     cout << "In timeout() in TimeoutEventManager\n";
     TimeoutEvent* event = (TimeoutEvent*) e;
 
-    if (CanceledEvents::instance().contains(event)) {
-        CanceledEvents::instance().remove(event);
-        delete event;
+    if (canceled_events_.contains(event)) {
+        canceled_events_.remove(event);
         return;
     }
 
@@ -58,16 +52,24 @@ void TimeoutEventManager::timeout(Event* e) {
 }
 
 void TimeoutEventManager::enqueue(Event* e, bool signal) {
-    TimeoutEvent* event = (TimeoutEvent*) e;
     cout << "We're enqueuing in TimeoutEventManager.\n";
+    
+    // TODO: This is cheating... (but currently (Feb. 16, 2011) the best solution)
+    // We are not enqueuing it to our queue, we are taking it before
+    // so the CancelTimerEvent doesn't get stuck behind any
+    // TimeoutEvents
+    if(type_name(*e) == type_name(CancelTimerEvent)) {
+        cancel_timer(e);
+        return;
+    }
 
-    this->QueueProcessor<Event*>::enqueue(event, signal);
+    this->QueueProcessor<Event*>::enqueue(e, signal);
+
 }
 
 void signal_manager(int signal) {
     switch (signal) {
         case SIG_ENQUEUE_EVENT:
-        case SIG_CANCEL_EVENT:
             TimeoutManagerSemaphore.post();
             break;
     }

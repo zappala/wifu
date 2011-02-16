@@ -41,6 +41,7 @@ public:
      * @see IModule::cancel_timer()
      */
     void execute(IModule* m) {
+        cout << "CancelTimerEvent::execute()" << endl;
         m->cancel_timer(this);
     }
 };
