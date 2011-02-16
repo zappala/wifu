@@ -54,7 +54,7 @@ void TimeoutEventManager::timeout(Event* e) {
 void TimeoutEventManager::enqueue(Event* e, bool signal) {
     cout << "We're enqueuing in TimeoutEventManager.\n";
     
-    // TODO: This is cheating... (but currently (Feb. 16, 2011) the best solution)
+    // TODO: This is cheating... (but currently (as of Feb. 16, 2011) the best thought of solution)
     // We are not enqueuing it to our queue, we are taking it before
     // so the CancelTimerEvent doesn't get stuck behind any
     // TimeoutEvents
