@@ -25,13 +25,13 @@ TimeoutEventManager::~TimeoutEventManager() {
 }
 
 void TimeoutEventManager::cancel_timer(Event * e) {
-    cout << "Cancelling Timer" << endl;
+//    cout << "Cancelling Timer" << endl;
     CancelTimerEvent* event = (CancelTimerEvent*) e;
     canceled_events_.insert(event->get_timeout_event());
 }
 
 void TimeoutEventManager::timeout(Event* e) {
-    cout << "In timeout() in TimeoutEventManager\n";
+//    cout << "In timeout() in TimeoutEventManager\n";
     TimeoutEvent* event = (TimeoutEvent*) e;
 
     if (canceled_events_.contains(event)) {
@@ -42,7 +42,7 @@ void TimeoutEventManager::timeout(Event* e) {
     bool timedout = TimeoutManagerSemaphore.timed_wait(&event->get_timeout_time());
 
     if (timedout) {
-        cout << "Timed out!\n";
+//        cout << "Timed out!\n";
         Dispatcher::instance().enqueue(new TimerFiredEvent(event));
         return;
     }
@@ -52,7 +52,7 @@ void TimeoutEventManager::timeout(Event* e) {
 }
 
 void TimeoutEventManager::enqueue(Event* e, bool signal) {
-    cout << "We're enqueuing in TimeoutEventManager.\n";
+//    cout << "We're enqueuing in TimeoutEventManager.\n";
     
     // TODO: This is cheating... (but currently (as of Feb. 16, 2011) the best thought of solution)
     // We are not enqueuing it to our queue, we are taking it before

@@ -53,7 +53,6 @@ public:
      * @return True if this TimeoutEvent is less than e's, false otherwise.
      */
     virtual bool less_than(Event* e) {
-        cout << "TimeoutEvent less_than called" << endl;
         TimeoutEvent* rhs = (TimeoutEvent*) e;
 
         struct timespec * a = &(get_timeout_time());
@@ -71,7 +70,6 @@ public:
      * @see IModule::timeout()
      */
     void execute(IModule* m) {
-        cout << "TimeoutEvent::execute()" << endl;
         m->timeout(this);
     }
 

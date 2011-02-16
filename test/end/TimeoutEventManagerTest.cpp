@@ -37,7 +37,6 @@ namespace {
         }
 
         void timer_fired(Event* e) {
-            cout << "Timer Fired" << endl;
             TimerFiredEvent* event = (TimerFiredEvent*) e;
             event_ = event;
             sem->post();
@@ -150,9 +149,6 @@ namespace {
                 saved = e;
             }
             events[i] = e;
-            Event* temp_event = events[i];
-            cout << "Array:  " << temp_event << endl;
-            cout << "Pointer:  " << e << endl;
         }
 
         CancelTimerEvent* cancel_event = new CancelTimerEvent(saved);
@@ -169,11 +165,9 @@ namespace {
             bool timedout = helper.get_sem()->timed_wait(&t);
             if (!timedout) {
                 TimerFiredEvent* e = helper.get_last_timer_fired_event();
-                Event* original = e->get_timeout_event();
-                Event* temp_event = events[i];
-                cout << "Array:  " << temp_event << endl;
-                cout << "Pointer:  " << original << endl;
-                ASSERT_EQ(temp_event, original);
+                Event* actual = e->get_timeout_event();
+                Event* expected = events[i];
+                ASSERT_EQ(expected, actual);
             } else {
                 break;
             }
