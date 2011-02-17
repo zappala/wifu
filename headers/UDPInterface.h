@@ -19,15 +19,11 @@
 #include "SocketCollection.h"
 
 /**
- * Interface to an actual socket which data will be sent and recieved.
+ * Interface to an actual socket which data will be sent and received.
  */
 class UDPInterface : public Module, public UDPSocketCallback {
 public:
-
-    static UDPInterface& instance() {
-        static UDPInterface instance_;
-        return instance_;
-    }
+    static UDPInterface& instance();
 
     /**
      * Starts the UDPInterface
@@ -35,19 +31,12 @@ public:
      *
      * @param ap Contains the address and port which this UDPInterface will listen on
      */
-    void start(AddressPort& ap) {
-        // Set up the UDPSocket
-        socket_.bind_socket(ap);
-        socket_.receive(this);
-    }
-
+    void start(AddressPort&);
 
     /**
      * Cleans up this UDPInterface object.
      */
-    virtual ~UDPInterface() {
-
-    }
+    virtual ~UDPInterface();
 
     /**
      * Implementation of callback funtion defined in UDPSocketCallback
@@ -59,45 +48,16 @@ public:
      *
      * @see UDPSocketCallback::receive()
      */
-    void receive(AddressPort& ap, unsigned char* buffer, size_t length) {
-        WiFuPacket* p = new WiFuPacket(buffer, length);
-        AddressPort* remote = p->get_source_address_port();
-        AddressPort* local = p->get_dest_address_port();
-
-        Socket* s = SocketCollection::instance().get_by_local_and_remote_ap(local, remote);
-
-        if(!s) {
-            s = SocketCollection::instance().get_by_local_ap(local);
-        }
-
-
-        if(!s) {
-            // No bound local socket
-            return;
-        }
-
-        
-        
-        Event* e = new UDPReceivePacketEvent(s, p);
-        Dispatcher::instance().enqueue(e);
-    }
+    void receive(AddressPort&, unsigned char*, size_t);
 
     /**
      * This method is called when a UDPSendPacketEvent is dequeued from the Dispatcher.
      *
      * @param e The Event which contains information needing to be sent over the wire.
      */
-    void udp_send(Event* e) {
-        UDPSendPacketEvent* event = (UDPSendPacketEvent*) e;
-        WiFuPacket* p = event->get_packet();
-        string dest = p->get_ip_destination_address_s();
-        AddressPort destination(dest, WIFU_PORT);
-        socket_.send(destination, p->get_payload(), p->get_ip_datagram_length());
-    }
+    void udp_send(Event*);
 
-    string& get_bound_ip_address() {
-        return socket_.get_bound_address_port()->get_address();
-    }
+    string& get_bound_ip_address();
 
 private:
     UDPSocket socket_;
@@ -105,10 +65,7 @@ private:
     /**
      * Constructs a UDPInterface object.
      */
-    UDPInterface() : Module(), UDPSocketCallback() {
-
-
-    }
+    UDPInterface();
 };
 
 #endif	/* _UDPINTERFACE_H */
