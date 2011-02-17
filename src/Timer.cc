@@ -91,3 +91,11 @@ double Timer::get_duration_seconds() {
     diff /= (double) MILLION;
     return diff;
 }
+
+void Timer::adjust_timeval(struct timeval * val, int microseconds) {
+    u_int64_t time = to_microseconds(val);
+    time += microseconds;
+
+    val->tv_sec = time / MILLION;
+    val->tv_usec = time % MILLION;
+}
