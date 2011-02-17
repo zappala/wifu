@@ -37,10 +37,16 @@ def configure(conf):
 	conf.env['STATICLIB'] += ['pantheios.1.util.gcc44']
 	
 	conf.env['LIB_RT'] = ['rt']
+	
 	#conf.env['CXXFLAGS'] += ['--cs-off']
-	conf.env['CXXFLAGS'] += ['--cs-include-path=../headers']
 	#conf.env['LINKFLAGS'] += ['--cs-off']
-	conf.env['LINKFLAGS'] += ['--cs-include-path=../headers']
+	
+#	conf.env['CXXFLAGS'] += ['--cs-include-path=../headers']
+#	conf.env['LINKFLAGS'] += ['--cs-include-path=../headers']
+	
+	conf.env['CXXFLAGS'] += ['--cs-exclude-path=../test/end']
+	conf.env['LINKFLAGS'] += ['--cs-exclude-path=../test/end']
+	
 	conf.env.PREFIX = ".."
 
 	if Options.options.bit_32:
