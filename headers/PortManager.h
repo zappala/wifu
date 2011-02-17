@@ -14,17 +14,11 @@
 
 class PortManager : public RandomNumberSet<uint16_t> {
 private:
-
-    PortManager() : RandomNumberSet<uint16_t>() {}
+    PortManager();
 
 public:
-
-    virtual ~PortManager() {}
-    
-    static PortManager& instance() {
-        static PortManager instance_;
-        return instance_;
-    }
+    virtual ~PortManager();
+    static PortManager& instance();
 };
 
 #endif	/* _PORTMANAGER_H */
