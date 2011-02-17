@@ -11,7 +11,6 @@
 #include "PacketFactory.h"
 #include "packet/TCPPacket.h"
 
-
 class TCPPacketFactory : public PacketFactory {
     WiFuPacket* create() {
         return new TCPPacket();
