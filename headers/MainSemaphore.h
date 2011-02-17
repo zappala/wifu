@@ -10,24 +10,14 @@
 
 #include "Semaphore.h"
 
-
 class MainSemaphore : public Semaphore {
 public:
+    virtual ~MainSemaphore();
 
-    virtual ~MainSemaphore() {
-
-    }
-
-    static MainSemaphore& instance() {
-        static MainSemaphore instance_;
-        return instance_;
-    }
-
+    static MainSemaphore& instance();
 
 private:
-    MainSemaphore() : Semaphore() {
-
-    }
+    MainSemaphore();
 };
 
 #endif	/* _MAINSEMAPHORE_H */
