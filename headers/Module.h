@@ -8,7 +8,6 @@
 #ifndef _MODULE_H
 #define	_MODULE_H
 
-
 #include "QueueProcessor.h"
 #include "IModule.h"
 #include "Queue.h"
@@ -29,9 +28,7 @@ public:
      * Uses a Queue as the internal data structure for the parent QueueProcessor object.
      * Starts up the parent QueueProcessor's listening thread.
      */
-    Module() : IModule(), QueueProcessor<Event*>(), TimeoutHelper() {
-        start_processing();
-    }
+    Module();
 
     /**
      * Constructs a Module object.
@@ -39,16 +36,12 @@ public:
      *
      * @param queue Pointer to an IQueue object to be used as the internal data structure for the parent QueueProcessor object.
      */
-    Module(IQueue<Event*>* queue) : IModule(), QueueProcessor<Event*>(queue), TimeoutHelper() {
-        start_processing();
-    }
+    Module(IQueue<Event*>*);
 
     /**
      * Cleans up this Module object
      */
-    virtual ~Module() {
-        
-    }
+    virtual ~Module();
 
     /**
      * Callback function called when an Event pointer is dequeued from the parent QueueProcessor's dequeue thread.
@@ -56,9 +49,7 @@ public:
      * @param e The Event to process.  This Event was dequeued from the parent QueueProcessor's dequeue thread.
      * @see Event::execute()
      */
-    virtual void process(Event* e) {
-        e->execute(this);
-    }
+    virtual void process(Event*);
 
     /**
      * Called when e's execute method is called on a TimerFiredEvent.
@@ -66,22 +57,14 @@ public:
      *
      * @param e The Event which caused this method to be called (likely a TimerFiredEvent).
      */
-    virtual void timer_fired(Event* e) {
-        TimerFiredEvent* event = (TimerFiredEvent*) e;
-        
-        if(is_my_timeout(event)) {
-            my_timer_fired(event);
-        }
-    }
+    virtual void timer_fired(Event*);
 
     /**
      * Simple wrapper method that enqueues e into the Dispatcher.
      *
      * @param e The Event pointer to enqueue into the Dispatcher.
      */
-    virtual void dispatch(Event* e) {
-        Dispatcher::instance().enqueue(e);
-    }
+    virtual void dispatch(Event*);
 
 };
 
