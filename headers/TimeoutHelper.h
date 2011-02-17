@@ -27,26 +27,19 @@ public:
     /**
      * Creates a TimeoutHelper object.
      */
-    TimeoutHelper() : HashSet<Event*>() {
-
-    }
+    TimeoutHelper();
 
     /**
      * Cleans up this TimeoutHelper object.
      */
-    virtual ~ TimeoutHelper() {
-
-    }
+    virtual ~TimeoutHelper();
 
     /**
      * Keeps track of event as coming from this object and then calls Dispacther::enqueue()
      *
      * @param event The Event to keep track of.
      */
-    void dispatch_timeout(Event* event) {
-        insert(event);
-        Dispatcher::instance().enqueue(event);
-    }
+    void dispatch_timeout(Event*);
 
     /**
      * Determines if the TimeoutEvent internal to event was sent via this object's dispatch_timeout() method.
@@ -55,21 +48,14 @@ public:
      * @param event The TimerFiredEvent in question as to whether this object generated its TimeoutEvent.
      * @return True if the TimeoutEvent internal to event was sent via this object's dispatch_timeout() method, false otherwise.
      */
-    bool is_my_timeout(TimerFiredEvent* event) {
-        bool value = contains(event->get_timeout_event());
-        remove(event);
-        return value;
-    }
+    bool is_my_timeout(TimerFiredEvent*);
 
     /**
      * Generates a CancelTimerEvent and sends it to the Dispatcher.
      *
      * @param event The TimeoutEvent to cancel.
      */
-    void cancel_timeout(TimeoutEvent* event) {
-        remove(event);
-        Dispatcher::instance().enqueue(new CancelTimerEvent(event));
-    }
+    void cancel_timeout(TimeoutEvent*);
 };
 
 #endif	/* _TIMEOUTHELPER_H */
