@@ -27,10 +27,10 @@ public:
      * Creates a Socket object.
      */
     Socket(int domain,
-            int type,
-            int protocol,
-            AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().get()),
-            AddressPort* remote = new AddressPort("0.0.0.0", PortManager::instance().get()));
+           int type,
+           int protocol,
+           AddressPort* = new AddressPort("0.0.0.0", PortManager::instance().get()),
+           AddressPort* = new AddressPort("0.0.0.0", PortManager::instance().get()));
 
     /**
      * Cleans up this Socket object.
