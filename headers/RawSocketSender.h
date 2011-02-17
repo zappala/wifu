@@ -26,51 +26,16 @@ using namespace std;
 
 class RawSocketSender {
 public:
+    RawSocketSender();
 
-    RawSocketSender() {
-        create_socket();
-        set_header_include();
-    }
-
-    ssize_t send(WiFuPacket* p) {
-        int ret = sendto(socket_,
-                p->get_payload(),
-                p->get_ip_datagram_length(),
-                0,
-                (struct sockaddr*) p->get_dest_address_port()->get_network_struct_ptr(),
-                (sizeof (struct sockaddr_in)));
-
-        if (ret < 0) {
-            perror("RawSocketSender: Error Sending Packet");
-            // TODO: What should we do on a fail?
-        }
-        return ret;
-    }
-
+    ssize_t send(WiFuPacket*);
 
 private:
     int socket_;
 
-    void create_socket() {
-        socket_ = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
-        if (socket_ < 0) {
-            perror("NetworkInterface cannot create raw socket");
-            exit(EXIT_FAILURE);
-        }
-    }
+    void create_socket();
 
-    void set_header_include() {
-        int one = 1;
-        const int *val = &one;
-        if (setsockopt(socket_, IPPROTO_IP, IP_HDRINCL, val, sizeof (one)) < 0) {
-            perror("NetworkInterface: cannot set HDRINCL");
-            exit(EXIT_FAILURE);
-        }
-
-    }
-
-
-
+    void set_header_include();
 };
 
 #endif	/* _RAWSOCKETSENDER_H */
