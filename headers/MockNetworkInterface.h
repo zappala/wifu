@@ -14,27 +14,18 @@
 
 class MockNetworkInterface : public INetworkInterface {
 public:
-
     static MockNetworkInterface& instance() {
         static MockNetworkInterface instance_;
         return instance_;
     }
 
-    virtual ~MockNetworkInterface() {
+    virtual ~MockNetworkInterface() {}
 
-    }
+    void start() {}
 
-    void start() {
+    void register_protocol(int protocol, PacketFactory* pf) {}
 
-    }
-
-    void register_protocol(int protocol, PacketFactory* pf) {
-
-    }
-
-    void network_receive(WiFuPacket* p) {
-
-    }
+    void network_receive(WiFuPacket* p) {}
 
     void network_send(Event* e) {
         NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
@@ -58,13 +49,8 @@ public:
         Dispatcher::instance().enqueue(response);
     }
 
-
 private:
-
-    MockNetworkInterface() : INetworkInterface() {
-
-    }
-
+    MockNetworkInterface() : INetworkInterface() {}
 
 };
 

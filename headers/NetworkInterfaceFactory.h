@@ -27,10 +27,7 @@ public:
 
 private:
 
-    NetworkInterfaceFactory() {
-
-    }
-
+    NetworkInterfaceFactory() {}
 
     INetworkInterfaceCreator* creator_;
 };
