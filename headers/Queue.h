@@ -93,6 +93,17 @@ public:
         return size() == 0;
     }
 
+    /**
+     * Empties this Queue
+     */
+    void clear() {
+        sem_.wait();
+        while(!q_.empty()) {
+            q_.pop();
+        }
+        sem_.post();
+    }
+
 private:
     /**
      * Protective Semaphore; this semaphore makes this class thread safe.

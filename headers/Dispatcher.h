@@ -66,6 +66,11 @@ private:
     tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*> map_;
 
     /**
+     * Mutex to make this object thread-safe
+     */
+    Semaphore mutex_;
+
+    /**
      * Constructs a Dispatcher object.
      */
     Dispatcher();

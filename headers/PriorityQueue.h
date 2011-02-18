@@ -93,6 +93,16 @@ public:
         return size() == 0;
     }
 
+    /**
+     * Empties this PriorityQueue
+     */
+    void clear() {
+        sem_.wait();
+        while(!q_.empty()) {
+            q_.pop();
+        }
+        sem_.post();
+    }
 
 private:
     /**

@@ -20,7 +20,7 @@
  * @see QueueProcessor
  * @see TimeoutHelper
  */
-class Module : public IModule, public QueueProcessor<Event*>, public TimeoutHelper {
+class Module : public IModule, public QueueProcessor<Event*> {
 public:
 
     /**
@@ -50,14 +50,6 @@ public:
      * @see Event::execute()
      */
     virtual void process(Event*);
-
-    /**
-     * Called when e's execute method is called on a TimerFiredEvent.
-     * Screens e to ensure that it belongs to this Module, then calls my_timer_fired().
-     *
-     * @param e The Event which caused this method to be called (likely a TimerFiredEvent).
-     */
-    virtual void timer_fired(Event*);
 
     /**
      * Simple wrapper method that enqueues e into the Dispatcher.

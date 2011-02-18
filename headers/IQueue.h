@@ -52,6 +52,11 @@ public:
      * @return True if there are no elements in the queue, false otherwise.
      */
     virtual bool isEmpty() = 0;
+
+    /**
+     * Empties this IQueue
+     */
+    virtual void clear() = 0;
 };
 
 #endif	/* _IQUEUE_H */

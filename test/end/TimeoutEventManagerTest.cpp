@@ -10,6 +10,13 @@
 
 #include "gtest/gtest.h"
 #include "TimeoutEventManager.h"
+#include "events/Event.h"
+#include "events/TimeoutEvent.h"
+#include "events/TimerFiredEvent.h"
+
+#include <vector>
+#include <time.h>
+#include <algorithm>
 
 #define dispatcher Dispatcher::instance()
 #define timer TimeoutEventManager::instance()
@@ -26,7 +33,6 @@ namespace {
 
         TimeoutEventManagerHelper() {
             reset();
-            q_ = new Queue<Event*>();
         }
 
         IQueue<Event*>* q_;
@@ -50,6 +56,7 @@ namespace {
         void reset() {
             sem = new Semaphore();
             sem->init(0);
+            q_ = new Queue<Event*>();
         }
 
         IQueue<Event*>* get_queue() {
@@ -90,11 +97,11 @@ namespace {
 
         // This timeout indicates the maximum time we will wait for the TimerFiredEvent to occur
         bool timedout = helper.get_sem()->timed_wait(&t);
-        ASSERT_FALSE(timedout);
+        EXPECT_FALSE(timedout);
 
         TimerFiredEvent* event = (TimerFiredEvent*) helper.get_queue()->dequeue();
         TimeoutEvent* actual = event->get_timeout_event();
-        ASSERT_EQ(expected, actual);
+        EXPECT_EQ(expected, actual);
 
     }
 
@@ -110,19 +117,156 @@ namespace {
 
         // This timeout indicates the maximum time we will wait for the TimerFiredEvent to occur
         bool timedout = helper.get_sem()->timed_wait(&t);
-        ASSERT_FALSE(timedout);
+        EXPECT_FALSE(timedout);
 
         TimerFiredEvent* event = (TimerFiredEvent*) helper.get_queue()->dequeue();
         TimeoutEvent* actual = event->get_timeout_event();
-        ASSERT_EQ(expected, actual);
+        EXPECT_EQ(expected, actual);
     }
 
-    TEST_F(TimeoutEventManagerTest, EnqueueTwo) {
-        
+    void enqueue_two_helper(int seconds, long int nano, Event* A, Event* B) {
+        struct timespec t;
+
+        { // Ensure A occurs first
+            Utils::get_timespec_future_time(seconds, nano * 2, &t);
+
+            // This timeout indicates the maximum time we will wait for the TimerFiredEvent to occur
+            bool timedout = helper.get_sem()->timed_wait(&t);
+            EXPECT_FALSE(timedout);
+
+            TimerFiredEvent* event = (TimerFiredEvent*) helper.get_queue()->dequeue();
+            TimeoutEvent* actual = event->get_timeout_event();
+            EXPECT_EQ(A, actual);
+        }
+
+        { // Ensure B occurs second
+            Utils::get_timespec_future_time(seconds, nano * 4, &t);
+
+            // This timeout indicates the maximum time we will wait for the TimerFiredEvent to occur
+            bool timedout = helper.get_sem()->timed_wait(&t);
+            EXPECT_FALSE(timedout);
+
+            TimerFiredEvent* event = (TimerFiredEvent*) helper.get_queue()->dequeue();
+            TimeoutEvent* actual = event->get_timeout_event();
+            EXPECT_EQ(B, actual);
+        }
     }
 
-    TEST_F(TimeoutEventManagerTest, MassEnqueue) {
+    TEST_F(TimeoutEventManagerTest, EnqueueTwoInOrder) {
+        Socket* s = new Socket(0, 0, 0);
+        int seconds = 0;
+        long int nano = 1000000;
+        TimeoutEvent* A = new TimeoutEvent(s, seconds, nano);
+        dispatcher.enqueue(A);
 
+        TimeoutEvent* B = new TimeoutEvent(s, seconds, nano * 2);
+        dispatcher.enqueue(B);
+
+        enqueue_two_helper(seconds, nano, A, B);
+    }
+
+    TEST_F(TimeoutEventManagerTest, EnqueueTwoOutOfOrder) {
+        Socket* s = new Socket(0, 0, 0);
+        int seconds = 0;
+        long int nano = 1000000;
+
+        TimeoutEvent* A = new TimeoutEvent(s, seconds, nano);
+        TimeoutEvent* B = new TimeoutEvent(s, seconds, nano * 2);
+
+        dispatcher.enqueue(B);
+        dispatcher.enqueue(A);
+
+        enqueue_two_helper(seconds, nano, A, B);
+    }
+
+    TEST_F(TimeoutEventManagerTest, MassEnqueueInOrder) {
+        Socket* s = new Socket(0, 0, 0);
+        int seconds = 0;
+        long int nano = 100;
+        int max = 10000;
+        Event * events[max];
+
+        for (int i = 0; i < max; ++i) {
+            long int time = (nano * i) + nano;
+            TimeoutEvent* e = new TimeoutEvent(s, seconds, time);
+            events[i] = e;
+            dispatcher.enqueue(e);
+        }
+
+        for (int i = 0; i < max; ++i) {
+            Event* expected = events[i];
+            helper.get_sem()->wait();
+            TimerFiredEvent* event = (TimerFiredEvent*) helper.get_queue()->dequeue();
+            Event* actual = event->get_timeout_event();
+            EXPECT_EQ(expected, actual);
+        }
+    }
+
+    TEST_F(TimeoutEventManagerTest, MassEnqueueReverseOrder) {
+        Socket* s = new Socket(0, 0, 0);
+        int seconds = 1;
+        long int nano = 1000;
+        int max = 10000;
+        vector<Event*> events;
+
+        for (int i = 0; i < max; ++i) {
+            long int time = (nano * i) + nano;
+            TimeoutEvent* e = new TimeoutEvent(s, seconds, time);
+            events.push_back(e);
+        }
+
+        reverse(events.begin(), events.end());
+
+        for (int i = 0; i < max; ++i) {
+            TimeoutEvent* e = (TimeoutEvent*) events.at(i);
+            dispatcher.enqueue(e);
+        }
+
+        reverse(events.begin(), events.end());
+
+        for (int i = 0; i < max; ++i) {
+            Event* expected = events.at(i);
+            helper.get_sem()->wait();
+            TimerFiredEvent* event = (TimerFiredEvent*) helper.get_queue()->dequeue();
+            Event* actual = event->get_timeout_event();
+            EXPECT_EQ(expected, actual);
+        }
+    }
+
+    int get_random(int max) {
+        srand ( time(NULL) );
+        return rand() % max;
+    }
+
+    TEST_F(TimeoutEventManagerTest, MassEnqueueRandomOrder) {
+        Socket* s = new Socket(0, 0, 0);
+        int seconds = 1;
+        long int nano = 1000;
+        int max = 10000;
+        vector<Event*> events;
+
+        for (int i = 0; i < max; ++i) {
+            long int time = (nano * i) + nano;
+            TimeoutEvent* e = new TimeoutEvent(s, seconds, time);
+            events.push_back(e);
+        }
+
+        vector<Event*> events_copy(events);
+
+        while(!events.empty()) {
+            int random = get_random(events.size());
+            Event* e = events.at(random);
+            events.erase(events.begin() + random);
+            dispatcher.enqueue(e);
+        }
+
+        for (int i = 0; i < max; ++i) {
+            Event* expected = events_copy.at(i);
+            helper.get_sem()->wait();
+            TimerFiredEvent* event = (TimerFiredEvent*) helper.get_queue()->dequeue();
+            Event* actual = event->get_timeout_event();
+            EXPECT_EQ(expected, actual);
+        }
     }
 
     TEST_F(TimeoutEventManagerTest, CancelTimer) {
@@ -139,19 +283,19 @@ namespace {
         Utils::get_timespec_future_time(seconds, nano * 10, &t);
 
         bool timedout = helper.get_sem()->timed_wait(&t);
-        ASSERT_TRUE(timedout);
+        EXPECT_TRUE(timedout);
 
-        ASSERT_TRUE(helper.get_queue()->size() == 0);
+        EXPECT_TRUE(helper.get_queue()->size() == 0);
     }
 
     TEST_F(TimeoutEventManagerTest, CancelTimer2) {
-        int max = 500;
+        int max = 5;
         int to_save = max - (max / 2);
         assert(to_save < max);
         Socket* s = new Socket(0, 0, 0);
         int seconds = 0;
 
-        Event* events[max];
+        Event * events[max];
 
         // 1 ms
         long int nano = 1000000;
@@ -188,7 +332,7 @@ namespace {
                 TimerFiredEvent* e = (TimerFiredEvent*) helper.get_queue()->dequeue();
                 Event* actual = e->get_timeout_event();
                 Event* expected = events[i];
-                ASSERT_EQ(expected, actual);
+                EXPECT_EQ(expected, actual);
             } else {
                 break;
             }

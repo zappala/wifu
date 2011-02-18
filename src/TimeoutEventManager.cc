@@ -28,6 +28,9 @@ void TimeoutEventManager::cancel_timer(Event * e) {
 //    cout << "Cancelling Timer" << endl;
     CancelTimerEvent* event = (CancelTimerEvent*) e;
     canceled_events_.insert(event->get_timeout_event());
+
+    // We must post in case the event which was canceled was the one we were waiting on.
+    TimeoutManagerSemaphore.post();
 }
 
 void TimeoutEventManager::timeout(Event* e) {
@@ -48,22 +51,22 @@ void TimeoutEventManager::timeout(Event* e) {
     }
 
     // Semaphore was posted on
-    enqueue(event, false);
+    this->QueueProcessor<Event*>::enqueue(e, false);
 }
 
 void TimeoutEventManager::enqueue(Event* e, bool signal) {
-//    cout << "We're enqueuing in TimeoutEventManager.\n";
+//    cout << "We're enqueuing in TimeoutEventManager.  Signal is: " << signal << endl;
     
     // TODO: This is cheating... (but currently (as of Feb. 16, 2011) the best thought of solution)
     // We are not enqueuing it to our queue, we are taking it before
     // so the CancelTimerEvent doesn't get stuck behind any
     // TimeoutEvents
-    if(type_name(*e) == type_name(CancelTimerEvent)) {
+    if(!strcmp(type_name(*e), type_name(CancelTimerEvent))){
         cancel_timer(e);
         return;
     }
 
-    this->QueueProcessor<Event*>::enqueue(e, signal);
+    this->QueueProcessor<Event*>::enqueue(e, true);
 
 }
 
@@ -71,6 +74,7 @@ void signal_manager(int signal) {
     switch (signal) {
         case SIG_ENQUEUE_EVENT:
             TimeoutManagerSemaphore.post();
+            assert(TimeoutManagerSemaphore.get_value() <= 1);
             break;
     }
 }
