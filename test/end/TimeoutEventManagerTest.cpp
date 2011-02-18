@@ -23,11 +23,13 @@ namespace {
     private:
 
         Semaphore* sem;
-        TimerFiredEvent* event_;
 
         TimeoutEventManagerHelper() {
             reset();
+            q_ = new Queue<Event*>();
         }
+
+        IQueue<Event*>* q_;
 
     public:
 
@@ -37,8 +39,7 @@ namespace {
         }
 
         void timer_fired(Event* e) {
-            TimerFiredEvent* event = (TimerFiredEvent*) e;
-            event_ = event;
+            q_->enqueue(e);
             sem->post();
         }
 
@@ -51,8 +52,8 @@ namespace {
             sem->init(0);
         }
 
-        TimerFiredEvent* get_last_timer_fired_event() {
-            return event_;
+        IQueue<Event*>* get_queue() {
+            return q_;
         }
 
 
@@ -77,12 +78,12 @@ namespace {
         }
     };
 
-    TEST_F(TimeoutEventManagerTest, EnqueueDirectly) {
+    TEST_F(TimeoutEventManagerTest, EnqueueOneDirectly) {
         Socket* s = new Socket(0, 0, 0);
         int seconds = 0;
         int nano = 10000000;
-        TimeoutEvent* e = new TimeoutEvent(s, seconds, nano);
-        timer.enqueue(e);
+        TimeoutEvent* expected = new TimeoutEvent(s, seconds, nano);
+        timer.enqueue(expected);
 
         struct timespec t;
         Utils::get_timespec_future_time(seconds, nano * 2, &t);
@@ -90,14 +91,19 @@ namespace {
         // This timeout indicates the maximum time we will wait for the TimerFiredEvent to occur
         bool timedout = helper.get_sem()->timed_wait(&t);
         ASSERT_FALSE(timedout);
+
+        TimerFiredEvent* event = (TimerFiredEvent*) helper.get_queue()->dequeue();
+        TimeoutEvent* actual = event->get_timeout_event();
+        ASSERT_EQ(expected, actual);
+
     }
 
-    TEST_F(TimeoutEventManagerTest, DispatcherEnqueue) {
+    TEST_F(TimeoutEventManagerTest, DispatcherEnqueueOne) {
         Socket* s = new Socket(0, 0, 0);
         int seconds = 0;
         int nano = 10000000;
-        TimeoutEvent* e = new TimeoutEvent(s, seconds, nano);
-        dispatcher.enqueue(e);
+        TimeoutEvent* expected = new TimeoutEvent(s, seconds, nano);
+        dispatcher.enqueue(expected);
 
         struct timespec t;
         Utils::get_timespec_future_time(seconds, nano * 2, &t);
@@ -105,6 +111,18 @@ namespace {
         // This timeout indicates the maximum time we will wait for the TimerFiredEvent to occur
         bool timedout = helper.get_sem()->timed_wait(&t);
         ASSERT_FALSE(timedout);
+
+        TimerFiredEvent* event = (TimerFiredEvent*) helper.get_queue()->dequeue();
+        TimeoutEvent* actual = event->get_timeout_event();
+        ASSERT_EQ(expected, actual);
+    }
+
+    TEST_F(TimeoutEventManagerTest, EnqueueTwo) {
+        
+    }
+
+    TEST_F(TimeoutEventManagerTest, MassEnqueue) {
+
     }
 
     TEST_F(TimeoutEventManagerTest, CancelTimer) {
@@ -122,19 +140,21 @@ namespace {
 
         bool timedout = helper.get_sem()->timed_wait(&t);
         ASSERT_TRUE(timedout);
+
+        ASSERT_TRUE(helper.get_queue()->size() == 0);
     }
 
     TEST_F(TimeoutEventManagerTest, CancelTimer2) {
-        int max = 5;
-        int to_save = max - 2;
+        int max = 500;
+        int to_save = max - (max / 2);
         assert(to_save < max);
         Socket* s = new Socket(0, 0, 0);
         int seconds = 0;
 
-        Event * events[max];
+        Event* events[max];
 
-        // 10 ms
-        int nano = 10000000;
+        // 1 ms
+        long int nano = 1000000;
 
         TimeoutEvent* saved;
 
@@ -155,7 +175,8 @@ namespace {
         dispatcher.enqueue(cancel_event);
 
         struct timespec t;
-        Utils::get_timespec_future_time(seconds, nano * 10, &t);
+        long int n = nano * max + nano;
+        Utils::get_timespec_future_time(seconds, n, &t);
 
         for (int i = 0; i < max; ++i) {
             if (i == to_save) {
@@ -164,7 +185,7 @@ namespace {
 
             bool timedout = helper.get_sem()->timed_wait(&t);
             if (!timedout) {
-                TimerFiredEvent* e = helper.get_last_timer_fired_event();
+                TimerFiredEvent* e = (TimerFiredEvent*) helper.get_queue()->dequeue();
                 Event* actual = e->get_timeout_event();
                 Event* expected = events[i];
                 ASSERT_EQ(expected, actual);
