@@ -1,4 +1,4 @@
-#include "SocketCollectionVisitor.h"
+#include "visitors/SocketCollectionVisitor.h"
 
 SocketCollectionVisitor::SocketCollectionVisitor() : Visitor(), socket_(0) {}
 

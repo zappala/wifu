@@ -1,4 +1,4 @@
-#include "SocketCollectionGetByIdVisitor.h"
+#include "visitors/SocketCollectionGetByIdVisitor.h"
 
 SocketCollectionGetByIdVisitor::SocketCollectionGetByIdVisitor(int id) : id_(id) {}
 
