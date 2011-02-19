@@ -18,9 +18,9 @@ using namespace std;
 
 class QueryStringParser {
 public:
-    static void parse(string&, map<string, string>&);
+    static void parse(string& message, map<string, string>& values);
 
-    static string create(string, map<string, string>&);
+    static string create(string name, map<string, string>& values);
 };
 
 #endif	/* QUERYSTRINGPARSER_H */

@@ -31,7 +31,7 @@ public:
      *
      * @param ap Contains the address and port which this UDPInterface will listen on
      */
-    void start(AddressPort&);
+    void start(AddressPort& ap);
 
     /**
      * Cleans up this UDPInterface object.
@@ -48,14 +48,14 @@ public:
      *
      * @see UDPSocketCallback::receive()
      */
-    void receive(AddressPort&, unsigned char*, size_t);
+    void receive(AddressPort& ap, unsigned char* buffer, size_t length);
 
     /**
      * This method is called when a UDPSendPacketEvent is dequeued from the Dispatcher.
      *
      * @param e The Event which contains information needing to be sent over the wire.
      */
-    void udp_send(Event*);
+    void udp_send(Event* e);
 
     string& get_bound_ip_address();
 

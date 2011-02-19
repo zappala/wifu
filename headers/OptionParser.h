@@ -16,11 +16,11 @@ public:
 
     virtual ~OptionParser();
 
-    void parse(int, char* const[], const struct option*);
+    void parse(int argc, char* const argv[], const struct option* long_options);
 
-    bool present(const char*);
+    bool present(const char* option);
 
-    const char* argument(const char*);
+    const char* argument(const char* option);
 
 private:
     map<const char*, bool> present_;

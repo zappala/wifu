@@ -19,9 +19,9 @@ class SimpleTCP : public Protocol {
 private:
     SimpleTCP();
 
-    void save_socket(Socket*);
+    void save_socket(Socket* s);
 
-    IContextContainer* get_context(Socket*);
+    IContextContainer* get_context(Socket* s);
 
     tr1::unordered_map<Socket*, IContextContainer*> map_;
     tr1::unordered_map<Socket*, IContextContainer*>::iterator itr_;
@@ -31,25 +31,25 @@ public:
 
     virtual ~SimpleTCP();
 
-    void socket(Socket*);
+    void socket(Socket* s);
 
-    void bind(Socket*, AddressPort*);
+    void bind(Socket* s, AddressPort* ap);
 
-    void listen(Socket*, int);
+    void listen(Socket* s, int back_log);
 
-    void receive_packet(Socket*, WiFuPacket*);
+    void receive_packet(Socket* s, WiFuPacket* p);
 
-    void send_packet(Socket*, WiFuPacket*);
+    void send_packet(Socket* s, WiFuPacket* p);
 
-    void connect(ConnectEvent*);
+    void connect(ConnectEvent* e);
 
-    void accept(AcceptEvent*);
+    void accept(AcceptEvent* e);
 
-    void new_connection_established(Socket*);
+    void new_connection_established(Socket* s);
 
     void close();
 
-    void timer_fired_event(TimerFiredEvent*);
+    void timer_fired_event(TimerFiredEvent* e);
 };
 
 #endif	/* SIMPLETCP_H */

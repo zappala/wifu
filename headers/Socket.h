@@ -29,8 +29,8 @@ public:
     Socket(int domain,
            int type,
            int protocol,
-           AddressPort* = new AddressPort("0.0.0.0", PortManager::instance().get()),
-           AddressPort* = new AddressPort("0.0.0.0", PortManager::instance().get()));
+           AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().get()),
+           AddressPort* remote = new AddressPort("0.0.0.0", PortManager::instance().get()));
 
     /**
      * Cleans up this Socket object.

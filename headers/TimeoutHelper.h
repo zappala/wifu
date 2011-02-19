@@ -39,7 +39,7 @@ public:
      *
      * @param event The Event to keep track of.
      */
-    void dispatch_timeout(Event*);
+    void dispatch_timeout(Event* event);
 
     /**
      * Determines if the TimeoutEvent internal to event was sent via this object's dispatch_timeout() method.
@@ -48,14 +48,14 @@ public:
      * @param event The TimerFiredEvent in question as to whether this object generated its TimeoutEvent.
      * @return True if the TimeoutEvent internal to event was sent via this object's dispatch_timeout() method, false otherwise.
      */
-    bool is_my_timeout(TimerFiredEvent*);
+    bool is_my_timeout(TimerFiredEvent* event);
 
     /**
      * Generates a CancelTimerEvent and sends it to the Dispatcher.
      *
      * @param event The TimeoutEvent to cancel.
      */
-    void cancel_timeout(TimeoutEvent*);
+    void cancel_timeout(TimeoutEvent* event);
 };
 
 #endif	/* _TIMEOUTHELPER_H */

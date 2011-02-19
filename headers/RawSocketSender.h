@@ -28,7 +28,7 @@ class RawSocketSender {
 public:
     RawSocketSender();
 
-    ssize_t send(WiFuPacket*);
+    ssize_t send(WiFuPacket* p);
 
 private:
     int socket_;

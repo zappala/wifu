@@ -36,7 +36,7 @@ public:
      *
      * @param queue Pointer to an IQueue object to be used as the internal data structure for the parent QueueProcessor object.
      */
-    Module(IQueue<Event*>*);
+    Module(IQueue<Event*>* queue);
 
     /**
      * Cleans up this Module object
@@ -49,14 +49,14 @@ public:
      * @param e The Event to process.  This Event was dequeued from the parent QueueProcessor's dequeue thread.
      * @see Event::execute()
      */
-    virtual void process(Event*);
+    virtual void process(Event* e);
 
     /**
      * Simple wrapper method that enqueues e into the Dispatcher.
      *
      * @param e The Event pointer to enqueue into the Dispatcher.
      */
-    virtual void dispatch(Event*);
+    virtual void dispatch(Event* e);
 
 };
 

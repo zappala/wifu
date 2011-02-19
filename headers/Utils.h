@@ -19,9 +19,9 @@ using namespace std;
 
 class Utils {
 public:
-    static void get_timespec_future_time(int, long int, struct timespec*);
+    static void get_timespec_future_time(int seconds, long int nanoseconds, struct timespec* ts);
 
-    static string itoa(int);
+    static string itoa(int i);
 };
 
 #endif	/* _UTILS_H */

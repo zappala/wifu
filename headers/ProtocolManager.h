@@ -30,9 +30,9 @@ public:
 
     static ProtocolManager& instance();
 
-    bool is_supported(int, int, int);
+    bool is_supported(int domain, int type, int protocol);
 
-    void support(int);
+    void support(int protocol);
 };
 
 #endif	/* _PROTOCOLMANAGER_H */

@@ -15,8 +15,8 @@ using namespace std;
 
 class Message {
 public:
-    Message(int size, char*);
-    Message(int size, string&);
+    Message(int size, char* message);
+    Message(int size, string& message);
 
     // Copy constructor
     // Assignment operator

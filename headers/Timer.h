@@ -27,8 +27,8 @@ public:
     void update_start();
     void update_stop();
 
-    void adjust_start_time(int);
-    void adjust_stop_time(int);
+    void adjust_start_time(int microseconds);
+    void adjust_stop_time(int microseconds);
 
     u_int64_t get_start_time();
     u_int64_t get_stop_time();
@@ -45,9 +45,9 @@ private:
     bool start_set;
     bool stop_set;
 
-    void adjust_timeval(struct timeval*, int);
+    void adjust_timeval(struct timeval* val, int microseconds);
 
-    inline u_int64_t to_microseconds(struct timeval * val) {
+    inline u_int64_t to_microseconds(struct timeval* val) {
         u_int64_t microseconds = val->tv_sec;
         microseconds *= MILLION;
         microseconds += val->tv_usec;

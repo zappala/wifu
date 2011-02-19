@@ -18,6 +18,7 @@ public:
 
 private:
     MainSemaphore();
+
 };
 
 #endif	/* _MAINSEMAPHORE_H */

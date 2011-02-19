@@ -35,7 +35,7 @@ public:
      * @param address Address to store
      * @param port Port to store
      */
-    AddressPort(string&, uint16_t);
+    AddressPort(string& address, uint16_t port);
 
     /**
      * Constructor: Stores address and port.
@@ -43,14 +43,14 @@ public:
      * @param address Address to store
      * @param port Port to store
      */
-    AddressPort(const char*, uint16_t);
+    AddressPort(const char* address, uint16_t port);
 
     /**
      * Constructor: Stores address and port inside obj.
      *
      * @param obj sockaddr_in pointer which contains an address and a port.
      */
-    AddressPort(struct sockaddr_in*);
+    AddressPort(struct sockaddr_in* obj);
 
     /**
      * Copy Constructor
@@ -58,7 +58,7 @@ public:
      *
      * @param original The AddressPort from which to copy data out of
      */
-    AddressPort(const AddressPort&);
+    AddressPort(const AddressPort& original);
 
     /**
      * Assignment Operator
@@ -66,7 +66,7 @@ public:
      *
      * @param original The AddressPort from which to copy data out of
      */
-    AddressPort & operator=(const AddressPort&);
+    AddressPort & operator=(const AddressPort& original);
 
     /**
      * Operator equals
@@ -74,7 +74,7 @@ public:
      * @param other The "other" Address port to compare this one with
      * @return True if the addresses and the ports are equivialent, false otherwise
      */
-    bool operator==(const AddressPort&) const;
+    bool operator==(const AddressPort& other) const;
 
     /**
      * Operator not equals
@@ -82,7 +82,7 @@ public:
      * @param other The "other" Address port to compare this one with
      * @return True if either the addresses or ports do not match, false if addresses and ports are equivalent
      */
-    bool operator!=(const AddressPort&) const;
+    bool operator!=(const AddressPort& other) const;
 
     /**
      * Destructor
@@ -155,7 +155,8 @@ public:
      * @param ap2 the RHS of the expression ap1 < ap2
      * @return True if t1 < t2, false otherwise.
      */
-    bool operator()(AddressPort* const&, AddressPort* const&);
+    bool operator()(AddressPort* const& ap1, AddressPort* const& ap2);
+
 };
 
 #endif	/* _ADDRESSPORT_H */
