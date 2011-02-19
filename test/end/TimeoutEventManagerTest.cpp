@@ -397,6 +397,72 @@ namespace {
 //        cout << "Canceled size: " << to_cancel.size() << endl;
         ASSERT_EQ(max, to_cancel.size() + fired_events);
     }
+
+    // Fires a timer in 2 milliseconds
+    // Tests to ensure that it was received in precision time (measured in nanoseconds)
+    // Can be used to see how granual timers can be made
+    // Note also that the results of this are the best possible as all queues are empty
+    // and therefore no queuing delay will be introduced
+    void precision_test(int precision) {
+        Socket* s = new Socket(0, 0, 0);
+        int seconds = 0;
+        // 2 milliseconds
+        int nano = 2000000;
+        TimeoutEvent* expected = new TimeoutEvent(s, seconds, nano);
+        dispatcher.enqueue(expected);
+
+        struct timespec t;
+        Utils::get_timespec_future_time(seconds, nano + precision, &t);
+
+        // This timeout indicates the maximum time we will wait for the TimerFiredEvent to occur
+        bool timedout = helper.get_sem()->timed_wait(&t);
+        EXPECT_FALSE(timedout);
+
+        TimerFiredEvent* event = (TimerFiredEvent*) helper.get_queue()->dequeue();
+        TimeoutEvent* actual = event->get_timeout_event();
+        EXPECT_EQ(expected, actual);
+    }
+
+    TEST_F(TimeoutEventManagerTest, PrecisionTest10Milliseconds) {
+        // 10 milliseconds in nanoseconds
+        precision_test(10000000);
+    }
+
+    TEST_F(TimeoutEventManagerTest, PrecisionTest5Milliseconds) {
+        // 5 milliseconds in nanoseconds
+        precision_test(5000000);
+    }
+
+    TEST_F(TimeoutEventManagerTest, PrecisionTest1Millisecond) {
+        // 1 millisecond in nanoseconds
+        precision_test(1000000);
+    }
+
+    TEST_F(TimeoutEventManagerTest, PrecisionTest500Microseconds) {
+        // 500 microseconds in nanoseconds
+        precision_test(500000);
+    }
+
+    TEST_F(TimeoutEventManagerTest, PrecisionTest100Microseconds) {
+        // 100 microseconds in nanoseconds
+        precision_test(100000);
+    }
+
+    // These tests fail sometimes
+//    TEST_F(TimeoutEventManagerTest, PrecisionTest50Microseconds) {
+//        // 50 microseconds in nanoseconds
+//        precision_test(50000);
+//    }
+//
+//    TEST_F(TimeoutEventManagerTest, PrecisionTest10Microseconds) {
+//        // 10 microseconds in nanoseconds
+//        precision_test(10000);
+//    }
+//
+//    TEST_F(TimeoutEventManagerTest, PrecisionTest1Microsecond) {
+//        // 1 microseconds in nanoseconds
+//        precision_test(1000);
+//    }
 }
 
 #endif /* TIMEOUTEVENTMANAGERTEST_H_ */
