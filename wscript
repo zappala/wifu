@@ -137,10 +137,11 @@ def build_wifu(bld):
 	src_files += bld.glob('src/observer/*.cc')
 	src_files += bld.glob('src/packet/*.cc')
 	src_files += bld.glob('src/exceptions/*.cc')
+	src_files += bld.glob('src/visitors/*.cc')
 
 	exe = bld(features='cxx cprogram',
         source=src_files,
-        includes='headers lib/gc/include lib/pantheios/include lib/stlsoft/include headers/contexts headers/states headers/observer headers/packet headers/exceptions',
+        includes='headers lib/gc/include lib/pantheios/include lib/stlsoft/include headers/contexts headers/states headers/observer headers/packet headers/exceptions headers/visitors',
         uselib='PTHREAD RT',
 		libpath = ['../lib/gc'],
 		staticlib = ['gccpp','gc','cord'],
@@ -156,12 +157,13 @@ def build_wifu_end_test(bld):
 	project_files += bld.glob('src/states/*.cc')
 	project_files += bld.glob('src/packet/*.cc')
 	project_files += bld.glob('src/exceptions/*.cc')
+	project_files += bld.glob('src/visitors/*.cc')
 	
 	filesToUse = test_files + project_files
 
 	test_end = bld(features='cxx cprogram',
         source=filesToUse,
-        includes='preliminary headers lib/gc/include lib/gtest/include headers/contexts headers/states headers/observer headers/packet headers/exceptions test/end/headers',
+        includes='preliminary headers lib/gc/include lib/gtest/include headers/contexts headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers',
         uselib='PTHREAD RT',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp','gc','cord'],

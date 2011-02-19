@@ -22,16 +22,12 @@ public:
      *
      * @param port Port that this visitor will compare against
      */
-    AlreadyListeningOnSamePortVisitor(u_int16_t port) : is_listening_(false), port_(port) {
-        
-    }
+    AlreadyListeningOnSamePortVisitor(u_int16_t);
 
     /**
      * Does nothing special
      */
-    virtual ~AlreadyListeningOnSamePortVisitor() {
-        
-    }
+    virtual ~AlreadyListeningOnSamePortVisitor();
 
     /**
      * Method called for each Socket in the SocketCollection
@@ -40,13 +36,7 @@ public:
      * @see Socket
      * @see AddressPort
      */
-    void visit(Socket* socket) {
-        if( socket->is_passive() &&
-            socket->get_local_address_port()->get_port() == port_) {
-
-            is_listening_ = true;
-        }
-    }
+    void visit(Socket*);
 
     /**
      * Returns whether the Visitable object should stop iterating over the objects.
@@ -55,18 +45,13 @@ public:
      * @see Visitable
      *
      */
-    bool stop() {
-        return is_listening();
-    }
+    bool stop();
 
     /**
      * Returns whether there are any Socket objects in use which are listening to the port passed into the constructor.
      * @return whether there are any Socket objects in use which are listening to the port passed into the constructor.
      */
-    bool is_listening() {
-        return is_listening_;
-    }
-
+    bool is_listening();
 
 private:
     u_int16_t port_;

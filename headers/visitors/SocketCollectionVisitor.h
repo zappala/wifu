@@ -14,29 +14,18 @@ using namespace std;
 
 class SocketCollectionVisitor : public Visitor {
 public:
-    SocketCollectionVisitor() : Visitor(), socket_(0) {
-        
-    }
+    SocketCollectionVisitor();
     
-    virtual ~SocketCollectionVisitor() {
-        
-    }
+    virtual ~SocketCollectionVisitor();
     
-    void set_socket(Socket* s) {
-        socket_ = s;
-    }
+    void set_socket(Socket* s);
     
-    Socket* get_socket() {
-        return socket_;
-    }
+    Socket* get_socket();
     
-    bool stop() {
-        return socket_ != NULL;
-    }    
-    
+    bool stop();
+
 private:
     Socket* socket_;
-
 };
 
 #endif	/* _SOCKETCOLLECTIONVISITOR_H */

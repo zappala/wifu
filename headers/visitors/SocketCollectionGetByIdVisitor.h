@@ -15,20 +15,11 @@ using namespace std;
 
 class SocketCollectionGetByIdVisitor : public SocketCollectionVisitor {
 public:
+    SocketCollectionGetByIdVisitor(int id);
 
-    SocketCollectionGetByIdVisitor(int id) : id_(id) {
+    virtual ~SocketCollectionGetByIdVisitor();
 
-    }
-
-    virtual ~SocketCollectionGetByIdVisitor() {
-
-    }
-
-    void visit(Socket* s) {
-        if(s->get_socket_id() == id_) {
-            set_socket(s);
-        }
-    }
+    void visit(Socket* s);
 
 private:
     int id_;

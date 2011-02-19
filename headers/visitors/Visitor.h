@@ -18,11 +18,10 @@ class Socket;
  */
 class Visitor {
 public:
-
     /**
      * Does nothing special
      */
-    virtual ~Visitor() {}
+    virtual ~Visitor();
 
     /**
      * Enbables Sockets to be visited
@@ -36,9 +35,8 @@ public:
      * continue if that predicate is met.
      * @return Whether the Visitable object should stop visiting objects.  Default implementation returns false.
      */
-    virtual bool stop() {
-        return false;
-    }
+    virtual bool stop();
+
 };
 
 #endif	/* VISITOR_H */

@@ -19,11 +19,10 @@
  */
 class Visitable {
 public:
-
     /**
      * Does nothing special
      */
-    virtual ~Visitable() {}
+    virtual ~Visitable();
 
     /**
      * Accepts a Visitor which will perform some operation on this Visitable class
