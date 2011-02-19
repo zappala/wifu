@@ -109,6 +109,10 @@ public:
         
     }
 
+    virtual void resent(Event* e) {
+        
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Library Methods">
 
     /**
