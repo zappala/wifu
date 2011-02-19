@@ -15,6 +15,7 @@
 #include "events/TimerFiredEvent.h"
 
 #include <vector>
+#include <map>
 #include <time.h>
 #include <algorithm>
 
@@ -78,6 +79,7 @@ namespace {
             dispatcher.map_event(type_name(CancelTimerEvent), &timer);
             dispatcher.map_event(type_name(TimerFiredEvent), &TimeoutEventManagerHelper::instance());
             dispatcher.start_processing();
+            srand(time(NULL));
         }
 
         virtual void TearDown() {
@@ -234,7 +236,6 @@ namespace {
     }
 
     int get_random(int max) {
-        srand ( time(NULL) );
         return rand() % max;
     }
 
@@ -288,8 +289,8 @@ namespace {
         EXPECT_TRUE(helper.get_queue()->size() == 0);
     }
 
-    TEST_F(TimeoutEventManagerTest, CancelTimer2) {
-        int max = 5;
+    TEST_F(TimeoutEventManagerTest, CancelOneTimerOutOfMany) {
+        int max = 10;
         int to_save = max - (max / 2);
         assert(to_save < max);
         Socket* s = new Socket(0, 0, 0);
@@ -337,6 +338,64 @@ namespace {
                 break;
             }
         }
+    }
+
+    TEST_F(TimeoutEventManagerTest, CancelManyTimersOutOfMany) {
+        Socket* s = new Socket(0, 0, 0);
+        int seconds = 1;
+        long int nano = 1000;
+        int max = 10000;
+        vector<Event*> events;
+        HashSet<int> to_cancel;
+
+        for (int i = 0; i < max; ++i) {
+            long int time = (nano * i) + nano;
+            TimeoutEvent* e = new TimeoutEvent(s, seconds, time);
+            events.push_back(e);
+        }
+
+        vector<Event*> events_copy(events);
+
+        // Randomly insert
+        while(!events.empty()) {
+            int random = get_random(events.size());
+            Event* e = events.at(random);
+            events.erase(events.begin() + random);
+            dispatcher.enqueue(e);
+        }
+
+        // Randomly cancel up to half the timers
+        while(to_cancel.size() < events_copy.size() / 2) {
+            int random = get_random(events_copy.size());
+            if(to_cancel.contains(random)) {
+                continue;
+            }
+            
+            TimeoutEvent* event = (TimeoutEvent*) events_copy.at(random);
+            to_cancel.insert(random);
+            Event* e = new CancelTimerEvent(event);
+            dispatcher.enqueue(e);
+        }
+
+
+        int fired_events = 0;
+
+        for (int i = 0; i < max; ++i) {
+            if(to_cancel.contains(i)) {
+                continue;
+            }
+
+            helper.get_sem()->wait();
+            TimerFiredEvent* event = (TimerFiredEvent*) helper.get_queue()->dequeue();
+            ++fired_events;
+            Event* expected = events_copy.at(i);
+            Event* actual = event->get_timeout_event();
+            EXPECT_EQ(expected, actual);
+        }
+
+//        cout << "Fired events: " << fired_events << endl;
+//        cout << "Canceled size: " << to_cancel.size() << endl;
+        ASSERT_EQ(max, to_cancel.size() + fired_events);
     }
 }
 
