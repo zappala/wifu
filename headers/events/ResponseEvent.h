@@ -20,17 +20,17 @@ using namespace std;
 
 class ResponseEvent : public Event {
 public:
-    ResponseEvent(Socket*, string&, string&);
+    ResponseEvent(Socket* socket, string& name, string& file);
 
     virtual ~ResponseEvent();
 
     string get_response();
 
-    void put(string, string);
+    void put(string key, string value);
 
-    void put(const char*, string);
+    void put(const char* key, string value);
 
-    void execute(IModule*);
+    void execute(IModule* m);
 
     string get_write_file();
 

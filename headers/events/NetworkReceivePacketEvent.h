@@ -13,11 +13,11 @@
 
 class NetworkReceivePacketEvent : public PacketEvent {
 public:
-    NetworkReceivePacketEvent(Socket*, WiFuPacket*);
+    NetworkReceivePacketEvent(Socket* socket, WiFuPacket* packet);
 
     virtual ~NetworkReceivePacketEvent();
 
-    void execute(IModule*);
+    void execute(IModule* m);
 
 };
 

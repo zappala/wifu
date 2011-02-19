@@ -13,11 +13,11 @@
 
 class ConnectionEstablishedEvent : public Event {
 public:
-    ConnectionEstablishedEvent(AcceptEvent*, Socket*);
+    ConnectionEstablishedEvent(AcceptEvent* e, Socket* new_socket);
 
     virtual ~ConnectionEstablishedEvent();
 
-    void execute(IModule*);
+    void execute(IModule* m);
 
     Socket* get_new_socket();
 

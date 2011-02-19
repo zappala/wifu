@@ -14,7 +14,7 @@
 
 class PacketEvent : public Event {
 public:
-    PacketEvent(Socket*, WiFuPacket*);
+    PacketEvent(Socket* socket, WiFuPacket* p);
     
     virtual ~PacketEvent();
     

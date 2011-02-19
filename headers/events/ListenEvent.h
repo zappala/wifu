@@ -12,7 +12,7 @@
 
 class ListenEvent : public LibraryEvent {
 public:
-    ListenEvent(string&, string&, Socket*);
+    ListenEvent(string& message, string& file, Socket* s);
 
     virtual ~ListenEvent();
 

@@ -14,7 +14,7 @@
 
 class ResendPacketEvent: public PacketEvent {
 public:
-    ResendPacketEvent(Socket*, WiFuPacket*);
+    ResendPacketEvent(Socket* s, WiFuPacket* p);
 
     void execute(IModule* m);
 

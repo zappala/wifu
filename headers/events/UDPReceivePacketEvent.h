@@ -13,11 +13,11 @@
 
 class UDPReceivePacketEvent : public PacketEvent {
 public:
-    UDPReceivePacketEvent(Socket*, WiFuPacket*);
+    UDPReceivePacketEvent(Socket* socket, WiFuPacket* packet);
 
     virtual ~UDPReceivePacketEvent();
 
-    void execute(IModule*);
+    void execute(IModule* m);
 
 };
 

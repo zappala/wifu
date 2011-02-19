@@ -21,7 +21,7 @@ using namespace std;
 
 class LibraryEvent : public Event {
 public:
-    LibraryEvent(string&, string&, Socket*);
+    LibraryEvent(string& message, string& file, Socket* socket);
 
     virtual ~LibraryEvent();
 

@@ -62,7 +62,7 @@ public:
      * @param rhs The "right hand side" of the expression A < rhs, where A is this Event.
      * @return True in each case.  Must be overridden in child classes and satisfy the above expression.
      */
-    virtual bool less_than(Event*);
+    virtual bool less_than(Event* rhs);
 
 private:
     /**

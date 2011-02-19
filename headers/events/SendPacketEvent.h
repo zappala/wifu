@@ -25,7 +25,7 @@ public:
      * @param socket The socket, which represents a unique connection, to use for this Event
      * @param packet The WiFuPacket object to send
      */
-    SendPacketEvent(Socket*, WiFuPacket*);
+    SendPacketEvent(Socket* socket, WiFuPacket* packet);
 
     /**
      * Will call send() on m.
@@ -33,7 +33,7 @@ public:
      * @param m The IModule which to call send() on.
      * @see IModule::send()
      */
-    void execute(IModule*);
+    void execute(IModule* m);
 
 };
 

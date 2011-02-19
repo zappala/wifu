@@ -23,7 +23,7 @@ public:
      *
      * @param event The TimeoutEvent which this CancelTimerEvent is to cancel.
      */
-    CancelTimerEvent(TimeoutEvent*);
+    CancelTimerEvent(TimeoutEvent* event);
 
     /**
      * Cleans up this CancelTimerEvent.
@@ -36,7 +36,7 @@ public:
      * @param m The module which to call cancel_timer() on.
      * @see IModule::cancel_timer()
      */
-    void execute(IModule*);
+    void execute(IModule* m);
 
 };
 

@@ -13,11 +13,11 @@
 
 class UDPSendPacketEvent : public PacketEvent {
 public:
-    UDPSendPacketEvent(Socket*, WiFuPacket*);
+    UDPSendPacketEvent(Socket* socket, WiFuPacket* packet);
 
     virtual ~UDPSendPacketEvent();
     
-    void execute(IModule*);
+    void execute(IModule* m);
 
 };
 

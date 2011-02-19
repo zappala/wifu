@@ -12,11 +12,11 @@
 
 class AcceptEvent : public LibraryEvent {
 public:
-    AcceptEvent(string&, string&, Socket*);
+    AcceptEvent(string& message, string& file, Socket* s);
 
     virtual ~AcceptEvent();
 
-    void execute(IModule*);
+    void execute(IModule* m);
 
 };
 

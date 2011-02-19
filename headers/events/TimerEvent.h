@@ -21,7 +21,7 @@ public:
      *
      * @param timeout_event The TimeoutEvent to store.
      */
-    TimerEvent(TimeoutEvent*);
+    TimerEvent(TimeoutEvent* timeout_event);
 
     /**
      * Cleans up this TimerEvent object.

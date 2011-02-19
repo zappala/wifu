@@ -12,9 +12,9 @@
 
 class NullEvent : public Event {
 public:
-    NullEvent(Socket*);
+    NullEvent(Socket* s);
 
-    void execute(IModule*);
+    void execute(IModule* m);
 
 };
 

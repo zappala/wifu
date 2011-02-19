@@ -21,7 +21,7 @@ public:
      * Constructs a ConnectEvent.
      *
      */
-    ConnectEvent(string&, string&, Socket*);
+    ConnectEvent(string& message, string& file, Socket* s);
 
     virtual ~ConnectEvent();
 
@@ -31,7 +31,7 @@ public:
      * @param m The IModule which to call connect() on.
      * @see IModule::connect()
      */
-    void execute(IModule*);
+    void execute(IModule* m);
 
     AddressPort* get_destination();
 

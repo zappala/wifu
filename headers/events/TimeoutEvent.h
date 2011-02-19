@@ -33,7 +33,7 @@ public:
      * @param seconds The number of seconds in the future in which to timeout.
      * @param nanoseconds The number nanoseconds in the future in which to timeout.
      */
-    TimeoutEvent(Socket*, int, long int);
+    TimeoutEvent(Socket* socket, int seconds, long int nanoseconds);
 
     /**
      * @return A reference to the timespec holding the absolute time this TimeoutEvent is due to timeout.
@@ -46,7 +46,7 @@ public:
      * @param e The (Timeout)Event to compare this TimeoutEvent to.
      * @return True if this TimeoutEvent is less than e's, false otherwise.
      */
-    virtual bool less_than(Event*);
+    virtual bool less_than(Event* e);
 
     /**
      * Will call timeout() on m.
@@ -54,7 +54,7 @@ public:
      * @param m The IModule which to call timeout() on.
      * @see IModule::timeout()
      */
-    void execute(IModule*);
+    void execute(IModule* m);
 
 private:
     /**

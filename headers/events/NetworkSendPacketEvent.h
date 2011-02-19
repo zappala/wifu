@@ -13,11 +13,11 @@
 
 class NetworkSendPacketEvent : public PacketEvent {
 public:
-    NetworkSendPacketEvent(Socket*, WiFuPacket*);
+    NetworkSendPacketEvent(Socket* socket, WiFuPacket* packet);
 
     virtual ~NetworkSendPacketEvent();
 
-    void execute(IModule*);
+    void execute(IModule* m);
 
 };
 

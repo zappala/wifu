@@ -14,11 +14,11 @@ using namespace std;
 
 class BindEvent : public LibraryEvent {
 public:
-    BindEvent(string&, string&, Socket*);
+    BindEvent(string& message, string& file, Socket* s);
 
     virtual ~BindEvent();
 
-    void execute(IModule*);
+    void execute(IModule* m);
     
 };
 

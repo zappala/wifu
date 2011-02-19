@@ -21,7 +21,7 @@ public:
      *
      * @param timeout_event The TimeoutEvent which expired, causing the creation of this TimerFiredEvent.
      */
-    TimerFiredEvent(TimeoutEvent*);
+    TimerFiredEvent(TimeoutEvent* timeout_event);
 
     /**
      * Cleans up this TimerFiredEvent object.
