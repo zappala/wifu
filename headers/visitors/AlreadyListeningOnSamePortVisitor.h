@@ -22,7 +22,7 @@ public:
      *
      * @param port Port that this visitor will compare against
      */
-    AlreadyListeningOnSamePortVisitor(u_int16_t);
+    AlreadyListeningOnSamePortVisitor(u_int16_t port);
 
     /**
      * Does nothing special
@@ -36,7 +36,7 @@ public:
      * @see Socket
      * @see AddressPort
      */
-    void visit(Socket*);
+    void visit(Socket* socket);
 
     /**
      * Returns whether the Visitable object should stop iterating over the objects.

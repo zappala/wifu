@@ -14,7 +14,7 @@ using namespace std;
 
 class SocketCollectionGetByLocalAddressPortVisitor : public SocketCollectionVisitor {
 public:
-    SocketCollectionGetByLocalAddressPortVisitor(AddressPort*);
+    SocketCollectionGetByLocalAddressPortVisitor(AddressPort* local);
 
     virtual ~SocketCollectionGetByLocalAddressPortVisitor();
 
