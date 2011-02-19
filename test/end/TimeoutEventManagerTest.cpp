@@ -13,6 +13,7 @@
 #include "events/Event.h"
 #include "events/TimeoutEvent.h"
 #include "events/TimerFiredEvent.h"
+#include "events/NullEvent.h"
 
 #include <vector>
 #include <map>
@@ -370,7 +371,7 @@ namespace {
             if(to_cancel.contains(random)) {
                 continue;
             }
-            
+
             TimeoutEvent* event = (TimeoutEvent*) events_copy.at(random);
             to_cancel.insert(random);
             Event* e = new CancelTimerEvent(event);
@@ -448,7 +449,7 @@ namespace {
         precision_test(100000);
     }
 
-    // These tests fail sometimes
+//     These tests fail sometimes
 //    TEST_F(TimeoutEventManagerTest, PrecisionTest50Microseconds) {
 //        // 50 microseconds in nanoseconds
 //        precision_test(50000);

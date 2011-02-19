@@ -8,16 +8,16 @@
 #ifndef _SENDPACKETEVENT_H
 #define	_SENDPACKETEVENT_H
 
-#include "Event.h"
+#include "events/PacketEvent.h"
 #include "packet/WiFuPacket.h"
 
 using namespace std;
 
 /**
  * Event which represents the sending of a packet.
- * @see Event
+ * @see PacketEvent
  */
-class SendPacketEvent : public Event {
+class SendPacketEvent : public PacketEvent {
 public:
 
     /**
@@ -26,7 +26,7 @@ public:
      * @param socket The socket, which represents a unique connection, to use for this Event
      * @param packet The WiFuPacket object to send
      */
-    SendPacketEvent(Socket* socket, WiFuPacket* packet) : Event(socket), packet_(packet) {
+    SendPacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {
 
     }
 
@@ -39,19 +39,6 @@ public:
     void execute(IModule* m) {
         m->send(this);
     }
-
-    /**
-     * @return The WiFuPacket to send
-     */
-    WiFuPacket* get_packet() {
-        return packet_;
-    }
-
-private:
-    /**
-     * Pointer to the packet to be sent
-     */
-    WiFuPacket* packet_;
 };
 
 #endif	/* _SENDSYNEVENT_H */
