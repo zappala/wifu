@@ -41,8 +41,8 @@ def configure(conf):
 	#conf.env['CXXFLAGS'] += ['--cs-off']
 	#conf.env['LINKFLAGS'] += ['--cs-off']
 	
-#	conf.env['CXXFLAGS'] += ['--cs-include-path=../headers']
-#	conf.env['LINKFLAGS'] += ['--cs-include-path=../headers']
+	conf.env['CXXFLAGS'] += ['--cs-include-path=../headers']
+	conf.env['LINKFLAGS'] += ['--cs-include-path=../headers']
 	
 	conf.env['CXXFLAGS'] += ['--cs-exclude-path=../test/end']
 	conf.env['LINKFLAGS'] += ['--cs-exclude-path=../test/end']

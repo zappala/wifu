@@ -14,9 +14,7 @@
 
 class INetworkInterface : public Module, public NetworkCallback {
 public:
-    INetworkInterface() : Module(), NetworkCallback() {
-
-    }
+    INetworkInterface() : Module(), NetworkCallback() {}
     
     virtual void start() = 0;
     virtual void register_protocol(int protocol, PacketFactory* pf) = 0;

@@ -14,9 +14,7 @@ using namespace std;
 
 class ISocketModule {
 public:
-    virtual ~ISocketModule() {
-        
-    }
+    virtual ~ISocketModule() {}
     virtual void connect(string & message) = 0;
     virtual void data(string & message) = 0;
     

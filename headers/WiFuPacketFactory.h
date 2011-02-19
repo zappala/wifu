@@ -10,7 +10,6 @@
 
 #include "PacketFactory.h"
 
-
 class WiFuPacketFactory : public PacketFactory{
     WiFuPacket* create() {
         return new WiFuPacket();
