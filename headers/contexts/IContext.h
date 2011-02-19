@@ -37,6 +37,3 @@ public:
 };
 
 #endif	/* ICONTEXT_H */
-
-
-

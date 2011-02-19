@@ -35,61 +35,38 @@ private:
 
 class State {
 public:
+    State();
 
-    State() {
+    virtual ~State();
 
-    }
+    virtual void enter(Context*);
 
-    virtual ~State() {
-    }
+    virtual void exit(Context*);
 
-    virtual void enter(Context* c) {
-    }
+    virtual void socket(Context*, Socket*);
 
-    virtual void exit(Context* c) {
-    }
+    virtual void bind(Context*, Socket*, AddressPort*);
 
-    virtual void socket(Context* c, Socket* s) {
+    virtual void listen(Context*, Socket*, int);
 
-    }
+    virtual void accept(Context*, AcceptEvent*);
 
-    virtual void bind(Context* c, Socket* s, AddressPort* ap) {
+    virtual void new_connection_established(Context*, Socket*);
 
-    }
+    virtual void receive_packet(Context*, Socket*, WiFuPacket*);
 
-    virtual void listen(Context* c, Socket* s, int back_log) {
-    }
+    virtual void timer_fired(Context*, TimerFiredEvent*);
 
-    virtual void accept(Context* c, AcceptEvent* e) {
-    }
+    virtual void connect(Context*, ConnectEvent*);
 
-    virtual void new_connection_established(Context* c, Socket* s) {
-    }
+    virtual void close(Context*);
 
-    virtual void receive_packet(Context* c, Socket* s, WiFuPacket* p) {
-    }
+    virtual void send_packet(Context*, Socket*, WiFuPacket*);
 
-    virtual void timer_fired(Context* c, TimerFiredEvent* e) {
-    }
+    void enter_state(string);
 
-    virtual void connect(Context* c, ConnectEvent* e) {
-    }
+    void leave_state(string);
 
-    virtual void close(Context* c) {
-    }
-
-    virtual void send_packet(Context* c, Socket* s, WiFuPacket* p) {
-    }
-
-    void enter_state(string state) {
-        //cout << "Entering " << state << " State" << endl;
-    }
-
-    void leave_state(string state) {
-        //cout << "Leaving " << state << " State" << endl;
-    }
 };
 
-
 #endif	/* CONTEXT_H */
-

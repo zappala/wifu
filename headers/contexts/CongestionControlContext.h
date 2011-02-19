@@ -22,7 +22,6 @@ using namespace std;
 
 class CongestionControlContext : public Context {
 public:
-
     CongestionControlContext();
     void socket(Socket* s);
     void bind(Socket* s, AddressPort* ap);
@@ -34,7 +33,7 @@ public:
     void receive_packet(Socket* s, WiFuPacket* p);
     void send_packet(Socket* s, WiFuPacket* p);
     void timer_fired_event(TimerFiredEvent* e);
+
 };
 
 #endif	/* CONGESTIONCONTROLCONTEXT_H */
-

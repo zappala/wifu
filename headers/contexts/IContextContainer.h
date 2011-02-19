@@ -16,26 +16,15 @@
 
 using namespace std;
 
-
 class IContextContainer : public gc {
 public:
-    IContextContainer() {
-        reliability_ = new ReliabilityContext();
-        cc_ = new CongestionControlContext();
-        cm_ = new ConnectionManagerContext();
-    }
+    IContextContainer();
 
-    IContext* get_congestion_control() {
-        return cc_;
-    }
+    IContext* get_congestion_control();
 
-    IContext* get_reliability() {
-        return reliability_;
-    }
+    IContext* get_reliability();
 
-    IContext* get_connection_manager() {
-        return cm_;
-    }
+    IContext* get_connection_manager();
 
 private:
     IContext* reliability_;
@@ -45,4 +34,3 @@ private:
 };
 
 #endif	/* CONTEXTCONTAINER_H */
-

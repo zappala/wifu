@@ -20,7 +20,6 @@
 
 class ReliabilityContext : public Context {
 public:
-
     ReliabilityContext();
     virtual ~ReliabilityContext();
     void socket(Socket* s);
@@ -39,6 +38,7 @@ public:
 
 private:
     TCPPacket* saved_packet_;
+
 };
 
 #endif	/* RELIABILITYCONTEXT_H */

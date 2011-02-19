@@ -60,7 +60,7 @@ private:
     ConnectionType type_;
     ConnectEvent* c_event_;
     AcceptEvent* a_event_;
+
 };
 
 #endif	/* CONNECTIONMANAGERCONTEXT_H */
-
