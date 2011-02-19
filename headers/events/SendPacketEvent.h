@@ -19,16 +19,13 @@ using namespace std;
  */
 class SendPacketEvent : public PacketEvent {
 public:
-
     /**
      * Constructs a SendPacketEvent.
      *
      * @param socket The socket, which represents a unique connection, to use for this Event
      * @param packet The WiFuPacket object to send
      */
-    SendPacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {
-
-    }
+    SendPacketEvent(Socket*, WiFuPacket*);
 
     /**
      * Will call send() on m.
@@ -36,10 +33,8 @@ public:
      * @param m The IModule which to call send() on.
      * @see IModule::send()
      */
-    void execute(IModule* m) {
-        m->send(this);
-    }
+    void execute(IModule*);
+
 };
 
 #endif	/* _SENDSYNEVENT_H */
-

@@ -23,7 +23,6 @@ class IModule;
  */
 class Event : public gc {
 public:
-
     /**
      * Constructs an Event object.
      *
@@ -55,7 +54,7 @@ public:
      */
     Socket* get_socket();
 
-    void set_socket(Socket* s);
+    void set_socket(Socket*);
 
     /**
      * Default implemenation of less than.
@@ -63,9 +62,9 @@ public:
      * @param rhs The "right hand side" of the expression A < rhs, where A is this Event.
      * @return True in each case.  Must be overridden in child classes and satisfy the above expression.
      */
-    virtual bool less_than(Event* rhs);
-private:
+    virtual bool less_than(Event*);
 
+private:
     /**
      * Socket which is associated with this Event.
      */
@@ -78,7 +77,6 @@ private:
  */
 class EventComparator {
 public:
-
     /**
      * Compares two Event pointers (actually references to Event pointers).
      * Will return t1 < t2.
@@ -90,9 +88,7 @@ public:
     bool operator()(Event*& t1, Event*& t2) {
         return t1->less_than(t2);
     }
+
 };
 
-
-
 #endif	/* _EVENT_H */
-

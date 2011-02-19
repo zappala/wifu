@@ -14,21 +14,12 @@ using namespace std;
 
 class BindEvent : public LibraryEvent {
 public:
-    BindEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {
+    BindEvent(string&, string&, Socket*);
 
-    }
+    virtual ~BindEvent();
 
-    virtual ~BindEvent() {
-
-    }
-
-    void execute(IModule* m) {
-        m->library_bind(this);
-    }
-
-private:
+    void execute(IModule*);
     
 };
 
 #endif	/* BINDEVENT_H */
-

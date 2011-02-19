@@ -1,16 +1,10 @@
 #include "events/Event.h"
 
-Event::Event(Socket* s) : socket_(s) {
+Event::Event(Socket* s) : socket_(s) {}
 
-}
+Event::Event() : socket_(0) {}
 
-Event::Event() : socket_(0) {
-
-}
-
-Event::~Event() {
-    
-}
+Event::~Event() {}
 
 Socket* Event::get_socket() {
     assert(socket_);

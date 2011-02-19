@@ -10,21 +10,14 @@
 
 #include "LibraryEvent.h"
 
-
 class AcceptEvent : public LibraryEvent {
 public:
-    AcceptEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {
+    AcceptEvent(string&, string&, Socket*);
 
-    }
+    virtual ~AcceptEvent();
 
-    virtual ~AcceptEvent() {
+    void execute(IModule*);
 
-    }
-
-    void execute(IModule* m) {
-        m->library_accept(this);
-    }
 };
 
 #endif	/* _ACCEPTEVENT_H */
-

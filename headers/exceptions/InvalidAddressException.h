@@ -6,6 +6,7 @@
 using namespace std;
 
 class InvalidAddressException : public exception {
+public:
 	virtual const char* what() const throw();
 };
 

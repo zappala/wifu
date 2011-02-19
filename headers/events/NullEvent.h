@@ -8,15 +8,14 @@
 #ifndef _NULLEVENT_H
 #define	_NULLEVENT_H
 
-#include "events/Event.h"
+#include "Event.h"
 
 class NullEvent : public Event {
 public:
-    NullEvent(Socket* s) : Event(s) {}
-    void execute(IModule* m) {
-        // do nothing
-    }
+    NullEvent(Socket*);
+
+    void execute(IModule*);
+
 };
 
 #endif	/* _NULLEVENT_H */
-

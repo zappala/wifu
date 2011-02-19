@@ -10,21 +10,14 @@
 
 #include "LibraryEvent.h"
 
-
 class ListenEvent : public LibraryEvent {
 public:
-    ListenEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {
+    ListenEvent(string&, string&, Socket*);
 
-    }
+    virtual ~ListenEvent();
 
-    virtual ~ListenEvent() {
+    void execute(IModule* m);
 
-    }
-
-    void execute(IModule* m) {
-        m->library_listen(this);
-    }
 };
 
 #endif	/* _LISTENEVENT_H */
-

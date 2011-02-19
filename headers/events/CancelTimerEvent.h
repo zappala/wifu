@@ -23,16 +23,12 @@ public:
      *
      * @param event The TimeoutEvent which this CancelTimerEvent is to cancel.
      */
-    CancelTimerEvent(TimeoutEvent* event) : TimerEvent(event) {
-
-    }
+    CancelTimerEvent(TimeoutEvent*);
 
     /**
      * Cleans up this CancelTimerEvent.
      */
-    virtual ~CancelTimerEvent() {
-        
-    }
+    virtual ~CancelTimerEvent();
 
     /**
      * Will call cancel_timer(this) on m.
@@ -40,10 +36,8 @@ public:
      * @param m The module which to call cancel_timer() on.
      * @see IModule::cancel_timer()
      */
-    void execute(IModule* m) {
-        m->cancel_timer(this);
-    }
+    void execute(IModule*);
+
 };
 
 #endif	/* _CANCELTIMEREVENT_H */
-

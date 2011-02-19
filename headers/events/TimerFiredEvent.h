@@ -16,22 +16,17 @@
  */
 class TimerFiredEvent : public TimerEvent {
 public:
-
     /**
      * Constructs a TimerFiredEvent object.
      *
      * @param timeout_event The TimeoutEvent which expired, causing the creation of this TimerFiredEvent.
      */
-    TimerFiredEvent(TimeoutEvent* timeout_event) : TimerEvent(timeout_event) {
-
-    }
+    TimerFiredEvent(TimeoutEvent*);
 
     /**
      * Cleans up this TimerFiredEvent object.
      */
-    virtual ~TimerFiredEvent() {
-
-    }
+    virtual ~TimerFiredEvent();
 
     /**
      * Will call timer_fired() on m.
@@ -39,10 +34,8 @@ public:
      * @param m The IModule which to call timer_fired() on.
      * @see IModule::timer_fired()
      */
-    void execute(IModule* m) {
-        m->timer_fired(this);
-    }
+    void execute(IModule* m);
+
 };
 
 #endif	/* _TIMERFIREDEVENT_H */
-

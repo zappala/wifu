@@ -14,43 +14,25 @@
 #include "Event.h"
 #include "QueryStringParser.h"
 #include "Socket.h"
+#include "Utils.h"
 
 using namespace std;
 
 class ResponseEvent : public Event {
 public:
-    ResponseEvent(Socket* socket, string& name, string& file) : Event(socket), name_(name), file_(file) {
-        
-        
-    }
+    ResponseEvent(Socket*, string&, string&);
 
-    virtual ~ResponseEvent() {
+    virtual ~ResponseEvent();
 
-    }
+    string get_response();
 
-    string get_response() {
-        m_[SOCKET_STRING] = Utils::itoa(get_socket()->get_socket_id());
-        return QueryStringParser::create(name_, m_);
-    }
+    void put(string, string);
 
-    // TODO: fix this so we can pass references
-    void put(string key, string value) {
-        m_[key] = value;
-    }
+    void put(const char*, string);
 
-    // TODO: fix this so we can pass references
-    void put(const char* key, string value) {
-        string k = string(key);
-        put(k, value);
-    }
+    void execute(IModule*);
 
-    void execute(IModule* m) {
-        m->library_response(this);
-    }
-
-    string get_write_file() {
-        return file_;
-    }
+    string get_write_file();
 
 private:
     string name_;
@@ -60,4 +42,3 @@ private:
 };
 
 #endif	/* RESPONSEEVENT_H */
-

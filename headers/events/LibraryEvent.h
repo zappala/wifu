@@ -21,35 +21,21 @@ using namespace std;
 
 class LibraryEvent : public Event {
 public:
+    LibraryEvent(string&, string&, Socket*);
 
-    LibraryEvent(string& message, string& file, Socket* socket) : Event(socket), file_(file) {
-        QueryStringParser::parse(message, m_);
-        name_ = m_[NAME_STRING];
+    virtual ~LibraryEvent();
 
-        m_[SOCKET_STRING] = Utils::itoa(socket->get_socket_id());
-    }
+    string& get_file();
 
-    virtual ~LibraryEvent() {
+    string& get_name();
 
-    }
-
-    string& get_file() {
-        return file_;
-    }
-
-    string& get_name() {
-        return name_;
-    }
-
-    map<string, string>& get_map() {
-        return m_;
-    }
+    map<string, string>& get_map();
 
 private:
     map<string, string> m_;
     string name_;
     string file_;
+
 };
 
 #endif	/* LIBRARYEVENT_H */
-

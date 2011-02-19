@@ -13,19 +13,12 @@
 
 class SocketEvent : public LibraryEvent {
 public:
+    SocketEvent(string&, string&, Socket*);
 
-    SocketEvent(string& message, string& file, Socket* socket) : LibraryEvent(message, file, socket) {
+    virtual ~SocketEvent();
 
-    }
+    void execute(IModule* );
 
-    virtual ~SocketEvent() {
-
-    }
-
-    void execute(IModule* m) {
-        m->library_socket(this);
-    }
 };
 
 #endif	/* SOCKETEVENT_H */
-

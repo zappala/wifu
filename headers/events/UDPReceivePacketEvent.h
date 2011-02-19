@@ -13,20 +13,13 @@
 
 class UDPReceivePacketEvent : public PacketEvent {
 public:
+    UDPReceivePacketEvent(Socket*, WiFuPacket*);
 
-    UDPReceivePacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {
+    virtual ~UDPReceivePacketEvent();
 
-    }
+    void execute(IModule*);
 
-    virtual ~UDPReceivePacketEvent() {
-
-    }
-
-    void execute(IModule* m) {
-        m->udp_receive(this);
-    }
 };
-
 
 #endif	/* _UDPRECEIVEPACKETEVENT_H */
 

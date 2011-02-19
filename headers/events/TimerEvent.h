@@ -16,36 +16,29 @@
  */
 class TimerEvent : public Event {
 public:
-
     /**
      * Constructs a TimerEvent.
      *
      * @param timeout_event The TimeoutEvent to store.
      */
-    TimerEvent(TimeoutEvent* timeout_event) : Event(timeout_event->get_socket()), timeout_event_(timeout_event) {
-
-    }
+    TimerEvent(TimeoutEvent*);
 
     /**
      * Cleans up this TimerEvent object.
      */
-    virtual ~TimerEvent() {
-
-    }
+    virtual ~TimerEvent();
 
     /**
      * @return A pointer to the TimeoutEvent stored internally to this TimerEvent.
      */
-    TimeoutEvent* get_timeout_event() {
-        return timeout_event_;
-    }
+    TimeoutEvent* get_timeout_event();
 
 private:
     /**
      * Pointer to an actual TimeoutEvent which this class stores.
      */
     TimeoutEvent* timeout_event_;
+
 };
 
 #endif	/* _TIMEREVENT_H */
-

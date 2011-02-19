@@ -11,36 +11,22 @@
 #include "Event.h"
 #include "AcceptEvent.h"
 
-
 class ConnectionEstablishedEvent : public Event {
 public:
-    ConnectionEstablishedEvent(AcceptEvent* e, Socket* new_socket) :
-                            Event(e->get_socket()),
-                            new_socket_(new_socket),
-                            event_(e) {
+    ConnectionEstablishedEvent(AcceptEvent*, Socket*);
 
-    }
+    virtual ~ConnectionEstablishedEvent();
 
-    virtual ~ConnectionEstablishedEvent() {
+    void execute(IModule*);
 
-    }
+    Socket* get_new_socket();
 
-    void execute(IModule* m) {
-        m->connection_established(this);
-    }
-
-    Socket* get_new_socket() {
-        return new_socket_;
-    }
-
-    AcceptEvent* get_accept_event() {
-        return event_;
-    }
+    AcceptEvent* get_accept_event();
 
 private:
     Socket* new_socket_;
     AcceptEvent* event_;
+
 };
 
 #endif	/* _CONNECTIONESTABLISHEDEVENT_H */
-

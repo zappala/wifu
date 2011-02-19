@@ -24,7 +24,6 @@ public:
     void add_observer(class Observer* o);
     void notify();
 
-    
 };
 
 #endif	/* _OBSERVABLE_H */

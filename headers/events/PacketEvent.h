@@ -14,21 +14,15 @@
 
 class PacketEvent : public Event {
 public:
-    PacketEvent(Socket* socket, WiFuPacket* p) : Event(socket), packet_(p) {
-        
-    }
+    PacketEvent(Socket*, WiFuPacket*);
     
-    virtual ~PacketEvent() {
-
-    }
+    virtual ~PacketEvent();
     
-    WiFuPacket* get_packet() {
-        return packet_;
-    }
+    WiFuPacket* get_packet();
 
 private:
     WiFuPacket* packet_;
+
 };
 
 #endif	/* _PACKETEVENT_H */
-

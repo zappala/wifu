@@ -12,17 +12,12 @@
 #include "IModule.h"
 #include "PacketEvent.h"
 
-
 class ResendPacketEvent: public PacketEvent {
 public:
-    ResendPacketEvent(Socket* s, WiFuPacket* p) : PacketEvent(s, p) {
+    ResendPacketEvent(Socket*, WiFuPacket*);
 
-    }
+    void execute(IModule* m);
 
-    void execute(IModule* m) {
-        m->resent(this);
-    }
 };
 
 #endif	/* _RESENDPACKETEVENT_H */
-

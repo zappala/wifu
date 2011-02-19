@@ -15,13 +15,12 @@ using namespace std;
 
 class UDPSocketCallback{
 public:
-    UDPSocketCallback () {}
+    UDPSocketCallback();
 
-    virtual ~UDPSocketCallback() {}
+    virtual ~UDPSocketCallback();
 
     virtual void receive(AddressPort& ap, unsigned char* buffer, size_t length) = 0;
+
 };
 
-
 #endif	/* _UDPSOCKETCALLBACK_H */
-

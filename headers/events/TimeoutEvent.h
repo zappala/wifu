@@ -18,7 +18,6 @@
 #include <iostream>
 #include "Socket.h"
 
-
 using namespace std;
 
 /**
@@ -26,7 +25,6 @@ using namespace std;
  */
 class TimeoutEvent : public Event {
 public:
-
     /**
      * Constructs a TimeoutEvent.
      * The timeout time will be set to the time this object is created plus seconds and nanoseconds.
@@ -35,16 +33,12 @@ public:
      * @param seconds The number of seconds in the future in which to timeout.
      * @param nanoseconds The number nanoseconds in the future in which to timeout.
      */
-    TimeoutEvent(Socket* socket, int seconds, long int nanoseconds) : Event(socket) {
-        Utils::get_timespec_future_time(seconds, nanoseconds, &timer_);
-    }
+    TimeoutEvent(Socket*, int, long int);
 
     /**
      * @return A reference to the timespec holding the absolute time this TimeoutEvent is due to timeout.
      */
-    struct timespec & get_timeout_time() {
-        return timer_;
-    }
+    struct timespec & get_timeout_time();
 
     /**
      * Determines if this TimeoutEvent's absolute timeout time is earlier than e's.
@@ -52,16 +46,7 @@ public:
      * @param e The (Timeout)Event to compare this TimeoutEvent to.
      * @return True if this TimeoutEvent is less than e's, false otherwise.
      */
-    virtual bool less_than(Event* e) {
-        TimeoutEvent* rhs = (TimeoutEvent*) e;
-
-        struct timespec * a = &(get_timeout_time());
-        struct timespec * b = &(rhs->get_timeout_time());
-
-        if (a->tv_sec > b->tv_sec) return true;
-        if (a->tv_sec == b->tv_sec && a->tv_nsec > b->tv_nsec) return true;
-        return false;
-    }
+    virtual bool less_than(Event*);
 
     /**
      * Will call timeout() on m.
@@ -69,10 +54,7 @@ public:
      * @param m The IModule which to call timeout() on.
      * @see IModule::timeout()
      */
-    void execute(IModule* m) {
-        m->timeout(this);
-    }
-
+    void execute(IModule*);
 
 private:
     /**
@@ -83,6 +65,4 @@ private:
 };
 
 
-
 #endif	/* _TIMEOUTEVENT_H */
-
