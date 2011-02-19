@@ -398,7 +398,7 @@ namespace {
         ASSERT_EQ(max, to_cancel.size() + fired_events);
     }
 
-    // Fires a timer in 2 milliseconds
+    // Fires a timer in 1 millisecond
     // Tests to ensure that it was received in precision time (measured in nanoseconds)
     // Can be used to see how granual timers can be made
     // Note also that the results of this are the best possible as all queues are empty
@@ -406,8 +406,8 @@ namespace {
     void precision_test(int precision) {
         Socket* s = new Socket(0, 0, 0);
         int seconds = 0;
-        // 2 milliseconds
-        int nano = 2000000;
+        // 1 millisecond
+        int nano = 1000000;
         TimeoutEvent* expected = new TimeoutEvent(s, seconds, nano);
         dispatcher.enqueue(expected);
 
