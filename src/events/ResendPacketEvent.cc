@@ -1,4 +1,4 @@
-#include "ResendPacketEvent.h"
+#include "events/ResendPacketEvent.h"
 
 ResendPacketEvent::ResendPacketEvent(Socket* s, WiFuPacket* p) : PacketEvent(s, p) {}
 

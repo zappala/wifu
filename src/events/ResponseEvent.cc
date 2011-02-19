@@ -1,4 +1,4 @@
-#include "ResponseEvent.h"
+#include "events/ResponseEvent.h"
 
 ResponseEvent::ResponseEvent(Socket* socket, string& name, string& file) : Event(socket), name_(name), file_(file) {}
 

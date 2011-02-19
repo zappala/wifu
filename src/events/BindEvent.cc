@@ -1,4 +1,4 @@
-#include "BindEvent.h"
+#include "events/BindEvent.h"
 
 BindEvent::BindEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {}
 

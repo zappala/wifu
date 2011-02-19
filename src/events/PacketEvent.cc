@@ -1,4 +1,4 @@
-#include "PacketEvent.h"
+#include "events/PacketEvent.h"
 
 PacketEvent::PacketEvent(Socket* socket, WiFuPacket* p) : Event(socket), packet_(p) {}
 

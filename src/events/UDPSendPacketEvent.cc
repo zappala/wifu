@@ -1,4 +1,4 @@
-#include "UDPSendPacketEvent.h"
+#include "events/UDPSendPacketEvent.h"
 
 UDPSendPacketEvent::UDPSendPacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {}
 

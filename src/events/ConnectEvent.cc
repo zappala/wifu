@@ -1,4 +1,4 @@
-#include "ConnectEvent.h"
+#include "events/ConnectEvent.h"
 
 ConnectEvent::ConnectEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s), destination_(0) {}
 

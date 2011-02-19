@@ -1,4 +1,4 @@
-#include "NetworkReceivePacketEvent.h"
+#include "events/NetworkReceivePacketEvent.h"
 
 NetworkReceivePacketEvent::NetworkReceivePacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {}
 

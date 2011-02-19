@@ -1,4 +1,4 @@
-#include "NetworkSendPacketEvent.h"
+#include "events/NetworkSendPacketEvent.h"
 
 NetworkSendPacketEvent::NetworkSendPacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {}
 

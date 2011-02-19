@@ -1,4 +1,4 @@
-#include "SocketEvent.h"
+#include "events/SocketEvent.h"
 
 SocketEvent::SocketEvent(string& message, string& file, Socket* socket) : LibraryEvent(message, file, socket) {}
 

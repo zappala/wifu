@@ -1,4 +1,4 @@
-#include "NullEvent.h"
+#include "events/NullEvent.h"
 
 NullEvent::NullEvent(Socket* s) : Event(s) {}
 

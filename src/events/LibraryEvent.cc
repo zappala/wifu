@@ -1,4 +1,4 @@
-#include "LibraryEvent.h"
+#include "events/LibraryEvent.h"
 
 LibraryEvent::LibraryEvent(string& message, string& file, Socket* socket) : Event(socket), file_(file) {
 	QueryStringParser::parse(message, m_);

@@ -1,4 +1,4 @@
-#include "UDPReceivePacketEvent.h"
+#include "events/UDPReceivePacketEvent.h"
 
 UDPReceivePacketEvent::UDPReceivePacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {}
 
