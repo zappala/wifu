@@ -234,6 +234,7 @@ public:
      * See man 2 getsockopt
      *
      * @param fd The socket id
+     * @param level Should be set to the protocol number of TCP
      * @param optname Name of option
      * @param optval Value of the option
      * @param optlen Length of optval
