@@ -38,6 +38,7 @@
 #include "events/TimerFiredEvent.h"
 #include "events/AcceptEvent.h"
 #include "events/ConnectionEstablishedEvent.h"
+#include "events/ResendPacketEvent.h"
 #include "NetworkInterface.h"
 #include "TCPPacketFactory.h"
 #include "OptionParser.h"
@@ -145,6 +146,7 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(SendPacketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(NetworkReceivePacketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(TimerFiredEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ResendPacketEvent), &SimpleTCP::instance());
 
 
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());

@@ -51,6 +51,8 @@ void State::close(Context* c) {}
 
 void State::send_packet(Context* c, Socket* s, WiFuPacket* p) {}
 
+void State::resend_packet(Context*, Socket*, WiFuPacket*) {}
+
 void State::enter_state(string state) {
     //cout << "Entering " << state << " State" << endl;
 }

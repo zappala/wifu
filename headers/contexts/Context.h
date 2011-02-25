@@ -63,6 +63,8 @@ public:
 
     virtual void send_packet(Context*, Socket*, WiFuPacket*);
 
+    virtual void resend_packet(Context*, Socket*, WiFuPacket*);
+
     void enter_state(string);
 
     void leave_state(string);

@@ -14,6 +14,10 @@
 #include "events/ConnectEvent.h"
 #include <string>
 #include "events/TimerFiredEvent.h"
+#include "contexts/ReliabilityContext.h"
+#include "events/TimerEvent.h"
+#include "Dispatcher.h"
+#include "events/ResendPacketEvent.h"
 
 using namespace std;
 
@@ -27,6 +31,7 @@ public:
     void exit(Context* c);
     void send_packet(Context* c, Socket* s, WiFuPacket* p);
     void timer_fired(Context* c, TimerFiredEvent* e);
+    void resend_packet(Context* c, Socket* s, WiFuPacket* p);
 };
 
 #endif	/* RELIABILITYSTATE_H */

@@ -1,5 +1,6 @@
 #include "states/SynReceived.h"
 #include "events/ConnectionEstablishedEvent.h"
+#include "events/NetworkReceivePacketEvent.h"
 
 SynReceived::SynReceived() {
 
@@ -22,7 +23,12 @@ void SynReceived::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
-    assert(packet->is_tcp_ack());
+    if (packet->is_tcp_syn() && !packet->is_tcp_ack()) {
+        cmc->set_state(new Accept());
+        Event* e = new NetworkReceivePacketEvent(s, p);
+        Dispatcher::instance().enqueue(e);
+        return;
+    }
 
     if (packet->is_tcp_ack()) {
 

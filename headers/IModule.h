@@ -109,7 +109,7 @@ public:
         
     }
 
-    virtual void resent(Event* e) {
+    virtual void resend(Event* e) {
         
     }
 

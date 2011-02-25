@@ -40,6 +40,7 @@ public:
     void receive_packet(Socket* s, WiFuPacket* p);
     void send_packet(Socket* s, WiFuPacket* p);
     void timer_fired_event(TimerFiredEvent* e);
+    void resend_packet(Socket* s, WiFuPacket* p);
 
     // Non-state methods
 

@@ -12,6 +12,9 @@
 #include "Module.h"
 #include "NetworkCallback.h"
 
+#include "events/NetworkSendPacketEvent.h"
+#include "SocketCollection.h"
+
 class INetworkInterface : public Module, public NetworkCallback {
 public:
     INetworkInterface() : Module(), NetworkCallback() {}

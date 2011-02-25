@@ -202,3 +202,15 @@ void Protocol::timer_fired(Event* e) {
 
     timer_fired_event(event);
 }
+
+void Protocol::resend(Event* e) {
+    ResendPacketEvent* event = (ResendPacketEvent*) e;
+    Socket* socket = event->get_socket();
+
+    if (!sockets_.contains(socket)) {
+        cout << "Protocol::resend: We don't have this socket...\n";
+        return;
+    }
+
+    resend_packet(socket, event->get_packet());
+}

@@ -50,6 +50,8 @@ public:
     void close();
 
     void timer_fired_event(TimerFiredEvent* e);
+
+    void resend_packet(Socket* s, WiFuPacket* p);
 };
 
 #endif	/* SIMPLETCP_H */

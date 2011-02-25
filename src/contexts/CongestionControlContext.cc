@@ -43,3 +43,7 @@ void CongestionControlContext::send_packet(Socket* s, WiFuPacket* p) {
 void CongestionControlContext::timer_fired_event(TimerFiredEvent* e) {
     get_state()->timer_fired(this, e);
 }
+
+void CongestionControlContext::resend_packet(Socket* s, WiFuPacket* p) {
+    get_state()->resend_packet(this, s, p);
+}

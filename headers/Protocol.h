@@ -16,6 +16,13 @@
 #include "events/ListenEvent.h"
 #include "events/NetworkReceivePacketEvent.h"
 #include "events/Event.h"
+#include "events/SendPacketEvent.h"
+#include "events/ConnectEvent.h"
+#include "events/AcceptEvent.h"
+#include "events/ConnectionEstablishedEvent.h"
+#include "events/TimerFiredEvent.h"
+#include "events/ResendPacketEvent.h"
+
 #include "HashSet.h"
 #include "Socket.h"
 #include "visitors/AlreadyListeningOnSamePortVisitor.h"
@@ -23,10 +30,7 @@
 #include "SocketCollection.h"
 #include "contexts/IContext.h"
 
-#include "events/SendPacketEvent.h"
-#include "events/ConnectEvent.h"
-#include "events/AcceptEvent.h"
-#include "events/ConnectionEstablishedEvent.h"
+
 #include "packet/TCPPacket.h"
 
 class Protocol : public Module, public IContext {
@@ -67,6 +71,8 @@ public:
     virtual void connection_established(Event* e);
 
     virtual void timer_fired(Event* e);
+
+    virtual void resend(Event* e);
     
 private:
     int protocol_;

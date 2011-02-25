@@ -43,12 +43,17 @@ void ConnectionManagerContext::receive_packet(Socket* s, WiFuPacket* p) {
 
 void ConnectionManagerContext::send_packet(Socket* s, WiFuPacket* p) {
     cout << "ConnectionManagerContext::send_packet()" << endl;
-    cout << "Current state: " << type_name(*get_state()) << endl;
+    //cout << "Current state: " << type_name(*get_state()) << endl;
     get_state()->send_packet(this, s, p);
 }
 
 void ConnectionManagerContext::timer_fired_event(TimerFiredEvent* e) {
     get_state()->timer_fired(this, e);
+}
+
+void ConnectionManagerContext::resend_packet(Socket* s, WiFuPacket* p) {
+    cout << "ConnectionManagerContext::resend_packet()" << endl;
+    get_state()->resend_packet(this, s, p);
 }
 
 // Non-state methods

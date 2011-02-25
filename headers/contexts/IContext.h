@@ -34,6 +34,7 @@ public:
     virtual void close() = 0;
 
     virtual void timer_fired_event(TimerFiredEvent* e) = 0;
+    virtual void resend_packet(Socket* s, WiFuPacket* p) = 0;
 };
 
 #endif	/* ICONTEXT_H */
