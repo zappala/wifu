@@ -190,17 +190,6 @@ public:
 
     virtual void connection_established(Event* e) {
     }
-
-protected:
-
-    /**
-     * Should be called by timeout() upon determining that e is for this IModule.
-     *
-     * @param e The event which triggered a timeout action and has been determined to be for this IModule.
-     */
-    virtual void my_timer_fired(Event* e) {
-    }
-
 };
 
 #endif	/* _IMODULE_H */

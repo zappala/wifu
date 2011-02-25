@@ -18,7 +18,6 @@
  *
  * @see IModule
  * @see QueueProcessor
- * @see TimeoutHelper
  */
 class Module : public IModule, public QueueProcessor<Event*> {
 public:
