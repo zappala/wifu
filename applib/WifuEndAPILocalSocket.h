@@ -287,7 +287,7 @@ public:
         data->get_semaphore()->wait();
 
 
-        socklen_t length = data->get_length();
+        socklen_t length = data->get_address_port_length();
         memcpy(addr_len, &length, sizeof(socklen_t));
         memcpy(addr, data->get_address_port()->get_network_struct_ptr(),(size_t) length);
 
