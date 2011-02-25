@@ -9,31 +9,65 @@
 #define	SOCKETMAP_H
 
 #include <map>
-#include "BinarySemaphore.h"
+#include <assert.h>
+#include "Semaphore.h"
 #include "SocketData.h"
 
 using namespace std;
 
+/**
+ * Singleton map of socket id (int) to SocketData object
+ * This object is thread-safe
+ *
+ * @see SocketData
+ */
 class SocketDataMap {
 private:
 
+    /**
+     * Constructor
+     * Sets the internal mutex to 1
+     */
     SocketDataMap() {
         mutex_.init(1);
     }
 
+    /**
+     * Empty copy constructor.  Should never be called.
+     */
     SocketDataMap(SocketDataMap const&) {
-
+        assert(false);
     }
 
+    /**
+     * Empty assignment operator.  Should never be called.
+     */
     SocketDataMap & operator=(SocketDataMap const&) {
-
+        assert(false);
     }
 
+    /**
+     * Data structure mapping socket id (int) to SocketData pointer.
+     */
     map<int, SocketData*> data_;
-    BinarySemaphore mutex_;
+
+    /**
+     * Control variable that makes this object thread-safe.
+     */
+    Semaphore mutex_;
+
+    /**
+     * Iterator for data_
+     */
+    map<int, SocketData*>::iterator itr_;
 
 public:
 
+    /**
+     * Destructor
+     * Because this class is a Singleton and the instance is static, this will be called upon exiting the program.
+     * This calls delete on all SocketData pointers saved inside this data structure.
+     */
     virtual ~SocketDataMap() {
         map<int, SocketData*>::iterator itr;
         for (itr = data_.begin(); itr != data_.end(); ++itr) {
@@ -43,26 +77,42 @@ public:
         }
     }
 
+    /**
+     * @return The static instance of this SocketDataMap
+     */
     static SocketDataMap& instance() {
         static SocketDataMap instance_;
         return instance_;
     }
 
+    /**
+     * Gets the value (SocketData pointer) associated with key.
+     * If there is no value associated with key, NULL is returned.
+     *
+     * @return The value (SocketData pointer) associated with key OR NULL if there is no association.
+     */
     SocketData* get(const int key) {
         mutex_.wait();
-        map<int, SocketData*>::iterator itr = data_.find(key);
-        SocketData* ptr = itr == data_.end() ? NULL : itr->second;
+        itr_ = data_.find(key);
+        SocketData* ptr = itr_ == data_.end() ? NULL : itr_->second;
         mutex_.post();
         return ptr;
     }
 
+    /**
+     * Associates key with value.
+     * If key already exists, the value is is associated with is overwriten with value.
+     */
     void put(int key, SocketData* value) {
-
         mutex_.wait();
         data_[key] = value;
         mutex_.post();
     }
 
+    /**
+     * Removes the key-value pair from the data structure.
+     * Calls delete on the value.
+     */
     void delete_at(const int key) {
         mutex_.wait();
         delete data_[key];
@@ -70,14 +120,23 @@ public:
         mutex_.post();
     }
 
+    /**
+     * Removes the key-value pair from the data structure.
+     */
     void erase_at(const int key) {
         mutex_.wait();
         data_.erase(key);
         mutex_.post();
     }
 
+    /**
+     * @return The number of key-value pairs
+     */
     int size() {
-        return data_.size();
+        mutex_.wait();
+        int s = data_.size();
+        mutex_.post();
+        return s;
     }
 };
 
