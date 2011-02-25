@@ -11,6 +11,7 @@
 
 
 #include <sstream>
+#include <assert.h>
 
 #include "QueryStringParser.h"
 #include "LocalSocketFullDuplex.h"
@@ -29,7 +30,12 @@
 // TODO: Go over each man page and determine what we want to support,
 // TODO: then make sure that every function in this file supports that behavior.
 
-
+/**
+ * Communicates (sends messages) with the back-end over a Unix Socket, writing to the file /tmp/WS.
+ * Receives messages from the back-end over a Unix Socket.  This class receives on the file /tmp/LS plus a random number.
+ * Messages are of the format: method_name?key0=value0&key1=value1&
+ *
+ */
 class WifuEndAPILocalSocket : public LocalSocketFullDuplex {
 private:
 
@@ -44,17 +50,28 @@ private:
 
     }
 
-    WifuEndAPILocalSocket(WifuEndAPILocalSocket const&) : LocalSocketFullDuplex(getFile()), write_file_("/tmp/WS") {
-
+    /**
+     * Copy constructor.  Should never be called.
+     * @param other The WifuEndAPILocalSocket to copy.
+     */
+    WifuEndAPILocalSocket(WifuEndAPILocalSocket const& other) : LocalSocketFullDuplex(getFile()), write_file_("/tmp/WS") {
+        assert(false);
     }
 
+    /**
+     * Assignment operator.  Should never be called.
+     * @param other The WifuEndAPILocalSocket to copy.
+     */
     WifuEndAPILocalSocket & operator=(WifuEndAPILocalSocket const&) {
-
+        assert(false);
     }
 
+    /**
+     * @return A filename that is WifuEndAPILocalSocket will listen on for messages from the back-end.
+     * The file will be of the format /tmp/LS plus a random number.  For example /tmp/LS123456789
+     */
     string get_filename() {
         string s("/tmp/LS");
-        // TODO: figure out a way to ensure a machine global value to append to the file
         int id = IDGenerator::instance().get();
         s.append(Utils::itoa(id));
         return s;
@@ -63,27 +80,38 @@ private:
 
 public:
 
+    /**
+     * @return Static instance of this WifuEndAPILocalSocket
+     */
     static WifuEndAPILocalSocket& instance() {
         static WifuEndAPILocalSocket instance_;
         return instance_;
     }
 
+    /**
+     * Destructor
+     */
     virtual ~WifuEndAPILocalSocket() {
 
     }
 
     /**
      * This is the callback function where messages received come
+     * This function fills in the appropriate fields in the SocketData object
+     * associated with the socket id.
+     * Finally it posts on the Semaphore internal to to the above mentioned SocketData object.
      *
-     * @param message The message received
+     * @param message The message received from the back-end
+     *
+     * @see SocketData
      */
     void receive(string& message) {
-//        cout << "Response:\t" << message << endl;
+        //        cout << "Response:\t" << message << endl;
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
-        
-        
+
+
         if (!response_[NAME_STRING].compare(WIFU_SOCKET_NAME)) {
             sockets.put(0, new SocketData());
             sockets.get(0)->set_return_value(socket);
@@ -101,7 +129,7 @@ public:
             sockets.get(socket)->set_payload_length(response.size());
         }
 
-        if(!response_[NAME_STRING].compare(WIFU_ACCEPT_NAME)) {
+        if (!response_[NAME_STRING].compare(WIFU_ACCEPT_NAME)) {
             string address = response_[ADDRESS_STRING];
             u_int16_t port = atoi(response_[PORT_STRING].c_str());
             AddressPort* ap = new AddressPort(address, port);
@@ -121,7 +149,15 @@ public:
 
     /**
      * Non-blocking
+     * Creates a socket message and sends it to the back end.
+     * Then waits for a response
+     * See man 2 socket
      *
+     * @param domain Communication domain (usually AF_INET).
+     * @param type Specifies the communication semantics (usually SOCK_STREAM).
+     * @param protocol Specifies the protocol to use (TCP, TCP-AP, etc.).
+     *
+     * @return The new socket id
      */
     int wifu_socket(int domain, int type, int protocol) {
         socket_mutex_.wait();
@@ -148,6 +184,16 @@ public:
 
     /**
      * Non-blocking
+     * Bind a name to a socket
+     * See man 2 bind
+     *
+     * Creates a wifu_bind message and passes it to the back-end, then waits for a response on the specified fd.
+     *
+     * @param fd The socket id
+     * @param addr Address to bind to.  This must be a sockaddr_in object.
+     * @param len Length of object pointed to by addr.
+     *
+     * @return 0 if call was successfull, -1 otherwise (and ERRNO is set appropriately)
      */
     int wifu_bind(int fd, const struct sockaddr* addr, socklen_t len) {
         assert(sizeof (struct sockaddr_in) == len);
@@ -155,7 +201,7 @@ public:
         //TODO: determine if this is the best way to check for bad fd
         // we are essentially keeping track of the fd in two places now
         // we could fix this by having a different method on the front end.
-        if(sockets.get(fd) == NULL) {
+        if (sockets.get(fd) == NULL) {
             errno = EBADF;
             return -1;
         }
@@ -176,13 +222,24 @@ public:
         data->get_semaphore()->wait();
 
         int error = data->get_error();
-        if(error) {
+        if (error) {
             errno = error;
         }
 
         return data->get_return_value();
     }
 
+    /**
+     * Creates and sends a getsockopt message to the back-end, then wait for a response (on a per-socket basis).
+     * See man 2 getsockopt
+     *
+     * @param fd The socket id
+     * @param optname Name of option
+     * @param optval Value of the option
+     * @param optlen Length of optval
+     *
+     * @return 0 if call was successfull, -1 otherwise (and ERRNO is set appropriately)
+     */
     int wifu_getsockopt(int fd, int level, int optname, void *__restrict optval, socklen_t *__restrict optlen) {
 
         map<string, string> m;
@@ -208,6 +265,18 @@ public:
         return data->get_return_value();
     }
 
+    /**
+     * Creates and sends a wetsockopt message to the back-end, then wait for a response (on a per-socket basis).
+     * See man 2 setsockopt
+     *
+     * @param fd The socket id
+     * @param level Should be set to the protocol number of TCP
+     * @param optname Name of option
+     * @param optval Pointer to place to store the value
+     * @param optlen Length of optval
+     *
+     * @return 0 if call was successfull, -1 otherwise (and ERRNO is set appropriately)
+     */
     int wifu_setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen) {
 
         assert(optlen < BUFFER_SIZE);
@@ -233,13 +302,22 @@ public:
 
     /**
      * Non-blocking
+     * Mark this socket as listening
+     * See man 2 listen
+     *
+     * Creates a wifu_listen message and passes it to the back-end, then waits for a response on the specified fd.
+     *
+     * @param fd The socket id
+     * @param n The maximum number of connections to which the queue of pending connections for fd may grow.
+     *
+     * @return 0 if call was successfull, -1 otherwise (and ERRNO is set appropriately)
      */
     int wifu_listen(int fd, int n) {
 
         //TODO: determine if this is the best way to check for bad fd
         // we are essentially keeping track of the fd in two places now
         // we could fix this by having a different method on the front end.
-        if(sockets.get(fd) == NULL) {
+        if (sockets.get(fd) == NULL) {
             errno = EBADF;
             return -1;
         }
@@ -257,7 +335,7 @@ public:
         data->get_semaphore()->wait();
 
         int error = data->get_error();
-        if(error) {
+        if (error) {
             errno = error;
         }
 
@@ -266,6 +344,16 @@ public:
 
     /**
      * Blocking
+     * Accept incomming connections
+     * See man 2 accept
+     *
+     * Creates a wifu_accept message and passes it to the back-end, then waits for a response on the specified fd.
+     *
+     * @param fd The socket id
+     * @param addr Pointer to a structure to fill in with the remote address/port to which we connect
+     * @param addr_len the length of addr
+     *
+     * @return 0 if call was successfull, -1 otherwise (and ERRNO is set appropriately)
      */
     int wifu_accept(int fd, struct sockaddr* addr, socklen_t *__restrict addr_len) {
 
@@ -289,8 +377,8 @@ public:
 
 
         socklen_t length = data->get_address_port_length();
-        memcpy(addr_len, &length, sizeof(socklen_t));
-        memcpy(addr, data->get_address_port()->get_network_struct_ptr(),(size_t) length);
+        memcpy(addr_len, &length, sizeof (socklen_t));
+        memcpy(addr, data->get_address_port()->get_network_struct_ptr(), (size_t) length);
 
         int new_socket = data->get_return_value();
         sockets.put(new_socket, new SocketData());
@@ -299,7 +387,18 @@ public:
     }
 
     /**
-     * Possibly Blocking (man send 2)
+     * Possibly Blocking
+     * Send data to a remote destination
+     * See man 2 send
+     *
+     * Creates a wifu_send message and passes it to the back-end, then waits for a response on the specified fd.
+     *
+     * @param fd The socket id
+     * @param buf The buffer to send
+     * @param n The length of buf
+     * @param flags See man 2 send
+     *
+     * @return On success, the number of characters sent.  If an error occurs, -1 is returned and ERRNO is set.
      */
     ssize_t wifu_send(int fd, const void* buf, size_t n, int flags) {
         return wifu_sendto(fd, buf, n, flags, 0, 0);
@@ -307,13 +406,38 @@ public:
 
     /**
      * Blocking
+     * Receive data on a socket
+     * See man 2 send
+     *
+     * Creates a wifu_receive message and passes it to the back-end, then waits for a response on the specified fd.
+     *
+     * @param fd The socket id to receive on
+     * @param buf The buffer to fill upon recept of data
+     * @param n The length of buf
+     * @param flags See man 2 recv
+     *
+     * @return On success, the number of bytes received.  If an error occurs, -1 is returned and ERRNO is set.
+     * The return value may also be 0 if the peer performed an orderly shutdown
      */
     ssize_t wifu_recv(int fd, void* buf, size_t n, int flags) {
         return wifu_recvfrom(fd, buf, n, flags, 0, 0);
     }
 
     /**
-     * Possibly Blocking (man send 2)
+     * Possibly Blocking
+     * Send data to a remote destination
+     * See man 2 send
+     *
+     * Creates a wifu_send message and passes it to the back-end, then waits for a response on the specified fd.
+     *
+     * @param fd The socket id
+     * @param buf The buffer to send
+     * @param n The length of buf
+     * @param flags See man 2 send
+     * @param addr The address to send to
+     * @param addr_len The length of addr
+     *
+     * @return On success, the number of characters sent.  If an error occurs, -1 is returned and ERRNO is set.
      */
     ssize_t wifu_sendto(int fd, const void* buf, size_t n, int flags, const struct sockaddr* addr, socklen_t addr_len) {
         map<string, string> m;
@@ -340,6 +464,20 @@ public:
 
     /**
      * Blocking
+     * Receive data on a socket
+     * See man 2 send
+     *
+     * Creates a wifu_receive message and passes it to the back-end, then waits for a response on the specified fd.
+     *
+     * @param fd The socket id to receive on
+     * @param buf The buffer to fill upon recept of data
+     * @param n The length of buf
+     * @param flags See man 2 recv
+     * @param addr The address to receive from
+     * @param addr_len the length of addr
+     *
+     * @return On success, the number of bytes received.  If an error occurs, -1 is returned and ERRNO is set.
+     * The return value may also be 0 if the peer performed an orderly shutdown
      */
     ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr, socklen_t *__restrict addr_len) {
         map<string, string> m;
@@ -373,6 +511,16 @@ public:
 
     /**
      * Non-blocking
+     * Connect to a remote peer
+     * See man 2 connect
+     *
+     * Creates a wifu_connect message and passes it to the back-end, then waits for a response on the specified fd.
+     *
+     * @param fd The socket id
+     * @param addr The address/port of the remote peer to connect to
+     * @param len the length of addr
+     *
+     * @return 0 if call was successfull, -1 otherwise (and ERRNO is set appropriately)
      */
     int wifu_connect(int fd, const struct sockaddr* addr, socklen_t len) {
         assert(addr != NULL);
@@ -397,9 +545,24 @@ public:
     }
 
 private:
+    /**
+     * The file this WifuEndAPILocalSocket will write to in order to send messages to the back-end (usually /tmp/WS)
+     */
     string write_file_;
+
+    /**
+     * Special Semaphore used to indicate we are sending/receiving a wifu_socket message.
+     */
     BinarySemaphore socket_signal_;
+
+    /**
+     * Semaphore to only allow one call to wifu_socket at a time.
+     */
     BinarySemaphore socket_mutex_;
+
+    /**
+     * Response received from the back-end.  The key is the method name, the value is the message.
+     */
     map<string, string> response_;
 
 
