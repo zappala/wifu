@@ -66,6 +66,8 @@ public:
      * Sets the return value of the current socket API call
      * This method will be called in WifuEndAPILocalSocket::receive()
      *
+     * @param new_value The return value to save
+     *
      * @see WifuEndAPILocalSocket::receive()
      */
     void set_return_value(int new_value) {
@@ -76,6 +78,8 @@ public:
      * Sets the payload returned from the back-end on any API call that needs the payload, for example wifu_receive()
      * This method will be called in WifuEndAPILocalSocket::receive()
      *
+     * @param payload The payload to save
+     *
      * @see WifuEndAPILocalSocket::receive()
      */
     void set_payload(string& payload) {
@@ -85,6 +89,8 @@ public:
     /**
      * Sets the length of the payload returned from the back-end on any API call that needs the payload, for example wifu_receive()
      * This method will be called in WifuEndAPILocalSocket::receive()
+     *
+     * @param length The length of payload
      *
      * @see WifuEndAPILocalSocket::receive()
      */
@@ -114,6 +120,8 @@ public:
 
     /**
      * Stores the ERRNO value as returned by the back-end
+     *
+     * @param error The value ERRNO should be set
      */
     void set_error(int error) {
         this->error_ = error;
@@ -129,6 +137,8 @@ public:
     /**
      * Stores the AddressPort as returned by the back-end.
      * This could possibly be used by accept() where the remote peer is needed.
+     *
+     * @param ap Pointer to the AddressPort to save.  This should have previously been new'd.
      */
     void set_address_port(AddressPort* ap) {
         address_ = ap;

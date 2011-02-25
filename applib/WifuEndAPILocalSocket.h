@@ -29,6 +29,7 @@
 // TODO: Go over each man page and determine what we want to support,
 // TODO: then make sure that every function in this file supports that behavior.
 
+
 class WifuEndAPILocalSocket : public LocalSocketFullDuplex {
 private:
 
