@@ -34,15 +34,17 @@ private:
 
     /**
      * Empty copy constructor.  Should never be called.
+     * @param other The SocketDataMap to copy
      */
-    SocketDataMap(SocketDataMap const&) {
+    SocketDataMap(SocketDataMap const& other) {
         assert(false);
     }
 
     /**
      * Empty assignment operator.  Should never be called.
+     * @param other The SocketDataMap to copy
      */
-    SocketDataMap & operator=(SocketDataMap const&) {
+    SocketDataMap & operator=(SocketDataMap const& other) {
         assert(false);
     }
 
@@ -89,6 +91,7 @@ public:
      * Gets the value (SocketData pointer) associated with key.
      * If there is no value associated with key, NULL is returned.
      *
+     * @param key The socket id of the SocketData object needed.
      * @return The value (SocketData pointer) associated with key OR NULL if there is no association.
      */
     SocketData* get(const int key) {
@@ -102,6 +105,9 @@ public:
     /**
      * Associates key with value.
      * If key already exists, the value is is associated with is overwriten with value.
+     *
+     * @param key The socket id of value
+     * @param value Pointer to a SocketData object to associate with key
      */
     void put(int key, SocketData* value) {
         mutex_.wait();
@@ -112,6 +118,8 @@ public:
     /**
      * Removes the key-value pair from the data structure.
      * Calls delete on the value.
+     *
+     * @param key The socket id of the SocketData object to remove and delete.
      */
     void delete_at(const int key) {
         mutex_.wait();
@@ -122,6 +130,8 @@ public:
 
     /**
      * Removes the key-value pair from the data structure.
+     *
+     * @param key The socket id of the SocketData object to remove.
      */
     void erase_at(const int key) {
         mutex_.wait();
