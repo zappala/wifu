@@ -1,6 +1,6 @@
 #include "packet/IPPacket.h"
 
-IPPacket::IPPacket() {
+IPPacket::IPPacket() : length_set_(false) {
     ip_ = (struct iphdr*) payload_;
 
     set_ip_version(4);
@@ -10,13 +10,13 @@ IPPacket::IPPacket() {
     set_ip_ttl(MAX_TTL);
 }
 
-IPPacket::IPPacket(IPPacket& p) {
+IPPacket::IPPacket(IPPacket& p) : length_set_(false) {
     ip_ = (struct iphdr*) payload_;
 
     memcpy(payload_, p.payload_, p.get_ip_datagram_length());
 }
 
-IPPacket::IPPacket(unsigned char* buffer, int length) {
+IPPacket::IPPacket(unsigned char* buffer, int length) : length_set_(false) {
     ip_ = (struct iphdr*) payload_;
 
     memcpy(payload_, buffer, length);
@@ -80,6 +80,7 @@ u_int16_t IPPacket::get_ip_datagram_length() {
 
 void IPPacket::set_ip_datagram_length(u_int16_t length) {
     ip_->tot_len = htons(length);
+    length_set_ = true;
 }
 
 u_int16_t IPPacket::get_ip_identifier() {
@@ -162,4 +163,8 @@ void IPPacket::set_ip_destination_address_s(string daddr) {
 
 void IPPacket::init() {
     
+}
+
+bool IPPacket::length_is_set() {
+    return length_set_;
 }

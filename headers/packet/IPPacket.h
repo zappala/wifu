@@ -119,10 +119,12 @@ public:
 
     void init();
 
+    bool length_is_set();
 
 private:
     unsigned char payload_[PAYLOAD_SIZE];
     struct iphdr* ip_;
+    bool length_set_;
 };
 
 #endif	/* _IPPACKET_H */

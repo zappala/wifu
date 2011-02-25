@@ -19,7 +19,7 @@ void SynSent::exit(Context* c) {
 void SynSent::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     cout << "SynSent::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
-    TCPPacket* packet = new TCPPacket(*p);
+    TCPPacket* packet = (TCPPacket*) p;
 
     assert(packet->is_tcp_syn());
     assert(packet->is_tcp_ack());

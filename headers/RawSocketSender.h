@@ -20,6 +20,7 @@
 #include <errno.h>
 #include <arpa/inet.h>
 
+#include "exceptions/MalformedPacketException.h"
 #include "packet/WiFuPacket.h"
 
 using namespace std;
