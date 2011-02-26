@@ -62,8 +62,7 @@ void SimpleTCP::send_packet(Socket* s, WiFuPacket* p) {
     c->get_connection_manager()->send_packet(s, p);
     c->get_reliability()->send_packet(s, p);
 
-    NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
-    Dispatcher::instance().enqueue(e);
+    send_network_packet(s, p);
 }
 
 void SimpleTCP::connect(ConnectEvent* e) {
@@ -108,10 +107,22 @@ void SimpleTCP::resend_packet(Socket* s, WiFuPacket* p) {
     cout << "In SimpleTCP::resend_event()\n";
     IContextContainer* c = get_context(s);
 
+    // TODO: Does congestion control need to know about a resend?
     c->get_congestion_control()->resend_packet(s, p);
-    c->get_connection_manager()->resend_packet(s, p);
+
+    // Probably don't want to change states when we resend
+    // TODO: Does connection manager need to know about a resend?
+    //    c->get_connection_manager()->resend_packet(s, p);
+
+    // TODO: I think reliability needs to know about a resend (so it can start up another timer)
     c->get_reliability()->resend_packet(s, p);
 
+    send_network_packet(s, p);
+}
+
+void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {
+    TCPPacket* packet = (TCPPacket*) p;
+    cout << "SimpleTCP::send_network_packet(): SYN: " << packet->is_tcp_syn() << " ACK: " << packet->is_tcp_ack() << endl;
     NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
     Dispatcher::instance().enqueue(e);
 }

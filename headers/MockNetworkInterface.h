@@ -28,7 +28,15 @@ public:
 
 private:
     MockNetworkInterface();
+
+    bool should_drop(TCPPacket* p);
+    bool should_drop_syn(TCPPacket* p);
+    bool should_drop_synack(TCPPacket* p);
+    bool should_drop_ack(TCPPacket* p);
     int counter_;
+    bool syn_;
+    bool synack_;
+    bool ack_;
 };
 
 #endif	/* _MOCKNETWORKINTERFACE_H */

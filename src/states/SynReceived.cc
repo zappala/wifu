@@ -30,7 +30,8 @@ void SynReceived::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
         return;
     }
 
-    if (packet->is_tcp_ack()) {
+    if (packet->is_tcp_ack() && ! packet->is_tcp_syn()) {
+        cout << "SynReceived::receive_packet(): Packet is ACK" << endl;
 
         Socket* new_socket = new Socket(s->get_domain(),
                                             s->get_type(),

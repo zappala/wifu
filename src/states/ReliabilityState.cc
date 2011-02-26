@@ -1,15 +1,16 @@
 #include "states/ReliabilityState.h"
 
-ReliabilityState::ReliabilityState() {}
+ReliabilityState::ReliabilityState() {
+}
 
-ReliabilityState::~ReliabilityState() {}
+ReliabilityState::~ReliabilityState() {
+}
 
 void ReliabilityState::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     ReliabilityContext* rc = (ReliabilityContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
-    if(packet->is_tcp_ack() && (rc->get_seq_counter() - 1 == packet->get_tcp_ack_number()))
-    {
+    if (packet->is_tcp_ack() && (rc->get_seq_counter() - 1 == packet->get_tcp_ack_number())) {
         //cancel the timeout
         rc->set_saved_timeout(NULL);
     }
@@ -31,8 +32,7 @@ void ReliabilityState::send_packet(Context* c, Socket* s, WiFuPacket* p) {
     TCPPacket* packet = (TCPPacket*) p;
 
     TCPPacket* last_received = rc->get_last_packet_received();
-    if(last_received != 0)
-    {
+    if(last_received != 0) {
         packet->set_tcp_ack_number(last_received->get_tcp_sequence_number());
     }
 
@@ -54,7 +54,7 @@ void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
     if(rc->get_saved_timeout() == NULL || rc->get_saved_timeout() != e->get_timeout_event()) {
         return;
     }
-    
+
     cout << "In ReliabilityState::timer_fired(); means timeout." << endl;
 
     ResendPacketEvent* event = new ResendPacketEvent(e->get_socket(), rc->get_last_packet_sent());

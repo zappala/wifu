@@ -21,7 +21,7 @@ void Established::enter(Context* c) {
 
     switch (cmc->get_connection_type()) {
         case ACTIVE_OPEN:
-
+            cout << "Established::enter(), Active Open" << endl;
             response = new ResponseEvent(event->get_socket(), event->get_name(), event->get_map()[FILE_STRING]);
             response->put(ERRNO, Utils::itoa(0));
             response->put(RETURN_VALUE_STRING, Utils::itoa(0));
@@ -29,7 +29,10 @@ void Established::enter(Context* c) {
             break;
 
         case ESTABLISHED:
+            cout << "Established::enter(), Established" << endl;
             break;
+        case PASSIVE_OPEN:
+            cout << "Established::enter(), Passive Open" << endl;
         default:
             break;
     }
@@ -46,10 +49,10 @@ void Established::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*)p;
 
-    if(packet->is_tcp_syn() && packet->is_tcp_ack()) {
-        cmc->set_state(new SynSent());
-        Event* e = new NetworkReceivePacketEvent(s, p);
-        Dispatcher::instance().enqueue(e);
-        return;
-    }
+//    if(packet->is_tcp_syn() && packet->is_tcp_ack()) {
+//        cmc->set_state(new SynSent());
+//        Event* e = new NetworkReceivePacketEvent(s, p);
+//        Dispatcher::instance().enqueue(e);
+//        return;
+//    }
 }
