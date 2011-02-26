@@ -32,16 +32,38 @@
 
 using namespace std;
 
+/**
+ * Handler used by a spawned thread to read from.
+ */
 void * unix_receive_handler(void * arg);
 
 class LocalSocketReceiver;
 
+/**
+ * Data holder to pass information to the spawned thread running in unix_receive_handler().
+ */
 struct local_socket_receiver_obj {
+    /**
+     * Pointer to the LocalSocketReceiver which will handle incoming messages.
+     */
     LocalSocketReceiver * receiver;
+
+    /**
+     * File descriptor of the socket to read from.
+     */
     int sock;
+
+    /**
+     * Semaphore used as a signal indicating that the thread has started and
+     * sucessfully copied all necessary data from this structure.
+     */
     Semaphore sem;
 };
 
+/**
+ * Class which wraps a unix socket and listens for messages.
+ * A callback function is called upon receipt of any message.
+ */
 class LocalSocketReceiver {
 public:
     LocalSocketReceiver(string & file, LocalSocketReceiverCallback * callback);

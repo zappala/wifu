@@ -105,10 +105,20 @@ public:
     virtual void data(Event* e) {
     }
 
+    /**
+     * Called when e's execute() method determines that this IModule should respond to a send action.
+     *
+     * @param e The event which triggered a send action.
+     */
     virtual void send(Event* e) {
         
     }
 
+    /**
+     * Called when e's execute() method determines that this IModule should respond to a resend action.
+     *
+     * @param e The event which triggered a resend action.
+     */
     virtual void resend(Event* e) {
         
     }
@@ -188,6 +198,11 @@ public:
     }
     // </editor-fold>
 
+    /**
+     * Called when e's execute() method determines that this IModule should respond to a connection established action.
+     *
+     * @param e The event which triggered a connection established action.
+     */
     virtual void connection_established(Event* e) {
     }
 };
