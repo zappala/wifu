@@ -11,7 +11,7 @@
 #include <iostream>
 
 #include "contexts/Context.h"
-
+#include "states/Closed.h"
 
 using namespace std;
 

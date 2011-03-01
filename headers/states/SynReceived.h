@@ -12,6 +12,9 @@
 #include "contexts/ConnectionManagerContext.h"
 #include "states/Established.h"
 #include "events/ConnectEvent.h"
+#include "events/ConnectionEstablishedEvent.h"
+#include "events/NetworkReceivePacketEvent.h"
+
 using namespace std;
 
 class SynReceived : public State {

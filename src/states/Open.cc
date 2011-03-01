@@ -1,4 +1,3 @@
-#include "states/Closed.h"
 #include "states/Open.h"
 
 Open::Open() : State() {

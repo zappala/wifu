@@ -1,6 +1,4 @@
 #include "states/SynReceived.h"
-#include "events/ConnectionEstablishedEvent.h"
-#include "events/NetworkReceivePacketEvent.h"
 
 SynReceived::SynReceived() {
 

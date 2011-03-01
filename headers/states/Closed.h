@@ -18,6 +18,8 @@
 #include "packet/TCPPacket.h"
 #include "events/SendPacketEvent.h"
 #include "events/ConnectEvent.h"
+#include "events/ConnectionEstablishedEvent.h"
+#include "SourceGetter.h"
 
 using namespace std;
 

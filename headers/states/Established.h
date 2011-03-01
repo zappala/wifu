@@ -14,6 +14,7 @@
 #include "states/Established.h"
 #include "events/ResponseEvent.h"
 #include "events/ConnectEvent.h"
+#include "events/NetworkReceivePacketEvent.h"
 
 using namespace std;
 

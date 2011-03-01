@@ -1,5 +1,4 @@
 #include "states/Established.h"
-#include "events/NetworkReceivePacketEvent.h"
 
 Established::Established() {
 

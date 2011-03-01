@@ -1,6 +1,4 @@
 #include "states/Closed.h"
-#include "events/ConnectionEstablishedEvent.h"
-#include "SourceGetter.h"
 
 Closed::Closed() : State() {
 
