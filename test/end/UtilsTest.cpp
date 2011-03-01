@@ -10,12 +10,14 @@
 
 #include "gtest/gtest.h"
 #include "Utils.h"
+#include <sstream>
+#include <limits>
 
 using namespace std;
 
 namespace {
 
-	class UtilsTest : public ::testing::Test {
+	class gettimespecfuturetimeFixture : public ::testing::Test {
 	protected:
 		virtual void SetUp() {}
 		virtual void TearDown() {}
@@ -46,7 +48,7 @@ namespace {
 		}
 	};
 
-	TEST_F(UtilsTest, gettimespecfuturetimeSecondsTest) {
+	TEST_F(gettimespecfuturetimeFixture, gettimespecfuturetimeSecondsTest) {
 		nanosecondsDifference = 0;
 
 		secondsDifference = 0;
@@ -70,132 +72,173 @@ namespace {
 		ASSERT_EQ(secondsDifference, time.tv_sec - secondsStart);
 	}
 
-	TEST_F(UtilsTest, gettimespecfuturetimeNanosecondsTest) {
+	TEST_F(gettimespecfuturetimeFixture, gettimespecfuturetimeNanosecondsTest) {
 		secondsDifference = 0;
+
+		//TODO: some of these may fail because the threshold isn't high enough. Put them in a separate precision test executable?
+		//for now we will use EXPECT instead of ASSERT
 
 		//nanoseconds < 1 second
 		nanosecondsDifference = 0;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		nanosecondsDifference = 100;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		nanosecondsDifference = 500;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		nanosecondsDifference = 1000;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		nanosecondsDifference = 10000;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		nanosecondsDifference = 100000;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		nanosecondsDifference = 1000000;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		nanosecondsDifference = 10000000;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
-		//nanoseconds = 1 second
 		nanosecondsDifference = 100000000;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
-		//nanoseconds > 1 second
+		//nanoseconds = 1 second
 		nanosecondsDifference = 1000000000;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) + 1000000000 < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) + 1000000000 < nanosecondsDifference + nanoSecondThreshold);
 
+		//nanoseconds > 1 second
 		nanosecondsDifference = 10000000000;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) + 10000000000 < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) + 10000000000 < nanosecondsDifference + nanoSecondThreshold);
 
 		nanosecondsDifference = 100000000000;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) + 100000000000 < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) + 100000000000 < nanosecondsDifference + nanoSecondThreshold);
 
 		nanosecondsDifference = 1000000000000;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) + 1000000000000 < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) + 1000000000000 < nanosecondsDifference + nanoSecondThreshold);
 
 		nanosecondsDifference = 10000000000000;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) + 10000000000000 < nanosecondsDifference + nanoSecondThreshold);
+		EXPECT_TRUE(getNanosecondDifference(nanosecondsStart, time.tv_nsec) + 10000000000000 < nanosecondsDifference + nanoSecondThreshold);
 	}
 
-	TEST_F(UtilsTest, gettimespecfuturetimeBothTest) {
+	TEST_F(gettimespecfuturetimeFixture, gettimespecfuturetimeBothTest) {
 		secondsDifference = 1;
 		nanosecondsDifference = nanoSecondsInASecond / 2;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
+		EXPECT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
 					getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		secondsDifference = 5;
 		nanosecondsDifference = nanoSecondsInASecond / 4;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
+		EXPECT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
 					getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		secondsDifference = 180;
 		nanosecondsDifference = nanoSecondsInASecond / 8;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
+		EXPECT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
 					getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		secondsDifference = 360;
 		nanosecondsDifference = nanoSecondsInASecond / 16;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
+		EXPECT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
 					getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		secondsDifference = 86400; //one day
 		nanosecondsDifference = nanoSecondsInASecond / 32;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
+		EXPECT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
 					getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		secondsDifference = 604800; //one day
 		nanosecondsDifference = nanoSecondsInASecond / 64;
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
+		EXPECT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
 					getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
 
 		secondsDifference = 2629743; //one month    | found on
 		nanosecondsDifference = 830000; //one month | Google
 		setupTimespec();
 		Utils::get_timespec_future_time(secondsDifference, nanosecondsDifference, &time);
-		ASSERT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
+		EXPECT_TRUE(time.tv_sec - secondsStart == secondsDifference &&
 					getNanosecondDifference(nanosecondsStart, time.tv_nsec) < nanosecondsDifference + nanoSecondThreshold);
+	}
+
+	TEST(UtilsTest, itoa) {
+		stringstream converter;
+		string result;
+		int intMax = numeric_limits<int>::max();
+		int intMin = numeric_limits<int>::min();
+		int oneHundred = 100;
+		int negativeOneHundred = -100;
+		int zero = 0;
+
+		converter << intMax;
+		result = converter.str();
+		ASSERT_EQ(result, Utils::itoa(intMax));
+
+		converter.str("");
+
+		converter << intMin;
+		result = converter.str();
+		ASSERT_EQ(result, Utils::itoa(intMin));
+
+		converter.str("");
+
+		converter << oneHundred;
+		result = converter.str();
+		ASSERT_EQ(result, Utils::itoa(oneHundred));
+
+		converter.str("");
+
+		converter << negativeOneHundred;
+		result = converter.str();
+		ASSERT_EQ(result, Utils::itoa(negativeOneHundred));
+
+		converter.str("");
+
+		converter << zero;
+		result = converter.str();
+		ASSERT_EQ(result, Utils::itoa(zero));
 	}
 
 }
