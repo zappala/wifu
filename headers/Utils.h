@@ -29,6 +29,14 @@ public:
 	 */
     static void get_timespec_future_time(int seconds, long int nanoseconds, struct timespec* ts);
 
+    /**
+     * Converts an integer to a string. Do not pass something bigger than an int
+     * in (like uint, long, ulong, etc.) even though the compiler will let you.
+     * If you do you will get back "-1".
+     *
+     * @param i an integer
+     * @return the passed integer as a string
+     */
     static string itoa(int i);
 };
 
