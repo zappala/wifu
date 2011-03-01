@@ -424,6 +424,7 @@ namespace {
         EXPECT_EQ(expected, actual);
     }
 
+    //TODO: put the tests below in a separate file for "precision tests"?
     TEST_F(TimeoutEventManagerTest, PrecisionTest10Milliseconds) {
         // 10 milliseconds in nanoseconds
         precision_test(10000000);
