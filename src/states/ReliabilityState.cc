@@ -6,10 +6,11 @@ ReliabilityState::ReliabilityState() {
 ReliabilityState::~ReliabilityState() {
 }
 
-void ReliabilityState::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
+/*void ReliabilityState::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     ReliabilityContext* rc = (ReliabilityContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
+    cout << "ReliabilityState::receive_packet: Socket pointer = " << s << "\n";
     cout << "ReliabilityState::receive_packet: SYN = " << packet->is_tcp_syn() << ", ACK = " << packet->is_tcp_ack() << "\n";
     cout << "ReliabilityState::receive_packet: Seq. number = " << packet->get_tcp_sequence_number() << ", ACK number = " << packet->get_tcp_ack_number() << "\n";
 
@@ -20,13 +21,17 @@ void ReliabilityState::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
         assert(last_sent->get_tcp_sequence_number() != packet->get_tcp_ack_number());
     }
 
-    if (last_sent != 0 && packet->get_tcp_sequence_number() < last_sent->get_tcp_ack_number()) {
+    //if (last_sent != 0 && packet->get_tcp_sequence_number() < last_sent->get_tcp_ack_number()) {
+    //if(last_sent->get_tcp_ack_number() - 1 <= packet->get_tcp_sequence_number())
+    if(rc->get_last_packet_received() != 0 && rc->get_last_packet_received()->get_tcp_sequence_number() < packet->get_tcp_sequence_number()) {
         // retransmit last packet
         cout << "ReliabilityState::receive_packet: retransmitting packet:\n";
         cout << "\tSYN = " << packet->is_tcp_syn() << ", ACK = " << packet->is_tcp_ack() << "\n";
         cout << "\tSeq. number = " << packet->get_tcp_sequence_number() << ", ACK number = " << packet->get_tcp_ack_number() << "\n";
         ResendPacketEvent* event = new ResendPacketEvent(s, rc->get_last_packet_sent());
         Dispatcher::instance().enqueue(event);
+
+        return;
     }
 
     if (last_sent != 0 && (last_sent->get_tcp_sequence_number() < packet->get_tcp_ack_number())) {
@@ -39,6 +44,40 @@ void ReliabilityState::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     if (last_sent == 0 || (last_sent->get_tcp_sequence_number() < packet->get_tcp_ack_number())) {
         rc->set_last_packet_received(packet);
         // TODO: remove any ACK'ed packet(s) from memory?
+    }
+}*/
+
+void ReliabilityState::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
+    ReliabilityContext* rc = (ReliabilityContext*) c;
+    TCPPacket* packet = (TCPPacket*) p;
+
+    //cout << "ReliabilityState::receive_packet: Socket pointer = " << s << "\n";
+    cout << "ReliabilityState::receive_packet: SYN = " << packet->is_tcp_syn() << ", ACK = " << packet->is_tcp_ack() << "\n";
+    cout << "ReliabilityState::receive_packet: Seq. number = " << packet->get_tcp_sequence_number() << ", ACK number = " << packet->get_tcp_ack_number() << "\n";
+
+    TCPPacket* last_sent = rc->get_last_packet_sent();
+
+    //Cancel timer if'n we get an ack number higher than the last (highest) seq num we sent.
+    if(last_sent != 0 && packet->get_tcp_ack_number() > last_sent->get_tcp_sequence_number()) {
+        rc->set_saved_timeout(0);
+        cout << "ReliabilityState::receive_packet: Timer canceled.\n";
+    }
+    else if (last_sent == 0) {
+        assert(rc->get_saved_timeout() == 0);
+    }
+
+    //Retransmit when we receive something we believe we have ACKed
+    //That is, our last sent ACK is strictly greater than the received sequence number
+    if(last_sent != 0 && last_sent->get_tcp_ack_number() > packet->get_tcp_sequence_number()){
+        //Cancel the last timeout, we's resendin'!
+        rc->set_saved_timeout(0);
+        //Resend
+        ResendPacketEvent* e = new ResendPacketEvent(s, last_sent);
+        Dispatcher::instance().enqueue(e);
+    }
+    else {
+        //Save the packet if we're not retransmitting
+        rc->set_last_packet_received(packet);
     }
 }
 
@@ -56,17 +95,21 @@ void ReliabilityState::send_packet(Context* c, Socket* s, WiFuPacket* p) {
     ReliabilityContext* rc = (ReliabilityContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
+    //Set up the new packet; ACK the last received stuff
     TCPPacket* last_received = rc->get_last_packet_received();
     if (last_received != 0) {
         packet->set_tcp_ack_number(last_received->get_tcp_sequence_number() + 1);
     }
 
+    //Increment our central sequence number counter
     u_int32_t seq_num = rc->get_seq_counter();
     packet->set_tcp_sequence_number(seq_num);
     rc->set_seq_counter(rc->get_seq_counter() + 1);
 
+    //Save the last packet for Strong Bad
     rc->set_last_packet_sent(packet);
 
+    //Set timer
     if (should_set_resend_timer(packet)) {
         create_save_and_dispatch_timeout_event(rc, s, 1, 0);
     }
