@@ -10,12 +10,13 @@ void ReliabilityState::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     ReliabilityContext* rc = (ReliabilityContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
-    if (packet->is_tcp_ack() && (rc->get_seq_counter() - 1 == packet->get_tcp_ack_number())) {
+    if (packet->is_tcp_ack() && (rc->get_seq_counter() == packet->get_tcp_ack_number())) {
         //cancel the timeout
         rc->set_saved_timeout(NULL);
     }
 
     rc->set_last_packet_received(packet);
+    // TODO: remove any ACK'ed packet(s) from memory?
 }
 
 void ReliabilityState::enter(Context* c) {
@@ -27,21 +28,23 @@ void ReliabilityState::exit(Context* c) {
 }
 
 void ReliabilityState::send_packet(Context* c, Socket* s, WiFuPacket* p) {
-    ReliabilityContext* rc = (ReliabilityContext*) c;
     cout << "In ReliabilityState::send_packet()" << endl;
+
+    ReliabilityContext* rc = (ReliabilityContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
     TCPPacket* last_received = rc->get_last_packet_received();
     if(last_received != 0) {
-        packet->set_tcp_ack_number(last_received->get_tcp_sequence_number());
+        packet->set_tcp_ack_number(last_received->get_tcp_sequence_number() + 1);
     }
 
-    packet->set_tcp_sequence_number(rc->get_seq_counter());
+    u_int32_t seq_num = rc->get_seq_counter();
+    packet->set_tcp_sequence_number(seq_num);
     rc->set_seq_counter(rc->get_seq_counter() + 1);
+    
     rc->set_last_packet_sent(packet);
 
-    if(!packet->is_tcp_ack() || packet->is_tcp_syn()) {
-        //TimeoutEvent* timeout = new TimeoutEvent(s, 0, 1);
+    if(should_set_resend_timer(packet)) {
         TimeoutEvent* timeout = new TimeoutEvent(s, 1, 0);
         rc->set_saved_timeout(timeout);
         Dispatcher::instance().enqueue(timeout);
@@ -69,4 +72,8 @@ void ReliabilityState::resend_packet(Context* c, Socket* s, WiFuPacket* p) {
     TimeoutEvent* timeout = new TimeoutEvent(s, 1, 0);
     rc->set_saved_timeout(timeout);
     Dispatcher::instance().enqueue(timeout);
+}
+
+bool ReliabilityState::should_set_resend_timer(TCPPacket* p) {
+    
 }

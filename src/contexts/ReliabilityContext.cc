@@ -79,6 +79,7 @@ TimeoutEvent* ReliabilityContext::get_saved_timeout() {
 void ReliabilityContext::set_seq_counter(u_int32_t value) {
     seq_counter_ = value;
 }
+
 u_int32_t ReliabilityContext::get_seq_counter() {
     return seq_counter_;
 }

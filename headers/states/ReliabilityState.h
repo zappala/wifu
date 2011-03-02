@@ -8,15 +8,20 @@
 #ifndef RELIABILITYSTATE_H
 #define	RELIABILITYSTATE_H
 
+#include <string>
+
 #include "contexts/Context.h"
+#include "contexts/ReliabilityContext.h"
+
 #include "AddressPort.h"
 #include "Socket.h"
-#include "events/ConnectEvent.h"
-#include <string>
-#include "events/TimerFiredEvent.h"
-#include "contexts/ReliabilityContext.h"
-#include "events/TimerEvent.h"
 #include "Dispatcher.h"
+
+#include "packet/TCPPacket.h"
+
+#include "events/ConnectEvent.h"
+#include "events/TimerFiredEvent.h"
+#include "events/TimerEvent.h"
 #include "events/ResendPacketEvent.h"
 
 using namespace std;
@@ -32,6 +37,9 @@ public:
     void send_packet(Context* c, Socket* s, WiFuPacket* p);
     void timer_fired(Context* c, TimerFiredEvent* e);
     void resend_packet(Context* c, Socket* s, WiFuPacket* p);
+
+private:
+    bool should_set_resend_timer(TCPPacket* p);
 };
 
 #endif	/* RELIABILITYSTATE_H */
