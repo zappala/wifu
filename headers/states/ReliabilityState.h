@@ -40,6 +40,7 @@ public:
 
 private:
     bool should_set_resend_timer(TCPPacket* p);
+    void create_save_and_dispatch_timeout_event(Context* c, Socket* s, int seconds, long int nanoseconds);
 };
 
 #endif	/* RELIABILITYSTATE_H */
