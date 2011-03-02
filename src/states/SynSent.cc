@@ -21,8 +21,6 @@ void SynSent::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
-    assert(packet->is_tcp_syn());
-    assert(packet->is_tcp_ack());
 
     if (packet->is_tcp_syn() && packet->is_tcp_ack()) {
         cout << "SynSent::receive_packet(): Packet is SYNACK" << endl;
@@ -47,6 +45,4 @@ void SynSent::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
         cmc->set_state(new Established());
         return;
     }
-
-    assert(false);
 }

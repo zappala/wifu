@@ -21,8 +21,6 @@ void Accept::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
-    assert(packet->is_tcp_syn());
-
     if(packet->is_tcp_syn()) {
         cout << "Accept::receive_packet(): Packet is a SYN" << endl;
         unsigned char* data = (unsigned char*) "";
@@ -45,11 +43,5 @@ void Accept::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
         Dispatcher::instance().enqueue(e);
 
         cmc->set_state(new SynReceived());
-        return;
     }
-
-    // Should never receive a different type of packet in the Listent State
-    assert(false);
-
-
 }

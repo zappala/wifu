@@ -21,14 +21,7 @@ void SynReceived::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
-    if (packet->is_tcp_syn() && !packet->is_tcp_ack()) {
-        cmc->set_state(new Accept());
-        Event* e = new NetworkReceivePacketEvent(s, p);
-        Dispatcher::instance().enqueue(e);
-        return;
-    }
-
-    if (packet->is_tcp_ack() && ! packet->is_tcp_syn()) {
+    if (packet->is_tcp_ack()) {
         cout << "SynReceived::receive_packet(): Packet is ACK" << endl;
 
         Socket* new_socket = new Socket(s->get_domain(),
@@ -43,6 +36,4 @@ void SynReceived::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
 
         return;
     }
-
-    assert(false);
 }

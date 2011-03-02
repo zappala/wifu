@@ -48,10 +48,8 @@ void Established::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*)p;
 
-//    if(packet->is_tcp_syn() && packet->is_tcp_ack()) {
-//        cmc->set_state(new SynSent());
-//        Event* e = new NetworkReceivePacketEvent(s, p);
-//        Dispatcher::instance().enqueue(e);
-//        return;
-//    }
+    if(packet->is_tcp_syn()) {
+        // ignore potential resends of three-way handshake packets
+        return;
+    }
 }
