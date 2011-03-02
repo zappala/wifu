@@ -52,10 +52,11 @@ MockNetworkInterface::MockNetworkInterface() : INetworkInterface() {
 // Will drop each leg of three-way handshake only once
 
 bool MockNetworkInterface::should_drop(TCPPacket* p) {
-    return should_drop_syn(p) || should_drop_synack(p) || should_drop_ack(p);
+    //return should_drop_syn(p) || should_drop_synack(p) || should_drop_ack(p);
+    return should_drop_syn(p) || should_drop_synack(p);
 //        return should_drop_synack(p);
 //    return should_drop_ack(p);
-//            return should_drop_syn(p);
+            //return should_drop_syn(p);
     //    return false;
 }
 
