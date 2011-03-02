@@ -1,6 +1,6 @@
 #include "contexts/ReliabilityContext.h"
 
-ReliabilityContext::ReliabilityContext() : Context(), seq_counter_(5), last_packet_sent_(0), last_packet_received_(0) {
+ReliabilityContext::ReliabilityContext() : Context(), seq_counter_(1), last_packet_sent_(0), last_packet_received_(0) {
     set_state(new ReliabilityState());
 }
 

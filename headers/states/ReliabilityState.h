@@ -41,6 +41,10 @@ public:
 private:
     bool should_set_resend_timer(TCPPacket* p);
     void create_save_and_dispatch_timeout_event(Context* c, Socket* s, int seconds, long int nanoseconds);
+
+    // private methods used in receive_packet()
+    void cancel_timer(Context* c, WiFuPacket* p);
+    bool check_and_resend_packet(Context* c, Socket* s, WiFuPacket* p);
 };
 
 #endif	/* RELIABILITYSTATE_H */
