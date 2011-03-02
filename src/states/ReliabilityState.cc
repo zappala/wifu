@@ -10,6 +10,13 @@ void ReliabilityState::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
     ReliabilityContext* rc = (ReliabilityContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
 
+    TCPPacket* last_sent = rc->get_last_packet_sent();
+    if (last_sent != 0 && packet->get_tcp_sequence_number() > last_sent->get_tcp_ack_number()) {
+        // retransmit last packet
+        ResendPacketEvent* event = new ResendPacketEvent(s, rc->get_last_packet_sent());
+        Dispatcher::instance().enqueue(event);
+    }
+
     if (packet->is_tcp_ack() && (rc->get_seq_counter() == packet->get_tcp_ack_number())) {
         //cancel the timeout
         rc->set_saved_timeout(NULL);
@@ -70,13 +77,13 @@ void ReliabilityState::resend_packet(Context* c, Socket* s, WiFuPacket* p) {
 bool ReliabilityState::should_set_resend_timer(TCPPacket* p) {
     // if only an ack, don't resend
     // TODO: Is there an easier way to do this?
-    if(p->is_tcp_ack() && 
-       p->get_data_length_bytes() == 0 &&
-       !p->is_tcp_fin() &&
-       !p->is_tcp_psh() &&
-       !p->is_tcp_rst() &&
-       !p->is_tcp_syn() &&
-       !p->is_tcp_urg()) {
+    if (p->is_tcp_ack() &&
+            p->get_data_length_bytes() == 0 &&
+            !p->is_tcp_fin() &&
+            !p->is_tcp_psh() &&
+            !p->is_tcp_rst() &&
+            !p->is_tcp_syn() &&
+            !p->is_tcp_urg()) {
         cout << "ReliabilityState::should_set_resend_timer() returning false" << endl;
         return false;
     }

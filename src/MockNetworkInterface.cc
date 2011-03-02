@@ -85,9 +85,9 @@ bool MockNetworkInterface::should_drop_ack(TCPPacket* p) {
     if (ack_) {
         return false;
     }
+    ack_ = !p->is_tcp_syn() && p->is_tcp_ack();
     if (ack_) {
         cout << "Dropping the ACK of the SYNACK and going for a SNACK.\n";
     }
-    ack_ = !p->is_tcp_syn() && p->is_tcp_ack();
     return ack_;
 }

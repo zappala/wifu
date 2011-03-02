@@ -227,6 +227,7 @@ namespace {
 
     TEST_F(BackEndMockTest, mockConnectTest) {
         connect_test();
+        sleep(10);
     }
 
     //    void* compare_thread(void* args) {
