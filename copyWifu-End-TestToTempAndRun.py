@@ -10,6 +10,5 @@ if __name__ == '__main__':
 	runCommand = "./wifu-end-test"
 	if len(sys.argv) > 1:
 		runCommand = " ".join([runCommand, " ".join(sys.argv[1:])])
-		os.system(runCommand)
-	else:
-		os.system(runCommand)
+
+	os.system(runCommand)
