@@ -72,7 +72,11 @@ void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
 
 void ReliabilityState::resend_packet(Context* c, Socket* s, WiFuPacket* p) {
     cout << "In ReliabilityState::resend_packet()" << endl;
-    create_save_and_dispatch_timeout_event(c, s, 1, 0);
+    ReliabilityContext* rc = (ReliabilityContext*) c;
+    rc->set_saved_timeout(0);
+    if (should_set_resend_timer((TCPPacket*)p)) {
+        create_save_and_dispatch_timeout_event(c, s, 1, 0);
+    }
 }
 
 bool ReliabilityState::should_set_resend_timer(TCPPacket* p) {
@@ -98,6 +102,7 @@ void ReliabilityState::create_save_and_dispatch_timeout_event(
         int seconds,
         long int nanoseconds) {
 
+    cout << "ReliabilityState::create_save_and_dispatch_timeout_event: Creating a timeout!\n";
     ReliabilityContext* rc = (ReliabilityContext*) c;
 
     TimeoutEvent* timeout = new TimeoutEvent(s, seconds, nanoseconds);
