@@ -31,7 +31,6 @@ void NetworkInterface::network_receive(WiFuPacket* p) {
 		return;
 	}
 
-        cout << "NetworkInterface::network_receive(), socket: " << s << endl;
 	Event* e = new NetworkReceivePacketEvent(s, p);
 	Dispatcher::instance().enqueue(e);
 }
@@ -39,7 +38,6 @@ void NetworkInterface::network_receive(WiFuPacket* p) {
 void NetworkInterface::network_send(Event* e) {
 	NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
 	// TODO: Check return value (bytes sent)?
-        cout << "NetworkInterface::network_send()" << endl;
 	sender_.send(event->get_packet());
 }
 
