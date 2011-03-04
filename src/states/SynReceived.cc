@@ -31,8 +31,8 @@ void SynReceived::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
                                             s->get_local_address_port(),
                                             packet->get_source_address_port());
 
-        ConnectionEstablishedEvent* e = new ConnectionEstablishedEvent(cmc->get_accept_event(), new_socket);
-        Dispatcher::instance().enqueue(e);
+        ConnectionEstablishedEvent* event = new ConnectionEstablishedEvent(cmc->get_accept_event(), new_socket);
+        Dispatcher::instance().enqueue(event);
         cmc->set_state(new Listen());
 
         return;
