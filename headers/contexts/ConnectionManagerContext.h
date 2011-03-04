@@ -30,20 +30,6 @@ class ConnectionManagerContext : public Context {
 public:
     ConnectionManagerContext();
 
-    void socket(SocketEvent* e);
-    void bind(BindEvent* e);
-    void listen(ListenEvent* e);
-    void connect(ConnectEvent* e);
-    void accept(AcceptEvent* e);
-    void new_connection_established(ConnectionEstablishedEvent* e);
-    void close();
-    void receive_packet(NetworkReceivePacketEvent* e);
-    void send_packet(SendPacketEvent* e);
-    void timer_fired_event(TimerFiredEvent* e);
-    void resend_packet(ResendPacketEvent* e);
-
-    // Non-state methods
-
     int get_back_log();
     void set_back_log(int back_log);
 

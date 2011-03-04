@@ -27,7 +27,20 @@ public:
     Context();
     virtual ~Context();
     virtual void set_state(State* s);
-    State* get_state();
+    inline State* get_state();
+
+    // From IContext
+    virtual void socket(SocketEvent* e);
+    virtual void bind(BindEvent* e);
+    virtual void listen(ListenEvent* e);
+    virtual void connect(ConnectEvent* e);
+    virtual void accept(AcceptEvent* e);
+    virtual void new_connection_established(ConnectionEstablishedEvent* e);
+    virtual void close();
+    virtual void receive_packet(NetworkReceivePacketEvent* e);
+    virtual void send_packet(SendPacketEvent* e);
+    virtual void timer_fired_event(TimerFiredEvent* e);
+    virtual void resend_packet(ResendPacketEvent* e);
 
 private:
     class State* current_;

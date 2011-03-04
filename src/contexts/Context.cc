@@ -18,8 +18,52 @@ void Context::set_state(State* s) {
     }
 }
 
-State* Context::get_state() {
+inline State* Context::get_state() {
     return current_;
+}
+
+void Context::socket(SocketEvent* e) {
+    get_state()->socket(this, e);
+}
+
+void Context::bind(BindEvent* e) {
+    get_state()->bind(this, e);
+}
+
+void Context::listen(ListenEvent* e) {
+    get_state()->listen(this, e);
+}
+
+void Context::connect(ConnectEvent* e) {
+    get_state()->connect(this, e);
+}
+
+void Context::accept(AcceptEvent* e) {
+    get_state()->accept(this, e);
+}
+
+void Context::new_connection_established(ConnectionEstablishedEvent* e) {
+    get_state()->new_connection_established(this, e);
+}
+
+void Context::close() {
+    get_state()->close(this);
+}
+
+void Context::receive_packet(NetworkReceivePacketEvent* e) {
+    get_state()->receive_packet(this, e);
+}
+
+void Context::send_packet(SendPacketEvent* e) {
+    get_state()->send_packet(this, e);
+}
+
+void Context::timer_fired_event(TimerFiredEvent* e) {
+    get_state()->timer_fired(this, e);
+}
+
+void Context::resend_packet(ResendPacketEvent* e) {
+    get_state()->resend_packet(this, e);
 }
 
 

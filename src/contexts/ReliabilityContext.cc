@@ -8,50 +8,6 @@ ReliabilityContext::~ReliabilityContext() {
 
 }
 
-void ReliabilityContext::socket(SocketEvent* e) {
-    get_state()->socket(this, e);
-}
-
-void ReliabilityContext::bind(BindEvent* e) {
-    get_state()->bind(this, e);
-}
-
-void ReliabilityContext::listen(ListenEvent* e) {
-    get_state()->listen(this, e);
-}
-
-void ReliabilityContext::connect(ConnectEvent* e) {
-    get_state()->connect(this, e);
-}
-
-void ReliabilityContext::accept(AcceptEvent* e) {
-    get_state()->accept(this, e);
-}
-
-void ReliabilityContext::new_connection_established(ConnectionEstablishedEvent* e) {
-    get_state()->new_connection_established(this, e);
-}
-
-void ReliabilityContext::close() {
-    get_state()->close(this);
-}
-
-void ReliabilityContext::receive_packet(NetworkReceivePacketEvent* e) {
-    get_state()->receive_packet(this, e);
-}
-
-void ReliabilityContext::send_packet(SendPacketEvent* e) {
-    get_state()->send_packet(this, e);
-}
-
-void ReliabilityContext::timer_fired_event(TimerFiredEvent* e) {
-    get_state()->timer_fired(this, e);
-}
-
-void ReliabilityContext::resend_packet(ResendPacketEvent* e) {
-    get_state()->resend_packet(this, e);
-}
-
 TCPPacket* ReliabilityContext::get_last_packet_sent() {
     return last_packet_sent_;
 }

@@ -23,17 +23,7 @@ using namespace std;
 class CongestionControlContext : public Context {
 public:
     CongestionControlContext();
-    void socket(SocketEvent* e);
-    void bind(BindEvent* e);
-    void listen(ListenEvent* e);
-    void connect(ConnectEvent* e);
-    void accept(AcceptEvent* e);
-    void new_connection_established(ConnectionEstablishedEvent* e);
-    void close();
-    void receive_packet(NetworkReceivePacketEvent* e);
-    void send_packet(SendPacketEvent* e);
-    void timer_fired_event(TimerFiredEvent* e);
-    void resend_packet(ResendPacketEvent* e);
+    virtual ~CongestionControlContext();
 
 };
 
