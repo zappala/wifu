@@ -21,48 +21,50 @@ SimpleTCP& SimpleTCP::instance() {
 SimpleTCP::~SimpleTCP() {
 }
 
-void SimpleTCP::socket(Socket* s) {
+void SimpleTCP::socket(SocketEvent* e) {
+    Socket* s = e->get_socket();
     save_socket(s);
     IContextContainer* c = get_context(s);
 
-    c->get_congestion_control()->socket(s);
-    c->get_connection_manager()->socket(s);
-    c->get_reliability()->socket(s);
+    c->get_congestion_control()->socket(e);
+    c->get_connection_manager()->socket(e);
+    c->get_reliability()->socket(e);
 }
 
-void SimpleTCP::bind(Socket* s, AddressPort* ap) {
-    IContextContainer* c = get_context(s);
+void SimpleTCP::bind(BindEvent* e) {
+    IContextContainer* c = get_context(e->get_socket());
 
-    c->get_congestion_control()->bind(s, ap);
-    c->get_connection_manager()->bind(s, ap);
-    c->get_reliability()->bind(s, ap);
+    c->get_congestion_control()->bind(e);
+    c->get_connection_manager()->bind(e);
+    c->get_reliability()->bind(e);
 }
 
-void SimpleTCP::listen(Socket* s, int back_log) {
-    IContextContainer* c = get_context(s);
+void SimpleTCP::listen(ListenEvent* e) {
+    IContextContainer* c = get_context(e->get_socket());
 
-    c->get_congestion_control()->listen(s, back_log);
-    c->get_connection_manager()->listen(s, back_log);
-    c->get_reliability()->listen(s, back_log);
+    c->get_congestion_control()->listen(e);
+    c->get_connection_manager()->listen(e);
+    c->get_reliability()->listen(e);
 }
 
-void SimpleTCP::receive_packet(Socket* s, WiFuPacket* p) {
-    IContextContainer* c = get_context(s);
+void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
+    IContextContainer* c = get_context(e->get_socket());
 
-    c->get_congestion_control()->receive_packet(s, p);
-    c->get_connection_manager()->receive_packet(s, p);
-    c->get_reliability()->receive_packet(s, p);
+    c->get_congestion_control()->receive_packet(e);
+    c->get_connection_manager()->receive_packet(e);
+    c->get_reliability()->receive_packet(e);
 }
 
-void SimpleTCP::send_packet(Socket* s, WiFuPacket* p) {
+void SimpleTCP::send_packet(SendPacketEvent* e) {
     cout << "SimpleTCP::send_packet()" << endl;
+    Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
-    c->get_congestion_control()->send_packet(s, p);
-    c->get_connection_manager()->send_packet(s, p);
-    c->get_reliability()->send_packet(s, p);
+    c->get_congestion_control()->send_packet(e);
+    c->get_connection_manager()->send_packet(e);
+    c->get_reliability()->send_packet(e);
 
-    send_network_packet(s, p);
+    send_network_packet(s, e->get_packet());
 }
 
 void SimpleTCP::connect(ConnectEvent* e) {
@@ -81,13 +83,14 @@ void SimpleTCP::accept(AcceptEvent* e) {
     c->get_reliability()->accept(e);
 }
 
-void SimpleTCP::new_connection_established(Socket* s) {
-    save_socket(s);
-    IContextContainer* c = get_context(s);
+void SimpleTCP::new_connection_established(ConnectionEstablishedEvent* e) {
+    Socket* new_socket = e->get_new_socket();
+    save_socket(new_socket);
+    IContextContainer* c = get_context(new_socket);
 
-    c->get_congestion_control()->new_connection_established(s);
-    c->get_connection_manager()->new_connection_established(s);
-    c->get_reliability()->new_connection_established(s);
+    c->get_congestion_control()->new_connection_established(e);
+    c->get_connection_manager()->new_connection_established(e);
+    c->get_reliability()->new_connection_established(e);
 
 }
 
@@ -103,21 +106,22 @@ void SimpleTCP::timer_fired_event(TimerFiredEvent* e) {
     c->get_reliability()->timer_fired_event(e);
 }
 
-void SimpleTCP::resend_packet(Socket* s, WiFuPacket* p) {
+void SimpleTCP::resend_packet(ResendPacketEvent* e) {
     cout << "In SimpleTCP::resend_event()\n";
+    Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
     // TODO: Does congestion control need to know about a resend?
-    c->get_congestion_control()->resend_packet(s, p);
+    c->get_congestion_control()->resend_packet(e);
 
     // Probably don't want to change states when we resend
     // TODO: Does connection manager need to know about a resend?
     //    c->get_connection_manager()->resend_packet(s, p);
 
     // TODO: I think reliability needs to know about a resend (so it can start up another timer)
-    c->get_reliability()->resend_packet(s, p);
+    c->get_reliability()->resend_packet(e);
 
-    send_network_packet(s, p);
+    send_network_packet(s, e->get_packet());
 }
 
 void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {

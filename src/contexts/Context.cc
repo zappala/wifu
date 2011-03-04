@@ -31,17 +31,17 @@ void State::enter(Context* c) {}
 
 void State::exit(Context* c) {}
 
-void State::socket(Context* c, Socket* s) {}
+void State::socket(Context* c, SocketEvent* e) {}
 
-void State::bind(Context* c, Socket* s, AddressPort* ap) {}
+void State::bind(Context* c, BindEvent* e) {}
 
-void State::listen(Context* c, Socket* s, int back_log) {}
+void State::listen(Context* c, ListenEvent* e) {}
 
 void State::accept(Context* c, AcceptEvent* e) {}
 
-void State::new_connection_established(Context* c, Socket* s) {}
+void State::new_connection_established(Context* c, ConnectionEstablishedEvent* e) {}
 
-void State::receive_packet(Context* c, Socket* s, WiFuPacket* p) {}
+void State::receive_packet(Context* c, NetworkReceivePacketEvent* e) {}
 
 void State::timer_fired(Context* c, TimerFiredEvent* e) {}
 
@@ -49,9 +49,9 @@ void State::connect(Context* c, ConnectEvent* e) {}
 
 void State::close(Context* c) {}
 
-void State::send_packet(Context* c, Socket* s, WiFuPacket* p) {}
+void State::send_packet(Context* c, SendPacketEvent* e) {}
 
-void State::resend_packet(Context*, Socket*, WiFuPacket*) {}
+void State::resend_packet(Context*, ResendPacketEvent* e) {}
 
 void State::enter_state(string state) {
     //cout << "Entering " << state << " State" << endl;

@@ -223,11 +223,18 @@ namespace {
 
     TEST_F(BackEndTest, connectTest) {
         connect_test();
+
+        // so we can see if we are doing something incorrect that would otherwise
+        // be covered up by the exiting of this method
+        sleep(5);
     }
 
     TEST_F(BackEndMockTest, mockConnectTest) {
         connect_test();
-        sleep(2);
+
+        // so we can see if we are doing something incorrect that would otherwise
+        // be covered up by the exiting of this method
+        sleep(5);
     }
 
     //    void* compare_thread(void* args) {

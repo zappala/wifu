@@ -16,6 +16,8 @@
 #include "contexts/CongestionControlContext.h"
 #include "events/NetworkSendPacketEvent.h"
 #include "events/ConnectEvent.h"
+#include "events/SendPacketEvent.h"
+#include "events/NetworkReceivePacketEvent.h"
 #include "Dispatcher.h"
 using namespace std;
 
@@ -24,8 +26,8 @@ public:
     SlowStart();
     virtual ~SlowStart();
 
-    void send_packet(Context* c, Socket* s, WiFuPacket* p);
-    void receive_packet(Context* c, Socket* s, WiFuPacket* p);
+    void send_packet(Context* c, SendPacketEvent* e);
+    void receive_packet(Context* c, NetworkReceivePacketEvent* e);
     void enter(Context* c);
     void exit(Context* c);
 };

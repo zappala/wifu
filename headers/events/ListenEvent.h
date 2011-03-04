@@ -18,6 +18,8 @@ public:
 
     void execute(IModule* m);
 
+    int get_back_log();
+
 };
 
 #endif	/* _LISTENEVENT_H */

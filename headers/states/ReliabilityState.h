@@ -31,12 +31,12 @@ public:
     ReliabilityState();
     virtual ~ReliabilityState();
 
-    void receive_packet(Context* c, Socket* s, WiFuPacket* p);
+    void receive_packet(Context* c, NetworkReceivePacketEvent* e);
     void enter(Context* c);
     void exit(Context* c);
-    void send_packet(Context* c, Socket* s, WiFuPacket* p);
+    void send_packet(Context* c, SendPacketEvent* e);
     void timer_fired(Context* c, TimerFiredEvent* e);
-    void resend_packet(Context* c, Socket* s, WiFuPacket* p);
+    void resend_packet(Context* c, ResendPacketEvent* e);
 
 private:
     bool should_set_resend_timer(TCPPacket* p);

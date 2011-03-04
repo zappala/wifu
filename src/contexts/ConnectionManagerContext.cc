@@ -4,19 +4,19 @@ ConnectionManagerContext::ConnectionManagerContext() : Context() {
     set_state(new Closed());
 }
 
-void ConnectionManagerContext::socket(Socket* s) {
-    get_state()->socket(this, s);
+void ConnectionManagerContext::socket(SocketEvent* e) {
+    get_state()->socket(this, e);
 }
 
-void ConnectionManagerContext::bind(Socket* s, AddressPort* ap) {
-    get_state()->bind(this, s, ap);
+void ConnectionManagerContext::bind(BindEvent* e) {
+    get_state()->bind(this, e);
 }
 
 // TODO: move this method (and all others that we can) into Context
 
 
-void ConnectionManagerContext::listen(Socket* s, int back_log) {
-    get_state()->listen(this, s, back_log);
+void ConnectionManagerContext::listen(ListenEvent* e) {
+    get_state()->listen(this, e);
 }
 
 void ConnectionManagerContext::connect(ConnectEvent* e) {
@@ -29,31 +29,31 @@ void ConnectionManagerContext::accept(AcceptEvent* e) {
     get_state()->accept(this, e);
 }
 
-void ConnectionManagerContext::new_connection_established(Socket* s) {
-    get_state()->new_connection_established(this, s);
+void ConnectionManagerContext::new_connection_established(ConnectionEstablishedEvent* e) {
+    get_state()->new_connection_established(this, e);
 }
 
 void ConnectionManagerContext::close() {
     get_state()->close(this);
 }
 
-void ConnectionManagerContext::receive_packet(Socket* s, WiFuPacket* p) {
-    get_state()->receive_packet(this, s, p);
+void ConnectionManagerContext::receive_packet(NetworkReceivePacketEvent* e) {
+    get_state()->receive_packet(this, e);
 }
 
-void ConnectionManagerContext::send_packet(Socket* s, WiFuPacket* p) {
+void ConnectionManagerContext::send_packet(SendPacketEvent* e) {
     cout << "ConnectionManagerContext::send_packet()" << endl;
     //cout << "Current state: " << type_name(*get_state()) << endl;
-    get_state()->send_packet(this, s, p);
+    get_state()->send_packet(this, e);
 }
 
 void ConnectionManagerContext::timer_fired_event(TimerFiredEvent* e) {
     get_state()->timer_fired(this, e);
 }
 
-void ConnectionManagerContext::resend_packet(Socket* s, WiFuPacket* p) {
+void ConnectionManagerContext::resend_packet(ResendPacketEvent* e) {
     cout << "ConnectionManagerContext::resend_packet()" << endl;
-    get_state()->resend_packet(this, s, p);
+    get_state()->resend_packet(this, e);
 }
 
 // Non-state methods

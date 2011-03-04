@@ -43,17 +43,17 @@ public:
 
     virtual void exit(Context*);
 
-    virtual void socket(Context*, Socket*);
+    virtual void socket(Context*, SocketEvent* e);
 
-    virtual void bind(Context*, Socket*, AddressPort*);
+    virtual void bind(Context*, BindEvent* e);
 
-    virtual void listen(Context*, Socket*, int);
+    virtual void listen(Context*, ListenEvent* e);
 
     virtual void accept(Context*, AcceptEvent*);
 
-    virtual void new_connection_established(Context*, Socket*);
+    virtual void new_connection_established(Context*, ConnectionEstablishedEvent* e);
 
-    virtual void receive_packet(Context*, Socket*, WiFuPacket*);
+    virtual void receive_packet(Context*, NetworkReceivePacketEvent* e);
 
     virtual void timer_fired(Context*, TimerFiredEvent*);
 
@@ -61,9 +61,9 @@ public:
 
     virtual void close(Context*);
 
-    virtual void send_packet(Context*, Socket*, WiFuPacket*);
+    virtual void send_packet(Context*, SendPacketEvent* e);
 
-    virtual void resend_packet(Context*, Socket*, WiFuPacket*);
+    virtual void resend_packet(Context*, ResendPacketEvent* e);
 
     void enter_state(string);
 

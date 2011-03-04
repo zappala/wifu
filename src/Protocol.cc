@@ -19,7 +19,7 @@ void Protocol::library_socket(Event* e) {
     }
 
     sockets_.insert(s);
-    socket(s);
+    socket(event);
 
     ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
     response->put(ERRNO, Utils::itoa(0));
@@ -53,7 +53,7 @@ void Protocol::library_bind(Event* e) {
 
         if (!v.is_bound()) {
             socket->set_local_address_port(local);
-            bind(socket, local);
+            bind(event);
             return_val = 0;
         } else {
             error = EINVAL;
@@ -79,7 +79,7 @@ void Protocol::library_listen(Event* e) {
     }
 
     // TODO: Do something with this back log
-    int back_log = atoi(event->get_map()[N_STRING].c_str());
+    int back_log = event->get_back_log();
 
     int error = 0;
     int return_val = 0;
@@ -96,7 +96,7 @@ void Protocol::library_listen(Event* e) {
         error = EADDRINUSE;
         return_val = -1;
     } else {
-        listen(socket, back_log);
+        listen(event);
     }
 
     ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
@@ -144,7 +144,7 @@ void Protocol::send(Event* e) {
     }
 
     // TODO: Error check
-    send_packet(socket, event->get_packet());
+    send_packet(event);
 }
 
 void Protocol::network_receive(Event* e) {
@@ -157,8 +157,7 @@ void Protocol::network_receive(Event* e) {
     }
 
     // TODO: Error check
-    WiFuPacket* p = event->get_packet();
-    receive_packet(socket, p);
+    receive_packet(event);
 }
 
 void Protocol::connection_established(Event* e) {
@@ -178,7 +177,7 @@ void Protocol::connection_established(Event* e) {
     SocketCollection::instance().push(new_socket);
 
     sockets_.insert(new_socket);
-    new_connection_established(new_socket);
+    new_connection_established(event);
 
     AcceptEvent* a_event = event->get_accept_event();
     ResponseEvent* response = new ResponseEvent(socket, a_event->get_name(), a_event->get_map()[FILE_STRING]);
@@ -212,5 +211,5 @@ void Protocol::resend(Event* e) {
         return;
     }
 
-    resend_packet(socket, event->get_packet());
+    resend_packet(event);
 }

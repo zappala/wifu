@@ -11,30 +11,34 @@
 #include <string>
 #include "GarbageCollector.h"
 
-#include "Socket.h"
-#include "AddressPort.h"
-#include "packet/WiFuPacket.h"
 #include "events/ConnectEvent.h"
 #include "events/AcceptEvent.h"
 #include "events/TimerFiredEvent.h"
+#include "events/NetworkReceivePacketEvent.h"
+#include "events/SocketEvent.h"
+#include "events/BindEvent.h"
+#include "events/ListenEvent.h"
+#include "events/SendPacketEvent.h"
+#include "events/ConnectionEstablishedEvent.h"
+#include "events/ResendPacketEvent.h"
 
 using namespace std;
 
 class IContext : public gc {
 public:
-    virtual void socket(Socket* s) = 0;
-    virtual void bind(Socket* s, AddressPort* ap) = 0;
-    virtual void listen(Socket* s, int back_log) = 0;
+    virtual void socket(SocketEvent* e) = 0;
+    virtual void bind(BindEvent* e) = 0;
+    virtual void listen(ListenEvent* e) = 0;
     
-    virtual void receive_packet(Socket* s, WiFuPacket* p) = 0;
-    virtual void send_packet(Socket* s, WiFuPacket* p) = 0;
+    virtual void receive_packet(NetworkReceivePacketEvent* e) = 0;
+    virtual void send_packet(SendPacketEvent* e) = 0;
     virtual void connect(ConnectEvent* e) = 0;
     virtual void accept(AcceptEvent* e) = 0;
-    virtual void new_connection_established(Socket* s) = 0;
+    virtual void new_connection_established(ConnectionEstablishedEvent* e) = 0;
     virtual void close() = 0;
 
     virtual void timer_fired_event(TimerFiredEvent* e) = 0;
-    virtual void resend_packet(Socket* s, WiFuPacket* p) = 0;
+    virtual void resend_packet(ResendPacketEvent* e) = 0;
 };
 
 #endif	/* ICONTEXT_H */

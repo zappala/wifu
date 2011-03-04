@@ -30,17 +30,17 @@ class ConnectionManagerContext : public Context {
 public:
     ConnectionManagerContext();
 
-    void socket(Socket* s);
-    void bind(Socket* s, AddressPort* ap);
-    void listen(Socket* s, int back_log);
+    void socket(SocketEvent* e);
+    void bind(BindEvent* e);
+    void listen(ListenEvent* e);
     void connect(ConnectEvent* e);
     void accept(AcceptEvent* e);
-    void new_connection_established(Socket* s);
+    void new_connection_established(ConnectionEstablishedEvent* e);
     void close();
-    void receive_packet(Socket* s, WiFuPacket* p);
-    void send_packet(Socket* s, WiFuPacket* p);
+    void receive_packet(NetworkReceivePacketEvent* e);
+    void send_packet(SendPacketEvent* e);
     void timer_fired_event(TimerFiredEvent* e);
-    void resend_packet(Socket* s, WiFuPacket* p);
+    void resend_packet(ResendPacketEvent* e);
 
     // Non-state methods
 

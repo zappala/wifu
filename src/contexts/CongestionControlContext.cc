@@ -4,16 +4,16 @@ CongestionControlContext::CongestionControlContext() : Context() {
     set_state(new SlowStart());
 }
 
-void CongestionControlContext::socket(Socket* s) {
-    get_state()->socket(this, s);
+void CongestionControlContext::socket(SocketEvent* e) {
+    get_state()->socket(this, e);
 }
 
-void CongestionControlContext::bind(Socket* s, AddressPort* ap) {
-    get_state()->bind(this, s, ap);
+void CongestionControlContext::bind(BindEvent* e) {
+    get_state()->bind(this, e);
 }
 
-void CongestionControlContext::listen(Socket* s, int back_log) {
-    get_state()->listen(this, s, back_log);
+void CongestionControlContext::listen(ListenEvent* e) {
+    get_state()->listen(this, e);
 }
 
 void CongestionControlContext::connect(ConnectEvent* e) {
@@ -24,26 +24,26 @@ void CongestionControlContext::accept(AcceptEvent* e) {
     get_state()->accept(this, e);
 }
 
-void CongestionControlContext::new_connection_established(Socket* s) {
-    get_state()->new_connection_established(this, s);
+void CongestionControlContext::new_connection_established(ConnectionEstablishedEvent* e) {
+    get_state()->new_connection_established(this, e);
 }
 
 void CongestionControlContext::close() {
     get_state()->close(this);
 }
 
-void CongestionControlContext::receive_packet(Socket* s, WiFuPacket* p) {
-    get_state()->receive_packet(this, s, p);
+void CongestionControlContext::receive_packet(NetworkReceivePacketEvent* e) {
+    get_state()->receive_packet(this, e);
 }
 
-void CongestionControlContext::send_packet(Socket* s, WiFuPacket* p) {
-    get_state()->send_packet(this, s, p);
+void CongestionControlContext::send_packet(SendPacketEvent* e) {
+    get_state()->send_packet(this, e);
 }
 
 void CongestionControlContext::timer_fired_event(TimerFiredEvent* e) {
     get_state()->timer_fired(this, e);
 }
 
-void CongestionControlContext::resend_packet(Socket* s, WiFuPacket* p) {
-    get_state()->resend_packet(this, s, p);
+void CongestionControlContext::resend_packet(ResendPacketEvent* e) {
+    get_state()->resend_packet(this, e);
 }

@@ -16,7 +16,7 @@ void Established::enter(Context* c) {
     ResponseEvent* response;
 
     ConnectEvent* event = cmc->get_connect_event();
-    
+
 
     switch (cmc->get_connection_type()) {
         case ACTIVE_OPEN:
@@ -44,11 +44,11 @@ void Established::exit(Context* c) {
 
 }
 
-void Established::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
+void Established::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
-    TCPPacket* packet = (TCPPacket*)p;
+    TCPPacket* packet = (TCPPacket*) e->get_packet();
 
-    if(packet->is_tcp_syn()) {
+    if (packet->is_tcp_syn()) {
         // ignore potential resends of three-way handshake packets
         return;
     }

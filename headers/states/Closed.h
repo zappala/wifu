@@ -30,8 +30,8 @@ public:
     virtual void enter(Context* c);
     virtual void exit(Context* c);
     virtual void connect(Context* c, ConnectEvent* e);
-    virtual void listen(Context* c, Socket* s, int back_log);
-    virtual void new_connection_established(Context* c, Socket* s);
+    virtual void listen(Context* c, ListenEvent* e);
+    virtual void new_connection_established(Context* c, ConnectionEstablishedEvent* e);
 
 };
 

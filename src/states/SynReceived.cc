@@ -16,10 +16,11 @@ void SynReceived::exit(Context* c) {
 
 }
 
-void SynReceived::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
+void SynReceived::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     cout << "SynReceived::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
-    TCPPacket* packet = (TCPPacket*) p;
+    TCPPacket* packet = (TCPPacket*) e->get_packet();
+    Socket* s = e->get_socket();
 
     if (packet->is_tcp_ack()) {
         cout << "SynReceived::receive_packet(): Packet is ACK" << endl;

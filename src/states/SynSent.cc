@@ -16,10 +16,10 @@ void SynSent::exit(Context* c) {
 
 }
 
-void SynSent::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
+void SynSent::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     cout << "SynSent::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
-    TCPPacket* packet = (TCPPacket*) p;
+    TCPPacket* packet = (TCPPacket*) e->get_packet();
 
 
     if (packet->is_tcp_syn() && packet->is_tcp_ack()) {
@@ -39,8 +39,8 @@ void SynSent::receive_packet(Context* c, Socket* s, WiFuPacket* p) {
         response->set_tcp_ack(true);
         response->set_data(data, 0);
 
-        SendPacketEvent* e = new SendPacketEvent(s, response);
-        Dispatcher::instance().enqueue(e);
+        SendPacketEvent* event = new SendPacketEvent(e->get_socket(), response);
+        Dispatcher::instance().enqueue(event);
 
         cmc->set_state(new Established());
         return;

@@ -56,17 +56,17 @@ void Closed::connect(Context* c, ConnectEvent* e) {
     cmc->set_state(new SynSent());
 }
 
-void Closed::listen(Context* c, Socket* s, int back_log) {
+void Closed::listen(Context* c, ListenEvent* e) {
     cout << "Closed::listen()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(PASSIVE_OPEN);
 
     // TODO: Do anything with the Socket?
-    cmc->set_back_log(back_log);
+    cmc->set_back_log(e->get_back_log());
     cmc->set_state(new Listen());
 }
 
-void Closed::new_connection_established(Context* c, Socket* s) {
+void Closed::new_connection_established(Context* c, ConnectionEstablishedEvent* e) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(ESTABLISHED);
     c->set_state(new Established());

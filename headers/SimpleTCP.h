@@ -33,27 +33,27 @@ public:
 
     virtual ~SimpleTCP();
 
-    void socket(Socket* s);
+    void socket(SocketEvent* e);
 
-    void bind(Socket* s, AddressPort* ap);
+    void bind(BindEvent* e);
 
-    void listen(Socket* s, int back_log);
+    void listen(ListenEvent* e);
 
-    void receive_packet(Socket* s, WiFuPacket* p);
+    void receive_packet(NetworkReceivePacketEvent* e);
 
-    void send_packet(Socket* s, WiFuPacket* p);
+    void send_packet(SendPacketEvent* e);
 
     void connect(ConnectEvent* e);
 
     void accept(AcceptEvent* e);
 
-    void new_connection_established(Socket* s);
+    void new_connection_established(ConnectionEstablishedEvent* e);
 
     void close();
 
     void timer_fired_event(TimerFiredEvent* e);
 
-    void resend_packet(Socket* s, WiFuPacket* p);
+    void resend_packet(ResendPacketEvent* e);
 };
 
 #endif	/* SIMPLETCP_H */
