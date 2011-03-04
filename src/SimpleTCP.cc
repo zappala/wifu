@@ -3,8 +3,8 @@
 SimpleTCP::SimpleTCP() : Protocol(SIMPLE_TCP) {
 }
 
-void SimpleTCP::save_socket(Socket* s) {
-    map_[s] = new IContextContainer();
+void SimpleTCP::save_socket(Socket* s, IContextContainer* icc) {
+    map_[s] = icc;
 }
 
 IContextContainer* SimpleTCP::get_context(Socket* s) {
@@ -41,6 +41,9 @@ void SimpleTCP::bind(BindEvent* e) {
 
 void SimpleTCP::listen(ListenEvent* e) {
     IContextContainer* c = get_context(e->get_socket());
+
+    cout << "SimpleTCP::listen: Local AP: " << e->get_socket()->get_local_address_port()->to_s() << endl;
+    cout << "SimpleTCP::listen: Remote AP: " << e->get_socket()->get_remote_address_port()->to_s() << endl;
 
     c->get_congestion_control()->listen(e);
     c->get_connection_manager()->listen(e);
@@ -84,9 +87,14 @@ void SimpleTCP::accept(AcceptEvent* e) {
 }
 
 void SimpleTCP::new_connection_established(ConnectionEstablishedEvent* e) {
+    Socket* listening_socket = e->get_socket();
     Socket* new_socket = e->get_new_socket();
     save_socket(new_socket);
+
+    IContextContainer* listening_contexts = get_context(listening_socket);
     IContextContainer* c = get_context(new_socket);
+
+    assert(listening_contexts != NULL);
 
     c->get_congestion_control()->new_connection_established(e);
     c->get_connection_manager()->new_connection_established(e);

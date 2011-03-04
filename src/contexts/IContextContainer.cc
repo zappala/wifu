@@ -6,6 +6,10 @@ IContextContainer::IContextContainer() {
 	cm_ = new ConnectionManagerContext();
 }
 
+IContextContainer::IContextContainer(IContextContainer const& other) {
+    
+}
+
 IContext* IContextContainer::get_congestion_control() {
 	return cc_;
 }

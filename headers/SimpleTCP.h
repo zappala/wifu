@@ -19,7 +19,7 @@ class SimpleTCP : public Protocol {
 private:
     SimpleTCP();
 
-    void save_socket(Socket* s);
+    void save_socket(Socket* s, IContextContainer* icc = new IContextContainer());
 
     IContextContainer* get_context(Socket* s);
 

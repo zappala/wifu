@@ -20,6 +20,8 @@ class IContextContainer : public gc {
 public:
     IContextContainer();
 
+    IContextContainer(IContextContainer const& other);
+
     IContext* get_congestion_control();
 
     IContext* get_reliability();
