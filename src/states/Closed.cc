@@ -71,3 +71,7 @@ void Closed::new_connection_established(Context* c, ConnectionEstablishedEvent* 
     cmc->set_connection_type(ESTABLISHED);
     c->set_state(new Established());
 }
+
+void Closed::new_connection_initiated(Context* c, ConnectionInitiatedEvent* e) {
+    c->set_state(new Accept());
+}

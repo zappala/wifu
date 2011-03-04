@@ -25,16 +25,9 @@ void SynReceived::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     if (packet->is_tcp_ack()) {
         cout << "SynReceived::receive_packet(): Packet is ACK" << endl;
 
-        Socket* new_socket = new Socket(s->get_domain(),
-                                            s->get_type(),
-                                            s->get_protocol(),
-                                            s->get_local_address_port(),
-                                            packet->get_source_address_port());
-
-        ConnectionEstablishedEvent* event = new ConnectionEstablishedEvent(cmc->get_accept_event(), new_socket);
+        ConnectionEstablishedEvent* event = new ConnectionEstablishedEvent(cmc->get_accept_event(), s);
         Dispatcher::instance().enqueue(event);
-        cmc->set_state(new Listen());
-
+        c->set_state(new Established());
         return;
     }
 }

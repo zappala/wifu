@@ -195,6 +195,8 @@ void Protocol::connection_initiated(Event* e) {
     Socket* listening_socket = event->get_socket();
     Socket* new_socket = event->get_new_socket();
 
+    sockets_.insert(new_socket);
+
     // TODO: Error Check: socket(s)
 
     new_conneciton_initiated(event);

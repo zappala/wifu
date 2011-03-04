@@ -87,23 +87,31 @@ void SimpleTCP::accept(AcceptEvent* e) {
 }
 
 void SimpleTCP::new_connection_established(ConnectionEstablishedEvent* e) {
-    Socket* listening_socket = e->get_socket();
-    Socket* new_socket = e->get_new_socket();
-    save_socket(new_socket);
 
-    IContextContainer* listening_contexts = get_context(listening_socket);
-    IContextContainer* c = get_context(new_socket);
-
-    assert(listening_contexts != NULL);
-
-    c->get_congestion_control()->new_connection_established(e);
-    c->get_connection_manager()->new_connection_established(e);
-    c->get_reliability()->new_connection_established(e);
 
 }
 
 void SimpleTCP::new_conneciton_initiated(ConnectionInitiatedEvent* e) {
+    cout << "SimpleTCP::new_conneciton_initiated()" << endl;
 
+    // Get out pointers
+    ConnectionInitiatedEvent* event = (ConnectionInitiatedEvent*) e;
+    Socket* listening_socket = event->get_socket();
+    Socket* new_socket = event->get_new_socket();
+
+    // Get the listening socket's context and save it as the new socket's context
+    IContextContainer* listening_cc = get_context(listening_socket);
+    save_socket(new_socket, listening_cc);
+
+    // Recreate the listening socket's context and save it as such
+    IContextContainer* new_cc = new IContextContainer();
+    save_socket(listening_socket, new_cc);
+
+    // Tell the listening socket's (new) context that a new connection is occuring
+    // (This is basically a hack so the new context can move back to the appropriate state.)
+    new_cc->get_congestion_control()->new_conneciton_initiated(e);
+    new_cc->get_connection_manager()->new_conneciton_initiated(e);
+    new_cc->get_reliability()->new_conneciton_initiated(e);
 }
 
 void SimpleTCP::close() {

@@ -32,6 +32,7 @@ public:
     virtual void connect(Context* c, ConnectEvent* e);
     virtual void listen(Context* c, ListenEvent* e);
     virtual void new_connection_established(Context* c, ConnectionEstablishedEvent* e);
+    virtual void new_connection_initiated(Context* c, ConnectionInitiatedEvent* e);
 
 };
 

@@ -1,4 +1,5 @@
 #include "states/Accept.h"
+#include "SocketCollection.h"
 
 Accept::Accept() {
 
@@ -21,12 +22,22 @@ void Accept::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();
 
+    Socket* listening_socket = e->get_socket();
+
     if(packet->is_tcp_syn()) {
         cout << "Accept::receive_packet(): Packet is a SYN" << endl;
 
-        
+        // TODO: we are reusing the same local address/port (not calling new)
+        // This may be okay...but I don't want to think about it now
+        Socket* new_socket = new Socket(listening_socket->get_domain(),
+                                            listening_socket->get_type(),
+                                            listening_socket->get_protocol(),
+                                            listening_socket->get_local_address_port(),
+                                            packet->get_source_address_port());
 
-
+        Event* new_connection = new ConnectionInitiatedEvent(listening_socket, new_socket);
+        SocketCollection::instance().push(new_socket);
+        Dispatcher::instance().enqueue(new_connection);
 
 
         unsigned char* data = (unsigned char*) "";
