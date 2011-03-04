@@ -64,7 +64,7 @@ void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
         return;
     }
 
-    cout << "In ReliabilityState::timer_fired(); means timeout." << endl;
+    cout << "In ReliabilityState::timer_fired(); means timeout: " << e->get_timeout_event() << endl;
 
     ResendPacketEvent* event = new ResendPacketEvent(e->get_socket(), rc->get_last_packet_sent());
     Dispatcher::instance().enqueue(event);
@@ -106,6 +106,7 @@ void ReliabilityState::create_save_and_dispatch_timeout_event(
     ReliabilityContext* rc = (ReliabilityContext*) c;
 
     TimeoutEvent* timeout = new TimeoutEvent(s, seconds, nanoseconds);
+    cout << "ReliabilityState::create_save_and_dispatch_timeout_event(): TimeoutEvent: " << timeout << endl;
     rc->set_saved_timeout(timeout);
     Dispatcher::instance().enqueue(timeout);
 }

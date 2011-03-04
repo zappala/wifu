@@ -195,6 +195,9 @@ void Protocol::connection_initiated(Event* e) {
     Socket* listening_socket = event->get_socket();
     Socket* new_socket = event->get_new_socket();
 
+    cout << "Protocol::connection_initiated(), listening_socket: " << listening_socket << endl;
+    cout << "Protocol::connection_initiated(), new_socket: " << new_socket << endl;
+
     sockets_.insert(new_socket);
 
     // TODO: Error Check: socket(s)
@@ -203,9 +206,11 @@ void Protocol::connection_initiated(Event* e) {
 }
 
 void Protocol::timer_fired(Event* e) {
-    cout << "Protocol::timer_fired droid\n";
+    cout << "Protocol::timer_fired()" << endl;
     TimerFiredEvent* event = (TimerFiredEvent*) e;
     Socket* socket = event->get_socket();
+
+    cout << "Protocol::timer_fired(), socket: " << socket << endl;
 
     if (!sockets_.contains(socket)) {
         cout << "Protocol::timerfired: We don't have this socket...\n";

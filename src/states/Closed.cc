@@ -73,5 +73,7 @@ void Closed::new_connection_established(Context* c, ConnectionEstablishedEvent* 
 }
 
 void Closed::new_connection_initiated(Context* c, ConnectionInitiatedEvent* e) {
+    ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
+    cmc->set_connection_type(PASSIVE_OPEN);
     c->set_state(new Accept());
 }
