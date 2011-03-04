@@ -21,6 +21,7 @@
 #include "events/SendPacketEvent.h"
 #include "events/ConnectionEstablishedEvent.h"
 #include "events/ResendPacketEvent.h"
+#include "events/ConnectionInitiatedEvent.h"
 
 using namespace std;
 
@@ -35,6 +36,7 @@ public:
     virtual void connect(ConnectEvent* e) = 0;
     virtual void accept(AcceptEvent* e) = 0;
     virtual void new_connection_established(ConnectionEstablishedEvent* e) = 0;
+    virtual void new_conneciton_initiated(ConnectionInitiatedEvent* e) = 0;
     virtual void close() = 0;
 
     virtual void timer_fired_event(TimerFiredEvent* e) = 0;

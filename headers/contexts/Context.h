@@ -36,6 +36,7 @@ public:
     virtual void connect(ConnectEvent* e);
     virtual void accept(AcceptEvent* e);
     virtual void new_connection_established(ConnectionEstablishedEvent* e);
+    virtual void new_conneciton_initiated(ConnectionInitiatedEvent* e);
     virtual void close();
     virtual void receive_packet(NetworkReceivePacketEvent* e);
     virtual void send_packet(SendPacketEvent* e);
@@ -65,6 +66,8 @@ public:
     virtual void accept(Context*, AcceptEvent*);
 
     virtual void new_connection_established(Context*, ConnectionEstablishedEvent* e);
+
+    virtual void new_connection_initiated(Context*, ConnectionInitiatedEvent* e);
 
     virtual void receive_packet(Context*, NetworkReceivePacketEvent* e);
 

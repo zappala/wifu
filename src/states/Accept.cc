@@ -23,6 +23,12 @@ void Accept::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 
     if(packet->is_tcp_syn()) {
         cout << "Accept::receive_packet(): Packet is a SYN" << endl;
+
+        
+
+
+
+
         unsigned char* data = (unsigned char*) "";
         AddressPort* source = packet->get_dest_address_port();
         AddressPort* destination = packet->get_source_address_port();

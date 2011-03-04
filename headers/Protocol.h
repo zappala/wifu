@@ -70,6 +70,8 @@ public:
 
     virtual void connection_established(Event* e);
 
+    virtual void connection_initiated(Event* e);
+
     virtual void timer_fired(Event* e);
 
     virtual void resend(Event* e);

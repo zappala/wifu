@@ -205,6 +205,14 @@ public:
      */
     virtual void connection_established(Event* e) {
     }
+
+    /**
+     * Called when e's execute() method determines that this IModule should respond to a connection initiated action.
+     *
+     * @param e The event which triggered a connection established action.
+     */
+    virtual void connection_initiated(Event* e) {
+    }
 };
 
 #endif	/* _IMODULE_H */

@@ -46,6 +46,10 @@ void Context::new_connection_established(ConnectionEstablishedEvent* e) {
     get_state()->new_connection_established(this, e);
 }
 
+void Context::new_conneciton_initiated(ConnectionInitiatedEvent* e) {
+    get_state()->new_connection_initiated(this, e);
+}
+
 void Context::close() {
     get_state()->close(this);
 }
@@ -84,6 +88,8 @@ void State::listen(Context* c, ListenEvent* e) {}
 void State::accept(Context* c, AcceptEvent* e) {}
 
 void State::new_connection_established(Context* c, ConnectionEstablishedEvent* e) {}
+
+void State::new_connection_initiated(Context*, ConnectionInitiatedEvent* e) {}
 
 void State::receive_packet(Context* c, NetworkReceivePacketEvent* e) {}
 

@@ -102,6 +102,10 @@ void SimpleTCP::new_connection_established(ConnectionEstablishedEvent* e) {
 
 }
 
+void SimpleTCP::new_conneciton_initiated(ConnectionInitiatedEvent* e) {
+
+}
+
 void SimpleTCP::close() {
 }
 

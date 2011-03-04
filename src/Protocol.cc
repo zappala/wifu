@@ -1,4 +1,5 @@
 #include "Protocol.h"
+#include "events/ConnectionInitiatedEvent.h"
 
 Protocol::Protocol(int protocol) : Module(), protocol_(protocol) {
 
@@ -187,6 +188,16 @@ void Protocol::connection_established(Event* e) {
     response->put(PORT_STRING, Utils::itoa(new_socket->get_remote_address_port()->get_port()));
 
     dispatch(response);
+}
+
+void Protocol::connection_initiated(Event* e) {
+    ConnectionInitiatedEvent* event = (ConnectionInitiatedEvent*) e;
+    Socket* listening_socket = event->get_socket();
+    Socket* new_socket = event->get_new_socket();
+
+    // TODO: Error Check: socket(s)
+
+    new_conneciton_initiated(event);
 }
 
 void Protocol::timer_fired(Event* e) {

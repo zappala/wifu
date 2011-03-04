@@ -49,6 +49,8 @@ public:
 
     void new_connection_established(ConnectionEstablishedEvent* e);
 
+    void new_conneciton_initiated(ConnectionInitiatedEvent* e);
+
     void close();
 
     void timer_fired_event(TimerFiredEvent* e);
