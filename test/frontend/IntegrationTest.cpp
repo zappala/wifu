@@ -289,7 +289,7 @@ namespace {
         string message = "This is a message";
         memcpy(buffer, message.c_str(), message.length());
 
-        wifu_send(connection, buffer, size, 0);
+        wifu_send(connection, buffer, message.length(), 0);
     }
 
     void send_receive_test(int count) {
@@ -328,7 +328,14 @@ namespace {
 
             int size = 1500;
             char buffer[size];
-            wifu_recv(client[i], &buffer, size, 0);
+            int return_value = wifu_recv(client[i], &buffer, size, 0);
+            
+            ASSERT_EQ(17, return_value);
+            string expected = "This is a message";
+            string result = buffer;
+            ASSERT_EQ(expected, result);
+
+
 
         }
     }

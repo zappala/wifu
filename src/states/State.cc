@@ -23,6 +23,10 @@ void State::listen(Context* c, ListenEvent* e) {}
 
 void State::accept(Context* c, AcceptEvent* e) {}
 
+void State::send_to(Context*, SendEvent*) {}
+
+void State::receive_from(Context*, ReceiveEvent*) {}
+
 void State::new_connection_established(Context* c, ConnectionEstablishedEvent* e) {}
 
 void State::new_connection_initiated(Context*, ConnectionInitiatedEvent* e) {}

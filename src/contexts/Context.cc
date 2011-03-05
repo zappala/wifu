@@ -1,8 +1,10 @@
 #include "contexts/Context.h"
 
-Context::Context() : IContext(), current_(0) {}
+Context::Context() : IContext(), current_(0) {
+}
 
-Context::~Context() {}
+Context::~Context() {
+}
 
 void Context::set_state(State* s) {
     // TODO: do we need a global sem to ensure that no one is caught without a context?
@@ -68,4 +70,12 @@ void Context::timer_fired_event(TimerFiredEvent* e) {
 
 void Context::resend_packet(ResendPacketEvent* e) {
     get_state()->resend_packet(this, e);
+}
+
+void Context::send_to(SendEvent* e) {
+    get_state()->send_to(this, e);
+}
+
+void Context::receive_from(ReceiveEvent* e) {
+    get_state()->receive_from(this, e);
 }

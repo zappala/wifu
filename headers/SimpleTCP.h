@@ -14,6 +14,7 @@
 #include "contexts/IContext.h"
 #include "contexts/IContextContainer.h"
 #include "contexts/ReliabilityContext.h"
+#include "events/ReceiveEvent.h"
 
 class SimpleTCP : public Protocol {
 private:
@@ -56,6 +57,10 @@ public:
     void timer_fired_event(TimerFiredEvent* e);
 
     void resend_packet(ResendPacketEvent* e);
+
+    void send_to(SendEvent* e);
+
+    void receive_from(ReceiveEvent* e);
 };
 
 #endif	/* SIMPLETCP_H */

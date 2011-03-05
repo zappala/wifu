@@ -1,5 +1,6 @@
 #include "Protocol.h"
 #include "events/ConnectionInitiatedEvent.h"
+#include "events/ReceiveEvent.h"
 
 Protocol::Protocol(int protocol) : Module(), protocol_(protocol) {
 
@@ -137,10 +138,14 @@ void Protocol::library_accept(Event* e) {
 
 void Protocol::library_receive(Event* e) {
     cout << "Protocol::library_receive()" << endl;
+    ReceiveEvent* event = (ReceiveEvent*)e;
+    receive_from(event);
 }
 
 void Protocol::library_send(Event* e) {
     cout << "Protocol::library_send()" << endl;
+    SendEvent* event = (SendEvent*)e;
+    send_to(event);
 }
 
 void Protocol::send(Event* e) {
