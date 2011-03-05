@@ -211,7 +211,7 @@ namespace {
 
 
             if (pthread_create(&(t[i]), NULL, &thread, &(v[i])) != 0)
-                FAIL() << "Error creating new thread in IntegrationTest.h";
+                FAIL() << "Error creating new thread in IntegrationTest.connectTest";
 
             v[i].sem_->wait();
 
