@@ -117,7 +117,7 @@ int main(int argc, char** argv) {
     register_protocols();
 
     // Start Dispatcher
-    Dispatcher::instance().start_processing();
+    dispatcher.start_processing();
 
     // Start Back end
     WifuEndBackEndLibrary::instance();

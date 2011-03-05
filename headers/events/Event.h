@@ -57,7 +57,7 @@ public:
     void set_socket(Socket*);
 
     /**
-     * Default implemenation of less than.
+     * Default implementation of less than.
      *
      * @param rhs The "right hand side" of the expression A < rhs, where A is this Event.
      * @return True in each case.  Must be overridden in child classes and satisfy the above expression.
