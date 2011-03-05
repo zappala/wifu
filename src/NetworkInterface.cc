@@ -20,22 +20,17 @@ void NetworkInterface::network_receive(WiFuPacket* p) {
     AddressPort* remote = p->get_source_address_port();
     AddressPort* local = p->get_dest_address_port();
 
-    cout << "NetworkInterface::network_receive()" << endl;
-
     Socket* s = SocketCollection::instance().get_by_local_and_remote_ap(local, remote);
 
     if (!s) {
         s = SocketCollection::instance().get_by_local_ap(local);
-        cout << "NetworkInterface::network_receive(), not local & remote" << endl;
     }
 
     if (!s) {
         // No bound local socket
         //TODO: should it really just return like this or should it throw an exception? -Scott
-        cout << "NetworkInterface::network_receive(), not local (returning)" << endl;
         return;
     }
-    cout << "NetworkInterface::network_receive(), socket found: " << s << endl;
 
     Event* e = new NetworkReceivePacketEvent(s, p);
     Dispatcher::instance().enqueue(e);

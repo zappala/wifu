@@ -83,6 +83,7 @@ namespace {
     };
 
     class BackEndMockTest : public BackEndTest {
+
         virtual string get_command() {
             return "./wifu-end --network mock";
         }
@@ -193,36 +194,44 @@ namespace {
     }
     //TODO: make sure we are canceling threads
 
-    void connect_test() {
+    void connect_test(int count) {
         AddressPort to_connect("127.0.0.1", 5002);
 
-        struct var v;
-        v.sem_ = new Semaphore();
-        v.sem_->init(0);
-        v.to_bind_ = new AddressPort("127.0.0.1", 5002);
+        pthread_t t[count];
+        struct var v[count];
+        Timer timer[count];
+        int client[count];
+        int result[count];
 
-        pthread_t t;
-        if (pthread_create(&t, NULL, &thread, &v) != 0)
-            FAIL() << "Error creating new thread in IntegrationTest.h";
+        for (int i = 0; i < count; i++) {
 
-        v.sem_->wait();
+            v[i].sem_ = new Semaphore();
+            v[i].sem_->init(0);
+            v[i].to_bind_ = new AddressPort("127.0.0.1", 5002);
 
-        // Make sure that the thread is in the accept state
-        usleep(50000);
 
-        // Create client
-        Timer timer;
-        timer.start();
-        int client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
-        int result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
-        timer.stop();
-        ASSERT_EQ(0, result);
+            if (pthread_create(&(t[i]), NULL, &thread, &(v[i])) != 0)
+                FAIL() << "Error creating new thread in IntegrationTest.h";
 
-        cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
+            v[i].sem_->wait();
+
+            // Make sure that the thread is in the accept state
+            usleep(50000);
+
+            // Create client
+
+            timer[i].start();
+            client[i] = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+            result[i] = wifu_connect(client[i], (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+            timer[i].stop();
+            ASSERT_EQ(0, result[i]);
+
+            cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer[i].get_duration_microseconds() << endl;
+        }
     }
 
     TEST_F(BackEndTest, connectTest) {
-        connect_test();
+        connect_test(1);
 
         // so we can see if we are doing something incorrect that would otherwise
         // be covered up by the exiting of this method
@@ -230,12 +239,22 @@ namespace {
     }
 
     TEST_F(BackEndMockTest, mockConnectTest) {
-        connect_test();
+        connect_test(1);
 
         // so we can see if we are doing something incorrect that would otherwise
         // be covered up by the exiting of this method
         sleep(5);
     }
+
+//    TEST_F(BackEndMockTest, mockConnectTestMultiple) {
+//        connect_test(10);
+//
+//        // so we can see if we are doing something incorrect that would otherwise
+//        // be covered up by the exiting of this method
+//        sleep(5);
+//    }
+
+
 
     //    void* compare_thread(void* args) {
     //
