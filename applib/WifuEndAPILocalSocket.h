@@ -499,6 +499,9 @@ public:
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
+        assert(data != NULL);
+        assert(data->get_semaphore() != NULL);
+        
         data->get_semaphore()->wait();
         ssize_t ret_val = data->get_return_value();
 

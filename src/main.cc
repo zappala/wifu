@@ -50,7 +50,8 @@
 #include "pantheios/inserters.hpp"      /* Includes all headers for inserters, incl. integer, real, character */
 #include "pantheios/frontends/stock.h"  /* Declares the process identity symbol PANTHEIOS_FE_PROCESS_IDENTITY */
 #include "pantheios/backends/bec.file.h"
-#include "events/ConnectionInitiatedEvent.h"      // be.file header
+#include "events/ConnectionInitiatedEvent.h"
+#include "events/ReceiveEvent.h"      // be.file header
 
 const PAN_CHAR_T PANTHEIOS_FE_PROCESS_IDENTITY[] = "wifu-end";
 #define PantheiosString(x) PANTHEIOS_LITERAL_STRING(x)
@@ -149,6 +150,7 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(NetworkReceivePacketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(TimerFiredEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(ResendPacketEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ReceiveEvent), &SimpleTCP::instance());
 
 
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());

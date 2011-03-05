@@ -135,6 +135,10 @@ void Protocol::library_accept(Event* e) {
     accept(event);
 }
 
+void Protocol::library_receive(Event* e) {
+    cout << "Protocol::library_receive()" << endl;
+}
+
 void Protocol::send(Event* e) {
     cout << "Protocol::send()" << endl;
     SendPacketEvent* event = (SendPacketEvent*) e;
@@ -149,6 +153,9 @@ void Protocol::send(Event* e) {
 }
 
 void Protocol::network_receive(Event* e) {
+
+    cout << "Protocol::network_receive()" << endl;
+
     NetworkReceivePacketEvent* event = (NetworkReceivePacketEvent*) e;
 
     Socket* socket = event->get_socket();
