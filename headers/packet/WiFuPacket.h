@@ -30,16 +30,24 @@ public:
 
     virtual void set_data(unsigned char* data, int length);
 
-    // Gets the source port of this packet
+    /**
+     * Gets the source port of this packet
+     */
     u_int16_t get_source_port();
 
-    // Sets the  source port of this packet
+    /**
+     * Sets the  source port of this packet
+     */
     void set_source_port(u_int16_t port);
 
-    // Gets the destination port of this packet
+    /**
+     * Gets the destination port of this packet
+     */
     u_int16_t get_destination_port();
 
-    // Sets the destination port of this packet
+    /**
+     * Sets the destination port of this packet
+     */
     void set_destination_port(u_int16_t port);
 
     AddressPort* get_source_address_port();
