@@ -22,6 +22,8 @@
 #include "events/ListenEvent.h"
 #include "events/ConnectEvent.h"
 #include "events/AcceptEvent.h"
+#include "events/ReceiveEvent.h"
+#include "events/SendEvent.h"
 #include "UDPInterface.h"
 #include "PortManager.h"
 

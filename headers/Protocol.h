@@ -66,6 +66,8 @@ public:
 
     virtual void library_receive(Event* e);
 
+    virtual void library_send(Event* e);
+
     virtual void send(Event* e);
 
     virtual void network_receive(Event* e);

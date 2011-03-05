@@ -1,5 +1,5 @@
 #include "WifuEndBackEndLibrary.h"
-#include "events/ReceiveEvent.h"
+
 
 WifuEndBackEndLibrary& WifuEndBackEndLibrary::instance() {
     static WifuEndBackEndLibrary instance_;
@@ -64,8 +64,10 @@ void WifuEndBackEndLibrary::receive(string& message) {
         return;
 
     } else if (!name.compare(WIFU_SENDTO_NAME)) {
-        int return_val = 1;
-        //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+        cout << "Dispatching SendEvent" << endl;
+        dispatch(new SendEvent(message, getFile(), socket));
+        return;
+        
     } else if (!name.compare(WIFU_RECVFROM_NAME)) {
         cout << "Dispatching ReceiveEvent" << endl;
         dispatch(new ReceiveEvent(message, getFile(), socket));

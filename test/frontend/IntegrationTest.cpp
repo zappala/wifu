@@ -283,6 +283,13 @@ namespace {
         cout << "Connected to: " << ap.to_s() << endl;
 
         // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
+
+        int size = 1500;
+        char buffer[size];
+        string message = "This is a message";
+        memcpy(buffer, message.c_str(), message.length());
+
+        wifu_send(connection, buffer, size, 0);
     }
 
     void send_receive_test(int count) {
@@ -328,6 +335,7 @@ namespace {
 
     TEST_F(BackEndTest, sendReceiveTest) {
         send_receive_test(1);
+
 
         // so we can see if we are doing something incorrect that would otherwise
         // be covered up by the exiting of this method

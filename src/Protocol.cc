@@ -139,6 +139,10 @@ void Protocol::library_receive(Event* e) {
     cout << "Protocol::library_receive()" << endl;
 }
 
+void Protocol::library_send(Event* e) {
+    cout << "Protocol::library_send()" << endl;
+}
+
 void Protocol::send(Event* e) {
     cout << "Protocol::send()" << endl;
     SendPacketEvent* event = (SendPacketEvent*) e;

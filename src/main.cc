@@ -151,6 +151,7 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(TimerFiredEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(ResendPacketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(ReceiveEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(SendEvent), &SimpleTCP::instance());
 
 
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
