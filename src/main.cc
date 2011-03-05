@@ -39,6 +39,7 @@
 #include "events/AcceptEvent.h"
 #include "events/ConnectionEstablishedEvent.h"
 #include "events/ResendPacketEvent.h"
+#include "events/ConnectionInitiatedEvent.h"
 #include "NetworkInterface.h"
 #include "TCPPacketFactory.h"
 #include "OptionParser.h"
@@ -46,18 +47,9 @@
 #include "StandardNetworkInterfaceCreator.h"
 #include "MockNetworkInterfaceCreator.h"
 
-#include "pantheios/pantheios.hpp"      /* The root header for Panthieos when using the C++-API. */
-#include "pantheios/inserters.hpp"      /* Includes all headers for inserters, incl. integer, real, character */
-#include "pantheios/frontends/stock.h"  /* Declares the process identity symbol PANTHEIOS_FE_PROCESS_IDENTITY */
-#include "pantheios/backends/bec.file.h"
-#include "events/ConnectionInitiatedEvent.h"
-#include "events/ReceiveEvent.h"      // be.file header
-
-const PAN_CHAR_T PANTHEIOS_FE_PROCESS_IDENTITY[] = "wifu-end";
-#define PantheiosString(x) PANTHEIOS_LITERAL_STRING(x)
+#include "Logger.h"
 
 using namespace std;
-using namespace pantheios;
 
 #define dispatcher Dispatcher::instance()
 
@@ -83,11 +75,11 @@ void register_protocols() {
 
 void setup_network_interface(string& type) {
     if (type == "standard") {
-        cout << "Using standard network interface" << endl;
+    	log_INFORMATIONAL("Using standard network interface");
         NetworkInterfaceFactory::instance().set_creator(new StandardNetworkInterfaceCreator());
     }
     else if (type == "mock") {
-        cout << "Using mock network interface" << endl;
+        log_INFORMATIONAL("Using mock network interface");
         NetworkInterfaceFactory::instance().set_creator(new MockNetworkInterfaceCreator());
     }
 }
@@ -95,10 +87,10 @@ void setup_network_interface(string& type) {
 int main(int argc, char** argv) {
     GC_INIT();
 
-    // The following line does not have to be THE first call to the logger; it can be anywhere and the logger will still recognize it and use the filename
-    pantheios_be_file_setFilePath(PantheiosString("wifu-end.log"), PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BEID_ALL);
-    log_DEBUG("main(", pantheios::args(argc, argv), ")");
-    log_INFORMATIONAL("Welcome");
+    //only needs to be on if logging to file
+    //pantheios_be_file_setFilePath(PantheiosString("wifu-end.log"), PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BEID_ALL);
+
+    //log_DEBUG("main(", pantheios::args(argc, argv), ")");
 
     //TODO: Change second argument to 0 once we have a logger in place
     daemon(1, 1);
@@ -125,7 +117,7 @@ int main(int argc, char** argv) {
     register_protocols();
 
     // Start Dispatcher
-    Dispatcher::instance().start_processing();
+    dispatcher.start_processing();
 
     // Start Back end
     WifuEndBackEndLibrary::instance();

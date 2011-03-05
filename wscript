@@ -31,8 +31,13 @@ def configure(conf):
 	conf.env['STATICLIB'] += ['gtest']
 	
 	conf.env['STATICLIB'] += ['pantheios.1.core.gcc44']
-	conf.env['STATICLIB'] += ['pantheios.1.be.file.gcc44']
-	conf.env['STATICLIB'] += ['pantheios.1.bec.file.gcc44']
+	
+	#Use the top two for logging to a file, the bottom two for logging to console 
+#	conf.env['STATICLIB'] += ['pantheios.1.be.file.gcc44']
+#	conf.env['STATICLIB'] += ['pantheios.1.bec.file.gcc44']
+	conf.env['STATICLIB'] += ['pantheios.1.be.fprintf.gcc44']
+	conf.env['STATICLIB'] += ['pantheios.1.bec.fprintf.gcc44']
+
 	conf.env['STATICLIB'] += ['pantheios.1.fe.all.gcc44']
 	conf.env['STATICLIB'] += ['pantheios.1.util.gcc44']
 	
