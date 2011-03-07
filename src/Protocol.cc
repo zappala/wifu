@@ -157,6 +157,7 @@ void Protocol::library_send(Event* e) {
     int error = bytes_sent < 0 ? EAGAIN : 0;
     response->put(ERRNO, Utils::itoa(error));
     dispatch(response);
+    assert(false);
 }
 
 void Protocol::send(Event* e) {
