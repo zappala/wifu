@@ -45,7 +45,7 @@ public:
 
     virtual void accept(Context*, AcceptEvent*);
 
-    virtual void send_to(Context*, SendEvent*);
+    virtual ssize_t send_to(Context*, SendEvent*);
 
     virtual void receive_from(Context*, ReceiveEvent*);
 

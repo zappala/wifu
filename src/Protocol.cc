@@ -138,14 +138,25 @@ void Protocol::library_accept(Event* e) {
 
 void Protocol::library_receive(Event* e) {
     cout << "Protocol::library_receive()" << endl;
-    ReceiveEvent* event = (ReceiveEvent*)e;
+    ReceiveEvent* event = (ReceiveEvent*) e;
     receive_from(event);
 }
 
 void Protocol::library_send(Event* e) {
     cout << "Protocol::library_send()" << endl;
-    SendEvent* event = (SendEvent*)e;
-    send_to(event);
+    SendEvent* event = (SendEvent*) e;
+
+    
+    ssize_t bytes_sent = send_to(event);
+
+    Socket* s = event->get_socket();
+    ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
+
+    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+
+    int error = bytes_sent < 0 ? EAGAIN : 0;
+    response->put(ERRNO, Utils::itoa(error));
+    dispatch(response);
 }
 
 void Protocol::send(Event* e) {

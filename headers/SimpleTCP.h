@@ -58,7 +58,7 @@ public:
 
     void resend_packet(ResendPacketEvent* e);
 
-    void send_to(SendEvent* e);
+    ssize_t send_to(SendEvent* e);
 
     void receive_from(ReceiveEvent* e);
 };

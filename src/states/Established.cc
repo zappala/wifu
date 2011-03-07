@@ -58,6 +58,8 @@ void Established::receive_from(Context* c, ReceiveEvent* e) {
     cout << "Established::receive_from()" << endl;
 }
 
-void Established::send_to(Context* c, SendEvent* e) {
+ssize_t Established::send_to(Context* c, SendEvent* e) {
     cout << "Established::send_to()" << endl;
+    // By being in Established we know we are connected.
+    return e->data_length();
 }

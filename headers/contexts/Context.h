@@ -58,7 +58,7 @@ public:
 
     virtual void resend_packet(ResendPacketEvent* e);
 
-    virtual void send_to(SendEvent* e);
+    virtual ssize_t send_to(SendEvent* e);
 
     virtual void receive_from(ReceiveEvent* e);
 

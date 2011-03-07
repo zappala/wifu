@@ -23,7 +23,11 @@ void State::listen(Context* c, ListenEvent* e) {}
 
 void State::accept(Context* c, AcceptEvent* e) {}
 
-void State::send_to(Context*, SendEvent*) {}
+ssize_t State::send_to(Context*, SendEvent*) {
+    // We should return error by default
+    // Only implementing methods should be able to return a non-error value (they could also return an error)
+    return -1;
+}
 
 void State::receive_from(Context*, ReceiveEvent*) {}
 

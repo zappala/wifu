@@ -15,6 +15,13 @@ class SendEvent : public LibraryEvent {
 public:
     SendEvent(string& message, string& file, Socket* s);
     void execute(IModule* m);
+
+    unsigned char * get_data();
+    ssize_t data_length();
+
+private:
+    unsigned char * data_;
+    ssize_t data_length_;
 };
 
 #endif	/* _SENDEVENT_H */

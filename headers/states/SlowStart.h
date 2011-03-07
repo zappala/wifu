@@ -30,6 +30,8 @@ public:
     void receive_packet(Context* c, NetworkReceivePacketEvent* e);
     void enter(Context* c);
     void exit(Context* c);
+
+    ssize_t send_to(Context* c, SendEvent* e);
 };
 
 

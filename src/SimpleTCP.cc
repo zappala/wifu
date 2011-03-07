@@ -144,16 +144,20 @@ void SimpleTCP::resend_packet(ResendPacketEvent* e) {
     send_network_packet(s, e->get_packet());
 }
 
-void SimpleTCP::send_to(SendEvent* e) {
+ssize_t SimpleTCP::send_to(SendEvent* e) {
     cout << "SimpleTCP::send_to()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
-    c->get_congestion_control()->send_to(e);
-    c->get_connection_manager()->send_to(e);
-    c->get_reliability()->send_to(e);
+    // ensure we are connected
+    ssize_t bytes = c->get_connection_manager()->send_to(e);
 
-    assert(false);
+    if (bytes > 0) {
+        c->get_reliability()->send_to(e);
+        return c->get_congestion_control()->send_to(e);
+    }
+
+    return -1;
 }
 
 void SimpleTCP::receive_from(ReceiveEvent* e) {

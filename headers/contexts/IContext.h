@@ -41,7 +41,7 @@ public:
     virtual void new_conneciton_initiated(ConnectionInitiatedEvent* e) = 0;
     virtual void close() = 0;
 
-    virtual void send_to(SendEvent* e) = 0;
+    virtual ssize_t send_to(SendEvent* e) = 0;
     virtual void receive_from(ReceiveEvent* e) = 0;
 
     virtual void timer_fired_event(TimerFiredEvent* e) = 0;

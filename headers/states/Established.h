@@ -28,7 +28,7 @@ public:
     void receive_packet(Context* c, NetworkReceivePacketEvent* e);
 
     void receive_from(Context* c, ReceiveEvent* e);
-    void send_to(Context* c, SendEvent* e);
+    ssize_t send_to(Context* c, SendEvent* e);
 
 };
 
