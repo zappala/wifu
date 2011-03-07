@@ -19,6 +19,10 @@
 #include "events/SendPacketEvent.h"
 #include "events/NetworkReceivePacketEvent.h"
 #include "Dispatcher.h"
+
+#include "packet/TCPPacket.h"
+
+
 using namespace std;
 
 class SlowStart : public State {
@@ -32,6 +36,9 @@ public:
     void exit(Context* c);
 
     ssize_t send_to(Context* c, SendEvent* e);
+
+private:
+    void send_data(Context* c, Event* e);
 };
 
 

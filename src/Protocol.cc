@@ -145,7 +145,6 @@ void Protocol::library_receive(Event* e) {
 void Protocol::library_send(Event* e) {
     cout << "Protocol::library_send()" << endl;
     SendEvent* event = (SendEvent*) e;
-
     
     ssize_t bytes_sent = send_to(event);
 
@@ -157,7 +156,7 @@ void Protocol::library_send(Event* e) {
     int error = bytes_sent < 0 ? EAGAIN : 0;
     response->put(ERRNO, Utils::itoa(error));
     dispatch(response);
-    assert(false);
+    
 }
 
 void Protocol::send(Event* e) {
