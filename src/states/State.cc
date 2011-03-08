@@ -23,6 +23,14 @@ void State::listen(Context* c, ListenEvent* e) {}
 
 void State::accept(Context* c, AcceptEvent* e) {}
 
+ssize_t State::send_to(Context*, SendEvent*) {
+    // We should return error by default
+    // Only implementing methods should be able to return a non-error value (they could also return an error)
+    return -1;
+}
+
+void State::receive_from(Context*, ReceiveEvent*) {}
+
 void State::new_connection_established(Context* c, ConnectionEstablishedEvent* e) {}
 
 void State::new_connection_initiated(Context*, ConnectionInitiatedEvent* e) {}

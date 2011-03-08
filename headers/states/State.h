@@ -45,6 +45,10 @@ public:
 
     virtual void accept(Context*, AcceptEvent*);
 
+    virtual ssize_t send_to(Context*, SendEvent*);
+
+    virtual void receive_from(Context*, ReceiveEvent*);
+
     virtual void new_connection_established(Context*, ConnectionEstablishedEvent* e);
 
     virtual void new_connection_initiated(Context*, ConnectionInitiatedEvent* e);

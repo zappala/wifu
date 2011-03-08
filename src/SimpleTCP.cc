@@ -144,6 +144,33 @@ void SimpleTCP::resend_packet(ResendPacketEvent* e) {
     send_network_packet(s, e->get_packet());
 }
 
+ssize_t SimpleTCP::send_to(SendEvent* e) {
+    cout << "SimpleTCP::send_to()" << endl;
+    Socket* s = e->get_socket();
+    IContextContainer* c = get_context(s);
+
+    // ensure we are connected
+    ssize_t bytes = c->get_connection_manager()->send_to(e);
+
+    if (bytes > 0) {
+        c->get_reliability()->send_to(e);
+        return c->get_congestion_control()->send_to(e);
+    }
+
+    return -1;
+}
+
+void SimpleTCP::receive_from(ReceiveEvent* e) {
+    cout << "SimpleTCP::receive_from()" << endl;
+
+    Socket* s = e->get_socket();
+    IContextContainer* c = get_context(s);
+
+    c->get_congestion_control()->receive_from(e);
+    c->get_connection_manager()->receive_from(e);
+    c->get_reliability()->receive_from(e);
+}
+
 void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {
     TCPPacket* packet = (TCPPacket*) p;
     cout << "SimpleTCP::send_network_packet(): SYN: " << packet->is_tcp_syn() << " ACK: " << packet->is_tcp_ack() << endl;

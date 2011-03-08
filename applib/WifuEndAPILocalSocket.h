@@ -445,7 +445,10 @@ public:
         m[FILE_STRING] = getFile();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[BUFFER_STRING] = string((const char*) buf, n);
+        m[N_STRING] = Utils::itoa(n);
+        cout << "wifu_sendto(), buffer: " << m[BUFFER_STRING] << endl;
         m[FLAGS_STRING] = Utils::itoa(flags);
+        
 
         if (addr != 0 && addr_len != 0) {
             assert(sizeof (struct sockaddr_in) == addr_len);

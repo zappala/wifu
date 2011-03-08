@@ -22,6 +22,8 @@
 #include "events/ConnectionEstablishedEvent.h"
 #include "events/ResendPacketEvent.h"
 #include "events/ConnectionInitiatedEvent.h"
+#include "events/SendEvent.h"
+#include "events/ReceiveEvent.h"
 
 using namespace std;
 
@@ -30,7 +32,7 @@ public:
     virtual void socket(SocketEvent* e) = 0;
     virtual void bind(BindEvent* e) = 0;
     virtual void listen(ListenEvent* e) = 0;
-    
+
     virtual void receive_packet(NetworkReceivePacketEvent* e) = 0;
     virtual void send_packet(SendPacketEvent* e) = 0;
     virtual void connect(ConnectEvent* e) = 0;
@@ -38,6 +40,9 @@ public:
     virtual void new_connection_established(ConnectionEstablishedEvent* e) = 0;
     virtual void new_conneciton_initiated(ConnectionInitiatedEvent* e) = 0;
     virtual void close() = 0;
+
+    virtual ssize_t send_to(SendEvent* e) = 0;
+    virtual void receive_from(ReceiveEvent* e) = 0;
 
     virtual void timer_fired_event(TimerFiredEvent* e) = 0;
     virtual void resend_packet(ResendPacketEvent* e) = 0;
