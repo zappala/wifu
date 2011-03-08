@@ -289,7 +289,10 @@ namespace {
         string message = "This is a message";
         memcpy(buffer, message.c_str(), message.length());
 
-        wifu_send(connection, buffer, message.length(), 0);
+        for(int i = 0; i < message.length(); i++) {
+            wifu_send(connection, &(buffer[i]), 1, 0);
+        }
+        
     }
 
     void send_receive_test(int count) {

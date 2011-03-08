@@ -53,7 +53,9 @@ void SimpleTCP::listen(ListenEvent* e) {
 void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
     IContextContainer* c = get_context(e->get_socket());
 
-    c->get_congestion_control()->receive_packet(e);
+    if (c->get_connection_manager()->is_connected(e->get_socket())) {
+        c->get_congestion_control()->receive_packet(e);
+    }
     c->get_connection_manager()->receive_packet(e);
     c->get_reliability()->receive_packet(e);
 }
@@ -63,8 +65,11 @@ void SimpleTCP::send_packet(SendPacketEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
+    if (c->get_connection_manager()->is_connected(e->get_socket())) {
+        c->get_connection_manager()->send_packet(e);
+
+    }
     c->get_congestion_control()->send_packet(e);
-    c->get_connection_manager()->send_packet(e);
     c->get_reliability()->send_packet(e);
 
     send_network_packet(s, e->get_packet());
@@ -176,4 +181,9 @@ void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {
     cout << "SimpleTCP::send_network_packet(): SYN: " << packet->is_tcp_syn() << " ACK: " << packet->is_tcp_ack() << endl;
     NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
     Dispatcher::instance().enqueue(e);
+}
+
+bool SimpleTCP::is_connected(Socket* s) {
+    IContextContainer* c = get_context(s);
+    c->get_connection_manager()->is_connected(s);
 }

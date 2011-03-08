@@ -1,6 +1,6 @@
 #include "contexts/CongestionControlContext.h"
 
-CongestionControlContext::CongestionControlContext() : Context(), max_buffer_size_(1024 * 1024), can_send_(true) {
+CongestionControlContext::CongestionControlContext() : Context(), max_buffer_size_(1), can_send_(true) {
     set_state(new SlowStart());
 }
 

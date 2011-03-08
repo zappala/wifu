@@ -47,6 +47,8 @@ public:
 
     virtual ssize_t send_to(Context*, SendEvent*);
 
+    virtual bool is_connected(Context*, Socket*);
+
     virtual void receive_from(Context*, ReceiveEvent*);
 
     virtual void new_connection_established(Context*, ConnectionEstablishedEvent* e);

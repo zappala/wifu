@@ -1,7 +1,7 @@
 #include "states/SlowStart.h"
 
 SlowStart::SlowStart() {
-
+    cout << "SlowStart Constructor" << endl;
 }
 
 SlowStart::~SlowStart() {
@@ -9,13 +9,19 @@ SlowStart::~SlowStart() {
 }
 
 void SlowStart::send_packet(Context* c, SendPacketEvent* e) {
-    cout << "SlowStart::send_packet()" << endl;
+    cout << "SlowStart::send_packet(), socket: " << e->get_socket() << endl;
 
 }
 
 void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
-    cout << "SlowStart::receive_packet()" << endl;
+    cout << "SlowStart::receive_packet(), socket: " << e->get_socket() << endl;
+    CongestionControlContext* context = (CongestionControlContext*) c;
+    context->set_can_send_data(true);
+    TCPPacket* p = (TCPPacket*)e->get_packet();
+    cout << "SlowStart::receive_packet(), packet is ack: " << p->is_naked_ack() << endl;
+    cout << "SlowStart::receive_packet(), data: " << (const char*) p->get_data() << endl;
 
+    send_data(c, e, p->is_naked_ack());
 }
 
 ssize_t SlowStart::send_to(Context* c, SendEvent* e) {
@@ -35,7 +41,7 @@ ssize_t SlowStart::send_to(Context* c, SendEvent* e) {
         context->get_queue().enqueue(buffer[num_enqueued]);
     }
 
-    send_data(c, e);
+    send_data(c, e, false);
 
     return num_enqueued;
 }
@@ -48,26 +54,31 @@ void SlowStart::exit(Context* c) {
     leave_state("SlowStart");
 }
 
-void SlowStart::send_data(Context* c, Event* e) {
+void SlowStart::send_data(Context* c, Event* e, bool received_naked_ack) {
+    cout << "SlowStart::send_data()" << endl;
     CongestionControlContext* context = (CongestionControlContext*) c;
 
     if (!context->can_send_data()) {
         // wait for an ack
+        cout << "SlowStart::send_data(), cannot send data" << endl;
         return;
     }
+
+    IQueue<unsigned char>* queue = &context->get_queue();
 
     int max_packet_size = 1400;
 
     Socket* s = e->get_socket();
-    IQueue<unsigned char>* queue = &context->get_queue();
+
 
     // Build packet and send it.
     TCPPacket* p = new TCPPacket();
     unsigned char data[max_packet_size];
 
     int num_sent = 0;
-    for(int num_sent = 0; num_sent < max_packet_size; num_sent++) {
-        if(queue->isEmpty()) {
+    for (; num_sent < max_packet_size; num_sent++) {
+        if (queue->isEmpty()) {
+            cout << "SlowStart::send_data(), queue is empty" << endl;
             break;
         }
         data[num_sent] = (unsigned char) queue->dequeue();
@@ -85,10 +96,16 @@ void SlowStart::send_data(Context* c, Event* e) {
 
     p->set_data(data, num_sent);
 
-    SendPacketEvent* event = new SendPacketEvent(s, p);
-    Dispatcher::instance().enqueue(event);
+    cout << "SlowStart::send_data(), num sent: " << num_sent << endl;
+
+    if(received_naked_ack && p->get_data_length_bytes() == 0) {
+        cout << "SlowStart::send_data(), returning early" << endl;
+        return;
+    }
 
     context->set_can_send_data(false);
-}
 
+    SendPacketEvent* event = new SendPacketEvent(s, p);
+    Dispatcher::instance().enqueue(event);
+}
 

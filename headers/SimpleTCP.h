@@ -60,6 +60,8 @@ public:
 
     ssize_t send_to(SendEvent* e);
 
+    bool is_connected(Socket* s);
+
     void receive_from(ReceiveEvent* e);
 };
 

@@ -53,6 +53,8 @@ public:
 
     void init();
 
+    bool is_naked_ack();
+
 private:
     struct tcphdr* tcp_;
 

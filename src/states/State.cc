@@ -29,6 +29,10 @@ ssize_t State::send_to(Context*, SendEvent*) {
     return -1;
 }
 
+bool State::is_connected(Context*, Socket*) {
+    return false;
+}
+
 void State::receive_from(Context*, ReceiveEvent*) {}
 
 void State::new_connection_established(Context* c, ConnectionEstablishedEvent* e) {}

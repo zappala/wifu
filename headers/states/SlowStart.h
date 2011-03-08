@@ -38,7 +38,7 @@ public:
     ssize_t send_to(Context* c, SendEvent* e);
 
 private:
-    void send_data(Context* c, Event* e);
+    void send_data(Context* c, Event* e, bool received_naked_ack);
 };
 
 

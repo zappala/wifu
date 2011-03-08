@@ -76,6 +76,10 @@ ssize_t Context::send_to(SendEvent* e) {
     return get_state()->send_to(this, e);
 }
 
+bool Context::is_connected(Socket* s) {
+    return get_state()->is_connected(this, s);
+}
+
 void Context::receive_from(ReceiveEvent* e) {
     get_state()->receive_from(this, e);
 }

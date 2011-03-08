@@ -63,3 +63,7 @@ ssize_t Established::send_to(Context* c, SendEvent* e) {
     // By being in Established we know we are connected.
     return e->data_length();
 }
+
+bool Established::is_connected(Context*, Socket* s) {
+    return true;
+}

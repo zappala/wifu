@@ -24,7 +24,7 @@ unsigned char* TCPPacket::get_data() {
 }
 
 int TCPPacket::get_data_length_bytes() {
-    return get_ip_datagram_length() - get_ip_length_bytes() - sizeof(struct tcphdr);
+    return get_ip_datagram_length() - get_ip_length_bytes() - sizeof (struct tcphdr);
 }
 
 void TCPPacket::set_data(unsigned char* data, int length) {
@@ -135,4 +135,17 @@ void TCPPacket::set_tcp_urgent_pointer(u_int16_t urg_ptr) {
 void TCPPacket::init() {
     tcp_ = (struct tcphdr*) get_next_header();
     set_tcp_header_length(sizeof (struct tcphdr) / 4);
+}
+
+bool TCPPacket::is_naked_ack() {
+    if (is_tcp_ack() &&
+        get_data_length_bytes() == 0 &&
+        !is_tcp_fin() &&
+        !is_tcp_psh() &&
+        !is_tcp_rst() &&
+        !is_tcp_syn() &&
+        !is_tcp_urg()) {
+        return true;
+    }
+    return false;
 }

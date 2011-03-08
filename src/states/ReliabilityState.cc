@@ -41,6 +41,7 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
     TCPPacket* last_received = rc->get_last_packet_received();
     if (last_received != 0) {
         packet->set_tcp_ack_number(last_received->get_tcp_sequence_number() + 1);
+        packet->set_tcp_ack(true);
     }
 
     //Increment our central sequence number counter
@@ -80,20 +81,7 @@ void ReliabilityState::resend_packet(Context* c, ResendPacketEvent* e) {
 }
 
 bool ReliabilityState::should_set_resend_timer(TCPPacket* p) {
-    // if only an ack, don't resend
-    // TODO: Is there an easier way to do this?
-    if (p->is_tcp_ack() &&
-            p->get_data_length_bytes() == 0 &&
-            !p->is_tcp_fin() &&
-            !p->is_tcp_psh() &&
-            !p->is_tcp_rst() &&
-            !p->is_tcp_syn() &&
-            !p->is_tcp_urg()) {
-        cout << "ReliabilityState::should_set_resend_timer() returning false" << endl;
-        return false;
-    }
-    cout << "ReliabilityState::should_set_resend_timer() returning true" << endl;
-    return true;
+    return !p->is_naked_ack();
 }
 
 void ReliabilityState::create_save_and_dispatch_timeout_event(

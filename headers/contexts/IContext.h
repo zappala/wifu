@@ -40,6 +40,7 @@ public:
     virtual void new_connection_established(ConnectionEstablishedEvent* e) = 0;
     virtual void new_conneciton_initiated(ConnectionInitiatedEvent* e) = 0;
     virtual void close() = 0;
+    virtual bool is_connected(Socket*) = 0;
 
     virtual ssize_t send_to(SendEvent* e) = 0;
     virtual void receive_from(ReceiveEvent* e) = 0;
