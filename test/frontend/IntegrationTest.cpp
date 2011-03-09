@@ -314,6 +314,8 @@ namespace {
         v.sem_ = new Semaphore();
         v.sem_->init(0);
         v.to_bind_ = new AddressPort("127.0.0.1", 5002);
+
+        //Specify the number of bytes to send here.
         v.expected_string = random_string(1000);
 
 
