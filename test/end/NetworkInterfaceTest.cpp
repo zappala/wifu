@@ -15,7 +15,7 @@
 #include "events/NetworkReceivePacketEvent.h"
 #include "events/NetworkSendPacketEvent.h"
 #include "events/Event.h"
-#include "headers/RandomStringGenerator.h"
+#include "../headers/RandomStringGenerator.h"
 #include "TimeoutHelper.h"
 #include "Queue.h"
 #include "Timer.h"

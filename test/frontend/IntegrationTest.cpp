@@ -23,6 +23,7 @@
 #include "../headers/GarbageCollector.h"
 #include "../headers/Semaphore.h"
 #include "Timer.h"
+#include "../headers/RandomStringGenerator.h"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ namespace {
     struct var {
         Semaphore* sem_;
         AddressPort* to_bind_;
+        string s;
     };
 
     class BackEndTest : public ::testing::Test {
@@ -260,6 +262,8 @@ namespace {
         AddressPort* to_bind = v->to_bind_;
         Semaphore* sem = v->sem_;
 
+        string message = v->s;
+        
         // Create server
         int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
         int result = wifu_bind(server, (const struct sockaddr *) to_bind->get_network_struct_ptr(), sizeof (struct sockaddr_in));
@@ -286,7 +290,7 @@ namespace {
 
         int size = 1500;
         char buffer[size];
-        string message = "This is a message";
+        
         memcpy(buffer, message.c_str(), message.length());
 
         int count = 1;
@@ -312,6 +316,7 @@ namespace {
             v[i].sem_ = new Semaphore();
             v[i].sem_->init(0);
             v[i].to_bind_ = new AddressPort("127.0.0.1", 5002);
+            v[i].s = random_string(1000);
 
 
             if (pthread_create(&(t[i]), NULL, &send_receive_thread, &(v[i])) != 0)
@@ -335,7 +340,7 @@ namespace {
             int size = 1500;
             char buffer[size];
             memset(buffer, 0, size);
-            string expected = "This is a message";
+            string expected = v[i].s;
             string all_received = "";
 
             for(int count = 0; count < expected.length(); ++count) {
