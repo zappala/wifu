@@ -297,9 +297,10 @@ void Protocol::check_and_send_receive_response(Event* e) {
 
         string name(WIFU_RECVFROM_NAME);
         ResponseEvent* response = new ResponseEvent(s, name, info->get_file());
-        response->put(BUFFER_STRING, s->get_receive_buffer().substr(0, size));
 
+        response->put(BUFFER_STRING, s->get_receive_buffer().substr(0, size));
         s->get_receive_buffer().erase(0, size);
+
         response->put(ADDRESS_STRING, ap->get_address());
         response->put(PORT_STRING, Utils::itoa(ap->get_port()));
         response->put(LENGTH_STRING, Utils::itoa(sizeof (ap->get_network_struct())));
@@ -307,6 +308,8 @@ void Protocol::check_and_send_receive_response(Event* e) {
         int return_value = response->get_value(BUFFER_STRING).length();
         response->put(RETURN_VALUE_STRING, Utils::itoa(return_value));
         response->put(ERRNO, Utils::itoa(0));
+
+        assert(return_value == 1);
 
         dispatch(response);
         cout << "Protocol::check_and_send_receive_response(), response dispatched" << endl;

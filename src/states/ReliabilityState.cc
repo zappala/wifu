@@ -43,6 +43,11 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
         packet->set_tcp_ack_number(last_received->get_tcp_sequence_number() + 1);
         packet->set_tcp_ack(true);
     }
+    else {
+        cout << "ReliabilityState::send_packet(): Last packet received is NULL" << endl;
+    }
+
+    cout << "ReliabilityState::send_packet(), packet data: " << (const char*) packet->get_data() << endl;
 
     //Increment our central sequence number counter
     u_int32_t seq_num = rc->get_seq_counter();

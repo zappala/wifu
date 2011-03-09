@@ -18,7 +18,8 @@ void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     CongestionControlContext* context = (CongestionControlContext*) c;
     context->set_can_send_data(true);
     TCPPacket* p = (TCPPacket*)e->get_packet();
-    cout << "SlowStart::receive_packet(), packet is ack: " << p->is_naked_ack() << endl;
+    cout << "SlowStart::receive_packet(), packet is naked ack: " << p->is_naked_ack() << endl;
+    cout << "SlowStart::receive_packet(), packet is ack: " << p->is_tcp_ack() << endl;
     cout << "SlowStart::receive_packet(), data: " << (const char*) p->get_data() << endl;
 
     // Send ACK
