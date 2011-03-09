@@ -316,7 +316,7 @@ namespace {
         v.to_bind_ = new AddressPort("127.0.0.1", 5002);
 
         //Specify the number of bytes to send here.
-        v.expected_string = random_string(1000);
+        v.expected_string = random_string(1);
 
 
         if (pthread_create(&(t), NULL, &send_receive_thread, &(v)) != 0) {
@@ -361,7 +361,7 @@ namespace {
 
     }
 
-    TEST_F(BackEndTest, sendReceiveTest) {
+    TEST_F(BackEndMockTest, sendReceiveTest) {
         send_receive_test();
 
 
