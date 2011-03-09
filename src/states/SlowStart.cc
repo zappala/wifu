@@ -21,6 +21,7 @@ void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     cout << "SlowStart::receive_packet(), packet is ack: " << p->is_naked_ack() << endl;
     cout << "SlowStart::receive_packet(), data: " << (const char*) p->get_data() << endl;
 
+    // Send ACK
     send_data(c, e, p->is_naked_ack());
 }
 
