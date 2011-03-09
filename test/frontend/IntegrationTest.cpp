@@ -316,7 +316,7 @@ namespace {
             v[i].sem_ = new Semaphore();
             v[i].sem_->init(0);
             v[i].to_bind_ = new AddressPort("127.0.0.1", 5002);
-            v[i].s = random_string(2000);
+            v[i].s = random_string(1000);
 
 
             if (pthread_create(&(t[i]), NULL, &send_receive_thread, &(v[i])) != 0)
