@@ -288,7 +288,7 @@ namespace {
 
         // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
-        int size = 1500;
+        int size = 10000;
         char buffer[size];
         
         memcpy(buffer, message.c_str(), message.length());
@@ -316,7 +316,7 @@ namespace {
             v[i].sem_ = new Semaphore();
             v[i].sem_->init(0);
             v[i].to_bind_ = new AddressPort("127.0.0.1", 5002);
-            v[i].s = random_string(1000);
+            v[i].s = random_string(2000);
 
 
             if (pthread_create(&(t[i]), NULL, &send_receive_thread, &(v[i])) != 0)
@@ -344,7 +344,7 @@ namespace {
             string all_received = "";
 
             for(int count = 0; count < expected.length(); ++count) {
-                
+
                 string exp = expected.substr(count, 1);
                 int return_value = wifu_recv(client[i], &buffer, 1, 0);
                 string actual(buffer);
@@ -355,14 +355,6 @@ namespace {
                 ASSERT_EQ(exp, actual);
 
             }
-
-            // int return_value = wifu_recv(client[i], &buffer, size, 0);
-//
-//            ASSERT_EQ(17, return_value);
-//            string expected = "This is a message";
-//            string result = buffer;
-//            ASSERT_EQ(expected, result);
-
 
             cout << "IntegrationTest::send_receive_test(), received the following: " << all_received << endl;
         }
