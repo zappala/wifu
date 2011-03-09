@@ -202,7 +202,6 @@ void Protocol::network_receive(Event* e) {
     cout << "Protocol::network_receive(), saving data from packet" << endl;
     WiFuPacket* p = event->get_packet();
     if (is_connected(socket) && p->get_data_length_bytes() > 0) {
-        assert(p->get_data_length_bytes() == 1);
         socket->get_receive_buffer().append((const char*) p->get_data(), p->get_data_length_bytes());
         check_and_send_receive_response(e);
     }
@@ -311,7 +310,7 @@ void Protocol::check_and_send_receive_response(Event* e) {
         response->put(RETURN_VALUE_STRING, Utils::itoa(return_value));
         response->put(ERRNO, Utils::itoa(0));
 
-        assert(return_value == 1);
+        assert(return_value <= size);
 
         dispatch(response);
         cout << "Protocol::check_and_send_receive_response(), response dispatched" << endl;

@@ -346,7 +346,7 @@ namespace {
             for(int count = 0; count < expected.length(); ++count) {
                 
                 string exp = expected.substr(count, 1);
-                int return_value = wifu_recv(client[i], &buffer, size, 0);
+                int return_value = wifu_recv(client[i], &buffer, 1, 0);
                 string actual(buffer);
                 all_received.append(actual);
 
