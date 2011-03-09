@@ -32,7 +32,7 @@ namespace {
     struct var {
         Semaphore* sem_;
         AddressPort* to_bind_;
-        string s;
+        string expected_string;
     };
 
     class BackEndTest : public ::testing::Test {
@@ -262,8 +262,8 @@ namespace {
         AddressPort* to_bind = v->to_bind_;
         Semaphore* sem = v->sem_;
 
-        string message = v->s;
-        
+        string message = v->expected_string;
+
         // Create server
         int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
         int result = wifu_bind(server, (const struct sockaddr *) to_bind->get_network_struct_ptr(), sizeof (struct sockaddr_in));
@@ -290,78 +290,77 @@ namespace {
 
         int size = 10000;
         char buffer[size];
-        
+
         memcpy(buffer, message.c_str(), message.length());
 
         int count = 1;
 
         // TODO: this only sends one character at a time
-        for(int i = 0; i < message.length(); i++) {
-            while(wifu_send(connection, &(buffer[i]), count, 0) < count);
+        for (int i = 0; i < message.length(); i++) {
+            while (wifu_send(connection, &(buffer[i]), count, 0) < count);
         }
-        
+
     }
 
-    void send_receive_test(int count) {
+    void send_receive_test() {
         AddressPort to_connect("127.0.0.1", 5002);
 
-        pthread_t t[count];
-        struct var v[count];
-        Timer timer[count];
-        int client[count];
-        int result[count];
+        pthread_t t;
+        struct var v;
+        Timer timer;
+        int client;
+        int result;
 
-        for (int i = 0; i < count; i++) {
-
-            v[i].sem_ = new Semaphore();
-            v[i].sem_->init(0);
-            v[i].to_bind_ = new AddressPort("127.0.0.1", 5002);
-            v[i].s = random_string(1000);
+        v.sem_ = new Semaphore();
+        v.sem_->init(0);
+        v.to_bind_ = new AddressPort("127.0.0.1", 5002);
+        v.expected_string = random_string(1000);
 
 
-            if (pthread_create(&(t[i]), NULL, &send_receive_thread, &(v[i])) != 0)
-                FAIL() << "Error creating new thread in IntegrationTest.h";
-
-            v[i].sem_->wait();
-
-            // Make sure that the thread is in the accept state
-            usleep(50000);
-
-            // Create client
-
-            timer[i].start();
-            client[i] = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
-            result[i] = wifu_connect(client[i], (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
-            timer[i].stop();
-            ASSERT_EQ(0, result[i]);
-
-            cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer[i].get_duration_microseconds() << endl;
-
-            int size = 1500;
-            char buffer[size];
-            memset(buffer, 0, size);
-            string expected = v[i].s;
-            string all_received = "";
-
-            for(int count = 0; count < expected.length(); ++count) {
-
-                string exp = expected.substr(count, 1);
-                int return_value = wifu_recv(client[i], &buffer, 1, 0);
-                string actual(buffer);
-                all_received.append(actual);
-
-
-                ASSERT_EQ(1, return_value);
-                ASSERT_EQ(exp, actual);
-
-            }
-
-            cout << "IntegrationTest::send_receive_test(), received the following: " << all_received << endl;
+        if (pthread_create(&(t), NULL, &send_receive_thread, &(v)) != 0) {
+            FAIL() << "Error creating new thread in IntegrationTest.h";
         }
+
+        v.sem_->wait();
+
+        // Make sure that the thread is in the accept state
+        usleep(50000);
+
+        // Create client
+
+        timer.start();
+        client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+        result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+        timer.stop();
+        ASSERT_EQ(0, result);
+
+        cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
+
+        int size = 1500;
+        char buffer[size];
+        memset(buffer, 0, size);
+        string expected = v.expected_string;
+        string all_received = "";
+
+        for (int count = 0; count < expected.length(); ++count) {
+
+            string exp = expected.substr(count, 1);
+            int return_value = wifu_recv(client, &buffer, 1, 0);
+            string actual(buffer);
+            all_received.append(actual);
+
+
+            ASSERT_EQ(1, return_value);
+            ASSERT_EQ(exp, actual);
+
+        }
+
+        cout << "IntegrationTest::send_receive_test(), received the following: " << all_received << endl;
+
     }
 
     TEST_F(BackEndTest, sendReceiveTest) {
-        send_receive_test(1);
+        send_receive_test();
 
 
         // so we can see if we are doing something incorrect that would otherwise
