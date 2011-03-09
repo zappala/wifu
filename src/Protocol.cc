@@ -163,9 +163,9 @@ void Protocol::library_send(Event* e) {
     Socket* s = event->get_socket();
     ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
 
-    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+    response->put(RETURN_VALUE_STRING, Utils::itoa(bytes_sent));
 
-    int error = bytes_sent < 0 ? EAGAIN : 0;
+    int error = bytes_sent <= 0 ? EAGAIN : 0;
     response->put(ERRNO, Utils::itoa(error));
     dispatch(response);
 
@@ -205,6 +205,7 @@ void Protocol::network_receive(Event* e) {
         socket->get_receive_buffer().append((const char*) p->get_data(), p->get_data_length_bytes());
         check_and_send_receive_response(e);
     }
+//        cout << "Protocol::network_receive(): buffer: " << socket->get_receive_buffer() << endl;
 }
 
 void Protocol::connection_established(Event* e) {
@@ -283,7 +284,7 @@ void Protocol::check_and_send_receive_response(Event* e) {
     Socket* s = e->get_socket();
     ReceiveInformation* info = s->get_receive_info();
 
-    cout << "Data to send: " << s->get_receive_buffer() << endl;
+    cout << "Data to send to application (this is received data): " << s->get_receive_buffer() << endl;
     if(!info) {
         // cannot send response because no one has called receive yet
         return;

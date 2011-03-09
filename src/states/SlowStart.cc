@@ -38,13 +38,17 @@ ssize_t SlowStart::send_to(Context* c, SendEvent* e) {
 
     for (; num_enqueued < data_length; num_enqueued++) {
         if (queue->size() >= context->get_max_buffer_size()) {
+            cout << "SlowStart::send_to(), breaking early" << endl;
             break;
         }
+        cout << "SlowStart::send_to(): enqueing: " << buffer[num_enqueued];
         context->get_queue().enqueue(buffer[num_enqueued]);
     }
 
     send_data(c, e, false);
 
+    cout << "SlowStart::send_to(), number sent: " << num_enqueued << endl;
+    assert(num_enqueued == 0 || num_enqueued == 1);
     return num_enqueued;
 }
 

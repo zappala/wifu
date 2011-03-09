@@ -61,6 +61,8 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
     if (should_set_resend_timer(packet)) {
         create_save_and_dispatch_timeout_event(rc, e->get_socket(), 1, 0);
     }
+
+    cout << "ReliabilityState:send_packet(): Sequence Number = " << packet->get_tcp_sequence_number() << ", ACK number = " << packet->get_tcp_ack_number() << endl;
 }
 
 void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {

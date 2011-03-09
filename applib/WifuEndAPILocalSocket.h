@@ -120,6 +120,7 @@ public:
         }
 
         if (!response_[NAME_STRING].compare(WIFU_RECVFROM_NAME)) {
+            cout << "WifuEndAPILocalSocket::receive(): " << response_[BUFFER_STRING];
             sockets.get(socket)->set_payload(response_[BUFFER_STRING]);
         }
 
@@ -448,7 +449,7 @@ public:
         m[N_STRING] = Utils::itoa(n);
         cout << "wifu_sendto(), buffer: " << m[BUFFER_STRING] << endl;
         m[FLAGS_STRING] = Utils::itoa(flags);
-        
+
 
         if (addr != 0 && addr_len != 0) {
             assert(sizeof (struct sockaddr_in) == addr_len);
@@ -463,6 +464,9 @@ public:
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
+
+
+
         return data->get_return_value();
     }
 
@@ -504,7 +508,7 @@ public:
         SocketData* data = sockets.get(fd);
         assert(data != NULL);
         assert(data->get_semaphore() != NULL);
-        
+
         data->get_semaphore()->wait();
         ssize_t ret_val = data->get_return_value();
 
@@ -512,6 +516,7 @@ public:
 
         if (ret_val > 0) {
             memcpy(buf, data->get_payload(), ret_val);
+            cout << "wifu_recvfrom(), buffer: " << (const char*) buf << endl;
         }
         return ret_val;
     }
