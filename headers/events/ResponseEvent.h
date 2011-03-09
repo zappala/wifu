@@ -34,6 +34,8 @@ public:
 
     string get_write_file();
 
+    string& get_value(string key);
+
 private:
     string name_;
     string file_;

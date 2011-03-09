@@ -331,7 +331,20 @@ namespace {
 
             int size = 1500;
             char buffer[size];
-//            int return_value = wifu_recv(client[i], &buffer, size, 0);
+
+            string expected = "This is a message";
+
+            for(int i = 0; i < 1; ++i) {
+                string exp = expected.substr(i, 1);
+                int return_value = wifu_recv(client[i], &buffer, size, 0);
+                string actual(buffer);
+
+                ASSERT_EQ(1, return_value);
+                ASSERT_EQ(exp, actual);
+                
+            }
+
+            // int return_value = wifu_recv(client[i], &buffer, size, 0);
 //
 //            ASSERT_EQ(17, return_value);
 //            string expected = "This is a message";

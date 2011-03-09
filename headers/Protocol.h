@@ -79,12 +79,14 @@ public:
     virtual void timer_fired(Event* e);
 
     virtual void resend(Event* e);
-    
+
 private:
+
+    void check_and_send_receive_response(Event* e);
+
     int protocol_;
 
     HashSet<Socket*> sockets_;
-    
 
 };
 

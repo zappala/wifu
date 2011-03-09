@@ -12,7 +12,8 @@ type_(type),
 protocol_(protocol),
 local_(local),
 remote_(remote),
-is_passive_(false) {
+is_passive_(false),
+receive_info_(0) {
 
 }
 
@@ -99,3 +100,14 @@ string Socket::make_key(AddressPort* local, AddressPort* remote) {
     return local_s.append(remote_s);
 }
 
+string& Socket::get_receive_buffer() {
+    return receive_buffer_;
+}
+
+ReceiveInformation* Socket::get_receive_info() {
+    return receive_info_;
+}
+
+void Socket::set_receive_info(ReceiveInformation* info) {
+    receive_info_ = info;
+}

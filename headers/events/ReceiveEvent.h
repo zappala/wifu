@@ -15,6 +15,8 @@ class ReceiveEvent : public LibraryEvent {
 public:
     ReceiveEvent(string& message, string& file, Socket* s);
     void execute(IModule* m);
+
+    int get_receive_buffer_size();
 };
 
 #endif	/* _RECEIVEEVENT_H */

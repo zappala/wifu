@@ -27,3 +27,7 @@ void ResponseEvent::execute(IModule* m) {
 string ResponseEvent::get_write_file() {
 	return file_;
 }
+
+string& ResponseEvent::get_value(string key) {
+    return m_[key];
+}

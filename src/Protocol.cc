@@ -139,13 +139,25 @@ void Protocol::library_accept(Event* e) {
 void Protocol::library_receive(Event* e) {
     cout << "Protocol::library_receive()" << endl;
     ReceiveEvent* event = (ReceiveEvent*) e;
+
+    Socket* s = event->get_socket();
+
+    if (!is_connected(s)) {
+        // TODO: respond with error
+        return;
+    }
+
+    cout << "Protocol::library_receive(), saving information" << endl;
+    s->set_receive_info(new ReceiveInformation(event->get_map()[FILE_STRING], event->get_receive_buffer_size()));
+    check_and_send_receive_response(e);
+
     receive_from(event);
 }
 
 void Protocol::library_send(Event* e) {
     cout << "Protocol::library_send()" << endl;
     SendEvent* event = (SendEvent*) e;
-    
+
     ssize_t bytes_sent = send_to(event);
 
     Socket* s = event->get_socket();
@@ -156,7 +168,7 @@ void Protocol::library_send(Event* e) {
     int error = bytes_sent < 0 ? EAGAIN : 0;
     response->put(ERRNO, Utils::itoa(error));
     dispatch(response);
-    
+
 }
 
 void Protocol::send(Event* e) {
@@ -173,7 +185,6 @@ void Protocol::send(Event* e) {
 }
 
 void Protocol::network_receive(Event* e) {
-
     cout << "Protocol::network_receive()" << endl;
 
     NetworkReceivePacketEvent* event = (NetworkReceivePacketEvent*) e;
@@ -186,6 +197,14 @@ void Protocol::network_receive(Event* e) {
 
     // TODO: Error check
     receive_packet(event);
+
+    // append any data into buffer
+    cout << "Protocol::network_receive(), saving data from packet" << endl;
+    WiFuPacket* p = event->get_packet();
+    if (is_connected(socket) && p->get_data_length_bytes() > 0) {
+        socket->get_receive_buffer().append((const char*) p->get_data(), p->get_data_length_bytes());
+        check_and_send_receive_response(e);
+    }
 }
 
 void Protocol::connection_established(Event* e) {
@@ -257,4 +276,40 @@ void Protocol::resend(Event* e) {
     }
 
     resend_packet(event);
+}
+
+void Protocol::check_and_send_receive_response(Event* e) {
+    cout << "Protocol::check_and_send_receive_response()" << endl;
+    Socket* s = e->get_socket();
+    ReceiveInformation* info = s->get_receive_info();
+
+    cout << "Data to send: " << s->get_receive_buffer() << endl;
+    if(!info) {
+        // cannot send response because no one has called receive yet
+        return;
+    }
+
+    int size = info->get_receiving_buffer_size();
+    if (size && s->get_receive_buffer().length() > 0) {
+        // I have data to return
+
+        AddressPort* ap = s->get_remote_address_port();
+
+        string name(WIFU_RECVFROM_NAME);
+        ResponseEvent* response = new ResponseEvent(s, name, info->get_file());
+        response->put(BUFFER_STRING, s->get_receive_buffer().substr(0, size));
+
+        s->get_receive_buffer().erase(0, size);
+        response->put(ADDRESS_STRING, ap->get_address());
+        response->put(PORT_STRING, Utils::itoa(ap->get_port()));
+        response->put(LENGTH_STRING, Utils::itoa(sizeof (ap->get_network_struct())));
+
+        int return_value = response->get_value(BUFFER_STRING).length();
+        response->put(RETURN_VALUE_STRING, Utils::itoa(return_value));
+        response->put(ERRNO, Utils::itoa(0));
+
+        dispatch(response);
+        cout << "Protocol::check_and_send_receive_response(), response dispatched" << endl;
+        s->set_receive_info(0);
+    }
 }

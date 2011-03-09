@@ -15,6 +15,7 @@
 #include "GarbageCollector.h"
 #include "AddressPort.h"
 #include "observer/Observable.h"
+#include "ReceiveInformation.h"
 
 using namespace std;
 // TODO: do we need to protect this with a Semaphore, like a monitor?
@@ -27,10 +28,10 @@ public:
      * Creates a Socket object.
      */
     Socket(int domain,
-           int type,
-           int protocol,
-           AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().get()),
-           AddressPort* remote = new AddressPort("0.0.0.0", PortManager::instance().get()));
+            int type,
+            int protocol,
+            AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().get()),
+            AddressPort* remote = new AddressPort("0.0.0.0", PortManager::instance().get()));
 
     /**
      * Cleans up this Socket object.
@@ -68,6 +69,12 @@ public:
 
     static string make_key(AddressPort* local, AddressPort* remote);
 
+    string& get_receive_buffer();
+
+    ReceiveInformation* get_receive_info();
+
+    void set_receive_info(ReceiveInformation* info);
+
 private:
     AddressPort* local_;
     AddressPort* remote_;
@@ -77,6 +84,9 @@ private:
     int socket_;
 
     bool is_passive_;
+
+    ReceiveInformation* receive_info_;
+    string receive_buffer_;
 };
 
 #endif	/* _SOCKET_H */
