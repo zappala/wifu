@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include "exceptions/IOError.h"
 
 void Utils::get_timespec_future_time(int seconds, long int nanoseconds, struct timespec* ts) {
     assert(seconds >= 0);
@@ -27,7 +28,18 @@ vector<string> Utils::read_file(string& file) {
     string s;
     vector<string> result;
     ifstream infile;
-    infile.open(file.c_str());
+
+    try {
+        infile.open(file.c_str());
+    }
+    catch(ifstream::failure e) {
+        throw IOError();
+    }
+
+    if (!infile.is_open()) {
+        throw IOError();
+    }
+    
     while (!infile.eof()) {
         getline(infile, s);
 
