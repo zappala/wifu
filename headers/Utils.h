@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <vector>
 #include <fstream>
+#include <string.h>
 
 #include "defines.h"
 
@@ -51,6 +52,17 @@ public:
      * @return A vector which each line is representative of on line in the file
      */
     static vector<string> read_file(string& file);
+
+
+    /**
+     * Tokenizes line, delimiting on any character in delimiters
+     *
+     * @param line The line to tokenize
+     * @param delimiters The dilimiters to tokenize on, all characters will be used as dilimiters
+     *
+     * @return A vector contaning all the tokens, in order
+     */
+    static vector<string> tokenize(string& line, string& delimiters);
 };
 
 #endif	/* _UTILS_H */

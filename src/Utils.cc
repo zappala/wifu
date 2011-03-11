@@ -32,17 +32,29 @@ vector<string> Utils::read_file(string& file) {
         getline(infile, s);
 
         // Ignore empty lines
-        if(s.empty()) {
+        if (s.empty()) {
             continue;
         }
 
         // Ignore comments
-        if(s[0] == '#') {
+        if (s[0] == '#') {
             continue;
         }
 
         result.push_back(s);
     }
     infile.close();
+    return result;
+}
+
+vector<string> Utils::tokenize(string& line, string& delimiters) {
+
+    vector<string> result;
+    char* current = strtok((char*) line.c_str(), delimiters.c_str());
+    while (current != NULL) {
+        result.push_back(current);
+        current = strtok(NULL, delimiters.c_str());
+    }
+
     return result;
 }

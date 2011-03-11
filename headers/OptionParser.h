@@ -7,6 +7,7 @@
 
 // C++ includes
 #include <map>
+#include <iostream>
 
 using namespace std;
 
@@ -18,17 +19,16 @@ public:
 
     void parse(int argc, char* const argv[], const struct option* long_options);
 
-    bool present(const char* option);
+    bool present(string& option);
 
-    const char* argument(const char* option);
+    string& argument(string& option);
 
 private:
 
     OptionParser();
 
-
-    map<const char*, bool> present_;
-    map<const char*, const char*> argument_;
+    map<string, bool> present_;
+    map<string, string> argument_;
 };
 
 #endif  // option_parser_h

@@ -1,6 +1,5 @@
 #include "MockNetworkInterface.h"
-#include "OptionParser.h"
-#include "exceptions/IllegalStateException.h"
+
 
 MockNetworkInterface& MockNetworkInterface::instance() {
     static MockNetworkInterface instance_;
@@ -8,6 +7,7 @@ MockNetworkInterface& MockNetworkInterface::instance() {
 }
 
 MockNetworkInterface::~MockNetworkInterface() {
+    
 }
 
 void MockNetworkInterface::start() {
@@ -24,9 +24,13 @@ void MockNetworkInterface::network_send(Event* e) {
     WiFuPacket* p = event->get_packet();
     TCPPacket* tcp_packet = (TCPPacket*) p;
 
-    if (should_drop(tcp_packet)) {
+    int delay = get_delay(tcp_packet);
+
+    // drop the packet
+    if(delay == -1) {
         return;
     }
+    usleep(delay);
 
     AddressPort* local = p->get_dest_address_port();
     AddressPort* remote = p->get_source_address_port();
@@ -49,69 +53,48 @@ void MockNetworkInterface::network_send(Event* e) {
 MockNetworkInterface::MockNetworkInterface() : INetworkInterface() {
     counter_ = 0;
     syn_ = synack_ = ack_ = false;
+    read_config_file();
 }
 
-// Will drop each leg of three-way handshake only once
+int MockNetworkInterface::get_delay(TCPPacket* p) {
+    int delay = 0;
+    if(!control_nums_to_delay_.empty()) {
+        pair<pair<int, int>, int> numbers = control_nums_to_delay_.front();
+        int seq = numbers.first.first;
+        int ack = numbers.first.second;
 
-bool MockNetworkInterface::should_drop(TCPPacket* p) {
-    //Random
-    /*int c = (rand() % 10);
-    if(c == 0)
-    {
-        return true;
-    }*/
-    if(p->get_tcp_sequence_number() == 3 && counter_ == 0)
-    {
-        counter_++;
-        return true;
+        if(p->get_tcp_sequence_number() == seq && p->get_tcp_ack_number() == ack) {
+            // erase front
+            control_nums_to_delay_.erase(control_nums_to_delay_.begin());
+            delay = numbers.second;
+        }
     }
 
-    return false;
-    //return should_drop_syn(p) || should_drop_synack(p) || should_drop_ack(p);
-    //return should_drop_syn(p) || should_drop_synack(p);
-//        return should_drop_synack(p);
-//    return should_drop_ack(p);
-            //return should_drop_syn(p);
-    //    return false;
-}
-
-bool MockNetworkInterface::should_drop_syn(TCPPacket* p) {
-    if (syn_) {
-        return false;
-    }
-    syn_ = p->is_tcp_syn() && !p->is_tcp_ack();
-    if (syn_) {
-        cout << "Dropping the initial SYN.\n";
-    }
-    return syn_;
-}
-
-bool MockNetworkInterface::should_drop_synack(TCPPacket* p) {
-    if (synack_) {
-        return false;
-    }
-    synack_ = p->is_tcp_syn() && p->is_tcp_ack();
-    if (synack_) {
-        cout << "Dropping the SYNACK.\n";
-    }
-    return synack_;
-}
-
-bool MockNetworkInterface::should_drop_ack(TCPPacket* p) {
-    if (ack_) {
-        return false;
-    }
-    ack_ = !p->is_tcp_syn() && p->is_tcp_ack();
-    if (ack_) {
-        cout << "Dropping the ACK of the SYNACK and going for a SNACK.\n";
-    }
-    return ack_;
+    return delay;
 }
 
 void MockNetworkInterface::read_config_file() {
-    if(!OptionParser::instance().present("mock_file")) {
+    string mockfile = "mockfile";
+    if(!OptionParser::instance().present(mockfile)) {
         throw IllegalStateException();
     }
-    string file = OptionParser::instance().argument("mock_file");
-    
+    string file = OptionParser::instance().argument(mockfile);
+    vector<string> lines = Utils::read_file(file);
+    string delim = " ";
+
+    for(int i = 0; i < lines.size(); ++i) {
+        string current = lines[i];
+
+        vector<string> tokens = Utils::tokenize(current, delim);
+        assert(tokens.size() == 3);
+
+        int ack = atoi(tokens[0].c_str());
+        int seq = atoi(tokens[1].c_str());
+        int delay = atoi(tokens[2].c_str());
+
+        pair<int, int> packet = make_pair(ack, seq);
+        pair<pair<int, int>, int> p = make_pair(packet, delay);
+        control_nums_to_delay_.push_back(p);
+
+    }
 }

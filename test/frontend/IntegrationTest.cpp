@@ -48,7 +48,6 @@ namespace {
 
         virtual void start_backend() {
             string commandToExecute = get_command();
-
             int value = system(commandToExecute.c_str());
             if (value < 0)
                 FAIL() << "Error starting wifu-end";
@@ -85,9 +84,20 @@ namespace {
     };
 
     class BackEndMockTest : public BackEndTest {
-
+    public:
         virtual string get_command() {
-            return "./wifu-end --network mock";
+            string cmd = "./wifu-end --network mock --mockfile ";
+            cmd.append(get_mock_file());
+            return cmd;
+        }
+
+        virtual string get_mock_file() = 0;
+    };
+
+    class BackEndMockTestDropFirst : public BackEndMockTest {
+    public:
+        string get_mock_file() {
+            return "drop_first.conf";
         }
     };
 
@@ -240,7 +250,7 @@ namespace {
         sleep(5);
     }
 
-    TEST_F(BackEndMockTest, mockConnectTest) {
+    TEST_F(BackEndMockTestDropFirst, mockConnectTest) {
         connect_test(1);
 
         // so we can see if we are doing something incorrect that would otherwise
@@ -365,7 +375,7 @@ namespace {
 
     }
 
-    TEST_F(BackEndMockTest, sendReceiveTest) {
+    TEST_F(BackEndMockTestDropFirst, sendReceiveTest) {
         send_receive_test(1);
 
 

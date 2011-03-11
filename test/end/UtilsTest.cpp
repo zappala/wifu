@@ -266,6 +266,27 @@ namespace {
             ASSERT_EQ(exp, actual);
         }
     }
+
+    TEST(UtilsTest, tokenize) {
+        vector<string> expected;
+        expected.push_back("This");
+        expected.push_back("is");
+        expected.push_back("a");
+        expected.push_back("line");
+
+        string line = "This is a line";
+        string delims = " ";
+        vector<string> results = Utils::tokenize(line, delims);
+
+        ASSERT_EQ(expected.size(), results.size());
+
+        for(int i = 0; i < expected.size(); i++) {
+            string exp = expected[i];
+            string actual = results[i];
+
+            ASSERT_EQ(exp, actual);
+        }
+    }
 }
 
 #endif /* UTILSTEST_H_ */

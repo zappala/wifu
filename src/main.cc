@@ -76,10 +76,9 @@ void register_protocols() {
 
 void setup_network_interface(string& type) {
     if (type == "standard") {
-    	log_INFORMATIONAL("Using standard network interface");
+        log_INFORMATIONAL("Using standard network interface");
         NetworkInterfaceFactory::instance().set_creator(new StandardNetworkInterfaceCreator());
-    }
-    else if (type == "mock") {
+    } else if (type == "mock") {
         log_INFORMATIONAL("Using mock network interface");
         NetworkInterfaceFactory::instance().set_creator(new MockNetworkInterfaceCreator());
     }
@@ -98,21 +97,20 @@ int main(int argc, char** argv) {
 
     string network_type = "standard";
     string network = "network";
+    string mockfile = "mockfile";
 
     static struct option long_options[] = {
         {network.c_str(), required_argument, NULL, 0},
+        {mockfile.c_str(), required_argument, NULL, 0},
         {0, 0, 0, 0}
     };
-    
+
     optionparser.parse(argc, argv, long_options);
-    if (optionparser.present(network.c_str())) {
-        network_type = optionparser.argument(network.c_str());
+    if (optionparser.present(network)) {
+        network_type = optionparser.argument(network);
     }
 
-
     setup_network_interface(network_type);
-
-    MainSemaphore::instance().init(0);
 
     register_signals();
     register_protocols();
@@ -150,6 +148,7 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
 
     // Wait indefinitely
+    MainSemaphore::instance().init(0);
     MainSemaphore::instance().wait();
 
     // This probably is not be needed but it's here in case it turns out to be

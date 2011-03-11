@@ -11,6 +11,8 @@
 #include "INetworkInterface.h"
 #include "events/NetworkReceivePacketEvent.h"
 #include "packet/TCPPacket.h"
+#include "OptionParser.h"
+#include "exceptions/IllegalStateException.h"
 
 class MockNetworkInterface : public INetworkInterface {
 public:
@@ -29,15 +31,14 @@ public:
 private:
     MockNetworkInterface();
 
-    bool should_drop(TCPPacket* p);
-    bool should_drop_syn(TCPPacket* p);
-    bool should_drop_synack(TCPPacket* p);
-    bool should_drop_ack(TCPPacket* p);
+    int get_delay(TCPPacket* p);
 
     void read_config_file();
 
-    vector<pair<int, int> > seq_nums_to_delay_;
-    vector<pair<int, int> > ack_nums_to_delay_;
+    // innermost pair is seq/ack number
+    // outermost pair is pair of seq/ack number to delay
+    // delay of -1 means drop
+    vector< pair< pair<int, int>, int> > control_nums_to_delay_;
 
     int counter_;
     bool syn_;
