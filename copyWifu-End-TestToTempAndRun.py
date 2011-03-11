@@ -4,6 +4,7 @@ import os, sys
 
 if __name__ == '__main__':
 	os.system("cp bin/wifu-end-test /tmp")
+	os.system("cp test/end/test_file /tmp")
 	os.chdir("/tmp")
 	os.system("rm coverage.csexe")
 	

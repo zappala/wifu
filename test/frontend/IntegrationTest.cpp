@@ -302,7 +302,11 @@ namespace {
 
     }
 
-    void send_receive_test() {
+    /**
+     * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
+     *
+     */
+    void send_receive_test(int num_bytes) {
         AddressPort to_connect("127.0.0.1", 5002);
 
         pthread_t t;
@@ -316,7 +320,7 @@ namespace {
         v.to_bind_ = new AddressPort("127.0.0.1", 5002);
 
         //Specify the number of bytes to send here.
-        v.expected_string = random_string(1);
+        v.expected_string = random_string(num_bytes);
 
 
         if (pthread_create(&(t), NULL, &send_receive_thread, &(v)) != 0) {
@@ -362,7 +366,7 @@ namespace {
     }
 
     TEST_F(BackEndMockTest, sendReceiveTest) {
-        send_receive_test();
+        send_receive_test(1);
 
 
         // so we can see if we are doing something incorrect that would otherwise

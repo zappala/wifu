@@ -33,6 +33,12 @@ private:
     bool should_drop_syn(TCPPacket* p);
     bool should_drop_synack(TCPPacket* p);
     bool should_drop_ack(TCPPacket* p);
+
+    void read_config_file();
+
+    vector<pair<int, int> > seq_nums_to_delay_;
+    vector<pair<int, int> > ack_nums_to_delay_;
+
     int counter_;
     bool syn_;
     bool synack_;

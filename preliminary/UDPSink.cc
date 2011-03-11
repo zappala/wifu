@@ -73,21 +73,20 @@ int main(int argc, char** argv) {
         {0, 0, 0, 0}
     };
 
-    OptionParser options;
-    options.parse(argc, argv, long_options);
+    OptionParser::instance().parse(argc, argv, long_options);
 
     string sink_address_ = "127.0.0.1";
     u_int16_t sink_port_ = 5000;
     int max_run_time_ = 30;
 
-    if (options.present(sink_address)) {
-        sink_address_ = options.argument(sink_address);
+    if (OptionParser::instance().present(sink_address)) {
+        sink_address_ = OptionParser::instance().argument(sink_address);
     }
-    if (options.present(sink_port)) {
-        sink_port_ = atoi(options.argument(sink_port));
+    if (OptionParser::instance().present(sink_port)) {
+        sink_port_ = atoi(OptionParser::instance().argument(sink_port));
     }
-    if (options.present(max_run_time)) {
-        max_run_time_ = atoi(options.argument(max_run_time));
+    if (OptionParser::instance().present(max_run_time)) {
+        max_run_time_ = atoi(OptionParser::instance().argument(max_run_time));
     }
 
     cout << "Sink Address:\t" << sink_address_ << endl;

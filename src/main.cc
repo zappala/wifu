@@ -52,6 +52,7 @@
 using namespace std;
 
 #define dispatcher Dispatcher::instance()
+#define optionparser OptionParser::instance()
 
 void main_signal_manager(int signal) {
     switch (signal) {
@@ -102,10 +103,10 @@ int main(int argc, char** argv) {
         {network.c_str(), required_argument, NULL, 0},
         {0, 0, 0, 0}
     };
-    OptionParser op;
-    op.parse(argc, argv, long_options);
-    if (op.present(network.c_str())) {
-        network_type = op.argument(network.c_str());
+    
+    optionparser.parse(argc, argv, long_options);
+    if (optionparser.present(network.c_str())) {
+        network_type = optionparser.argument(network.c_str());
     }
 
 

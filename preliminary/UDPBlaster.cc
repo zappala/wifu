@@ -39,8 +39,7 @@ int main(int argc, char** argv) {
         {0, 0, 0, 0}
     };
 
-    OptionParser options;
-    options.parse(argc, argv, long_options);
+    OptionParser::instance().parse(argc, argv, long_options);
 
     int duration_ = 10;
     string sink_address_ = "127.0.0.1";
@@ -48,20 +47,20 @@ int main(int argc, char** argv) {
     int sleep_ = 10;
     int message_length_ = 1452;
 
-    if (options.present(duration)) {
-        duration_ = atoi(options.argument(duration));
+    if (OptionParser::instance().present(duration)) {
+        duration_ = atoi(OptionParser::instance().argument(duration));
     }
-    if (options.present(sink_address)) {
-        sink_address_ = options.argument(sink_address);
+    if (OptionParser::instance().present(sink_address)) {
+        sink_address_ = OptionParser::instance().argument(sink_address);
     }
-    if (options.present(sink_port)) {
-        sink_port_ = atoi(options.argument(sink_port));
+    if (OptionParser::instance().present(sink_port)) {
+        sink_port_ = atoi(OptionParser::instance().argument(sink_port));
     }
-    if (options.present(sleep_duration)) {
-        sleep_ = atoi(options.argument(sleep_duration));
+    if (OptionParser::instance().present(sleep_duration)) {
+        sleep_ = atoi(OptionParser::instance().argument(sleep_duration));
     }
-    if (options.present(message_length)) {
-        message_length_ = atoi(options.argument(message_length));
+    if (OptionParser::instance().present(message_length)) {
+        message_length_ = atoi(OptionParser::instance().argument(message_length));
     }
 
     cout << "Sink Address:\t" << sink_address_ << endl;

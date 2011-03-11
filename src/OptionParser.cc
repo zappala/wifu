@@ -1,5 +1,10 @@
 #include "OptionParser.h"
 
+OptionParser& OptionParser::instance() {
+    static OptionParser instance_;
+    return instance_;
+}
+
 OptionParser::OptionParser() {}
 
 OptionParser::~OptionParser() {}

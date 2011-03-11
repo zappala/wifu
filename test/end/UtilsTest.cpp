@@ -246,6 +246,26 @@ namespace {
         ASSERT_EQ(result, Utils::itoa(zero));
     }
 
+    TEST(UtilsTest, read_file) {
+
+        string file = "test_file";
+        vector<string> results = Utils::read_file(file);
+
+        vector<string> expected;
+        expected.push_back("line one");
+        expected.push_back("line two");
+        expected.push_back("this is a longer line");
+        expected.push_back("line four");
+
+        ASSERT_EQ(expected.size(), results.size());
+
+        for(int i = 0; i < results.size(); i++) {
+            string exp = expected[i];
+            string actual = results[i];
+
+            ASSERT_EQ(exp, actual);
+        }
+    }
 }
 
 #endif /* UTILSTEST_H_ */

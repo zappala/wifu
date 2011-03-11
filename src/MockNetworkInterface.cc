@@ -1,4 +1,6 @@
 #include "MockNetworkInterface.h"
+#include "OptionParser.h"
+#include "exceptions/IllegalStateException.h"
 
 MockNetworkInterface& MockNetworkInterface::instance() {
     static MockNetworkInterface instance_;
@@ -104,4 +106,12 @@ bool MockNetworkInterface::should_drop_ack(TCPPacket* p) {
         cout << "Dropping the ACK of the SYNACK and going for a SNACK.\n";
     }
     return ack_;
+}
+
+void MockNetworkInterface::read_config_file() {
+    if(!OptionParser::instance().present("mock_file")) {
+        throw IllegalStateException();
+    }
+    string file = OptionParser::instance().argument("mock_file");
+    
 }

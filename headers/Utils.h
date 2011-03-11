@@ -12,6 +12,8 @@
 #include <time.h>
 #include <string>
 #include <stdio.h>
+#include <vector>
+#include <fstream>
 
 #include "defines.h"
 
@@ -38,6 +40,17 @@ public:
      * @return the passed integer as a string
      */
     static string itoa(int i);
+
+    /**
+     * Reads each line in file and stores it in a vector
+     * Ignores lines which begin with a '#' character
+     * Ignores empty lines
+     * Thanks to: http://www.cplusplus.com/forum/beginner/8388/
+     *
+     * @param file The file to open
+     * @return A vector which each line is representative of on line in the file
+     */
+    static vector<string> read_file(string& file);
 };
 
 #endif	/* _UTILS_H */

@@ -12,7 +12,7 @@ using namespace std;
 
 class OptionParser {
 public:
-    OptionParser();
+    static OptionParser& instance();
 
     virtual ~OptionParser();
 
@@ -23,6 +23,10 @@ public:
     const char* argument(const char* option);
 
 private:
+
+    OptionParser();
+
+
     map<const char*, bool> present_;
     map<const char*, const char*> argument_;
 };
