@@ -11,8 +11,8 @@ void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) 
     TCPPacket* packet = (TCPPacket*) e->get_packet();
 
     //cout << "ReliabilityState::receive_packet: Socket pointer = " << s << "\n";
-    cout << "ReliabilityState::receive_packet: SYN = " << packet->is_tcp_syn() << ", ACK = " << packet->is_tcp_ack() << "\n";
-    cout << "ReliabilityState::receive_packet: Seq. number = " << packet->get_tcp_sequence_number() << ", ACK number = " << packet->get_tcp_ack_number() << "\n";
+    //cout << "ReliabilityState::receive_packet: SYN = " << packet->is_tcp_syn() << ", ACK = " << packet->is_tcp_ack() << "\n";
+    cout << "ReliabilityState::receive_packet: Seq. number = " << packet->get_tcp_sequence_number() << ", ACK number = " << packet->get_tcp_ack_number() << " SOCKET: " << e->get_socket() << "\n";
 
     cancel_timer(c, packet);
     bool resent = check_and_resend_packet(c, e->get_socket(), packet);
@@ -39,7 +39,10 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
 
     //Set up the new packet; ACK the last received stuff
     TCPPacket* last_received = rc->get_last_packet_received();
+    u_int32_t seq_num = rc->get_seq_counter();
+    
     if (last_received != 0) {
+        cout << "ReliabilityState::send_packet(): Last packet received: Seq. number " << last_received->get_tcp_sequence_number() << ", ACK number " << last_received->get_tcp_ack_number() << "\n";
         packet->set_tcp_ack_number(last_received->get_tcp_sequence_number() + 1);
         packet->set_tcp_ack(true);
     }
@@ -47,12 +50,12 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
         cout << "ReliabilityState::send_packet(): Last packet received is NULL" << endl;
     }
 
-    cout << "ReliabilityState::send_packet(), packet data: " << (const char*) packet->get_data() << endl;
-
-    //Increment our central sequence number counter
-    u_int32_t seq_num = rc->get_seq_counter();
+    //Increment our central sequence number counter (if we are re-ACKing something we already received, receive has already decremented)
     packet->set_tcp_sequence_number(seq_num);
     rc->set_seq_counter(rc->get_seq_counter() + 1);
+
+    cout << "ReliabilityState::send_packet(), packet data: " << (const char*) packet->get_data() << endl;
+    
 
     //Save the last packet for Strong Bad
     rc->set_last_packet_sent(packet);
@@ -62,7 +65,7 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
         create_save_and_dispatch_timeout_event(rc, e->get_socket(), 1, 0);
     }
 
-    cout << "ReliabilityState:send_packet(): Sequence Number = " << packet->get_tcp_sequence_number() << ", ACK number = " << packet->get_tcp_ack_number() << endl;
+    cout << "ReliabilityState:send_packet(): Sequence Number = " << packet->get_tcp_sequence_number() << ", ACK number = " << packet->get_tcp_ack_number() << " SOCKET: " << e->get_socket() << endl;
 }
 
 void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
@@ -85,6 +88,8 @@ void ReliabilityState::resend_packet(Context* c, ResendPacketEvent* e) {
     if (should_set_resend_timer((TCPPacket*) e->get_packet())) {
         create_save_and_dispatch_timeout_event(c, e->get_socket(), 1, 0);
     }
+    TCPPacket* packet = (TCPPacket*)e->get_packet();
+    cout << "ReliabilityState:resend_packet(): Sequence Number = " << packet->get_tcp_sequence_number() << ", ACK number = " << packet->get_tcp_ack_number() << " SOCKET: " << e->get_socket() << endl;
 }
 
 bool ReliabilityState::should_set_resend_timer(TCPPacket* p) {
@@ -130,9 +135,13 @@ bool ReliabilityState::check_and_resend_packet(Context* c, Socket* s, WiFuPacket
     if (last_sent != 0 && last_sent->get_tcp_ack_number() > packet->get_tcp_sequence_number()) {
         //Cancel the last timeout, we's resendin'!
         rc->set_saved_timeout(0);
+
+        //Decrement the counter - need an accurate seq. num.
+        rc->set_seq_counter(rc->get_seq_counter() - 1);
+        
         //Resend
-        ResendPacketEvent* e = new ResendPacketEvent(s, last_sent);
-        Dispatcher::instance().enqueue(e);
+        //ResendPacketEvent* e = new ResendPacketEvent(s, last_sent);
+        //Dispatcher::instance().enqueue(e);
         return true;
     }
     return false;

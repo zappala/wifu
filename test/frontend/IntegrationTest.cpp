@@ -101,6 +101,22 @@ namespace {
         }
     };
 
+    //Drops the 3 3 packet twice
+    class BackEndMockTestDropThird : public BackEndMockTest {
+    public:
+        string get_mock_file() {
+            return "drop_3_3.conf";
+        }
+    };
+
+    //Drops the 3 3 packet twice
+    class BackEndMockTestDrop2_3 : public BackEndMockTest {
+    public:
+        string get_mock_file() {
+            return "drop_2_3.conf";
+        }
+    };
+
     TEST_F(BackEndTest, socketTest) {
         // socket
         for (int i = 0; i < 100; i++) {
@@ -372,6 +388,7 @@ namespace {
         }
 
         cout << "IntegrationTest::send_receive_test(), received the following: " << all_received << endl;
+        pthread_cancel(t);
 
     }
 
@@ -384,7 +401,23 @@ namespace {
         sleep(5);
     }
 
+    TEST_F(BackEndMockTestDropThird, sendReceiveDrop) {
+        send_receive_test(1);
 
+
+        // so we can see if we are doing something incorrect that would otherwise
+        // be covered up by the exiting of this method
+        sleep(5);
+    }
+
+    TEST_F(BackEndMockTestDrop2_3, sendReceiveDrop) {
+        send_receive_test(1);
+
+
+        // so we can see if we are doing something incorrect that would otherwise
+        // be covered up by the exiting of this method
+        sleep(5);
+    }
 
 
 
