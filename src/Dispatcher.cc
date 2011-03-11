@@ -28,12 +28,12 @@ void Dispatcher::reset() {
 
 void Dispatcher::process(Event * e) {
     mutex_.wait();
-//    cout << "Event name: " << type_name(*e) << endl;
+    //cout << "Event name: " << type_name(*e) << endl;
     vector<QueueProcessor<Event*>*>* queue_processors = map_[type_name(*e)];
 
     if (queue_processors != NULL) {
         for (int i = 0; i < queue_processors->size(); i++) {
-//            cout << "Processing: " << type_name(*e) << endl;
+            //cout << "Processing: " << type_name(*e) << endl;
             queue_processors->at(i)->enqueue(e);
         }
     }

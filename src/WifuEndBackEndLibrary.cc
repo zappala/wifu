@@ -21,7 +21,9 @@ void WifuEndBackEndLibrary::receive(string& message) {
 
     string name = m[NAME_STRING];
     string s = m[SOCKET_STRING];
-    Socket* socket = SocketCollection::instance().get_by_id(atoi(s.c_str()));
+    int sockInt = atoi(s.c_str());
+    //assert(sockInt != 0);
+    Socket* socket = SocketCollection::instance().get_by_id(sockInt);
 
     if (!name.compare(WIFU_SOCKET_NAME)) {
 
