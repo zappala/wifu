@@ -105,9 +105,8 @@ namespace {
 
     //Drops the 3 3 packet twice
 
-    class BackEndMockTestDropThird : public BackEndMockTest {
+    class BackEndMockTestDrop3_3 : public BackEndMockTest {
     public:
-
         string get_mock_file() {
             return "drop_3_3.conf";
         }

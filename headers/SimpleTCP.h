@@ -63,6 +63,8 @@ public:
     bool is_connected(Socket* s);
 
     void receive_from(ReceiveEvent* e);
+
+    bool append_data(NetworkReceivePacketEvent* e);
 };
 
 #endif	/* SIMPLETCP_H */

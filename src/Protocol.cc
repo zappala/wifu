@@ -196,16 +196,14 @@ void Protocol::network_receive(Event* e) {
     }
 
     // TODO: Error check
+    assert(false);
+    // This is where we should insert into the receive buffer (not in append_data) because we can do this inside reliability (where we know about what we have/haven't seen before)
     receive_packet(event);
 
     // append any data into buffer
-    cout << "Protocol::network_receive(), saving data from packet" << endl;
-    WiFuPacket* p = event->get_packet();
-    if (is_connected(socket) && p->get_data_length_bytes() > 0) {
-        socket->get_receive_buffer().append((const char*) p->get_data(), p->get_data_length_bytes());
+    if(append_data(event)) {
         check_and_send_receive_response(e);
     }
-//  cout << "Protocol::network_receive(): buffer: " << socket->get_receive_buffer() << endl;
 }
 
 void Protocol::connection_established(Event* e) {

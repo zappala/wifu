@@ -80,6 +80,15 @@ public:
 
     virtual void resend(Event* e);
 
+    /**
+     * Called when there is data to append to the receive buffer.
+     * Implementing classes will need to ensure that no duplicate information is passed up to the application.
+     *
+     * @param e The NetworkReceivePacketEvent containing the socket (with the receive buffer) and the packet to extract data from
+     * @return True if data actually appended to the buffer, false otherwise
+     */
+    virtual bool append_data(NetworkReceivePacketEvent* e) = 0;
+
 private:
 
     void check_and_send_receive_response(Event* e);
