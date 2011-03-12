@@ -205,7 +205,7 @@ void Protocol::network_receive(Event* e) {
         socket->get_receive_buffer().append((const char*) p->get_data(), p->get_data_length_bytes());
         check_and_send_receive_response(e);
     }
-//        cout << "Protocol::network_receive(): buffer: " << socket->get_receive_buffer() << endl;
+//  cout << "Protocol::network_receive(): buffer: " << socket->get_receive_buffer() << endl;
 }
 
 void Protocol::connection_established(Event* e) {

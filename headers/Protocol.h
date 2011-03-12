@@ -88,6 +88,10 @@ private:
 
     HashSet<Socket*> sockets_;
 
+    // TODO: this needs to go elsewhere
+    // Only using it so we don't send data to the application that we have already sent
+    TCPPacket* last_received_;
+
 };
 
 #endif	/* PROTOCOL_H */

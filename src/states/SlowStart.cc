@@ -1,7 +1,7 @@
 #include "states/SlowStart.h"
 
 SlowStart::SlowStart() {
-    cout << "SlowStart Constructor" << endl;
+//    cout << "SlowStart Constructor" << endl;
 }
 
 SlowStart::~SlowStart() {

@@ -85,6 +85,7 @@ namespace {
 
     class BackEndMockTest : public BackEndTest {
     public:
+
         virtual string get_command() {
             string cmd = "./wifu-end --network mock --mockfile ";
             cmd.append(get_mock_file());
@@ -94,24 +95,29 @@ namespace {
         virtual string get_mock_file() = 0;
     };
 
-    class BackEndMockTestDropFirst : public BackEndMockTest {
+    class BackEndMockTestDropNone : public BackEndMockTest {
     public:
+
         string get_mock_file() {
-            return "drop_first.conf";
+            return "drop_none.conf";
         }
     };
 
     //Drops the 3 3 packet twice
+
     class BackEndMockTestDropThird : public BackEndMockTest {
     public:
+
         string get_mock_file() {
             return "drop_3_3.conf";
         }
     };
 
     //Drops the 2 3 packet twice
+
     class BackEndMockTestDrop2_3 : public BackEndMockTest {
     public:
+
         string get_mock_file() {
             return "drop_2_3.conf";
         }
@@ -119,13 +125,15 @@ namespace {
 
     class BackEndMockTestDrop2_4 : public BackEndMockTest {
     public:
+
         string get_mock_file() {
             return "drop_2_4.conf";
         }
     };
 
-     class BackEndMockTestDrop3_2 : public BackEndMockTest {
+    class BackEndMockTestDrop3_2 : public BackEndMockTest {
     public:
+
         string get_mock_file() {
             return "drop_3_2.conf";
         }
@@ -280,7 +288,7 @@ namespace {
         sleep(5);
     }
 
-    TEST_F(BackEndMockTestDropFirst, mockConnectTest) {
+    TEST_F(BackEndMockTestDropNone, mockConnectTest) {
         connect_test(1);
 
         // so we can see if we are doing something incorrect that would otherwise
@@ -337,7 +345,9 @@ namespace {
 
         // TODO: this only sends one character at a time
         for (int i = 0; i < message.length(); i++) {
-            while (wifu_send(connection, &(buffer[i]), count, 0) < count);
+            while (wifu_send(connection, &(buffer[i]), count, 0) < count) {
+                usleep(10000);
+            }
         }
 
     }
@@ -438,23 +448,23 @@ namespace {
 
         // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
-//        int size = 10000;
-//        char buffer[size];
-//        memset(buffer, 0, size);
-//        string all_received = "";
-//
-//        for (int count = 0; count < expected.length(); ++count) {
-//
-//            string exp = expected.substr(count, 1);
-//            int return_value = wifu_recv(connection, &buffer, 1, 0);
-//            string actual(buffer);
-//            all_received.append(actual);
-//
-//
-//            EXPECT_EQ(1, return_value);
-//            EXPECT_EQ(exp, actual);
-//
-//        }
+        //        int size = 10000;
+        //        char buffer[size];
+        //        memset(buffer, 0, size);
+        //        string all_received = "";
+        //
+        //        for (int count = 0; count < expected.length(); ++count) {
+        //
+        //            string exp = expected.substr(count, 1);
+        //            int return_value = wifu_recv(connection, &buffer, 1, 0);
+        //            string actual(buffer);
+        //            all_received.append(actual);
+        //
+        //
+        //            EXPECT_EQ(1, return_value);
+        //            EXPECT_EQ(exp, actual);
+        //
+        //        }
     }
 
     /**
@@ -507,15 +517,19 @@ namespace {
 
         // TODO: this only sends one character at a time
         for (int i = 0; i < message.length(); i++) {
-            while (wifu_send(client, &(buffer[i]), count, 0) < count);
+            
+            
+            while (wifu_send(client, &(buffer[i]), count, 0) < count) {
+                usleep(10000);
+            }
         }
 
         pthread_cancel(t);
 
     }
 
-    TEST_F(BackEndMockTestDropFirst, sendReceiveTest) {
-        send_receive_test(1);
+    TEST_F(BackEndMockTestDropNone, sendReceiveTest) {
+        send_receive_test(100);
 
 
         // so we can see if we are doing something incorrect that would otherwise
@@ -524,7 +538,7 @@ namespace {
     }
 
     TEST_F(BackEndMockTestDropThird, sendReceiveDrop) {
-        send_receive_test(1);
+        send_receive_test(100);
 
 
         // so we can see if we are doing something incorrect that would otherwise
@@ -533,7 +547,7 @@ namespace {
     }
 
     TEST_F(BackEndMockTestDrop2_3, sendReceiveDrop2_3) {
-        send_receive_test(1);
+        send_receive_test(100);
 
 
         // so we can see if we are doing something incorrect that would otherwise
@@ -542,7 +556,7 @@ namespace {
     }
 
     TEST_F(BackEndMockTestDrop2_4, sendReceiveDrop2_4) {
-        active_to_passive_test(1);
+        active_to_passive_test(100);
 
 
         // so we can see if we are doing something incorrect that would otherwise
@@ -551,7 +565,7 @@ namespace {
     }
 
     TEST_F(BackEndMockTestDrop3_2, sendReceiveDrop3_2) {
-        active_to_passive_test(1);
+        active_to_passive_test(100);
 
 
         // so we can see if we are doing something incorrect that would otherwise

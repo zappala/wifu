@@ -120,7 +120,7 @@ public:
         }
 
         if (!response_[NAME_STRING].compare(WIFU_RECVFROM_NAME)) {
-            cout << "WifuEndAPILocalSocket::receive(): " << response_[BUFFER_STRING];
+//            cout << "WifuEndAPILocalSocket::receive(): " << response_[BUFFER_STRING];
             sockets.get(socket)->set_payload(response_[BUFFER_STRING]);
         }
 
@@ -516,7 +516,7 @@ public:
 
         if (ret_val > 0) {
             memcpy(buf, data->get_payload(), ret_val);
-            cout << "wifu_recvfrom(), buffer: " << (const char*) buf << endl;
+//            cout << "wifu_recvfrom(), buffer: " << (const char*) buf << endl;
         }
         return ret_val;
     }
