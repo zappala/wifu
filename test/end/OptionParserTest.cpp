@@ -25,7 +25,7 @@ namespace {
 	};
 
 	TEST(OptionParser, all) {
-		string networkOption = "--network=standard";
+		string networkOption = "--network standard";
 		char* const args[3] = {"./awesome", const_cast<char*>(networkOption.c_str()), NULL};
 
 		parser.parse(2, args, long_options);
