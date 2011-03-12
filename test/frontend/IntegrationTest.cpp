@@ -523,8 +523,8 @@ namespace {
         sleep(5);
     }
 
-    TEST_F(BackEndMockTestDropThird, sendReceiveDrop) {
-        send_receive_test(1);
+    TEST_F(BackEndMockTestDropThird, sendReceiveDrop3_3) {
+        send_receive_test(10);
 
 
         // so we can see if we are doing something incorrect that would otherwise
