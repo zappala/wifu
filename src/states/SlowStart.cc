@@ -1,7 +1,7 @@
 #include "states/SlowStart.h"
 
 SlowStart::SlowStart() {
-//    cout << "SlowStart Constructor" << endl;
+    //    cout << "SlowStart Constructor" << endl;
 }
 
 SlowStart::~SlowStart() {
@@ -17,7 +17,7 @@ void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     cout << "SlowStart::receive_packet(), socket: " << e->get_socket() << endl;
     CongestionControlContext* context = (CongestionControlContext*) c;
     context->set_can_send_data(true);
-    TCPPacket* p = (TCPPacket*)e->get_packet();
+    TCPPacket* p = (TCPPacket*) e->get_packet();
     cout << "SlowStart::receive_packet(), packet is naked ack: " << p->is_naked_ack() << endl;
     cout << "SlowStart::receive_packet(), packet is ack: " << p->is_tcp_ack() << endl;
     cout << "SlowStart::receive_packet(), data: " << (const char*) p->get_data() << endl;
@@ -29,27 +29,23 @@ void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 ssize_t SlowStart::send_to(Context* c, SendEvent* e) {
     cout << "SlowStart::send_to()" << endl;
     CongestionControlContext* context = (CongestionControlContext*) c;
+    Socket* s = e->get_socket();
 
-    ssize_t data_length = e->data_length();
-    unsigned char* buffer = e->get_data();
+    // Currently we are enqueuing everything
+    // Enforce max send size length here
+    //        if (send_buffer->size() > 10000) {
+    //            cout << "SlowStart::send_to(), breaking early" << endl;
+    //            return;
+    //        }
 
-    IQueue<unsigned char>* queue = &context->get_queue();
-    int num_enqueued = 0;
+    string data((const char*) e->get_data(), e->data_length());
+    s->get_send_buffer().append(data);
 
-    for (; num_enqueued < data_length; num_enqueued++) {
-        if (queue->size() >= context->get_max_buffer_size()) {
-            cout << "SlowStart::send_to(), breaking early" << endl;
-            break;
-        }
-        cout << "SlowStart::send_to(): enqueing: " << buffer[num_enqueued];
-        context->get_queue().enqueue(buffer[num_enqueued]);
-    }
+    cout << "SlowStart::send_to(): enqueing: " << data << endl;
 
     send_data(c, e, false);
 
-    cout << "SlowStart::send_to(), number sent: " << num_enqueued << endl;
-    assert(num_enqueued == 0 || num_enqueued == 1);
-    return num_enqueued;
+    return data.length();
 }
 
 void SlowStart::enter(Context* c) {
@@ -70,25 +66,13 @@ void SlowStart::send_data(Context* c, Event* e, bool received_naked_ack) {
         return;
     }
 
-    IQueue<unsigned char>* queue = &context->get_queue();
-
-    int max_packet_size = 1400;
-
     Socket* s = e->get_socket();
-
 
     // Build packet and send it.
     TCPPacket* p = new TCPPacket();
-    unsigned char data[max_packet_size];
 
-    int num_sent = 0;
-    for (; num_sent < max_packet_size; num_sent++) {
-        if (queue->isEmpty()) {
-            cout << "SlowStart::send_data(), queue is empty" << endl;
-            break;
-        }
-        data[num_sent] = (unsigned char) queue->dequeue();
-    }
+    string data = s->get_send_buffer().substr(0, p->max_data_length());
+    s->get_send_buffer().erase(0, p->max_data_length());
 
     AddressPort* source = s->get_local_address_port();
     AddressPort* destination = s->get_remote_address_port();
@@ -100,11 +84,11 @@ void SlowStart::send_data(Context* c, Event* e, bool received_naked_ack) {
     p->set_destination_port(destination->get_port());
     p->set_source_port(source->get_port());
 
-    p->set_data(data, num_sent);
+    p->set_data((unsigned char*) data.c_str(), data.length());
 
-    cout << "SlowStart::send_data(), num sent: " << num_sent << endl;
+    cout << "SlowStart::send_data(), num sent: " << data.length() << endl;
 
-    if(received_naked_ack && p->get_data_length_bytes() == 0) {
+    if (received_naked_ack && p->get_data_length_bytes() == 0) {
         cout << "SlowStart::send_data(), returning early" << endl;
         return;
     }

@@ -60,7 +60,7 @@
 // must fit in 8 bits
 #define SIMPLE_TCP 206
 
-#define PAYLOAD_SIZE 1500
+#define MTU 1500
 #define MAX_TTL 65
 
 typedef const char * event_name;

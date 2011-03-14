@@ -28,15 +28,10 @@ public:
     CongestionControlContext();
     virtual ~CongestionControlContext();
 
-    IQueue<unsigned char>& get_queue();
-    int get_max_buffer_size();
     bool can_send_data();
     void set_can_send_data(bool can_send);
 
 private:
-
-    Queue<unsigned char> buffer_;
-    int max_buffer_size_;
     bool can_send_;
 
 };

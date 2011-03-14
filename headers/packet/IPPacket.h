@@ -175,8 +175,13 @@ public:
 
     bool length_is_set();
 
+    /**
+     * @return MTU less the packet header(s)
+     */
+    virtual int max_data_length();
+
 private:
-    unsigned char payload_[PAYLOAD_SIZE];
+    unsigned char payload_[MTU];
     struct iphdr* ip_;
     bool length_set_;
 };

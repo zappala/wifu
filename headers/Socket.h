@@ -71,6 +71,10 @@ public:
 
     string& get_receive_buffer();
 
+    string& get_send_buffer();
+    
+    string& get_resend_buffer();
+
     ReceiveInformation* get_receive_info();
 
     void set_receive_info(ReceiveInformation* info);
@@ -87,6 +91,8 @@ private:
 
     ReceiveInformation* receive_info_;
     string receive_buffer_;
+    string send_buffer_;
+    string resend_buffer_;
 };
 
 #endif	/* _SOCKET_H */

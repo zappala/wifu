@@ -251,6 +251,14 @@ namespace {
         p.set_tcp_urgent_pointer(value);
         ASSERT_EQ(value, p.get_tcp_urgent_pointer());
     }
+
+    TEST(TCPPacketTest, MaxDataSizeTest) {
+        TCPPacket p;
+        // MTU - IP header size bytes - TCP header size bytes
+        int exp = 1500 - 20 - 20;
+
+        ASSERT_EQ(exp, p.max_data_length());
+    }
 }
 
 

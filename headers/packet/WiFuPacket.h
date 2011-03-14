@@ -56,6 +56,8 @@ public:
 
     void init();
 
+    virtual int max_data_length();
+
 private:
     struct wifu_packet_header* ports_;
     AddressPort* source_;

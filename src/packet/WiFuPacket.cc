@@ -64,3 +64,7 @@ void WiFuPacket::init() {
     source_ = 0;
     dest_ = 0;
 }
+
+int WiFuPacket::max_data_length() {
+    return IPPacket::max_data_length() - sizeof (struct wifu_packet_header);
+}

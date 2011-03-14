@@ -34,7 +34,7 @@ void* listener(void* arg) {
             factory = factories->operator [](fd);
             packet = factory->create();
 
-            ret = recv(fd, packet->get_payload(), PAYLOAD_SIZE, 0);
+            ret = recv(fd, packet->get_payload(), MTU, 0);
             if (ret <= 0) {
                 assert(false);
             }

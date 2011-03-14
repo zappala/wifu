@@ -138,6 +138,14 @@ namespace {
         p.set_source_port(ap.get_port());
         ASSERT_TRUE(ap == (*p.get_source_address_port()));
     }
+
+    TEST(WiFuPacketTest, MaxDataSizeTest) {
+        WiFuPacket p;
+        // MTU - IP header size bytes - WiFu header size bytes
+        int exp = 1500 - 20 - 4;
+
+        ASSERT_EQ(exp, p.max_data_length());
+    }
 }
 
 

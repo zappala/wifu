@@ -149,3 +149,7 @@ bool TCPPacket::is_naked_ack() {
     }
     return false;
 }
+
+int TCPPacket::max_data_length() {
+    return IPPacket::max_data_length() - get_tcp_header_length_bytes();
+}

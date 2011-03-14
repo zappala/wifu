@@ -55,6 +55,9 @@ public:
 
     bool is_naked_ack();
 
+    virtual int max_data_length();
+
+
 private:
     struct tcphdr* tcp_;
 

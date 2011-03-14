@@ -104,6 +104,14 @@ string& Socket::get_receive_buffer() {
     return receive_buffer_;
 }
 
+string& Socket::get_send_buffer() {
+    return send_buffer_;
+}
+
+string& Socket::get_resend_buffer() {
+    return resend_buffer_;
+}
+
 ReceiveInformation* Socket::get_receive_info() {
     return receive_info_;
 }

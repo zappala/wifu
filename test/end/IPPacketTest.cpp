@@ -219,6 +219,14 @@ namespace {
         p.set_ip_destination_address_s(a.get_address());
         ASSERT_EQ(address, p.get_ip_destination_address());
     }
+
+    TEST(IPPacketTest, MaxDataSizeTest) {
+        IPPacket p;
+        // MTU - IP header size bytes
+        int exp = 1500 - 20;
+
+        ASSERT_EQ(exp, p.max_data_length());
+    }
 }
 
 #endif	/* _IPPACKETTEST_H */

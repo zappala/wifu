@@ -179,7 +179,7 @@ private:
     /**
      * Buffer which will store the payload from the back-end (on calls like recv())
      */
-    unsigned char payload_[PAYLOAD_SIZE + 1];
+    unsigned char payload_[MTU + 1];
 
     /**
      * The length of the payload

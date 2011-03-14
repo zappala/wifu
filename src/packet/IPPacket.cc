@@ -168,3 +168,7 @@ void IPPacket::init() {
 bool IPPacket::length_is_set() {
     return length_set_;
 }
+
+int IPPacket::max_data_length() {
+    return MTU - get_ip_length_bytes();
+}

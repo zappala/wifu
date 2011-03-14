@@ -21,7 +21,6 @@
 
 //interfaces
 #include "NetworkInterface.h"
-#include "UDPInterface.h"
 #include "NetworkInterfaceFactory.h"
 #include "StandardNetworkInterfaceCreator.h"
 #include "MockNetworkInterfaceCreator.h"
