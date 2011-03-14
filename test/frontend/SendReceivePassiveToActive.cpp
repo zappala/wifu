@@ -67,6 +67,7 @@ void* active_to_passive_thread(void* args) {
         EXPECT_EQ(exp, actual);
 
     }
+    EXPECT_EQ(expected, all_received);
 }
 
 /**

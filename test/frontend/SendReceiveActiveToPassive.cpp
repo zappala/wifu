@@ -125,6 +125,8 @@ void send_receive_test(int num_bytes) {
 
     }
 
+    ASSERT_EQ(expected, all_received);
+
     cout << "IntegrationTest::send_receive_test(), received the following: " << all_received << endl;
     pthread_cancel(t);
 
