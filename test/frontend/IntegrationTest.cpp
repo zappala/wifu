@@ -105,7 +105,7 @@ namespace {
 
     //Drops the 3 3 packet twice
 
-    class BackEndMockTestDrop3_3 : public BackEndMockTest {
+    class BackEndMockTestDrop33 : public BackEndMockTest {
     public:
         string get_mock_file() {
             return "drop_3_3.conf";
@@ -114,7 +114,7 @@ namespace {
 
     //Drops the 2 3 packet twice
 
-    class BackEndMockTestDrop2_3 : public BackEndMockTest {
+    class BackEndMockTestDrop23 : public BackEndMockTest {
     public:
 
         string get_mock_file() {
@@ -122,7 +122,7 @@ namespace {
         }
     };
 
-    class BackEndMockTestDrop2_4 : public BackEndMockTest {
+    class BackEndMockTestDrop24 : public BackEndMockTest {
     public:
 
         string get_mock_file() {
@@ -130,7 +130,7 @@ namespace {
         }
     };
 
-    class BackEndMockTestDrop3_2 : public BackEndMockTest {
+    class BackEndMockTestDrop32 : public BackEndMockTest {
     public:
 
         string get_mock_file() {
@@ -536,7 +536,7 @@ namespace {
         sleep(5);
     }
 
-    TEST_F(BackEndMockTestDrop3_3, sendReceiveDrop3_3) {
+    TEST_F(BackEndMockTestDrop33, sendReceiveDrop33) {
         send_receive_test(100);
 
 
@@ -545,7 +545,7 @@ namespace {
         sleep(5);
     }
 
-    TEST_F(BackEndMockTestDrop2_3, sendReceiveDrop2_3) {
+    TEST_F(BackEndMockTestDrop23, sendReceiveDrop23) {
         send_receive_test(100);
 
 
@@ -554,7 +554,7 @@ namespace {
         sleep(5);
     }
 
-    TEST_F(BackEndMockTestDrop2_4, sendReceiveDrop2_4) {
+    TEST_F(BackEndMockTestDrop24, sendReceiveDrop24) {
         active_to_passive_test(100);
 
 
@@ -563,7 +563,7 @@ namespace {
         sleep(5);
     }
 
-    TEST_F(BackEndMockTestDrop3_2, sendReceiveDrop3_2) {
+    TEST_F(BackEndMockTestDrop32, sendReceiveDrop3_2) {
         active_to_passive_test(100);
 
 
@@ -632,6 +632,4 @@ namespace {
 
 }
 
-
 #endif	/* _INTEGRATIONTEST_H */
-

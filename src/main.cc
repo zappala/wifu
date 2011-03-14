@@ -15,21 +15,19 @@
 #include <assert.h>
 #include <signal.h>
 
+//data structures
 #include "Queue.h"
 #include "PriorityQueue.h"
-#include "events/TimeoutEvent.h"
-#include "TimeoutEventManager.h"
-#include "Semaphore.h"
-#include "Dispatcher.h"
-#include "events/ConnectEvent.h"
-#include "Socket.h"
-#include "UDPInterface.h"
-#include "defines.h"
-#include "WifuEndBackEndLibrary.h"
-#include "MainSemaphore.h"
-#include "ProtocolManager.h"
-#include "SimpleTCP.h"
 
+//interfaces
+#include "NetworkInterface.h"
+#include "UDPInterface.h"
+#include "NetworkInterfaceFactory.h"
+#include "StandardNetworkInterfaceCreator.h"
+#include "MockNetworkInterfaceCreator.h"
+
+//events
+#include "TimeoutEventManager.h"
 #include "events/SendPacketEvent.h"
 #include "events/SendPacketEvent.h"
 #include "events/NetworkSendPacketEvent.h"
@@ -39,15 +37,23 @@
 #include "events/AcceptEvent.h"
 #include "events/ConnectionEstablishedEvent.h"
 #include "events/ResendPacketEvent.h"
+#include "events/TimeoutEvent.h"
 #include "events/ConnectionInitiatedEvent.h"
-#include "NetworkInterface.h"
-#include "TCPPacketFactory.h"
-#include "OptionParser.h"
-#include "NetworkInterfaceFactory.h"
-#include "StandardNetworkInterfaceCreator.h"
-#include "MockNetworkInterfaceCreator.h"
+#include "events/ConnectEvent.h"
 
+//protocols
+#include "ProtocolManager.h"
+#include "SimpleTCP.h"
+#include "TCPPacketFactory.h"
+
+//other
+#include "defines.h"
+#include "OptionParser.h"
 #include "Logger.h"
+#include "MainSemaphore.h"
+#include "Dispatcher.h"
+#include "Socket.h"
+#include "WifuEndBackEndLibrary.h"
 
 using namespace std;
 
@@ -157,4 +163,3 @@ int main(int argc, char** argv) {
 
     return (EXIT_SUCCESS);
 }
-
