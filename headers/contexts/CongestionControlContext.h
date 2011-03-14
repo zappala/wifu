@@ -31,8 +31,12 @@ public:
     bool can_send_data();
     void set_can_send_data(bool can_send);
 
+    SendEvent* get_buffered_send_event();
+    void set_buffered_send_event(SendEvent* e);
+
 private:
     bool can_send_;
+    SendEvent* buffered_send_event_;
 
 };
 

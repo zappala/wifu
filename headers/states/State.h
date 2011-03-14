@@ -45,7 +45,7 @@ public:
 
     virtual void accept(Context*, AcceptEvent*);
 
-    virtual ssize_t send_to(Context*, SendEvent*);
+    virtual void send_to(Context*, SendEvent*);
 
     virtual bool is_connected(Context*, Socket*);
 

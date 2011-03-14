@@ -18,6 +18,7 @@
 #include "events/ConnectEvent.h"
 #include "events/SendPacketEvent.h"
 #include "events/NetworkReceivePacketEvent.h"
+#include "events/ResponseEvent.h"
 #include "Dispatcher.h"
 
 #include "packet/TCPPacket.h"
@@ -35,10 +36,14 @@ public:
     void enter(Context* c);
     void exit(Context* c);
 
-    ssize_t send_to(Context* c, SendEvent* e);
+    void send_to(Context* c, SendEvent* e);
 
 private:
     void send_data(Context* c, Event* e, bool received_naked_ack);
+    void append_data_to_send_buffer(Context* c, SendEvent* e);
+
+    
+
 };
 
 

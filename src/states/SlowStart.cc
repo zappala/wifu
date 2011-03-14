@@ -26,26 +26,25 @@ void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     send_data(c, e, p->is_naked_ack());
 }
 
-ssize_t SlowStart::send_to(Context* c, SendEvent* e) {
+void SlowStart::send_to(Context* c, SendEvent* e) {
     cout << "SlowStart::send_to()" << endl;
     CongestionControlContext* context = (CongestionControlContext*) c;
     Socket* s = e->get_socket();
 
-    // Currently we are enqueuing everything
+    // TODO: Currently we are enqueuing everything
     // Enforce max send size length here
     //        if (send_buffer->size() > 10000) {
     //            cout << "SlowStart::send_to(), breaking early" << endl;
     //            return;
     //        }
 
-    string data((const char*) e->get_data(), e->data_length());
-    s->get_send_buffer().append(data);
-
-    cout << "SlowStart::send_to(): enqueing: " << data << endl;
-
+    if(s->get_send_buffer().size() + e->data_length() > MAX_BUFFER_SIZE) {
+        // No room in the inn
+        context->set_buffered_send_event(e);
+        return;
+    }
+    append_data_to_send_buffer(c, e);
     send_data(c, e, false);
-
-    return data.length();
 }
 
 void SlowStart::enter(Context* c) {
@@ -74,6 +73,13 @@ void SlowStart::send_data(Context* c, Event* e, bool received_naked_ack) {
     string data = s->get_send_buffer().substr(0, p->max_data_length());
     s->get_send_buffer().erase(0, p->max_data_length());
 
+    // TODO: append any blocking send_to call
+    SendEvent* send_event = context->get_buffered_send_event();
+    if(send_event != NULL && s->get_send_buffer().size() + send_event->data_length() <= MAX_BUFFER_SIZE) {
+        append_data_to_send_buffer(c, send_event);
+        context->set_buffered_send_event(NULL);
+    }
+
     AddressPort* source = s->get_local_address_port();
     AddressPort* destination = s->get_remote_address_port();
 
@@ -87,6 +93,7 @@ void SlowStart::send_data(Context* c, Event* e, bool received_naked_ack) {
     p->set_data((unsigned char*) data.c_str(), data.length());
 
     cout << "SlowStart::send_data(), num sent: " << data.length() << endl;
+    cout << "SlowStart::send_data(), data: " << data << endl;
 
     if (received_naked_ack && p->get_data_length_bytes() == 0) {
         cout << "SlowStart::send_data(), returning early" << endl;
@@ -97,5 +104,17 @@ void SlowStart::send_data(Context* c, Event* e, bool received_naked_ack) {
 
     SendPacketEvent* event = new SendPacketEvent(s, p);
     Dispatcher::instance().enqueue(event);
+}
+
+void SlowStart::append_data_to_send_buffer(Context* c, SendEvent* e) {
+    Socket* s = e->get_socket();
+    int size = e->data_length();
+    s->get_send_buffer().append((const char*) e->get_data(), size);
+
+    // TODO: figure out other errors
+    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+    response->put(RETURN_VALUE_STRING, Utils::itoa(size));
+    response->put(ERRNO, Utils::itoa(0));
+    Dispatcher::instance().enqueue(response);
 }
 

@@ -58,7 +58,7 @@ public:
 
     void resend_packet(ResendPacketEvent* e);
 
-    ssize_t send_to(SendEvent* e);
+    void send_to(SendEvent* e);
 
     bool is_connected(Socket* s);
 

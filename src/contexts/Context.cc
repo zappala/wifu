@@ -72,8 +72,8 @@ void Context::resend_packet(ResendPacketEvent* e) {
     get_state()->resend_packet(this, e);
 }
 
-ssize_t Context::send_to(SendEvent* e) {
-    return get_state()->send_to(this, e);
+void Context::send_to(SendEvent* e) {
+    get_state()->send_to(this, e);
 }
 
 bool Context::is_connected(Socket* s) {
