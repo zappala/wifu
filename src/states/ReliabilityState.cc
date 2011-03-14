@@ -9,6 +9,7 @@ ReliabilityState::~ReliabilityState() {
 void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     ReliabilityContext* rc = (ReliabilityContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();
+    Socket* socket = e->get_socket();
 
     //cout << "ReliabilityState::receive_packet: Socket pointer = " << s << "\n";
     //cout << "ReliabilityState::receive_packet: SYN = " << packet->is_tcp_syn() << ", ACK = " << packet->is_tcp_ack() << "\n";
@@ -20,6 +21,11 @@ void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) 
     if (!resent) {
         //Save the packet if we're not retransmitting
         rc->set_last_packet_received(packet);
+    }
+
+    // Save the packet data
+    if (!resent && packet->get_data_length_bytes() > 0) {
+        socket->get_receive_buffer().append((const char*) packet->get_data(), packet->get_data_length_bytes());
     }
 }
 

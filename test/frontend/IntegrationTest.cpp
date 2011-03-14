@@ -104,7 +104,6 @@ namespace {
     };
 
     //Drops the 3 3 packet twice
-
     class BackEndMockTestDrop33 : public BackEndMockTest {
     public:
         string get_mock_file() {
@@ -113,7 +112,6 @@ namespace {
     };
 
     //Drops the 2 3 packet twice
-
     class BackEndMockTestDrop23 : public BackEndMockTest {
     public:
 
@@ -447,23 +445,23 @@ namespace {
 
         // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
-        //        int size = 10000;
-        //        char buffer[size];
-        //        memset(buffer, 0, size);
-        //        string all_received = "";
-        //
-        //        for (int count = 0; count < expected.length(); ++count) {
-        //
-        //            string exp = expected.substr(count, 1);
-        //            int return_value = wifu_recv(connection, &buffer, 1, 0);
-        //            string actual(buffer);
-        //            all_received.append(actual);
-        //
-        //
-        //            EXPECT_EQ(1, return_value);
-        //            EXPECT_EQ(exp, actual);
-        //
-        //        }
+        int size = 10000;
+        char buffer[size];
+        memset(buffer, 0, size);
+        string all_received = "";
+
+        for (int count = 0; count < expected.length(); ++count) {
+
+            string exp = expected.substr(count, 1);
+            int return_value = wifu_recv(connection, &buffer, 1, 0);
+            string actual(buffer);
+            all_received.append(actual);
+
+
+            EXPECT_EQ(1, return_value);
+            EXPECT_EQ(exp, actual);
+
+        }
     }
 
     /**

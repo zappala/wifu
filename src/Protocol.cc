@@ -196,14 +196,10 @@ void Protocol::network_receive(Event* e) {
     }
 
     // TODO: Error check
-    assert(false);
     // This is where we should insert into the receive buffer (not in append_data) because we can do this inside reliability (where we know about what we have/haven't seen before)
+    // We will potentially save data before we are connected; however, we won't pass data to the application until we are connected.
     receive_packet(event);
-
-    // append any data into buffer
-    if(append_data(event)) {
-        check_and_send_receive_response(e);
-    }
+    check_and_send_receive_response(e);
 }
 
 void Protocol::connection_established(Event* e) {
@@ -283,10 +279,12 @@ void Protocol::check_and_send_receive_response(Event* e) {
     ReceiveInformation* info = s->get_receive_info();
 
     cout << "Data to send to application (this is received data): " << s->get_receive_buffer() << endl;
-    if(!info) {
+    if (!info) {
         // cannot send response because no one has called receive yet
         return;
     }
+
+    assert(is_connected(s));
 
     int size = info->get_receiving_buffer_size();
     if (size && s->get_receive_buffer().length() > 0) {

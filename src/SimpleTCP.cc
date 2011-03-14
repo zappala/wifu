@@ -187,12 +187,3 @@ bool SimpleTCP::is_connected(Socket* s) {
     IContextContainer* c = get_context(s);
     c->get_connection_manager()->is_connected(s);
 }
-
-bool SimpleTCP::append_data(NetworkReceivePacketEvent* e) {
-    Socket* socket = e->get_socket();
-    TCPPacket* p = (TCPPacket*) e->get_packet();
-    
-    if (is_connected(socket) && p->get_data_length_bytes() > 0) {
-        socket->get_receive_buffer().append((const char*) p->get_data(), p->get_data_length_bytes());
-    }
-}

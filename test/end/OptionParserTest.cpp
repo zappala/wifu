@@ -18,20 +18,25 @@ using namespace std;
 
 namespace {
 
-	static struct option long_options[] = {
-		{"network", required_argument, NULL, 0},
-		{"mockfile", required_argument, NULL, 0},
-		{0, 0, 0, 0}
-	};
+    static struct option long_options[] = {
+        {"network", required_argument, NULL, 0},
+        {"mockfile", required_argument, NULL, 0},
+        {0, 0, 0, 0}
+    };
 
-	TEST(OptionParser, all) {
-		string networkOption = "--network standard";
-		char* const args[3] = {"./awesome", const_cast<char*>(networkOption.c_str()), NULL};
+    TEST(OptionParser, all) {
 
-		parser.parse(2, args, long_options);
+        char* args[4] = {(char*) "./awesome", (char*) "--network", (char*) "standard", NULL};
 
-		ASSERT_EQ(true, parser.present(networkOption));
-	}
+        parser.parse(3, args, long_options);
+
+        string network = "network";
+        string standard = "standard";
+
+
+        ASSERT_TRUE(parser.present(network));
+        ASSERT_EQ(standard, parser.argument(network));
+    }
 
 }
 

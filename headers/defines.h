@@ -58,7 +58,7 @@
 #define WIFU_PORT 9438
 
 // must fit in 8 bits
-#define SIMPLE_TCP 106
+#define SIMPLE_TCP 206
 
 #define PAYLOAD_SIZE 1500
 #define MAX_TTL 65
