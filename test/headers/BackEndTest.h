@@ -12,7 +12,16 @@
 
 #include "gtest/gtest.h"
 
+#include "Semaphore.h"
+#include "AddressPort.h"
+
 using namespace std;
+
+struct var {
+    Semaphore* sem_;
+    AddressPort* to_bind_;
+    string expected_string;
+};
 
 class BackEndTest : public ::testing::Test {
 protected:
@@ -34,6 +43,7 @@ public:
 };
 
 // No drops
+
 class BackEndMockTestDropNone : public BackEndMockTest {
 public:
     string get_mock_file();
