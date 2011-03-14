@@ -25,6 +25,8 @@
 #include "Timer.h"
 #include "../headers/RandomStringGenerator.h"
 
+#include "../headers/BackEndTest.h"
+
 using namespace std;
 
 namespace {
@@ -33,107 +35,6 @@ namespace {
         Semaphore* sem_;
         AddressPort* to_bind_;
         string expected_string;
-    };
-
-    class BackEndTest : public ::testing::Test {
-    protected:
-
-        virtual void SetUp() {
-            start_backend();
-        }
-
-        virtual void TearDown() {
-            kill_backend();
-        }
-
-        virtual void start_backend() {
-            string commandToExecute = get_command();
-            int value = system(commandToExecute.c_str());
-            if (value < 0)
-                FAIL() << "Error starting wifu-end";
-            // We have to sleep so we can ensure the back end is up and running
-            sleep(1);
-        }
-
-        virtual void kill_backend() {
-            int value = system("killall wifu-end");
-            if (value < 0)
-                FAIL() << "Error killing wifu-end";
-        }
-
-        virtual string get_command() {
-            return "./wifu-end --network standard";
-        }
-
-    private:
-
-        string getOutputFromCommand(char* cmd) {
-            //_popen on Windows
-            FILE* pipe = popen(cmd, "r");
-            if (!pipe)
-                ADD_FAILURE() << "Error opening pipe to find wifu-end";
-            char buffer[128];
-            std::string result = "";
-            while (!feof(pipe))
-                if (fgets(buffer, 128, pipe) != NULL)
-                    result += buffer;
-            //_pclose on Windows
-            pclose(pipe);
-            return result;
-        }
-    };
-
-    class BackEndMockTest : public BackEndTest {
-    public:
-
-        virtual string get_command() {
-            string cmd = "./wifu-end --network mock --mockfile ";
-            cmd.append(get_mock_file());
-            return cmd;
-        }
-
-        virtual string get_mock_file() = 0;
-    };
-
-    class BackEndMockTestDropNone : public BackEndMockTest {
-    public:
-
-        string get_mock_file() {
-            return "drop_none.conf";
-        }
-    };
-
-    //Drops the 3 3 packet twice
-    class BackEndMockTestDrop33 : public BackEndMockTest {
-    public:
-        string get_mock_file() {
-            return "drop_3_3.conf";
-        }
-    };
-
-    //Drops the 2 3 packet twice
-    class BackEndMockTestDrop23 : public BackEndMockTest {
-    public:
-
-        string get_mock_file() {
-            return "drop_2_3.conf";
-        }
-    };
-
-    class BackEndMockTestDrop24 : public BackEndMockTest {
-    public:
-
-        string get_mock_file() {
-            return "drop_2_4.conf";
-        }
-    };
-
-    class BackEndMockTestDrop32 : public BackEndMockTest {
-    public:
-
-        string get_mock_file() {
-            return "drop_3_2.conf";
-        }
     };
 
     TEST_F(BackEndTest, socketTest) {
