@@ -130,7 +130,7 @@ void send_receive_test(int num_bytes) {
 
 }
 
-TEST_F(BackEndMockTestDropNone, sendReceiveTest) {
+TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive) {
     send_receive_test(100);
 
 

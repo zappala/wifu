@@ -130,6 +130,15 @@ void active_to_passive_test(int num_bytes) {
 
 }
 
+TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActive) {
+    active_to_passive_test(100);
+
+
+    // so we can see if we are doing something incorrect that would otherwise
+    // be covered up by the exiting of this method
+    sleep(5);
+}
+
 TEST_F(BackEndMockTestDrop24, sendReceiveDrop24) {
     active_to_passive_test(100);
 
