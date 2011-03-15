@@ -31,13 +31,6 @@ void SlowStart::send_to(Context* c, SendEvent* e) {
     CongestionControlContext* context = (CongestionControlContext*) c;
     Socket* s = e->get_socket();
 
-    // TODO: Currently we are enqueuing everything
-    // Enforce max send size length here
-    //        if (send_buffer->size() > 10000) {
-    //            cout << "SlowStart::send_to(), breaking early" << endl;
-    //            return;
-    //        }
-
     if(s->get_send_buffer().size() + e->data_length() > MAX_BUFFER_SIZE) {
         // No room in the inn
         context->set_buffered_send_event(e);
