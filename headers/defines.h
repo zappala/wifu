@@ -62,7 +62,8 @@
 
 #define MTU 1500
 #define MAX_TTL 65
-#define MAX_BUFFER_SIZE 87380 // http://linux.die.net/man/7/tcp
+//#define MAX_BUFFER_SIZE 87380 // http://linux.die.net/man/7/tcp
+#define MAX_BUFFER_SIZE 2
 
 typedef const char * event_name;
 

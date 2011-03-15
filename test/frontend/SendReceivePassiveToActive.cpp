@@ -117,16 +117,14 @@ void active_to_passive_test(int num_bytes) {
     memcpy(buffer, message.c_str(), message.length());
 
     int count = 1;
+    int num_sent = 0;
 
     // TODO: this only sends one character at a time
     for (int i = 0; i < message.length(); i++) {
-
-
-        while (wifu_send(client, &(buffer[i]), count, 0) < count) {
-            usleep(10000);
-        }
+        num_sent += wifu_send(client, &(buffer[i]), count, 0);
     }
 
+    EXPECT_EQ(message.length(), num_sent);
     pthread_cancel(t);
 
 }

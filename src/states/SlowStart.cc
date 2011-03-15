@@ -33,9 +33,11 @@ void SlowStart::send_to(Context* c, SendEvent* e) {
 
     if(s->get_send_buffer().size() + e->data_length() > MAX_BUFFER_SIZE) {
         // No room in the inn
+        assert(context->get_buffered_send_event() == NULL);
         context->set_buffered_send_event(e);
         return;
     }
+    cout << "SlowStart::send_to(), putting data immediately in send buffer" << endl;
     append_data_to_send_buffer(c, e);
     send_data(c, e, false);
 }
@@ -69,6 +71,7 @@ void SlowStart::send_data(Context* c, Event* e, bool received_naked_ack) {
     // TODO: append any blocking send_to call
     SendEvent* send_event = context->get_buffered_send_event();
     if(send_event != NULL && s->get_send_buffer().size() + send_event->data_length() <= MAX_BUFFER_SIZE) {
+        cout << "SlowStart::send_data(), putting saved send data in send buffer" << endl;
         append_data_to_send_buffer(c, send_event);
         context->set_buffered_send_event(NULL);
     }
