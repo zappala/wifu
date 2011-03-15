@@ -21,12 +21,12 @@ unsigned char* WiFuPacket::get_data() {
 }
 
 int WiFuPacket::get_data_length_bytes() {
-    return get_ip_datagram_length() - get_ip_length_bytes() - sizeof (struct wifu_packet_header);
+    return get_ip_tot_length() - get_ip_header_length_bytes() - sizeof (struct wifu_packet_header);
 }
 
 void WiFuPacket::set_data(unsigned char* data, int length) {
     memcpy(get_data(), data, length);
-    set_ip_datagram_length(get_ip_length_bytes() + sizeof (struct wifu_packet_header) + length);
+    set_ip_tot_length(get_ip_header_length_bytes() + sizeof (struct wifu_packet_header) + length);
 }
 
 u_int16_t WiFuPacket::get_source_port() {

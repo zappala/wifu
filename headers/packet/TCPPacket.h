@@ -30,8 +30,8 @@ public:
     u_int32_t get_tcp_ack_number();
     void set_tcp_ack_number(u_int32_t ack_num);
     int get_tcp_header_length_bytes();
-    u_int16_t get_tcp_header_length();
-    void set_tcp_header_length(u_int16_t length);
+    u_int16_t get_tcp_header_length_words();
+    void set_tcp_header_length_words(u_int16_t length);
     bool is_tcp_urg();
     void set_tcp_urg(bool urg);
     bool is_tcp_ack();
@@ -57,10 +57,8 @@ public:
 
     virtual int max_data_length();
 
-
 private:
     struct tcphdr* tcp_;
-
 
 };
 

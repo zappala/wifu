@@ -56,7 +56,7 @@ private:
 WiFuPacket* make_packet(string& data) {
     WiFuPacket* p = new WiFuPacket();
 
-    p->set_ip_length(5);
+    p->set_ip_header_length_words(5);
     p->set_ip_version(4);
     p->set_ip_tos(0);
     p->set_ip_destination_address_s("127.0.0.1");

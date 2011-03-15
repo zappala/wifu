@@ -4,7 +4,7 @@ IPPacket::IPPacket() : length_set_(false) {
     ip_ = (struct iphdr*) payload_;
 
     set_ip_version(4);
-    set_ip_length(sizeof(struct iphdr) / 4);
+    set_ip_header_length_words(sizeof(struct iphdr) / 4);
     set_ip_tos(0);
     set_ip_fragmentation_offset(0);
     set_ip_ttl(MAX_TTL);
@@ -13,7 +13,7 @@ IPPacket::IPPacket() : length_set_(false) {
 IPPacket::IPPacket(IPPacket& p) : length_set_(false) {
     ip_ = (struct iphdr*) payload_;
 
-    memcpy(payload_, p.payload_, p.get_ip_datagram_length());
+    memcpy(payload_, p.payload_, p.get_ip_tot_length());
 }
 
 IPPacket::IPPacket(unsigned char* buffer, int length) : length_set_(false) {
@@ -34,16 +34,16 @@ unsigned char* IPPacket::get_data() {
 }
 
 int IPPacket::get_data_length_bytes() {
-    return get_ip_datagram_length() - get_ip_length_bytes();
+    return get_ip_tot_length() - get_ip_header_length_bytes();
 }
 
 void IPPacket::set_data(unsigned char* data, int length) {
     memcpy(get_data(), data, length);
-    set_ip_datagram_length(get_ip_length_bytes() + length);
+    set_ip_tot_length(get_ip_header_length_bytes() + length);
 }
 
 unsigned char* IPPacket::get_next_header() {
-    return get_payload() + get_ip_length_bytes();
+    return get_payload() + get_ip_header_length_bytes();
 }
 
 u_int8_t IPPacket::get_ip_version() {
@@ -54,15 +54,15 @@ void IPPacket::set_ip_version(u_int8_t version) {
     ip_->version = version;
 }
 
-u_int8_t IPPacket::get_ip_length_bytes() {
-    return get_ip_length() * 4;
+u_int8_t IPPacket::get_ip_header_length_bytes() {
+    return get_ip_header_length_words() * 4;
 }
 
-u_int8_t IPPacket::get_ip_length() {
+u_int8_t IPPacket::get_ip_header_length_words() {
     return ip_->ihl;
 }
 
-void IPPacket::set_ip_length(u_int8_t ihl) {
+void IPPacket::set_ip_header_length_words(u_int8_t ihl) {
     ip_->ihl = ihl;
 }
 
@@ -74,11 +74,11 @@ void IPPacket::set_ip_tos(u_int8_t tos) {
     ip_->tos = tos;
 }
 
-u_int16_t IPPacket::get_ip_datagram_length() {
+u_int16_t IPPacket::get_ip_tot_length() {
     return ntohs(ip_->tot_len);
 }
 
-void IPPacket::set_ip_datagram_length(u_int16_t length) {
+void IPPacket::set_ip_tot_length(u_int16_t length) {
     ip_->tot_len = htons(length);
     length_set_ = true;
 }
@@ -170,5 +170,5 @@ bool IPPacket::length_is_set() {
 }
 
 int IPPacket::max_data_length() {
-    return MTU - get_ip_length_bytes();
+    return MTU - get_ip_header_length_bytes();
 }

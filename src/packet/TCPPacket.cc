@@ -24,12 +24,12 @@ unsigned char* TCPPacket::get_data() {
 }
 
 int TCPPacket::get_data_length_bytes() {
-    return get_ip_datagram_length() - get_ip_length_bytes() - sizeof (struct tcphdr);
+    return get_ip_tot_length() - get_ip_header_length_bytes() - sizeof (struct tcphdr);
 }
 
 void TCPPacket::set_data(unsigned char* data, int length) {
     memcpy(get_data(), data, length);
-    set_ip_datagram_length(get_ip_length_bytes() + sizeof (struct tcphdr) + length);
+    set_ip_tot_length(get_ip_header_length_bytes() + sizeof (struct tcphdr) + length);
 }
 
 u_int32_t TCPPacket::get_tcp_sequence_number() {
@@ -49,14 +49,14 @@ void TCPPacket::set_tcp_ack_number(u_int32_t ack_num) {
 }
 
 int TCPPacket::get_tcp_header_length_bytes() {
-    return get_tcp_header_length() * 4;
+    return get_tcp_header_length_words() * 4;
 }
 
-u_int16_t TCPPacket::get_tcp_header_length() {
+u_int16_t TCPPacket::get_tcp_header_length_words() {
     return tcp_->doff;
 }
 
-void TCPPacket::set_tcp_header_length(u_int16_t length) {
+void TCPPacket::set_tcp_header_length_words(u_int16_t length) {
     tcp_->doff = length;
 }
 
@@ -134,7 +134,7 @@ void TCPPacket::set_tcp_urgent_pointer(u_int16_t urg_ptr) {
 
 void TCPPacket::init() {
     tcp_ = (struct tcphdr*) get_next_header();
-    set_tcp_header_length(sizeof (struct tcphdr) / 4);
+    set_tcp_header_length_words(sizeof (struct tcphdr) / 4);
 }
 
 bool TCPPacket::is_naked_ack() {

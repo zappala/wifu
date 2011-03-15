@@ -60,8 +60,8 @@ namespace {
     TEST(IPPacketTest, EmptyConstructor) {
         IPPacket p;
         ASSERT_EQ(4, p.get_ip_version());
-        ASSERT_EQ(sizeof (struct iphdr) / 4, p.get_ip_length());
-        ASSERT_EQ(sizeof (struct iphdr), p.get_ip_length_bytes());
+        ASSERT_EQ(sizeof (struct iphdr) / 4, p.get_ip_header_length_words());
+        ASSERT_EQ(sizeof (struct iphdr), p.get_ip_header_length_bytes());
         ASSERT_EQ(0, p.get_ip_tos());
         ASSERT_EQ(0, p.get_ip_fragmentation_offset());
         ASSERT_EQ(MAX_TTL, p.get_ip_ttl());
@@ -72,12 +72,12 @@ namespace {
         ASSERT_EQ(2, p.get_ip_destination_address());
         ASSERT_EQ(3, p.get_ip_fragmentation_offset());
         ASSERT_EQ(4, p.get_ip_identifier());
-        ASSERT_EQ(5, p.get_ip_length());
-        ASSERT_EQ(5 * 4, p.get_ip_length_bytes());
+        ASSERT_EQ(5, p.get_ip_header_length_words());
+        ASSERT_EQ(5 * 4, p.get_ip_header_length_bytes());
         ASSERT_EQ(6, p.get_ip_protocol());
         ASSERT_EQ(7, p.get_ip_source_address());
         ASSERT_EQ(8, p.get_ip_tos());
-        ASSERT_EQ(helper.length(), p.get_ip_datagram_length());
+        ASSERT_EQ(helper.length(), p.get_ip_tot_length());
         ASSERT_EQ(10, p.get_ip_ttl());
         ASSERT_EQ(11, p.get_ip_version());
         ASSERT_TRUE(!strncmp(helper.get_data(), (const char*) p.get_data(), strlen(helper.get_data())));
@@ -125,9 +125,9 @@ namespace {
     TEST(IPPacketTest, IPLength) {
         IPPacket p;
         int a = 5;
-        p.set_ip_length(a);
-        ASSERT_EQ(a, p.get_ip_length());
-        ASSERT_EQ(a * 4, p.get_ip_length_bytes());
+        p.set_ip_header_length_words(a);
+        ASSERT_EQ(a, p.get_ip_header_length_words());
+        ASSERT_EQ(a * 4, p.get_ip_header_length_bytes());
     }
 
     TEST(IPPacketTest, TOS) {
@@ -140,8 +140,8 @@ namespace {
     TEST(IPPacketTest, DatagramLength) {
         IPPacket p;
         int a = 500;
-        p.set_ip_datagram_length(a);
-        ASSERT_EQ(a, p.get_ip_datagram_length());
+        p.set_ip_tot_length(a);
+        ASSERT_EQ(a, p.get_ip_tot_length());
     }
 
     TEST(IPPacketTest, ID) {

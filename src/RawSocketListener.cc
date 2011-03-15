@@ -38,7 +38,7 @@ void* listener(void* arg) {
             if (ret <= 0) {
                 assert(false);
             }
-            packet->set_ip_datagram_length(ret);
+            packet->set_ip_tot_length(ret);
 
             callback->network_receive(packet);
         }

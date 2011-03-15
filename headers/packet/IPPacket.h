@@ -49,17 +49,17 @@ public:
     /**
      * Gets the IP header length of this packet, in bytes
      */
-    u_int8_t get_ip_length_bytes();
+    u_int8_t get_ip_header_length_bytes();
 
     /**
      * Gets the IP header length of this packet, in 32 bit words
      */
-    u_int8_t get_ip_length();
+    u_int8_t get_ip_header_length_words();
 
     /**
      * Sets the length of the IP header of this packet, in 32 bit words
      */
-    void set_ip_length(u_int8_t ihl);
+    void set_ip_header_length_words(u_int8_t ihl);
 
     /**
      * Gets the IP TOS of this packet
@@ -74,12 +74,12 @@ public:
     /**
      * Gets the IP datagram length of this packet
      */
-    u_int16_t get_ip_datagram_length();
+    u_int16_t get_ip_tot_length();
 
     /**
      * Sets the IP datagram length of this packet
      */
-    void set_ip_datagram_length(u_int16_t length);
+    void set_ip_tot_length(u_int16_t length);
 
     /**
      * Gets the IP identifier of this packet

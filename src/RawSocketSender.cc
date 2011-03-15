@@ -11,7 +11,7 @@ ssize_t RawSocketSender::send(WiFuPacket* p) {
     }
     int ret = sendto(socket_,
             p->get_payload(),
-            p->get_ip_datagram_length(),
+            p->get_ip_tot_length(),
             0,
             (struct sockaddr*) p->get_dest_address_port()->get_network_struct_ptr(),
             (sizeof (struct sockaddr_in)));
