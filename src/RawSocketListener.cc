@@ -35,10 +35,8 @@ void* listener(void* arg) {
             packet = factory->create();
 
             ret = recv(fd, packet->get_payload(), MTU, 0);
-            if (ret <= 0) {
-                assert(false);
-            }
-            packet->set_ip_tot_length(ret);
+
+            assert(ret == packet->get_ip_tot_length());
 
             callback->network_receive(packet);
         }
