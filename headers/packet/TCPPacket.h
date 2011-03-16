@@ -57,6 +57,9 @@ public:
 
     virtual int max_data_length();
 
+    virtual string to_s();
+    virtual string to_s_format();
+
 private:
     struct tcphdr* tcp_;
 

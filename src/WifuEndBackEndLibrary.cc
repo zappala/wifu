@@ -66,12 +66,12 @@ void WifuEndBackEndLibrary::receive(string& message) {
         return;
 
     } else if (!name.compare(WIFU_SENDTO_NAME)) {
-        cout << "Dispatching SendEvent" << endl;
+//        cout << "Dispatching SendEvent" << endl;
         dispatch(new SendEvent(message, getFile(), socket));
         return;
         
     } else if (!name.compare(WIFU_RECVFROM_NAME)) {
-        cout << "Dispatching ReceiveEvent" << endl;
+//        cout << "Dispatching ReceiveEvent" << endl;
         dispatch(new ReceiveEvent(message, getFile(), socket));
         return;
 

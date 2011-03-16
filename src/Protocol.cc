@@ -120,7 +120,7 @@ void Protocol::library_connect(Event* e) {
 
     // TODO: Error check
 
-    cout << "In library connect" << endl;
+//    cout << "In library connect" << endl;
     connect(event);
 }
 
@@ -137,7 +137,7 @@ void Protocol::library_accept(Event* e) {
 }
 
 void Protocol::library_receive(Event* e) {
-    cout << "Protocol::library_receive()" << endl;
+//    cout << "Protocol::library_receive()" << endl;
     ReceiveEvent* event = (ReceiveEvent*) e;
 
     Socket* s = event->get_socket();
@@ -147,7 +147,7 @@ void Protocol::library_receive(Event* e) {
         return;
     }
 
-    cout << "Protocol::library_receive(), saving information" << endl;
+//    cout << "Protocol::library_receive(), saving information" << endl;
     s->set_receive_info(new ReceiveInformation(event->get_map()[FILE_STRING], event->get_receive_buffer_size()));
     check_and_send_receive_response(e);
 
@@ -155,7 +155,7 @@ void Protocol::library_receive(Event* e) {
 }
 
 void Protocol::library_send(Event* e) {
-    cout << "Protocol::library_send()" << endl;
+//    cout << "Protocol::library_send()" << endl;
     SendEvent* event = (SendEvent*) e;
 
     // call contexts
@@ -163,7 +163,7 @@ void Protocol::library_send(Event* e) {
 }
 
 void Protocol::send(Event* e) {
-    cout << "Protocol::send()" << endl;
+//    cout << "Protocol::send()" << endl;
     SendPacketEvent* event = (SendPacketEvent*) e;
 
     Socket* socket = event->get_socket();
@@ -176,7 +176,7 @@ void Protocol::send(Event* e) {
 }
 
 void Protocol::network_receive(Event* e) {
-    cout << "Protocol::network_receive()" << endl;
+//    cout << "Protocol::network_receive()" << endl;
 
     NetworkReceivePacketEvent* event = (NetworkReceivePacketEvent*) e;
 
@@ -226,8 +226,8 @@ void Protocol::connection_initiated(Event* e) {
     Socket* listening_socket = event->get_socket();
     Socket* new_socket = event->get_new_socket();
 
-    cout << "Protocol::connection_initiated(), listening_socket: " << listening_socket << endl;
-    cout << "Protocol::connection_initiated(), new_socket: " << new_socket << endl;
+//    cout << "Protocol::connection_initiated(), listening_socket: " << listening_socket << endl;
+//    cout << "Protocol::connection_initiated(), new_socket: " << new_socket << endl;
 
     sockets_.insert(new_socket);
 
@@ -237,14 +237,14 @@ void Protocol::connection_initiated(Event* e) {
 }
 
 void Protocol::timer_fired(Event* e) {
-    cout << "Protocol::timer_fired()" << endl;
+//    cout << "Protocol::timer_fired()" << endl;
     TimerFiredEvent* event = (TimerFiredEvent*) e;
     Socket* socket = event->get_socket();
 
-    cout << "Protocol::timer_fired(), socket: " << socket << endl;
+//    cout << "Protocol::timer_fired(), socket: " << socket << endl;
 
     if (!sockets_.contains(socket)) {
-        cout << "Protocol::timerfired: We don't have this socket...\n";
+//        cout << "Protocol::timerfired: We don't have this socket...\n";
         return;
     }
 
@@ -256,7 +256,7 @@ void Protocol::resend(Event* e) {
     Socket* socket = event->get_socket();
 
     if (!sockets_.contains(socket)) {
-        cout << "Protocol::resend: We don't have this socket...\n";
+//        cout << "Protocol::resend: We don't have this socket...\n";
         return;
     }
 
@@ -264,11 +264,11 @@ void Protocol::resend(Event* e) {
 }
 
 void Protocol::check_and_send_receive_response(Event* e) {
-    cout << "Protocol::check_and_send_receive_response()" << endl;
+//    cout << "Protocol::check_and_send_receive_response()" << endl;
     Socket* s = e->get_socket();
     ReceiveInformation* info = s->get_receive_info();
 
-    cout << "Data to send to application (this is received data): " << s->get_receive_buffer() << endl;
+//    cout << "Data to send to application (this is received data): " << s->get_receive_buffer() << endl;
     if (!info) {
         // cannot send response because no one has called receive yet
         return;
@@ -299,7 +299,7 @@ void Protocol::check_and_send_receive_response(Event* e) {
         assert(return_value <= size);
 
         dispatch(response);
-        cout << "Protocol::check_and_send_receive_response(), response dispatched" << endl;
+//        cout << "Protocol::check_and_send_receive_response(), response dispatched" << endl;
         s->set_receive_info(0);
     }
 }

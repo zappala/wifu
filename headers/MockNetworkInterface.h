@@ -31,6 +31,14 @@ public:
 private:
     MockNetworkInterface();
 
+
+    /**
+     * There are three possible outcomes of this function:
+     * 1. The packet sequence and ack numbers match a line in the config file.  We either:
+     *    a. Delay the packet (return > 0)
+     *    b. Drop the packet (return -1)
+     * 2. The config file indicates we are to randomly drop packets.  This is indicated by the config file reading -1 -1 N, where N is a number between 1 and 99 and indicates what percent of packets from now on we are to drop.  If the random number generator indicates that this packet should be dropped, this function returns -1.
+     */
     int get_delay(TCPPacket* p);
 
     void read_config_file();
@@ -40,10 +48,7 @@ private:
     // delay of -1 means drop
     vector< pair< pair<int, int>, int> > control_nums_to_delay_;
 
-    int counter_;
-    bool syn_;
-    bool synack_;
-    bool ack_;
+    int percent_;
 };
 
 #endif	/* _MOCKNETWORKINTERFACE_H */

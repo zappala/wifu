@@ -68,3 +68,20 @@ void WiFuPacket::init() {
 int WiFuPacket::max_data_length() {
     return IPPacket::max_data_length() - sizeof (struct wifu_packet_header);
 }
+
+string WiFuPacket::to_s() {
+    stringstream s;
+    s << IPPacket::to_s() << endl;
+    s << "wifu ";
+    s << (int) get_source_port() << " ";
+    s << (int) get_destination_port();
+    return s.str();
+
+}
+
+string WiFuPacket::to_s_format() {
+    stringstream s;
+    s << IPPacket::to_s_format() << endl;
+    s << "# wifu source_port destination_port";
+    return s.str();
+}

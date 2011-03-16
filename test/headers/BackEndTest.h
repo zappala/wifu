@@ -49,9 +49,12 @@ public:
     string get_mock_file();
 };
 
-//Drops the 3 3 packet twice
+class BackEndMockTestDrop22 : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
 
-class BackEndMockTestDrop33 : public BackEndMockTest {
+class BackEndMockTestDrop22Delay32 : public BackEndMockTest {
 public:
     string get_mock_file();
 };
@@ -69,6 +72,58 @@ public:
 };
 
 class BackEndMockTestDrop32 : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
+//Drops the 3 3 packet twice
+
+class BackEndMockTestDrop33 : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
+class BackEndMockTestDropRandom10Percent : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
+class BackEndMockTestDropRandom20Percent : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
+class BackEndMockTestDropRandom30Percent : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
+class BackEndMockTestDropRandom40Percent : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
+class BackEndMockTestDropRandom50Percent : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
+class BackEndMockTestDropRandom60Percent : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
+class BackEndMockTestDropRandom70Percent : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
+class BackEndMockTestDropRandom80Percent : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
+class BackEndMockTestDropRandom90Percent : public BackEndMockTest {
 public:
     string get_mock_file();
 };

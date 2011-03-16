@@ -13,6 +13,7 @@
 #include "defines.h"
 #include "GarbageCollector.h"
 #include <string>
+#include <sstream>
 #include <string.h>
 
 using namespace std;
@@ -174,6 +175,10 @@ public:
     void init();
 
     bool length_is_set();
+
+    virtual string to_s();
+
+    virtual string to_s_format();
 
     /**
      * @return MTU less the packet header(s)

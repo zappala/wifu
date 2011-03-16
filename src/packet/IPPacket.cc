@@ -172,3 +172,21 @@ bool IPPacket::length_is_set() {
 int IPPacket::max_data_length() {
     return MTU - get_ip_header_length_bytes();
 }
+
+string IPPacket::to_s() {
+    stringstream s;
+    s << "ip ";
+    s << get_ip_source_address_s() << " ";
+    s << get_ip_destination_address_s() << " ";
+    s << (int)get_ip_protocol() << " ";
+    s << get_ip_tot_length() << " ";
+    s << (int)get_ip_header_length_bytes() << " ";
+    s << (int)get_ip_ttl();
+    return s.str();
+}
+
+string IPPacket::to_s_format() {
+    stringstream s;
+    s << "# ip source destination protocol datagram_length ihl ttl";
+    return s.str();
+}

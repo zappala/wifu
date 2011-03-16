@@ -56,6 +56,14 @@ string BackEndMockTestDropNone::get_mock_file() {
     return "drop_none.conf";
 }
 
+string BackEndMockTestDrop22::get_mock_file() {
+    return "drop_2_2.conf";
+}
+
+string BackEndMockTestDrop22Delay32::get_mock_file() {
+    return "drop_2_2_delay_3_2.conf";
+}
+
 //Drops the 3 3 packet twice
 
 string BackEndMockTestDrop33::get_mock_file() {
@@ -78,6 +86,42 @@ string BackEndMockTestDrop24::get_mock_file() {
 
 string BackEndMockTestDrop32::get_mock_file() {
     return "drop_3_2.conf";
+}
+
+string BackEndMockTestDropRandom10Percent::get_mock_file() {
+    return "drop_random_10_percent.conf";
+}
+
+string BackEndMockTestDropRandom20Percent::get_mock_file() {
+    return "drop_random_20_percent.conf";
+}
+
+string BackEndMockTestDropRandom30Percent::get_mock_file() {
+    return "drop_random_30_percent.conf";
+}
+
+string BackEndMockTestDropRandom40Percent::get_mock_file() {
+    return "drop_random_40_percent.conf";
+}
+
+string BackEndMockTestDropRandom50Percent::get_mock_file() {
+    return "drop_random_50_percent.conf";
+}
+
+string BackEndMockTestDropRandom60Percent::get_mock_file() {
+    return "drop_random_60_percent.conf";
+}
+
+string BackEndMockTestDropRandom70Percent::get_mock_file() {
+    return "drop_random_70_percent.conf";
+}
+
+string BackEndMockTestDropRandom80Percent::get_mock_file() {
+    return "drop_random_80_percent.conf";
+}
+
+string BackEndMockTestDropRandom90Percent::get_mock_file() {
+    return "drop_random_90_percent.conf";
 }
 
 
