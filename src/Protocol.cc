@@ -160,10 +160,6 @@ void Protocol::library_send(Event* e) {
 
     // call contexts
     send_to(event);
-
-    Socket* s = event->get_socket();
-    
-
 }
 
 void Protocol::send(Event* e) {
@@ -191,7 +187,6 @@ void Protocol::network_receive(Event* e) {
     }
 
     // TODO: Error check
-    // This is where we should insert into the receive buffer (not in append_data) because we can do this inside reliability (where we know about what we have/haven't seen before)
     // We will potentially save data before we are connected; however, we won't pass data to the application until we are connected.
     receive_packet(event);
     check_and_send_receive_response(e);

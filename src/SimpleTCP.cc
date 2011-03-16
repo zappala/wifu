@@ -52,6 +52,14 @@ void SimpleTCP::listen(ListenEvent* e) {
 
 void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
     IContextContainer* c = get_context(e->get_socket());
+    Socket* s = e->get_socket();
+    TCPPacket* p = (TCPPacket*) e->get_packet();
+
+    // Don't overfill the receive buffer
+    // TODO: we may want to process the packet, just not save the data?
+    if(s->get_receive_buffer().size() + p->get_data_length_bytes() > MAX_BUFFER_SIZE) {
+        return;
+    }
 
     if (c->get_connection_manager()->is_connected(e->get_socket())) {
         c->get_congestion_control()->receive_packet(e);
