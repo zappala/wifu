@@ -48,7 +48,7 @@ namespace {
             QueryStringParser::parse(message, m);
 
             map<string, string> response;
-            response[FILE_STRING] = getFile();
+            response[FILE_STRING] = get_file();
             string name = m[NAME_STRING];
             response[SOCKET_STRING] = m[SOCKET_STRING];
 

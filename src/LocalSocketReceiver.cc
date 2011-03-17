@@ -19,7 +19,7 @@ int LocalSocketReceiver::get_socket() {
     return socket_;
 }
 
-string & LocalSocketReceiver::getFile() {
+string & LocalSocketReceiver::get_file() {
     return file_;
 }
 
