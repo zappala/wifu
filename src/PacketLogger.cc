@@ -7,53 +7,58 @@
 
 #include "PacketLogger.h"
 
-PacketLogger& PacketLogger::getInstance() {
+PacketLogger& PacketLogger::get_instance() {
 	static PacketLogger instance;
 	return instance;
 }
 
 PacketLogger::~PacketLogger() {
-	fileout.close();
+	close_log();
 
 	cout << "packet logger destructed" << endl;
 }
 
 void PacketLogger::log(WiFuPacket* packet) {
-	setTime();
-	packetHeader.ts_sec = time.tv_sec;
-	packetHeader.ts_usec = time.tv_usec;
-	packetHeader.incl_len = packet->get_ip_tot_length();
-	packetHeader.orig_len = packet->get_ip_tot_length();
+	set_time();
+	packet_header_.ts_sec = time_.tv_sec;
+	packet_header_.ts_usec = time_.tv_usec;
+	packet_header_.incl_len = packet->get_ip_tot_length();
+	packet_header_.orig_len = packet->get_ip_tot_length();
 
-	fileout.write(reinterpret_cast<const char*>(&packetHeader), sizeof(pcapPacketHeader));
-	fileout.write(reinterpret_cast<const char*>(packet->get_payload()), packet->get_ip_tot_length());
+	fileout_.write(reinterpret_cast<const char*>(&packet_header_), sizeof(PcapPacketHeader));
+	fileout_.write(reinterpret_cast<const char*>(packet->get_payload()), packet->get_ip_tot_length());
+}
+
+void PacketLogger::close_log() {
+	if (fileout_.is_open())
+		fileout_.close();
 }
 
 PacketLogger::PacketLogger() {
-	fileName = "hello.pcap";
-	fileout.open(fileName, ios::trunc | ios::binary);
+	file_name_ = LOG_FILENAME;
+	fileout_.open(file_name_, ios::out | ios::trunc | ios::binary);
 
-	fillInFileHeader();
-	writeFileHeader();
+	fill_in_file_header();
+	write_file_header();
 
 	cout << "packet logger constructed" << endl;
 }
 
-void PacketLogger::setTime() {
-	gettimeofday(&time, NULL);
+void PacketLogger::set_time() {
+	gettimeofday(&time_, NULL);
 }
 
-void PacketLogger::fillInFileHeader() {
-	fileHeader.magic_number = 0xa1b2c3d4;
-	fileHeader.version_major = 2;
-	fileHeader.version_minor = 4;
-	fileHeader.thiszone = 0;
-	fileHeader.sigfigs = 0;
-	fileHeader.snaplen = 65535;			//(2^16)
-	fileHeader.network = 1;				//Ethernet
+void PacketLogger::fill_in_file_header() {
+	file_header_.magic_number = 0xa1b2c3d4;
+	file_header_.version_major = 2;
+	file_header_.version_minor = 4;
+	file_header_.thiszone = 0;
+	file_header_.sigfigs = 0;
+	file_header_.snaplen = MTU;
+	file_header_.network = 1;		//Ethernet
 }
 
-void PacketLogger::writeFileHeader() {
-	fileout.write(reinterpret_cast<const char*>(&fileHeader), sizeof(pcapFileHeader));
+void PacketLogger::write_file_header() {
+	fileout_.write(reinterpret_cast<const char*>(&file_header_), sizeof(PcapFileHeader));
 	cout << "file header written" << endl;
 }
