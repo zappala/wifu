@@ -194,10 +194,10 @@ TEST_F(BackEndMockTestDropRandom10Percent, sendReceiveTestPassiveToActiveDropRan
 //    sleep(5);
 //}
 //
-//TEST_F(BackEndMockTestDropRandom50Percent, sendReceiveTestPassiveToActiveDropRandom) {
-//    active_to_passive_test(1000);
-//    sleep(5);
-//}
+TEST_F(BackEndMockTestDropRandom50Percent, sendReceiveTestPassiveToActiveDropRandom) {
+    active_to_passive_test(10000);
+    sleep(5);
+}
 //
 //TEST_F(BackEndMockTestDropRandom60Percent, sendReceiveTestPassiveToActiveDropRandom) {
 //    active_to_passive_test(1000);

@@ -55,10 +55,6 @@ void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    cout << "SimpleTCP::receive_packet()" << endl;
-    cout << p->to_s_format() << endl;
-    cout << p->to_s() << endl;
-
     // Don't overfill the receive buffer
     // TODO: we may want to process the packet, just not save the data?
     if(s->get_receive_buffer().size() + p->get_data_length_bytes() > MAX_BUFFER_SIZE) {

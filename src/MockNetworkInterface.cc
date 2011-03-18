@@ -26,10 +26,13 @@ void MockNetworkInterface::network_send(Event* e) {
 
     int delay = get_delay(tcp_packet);
 
+    cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
+    cout << p->to_s_format() << endl;
+    cout << p->to_s() << endl;
     // drop the packet
 //    cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
     if (delay == -1) {
-//        cout << "MockNetowrkInterface::network_send(), Dropping packet" << endl;
+        cout << "MockNetworkInterface::network_send(), Dropping packet" << endl;
         return;
     }
     
@@ -49,8 +52,10 @@ void MockNetworkInterface::network_send(Event* e) {
         return;
     }
 
-    cout << "Received Packet: " << endl;
-    
+    cout << "Socket " << s << " received packet: " << endl;
+    cout << "MockNetworkInterface::network_send()" << endl;
+    cout << p->to_s_format() << endl;
+    cout << p->to_s() << endl;
 
     Event* response = new NetworkReceivePacketEvent(s, p);
     Dispatcher::instance().enqueue(response);
