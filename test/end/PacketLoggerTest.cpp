@@ -7,13 +7,14 @@
 
 #include "gtest/gtest.h"
 #include "PacketLogger.h"
+#include "PacketLogReader.h"
 #include "packet/TCPPacket.h"
 
 #include <iostream>
 
 using namespace std;
 
-#define logger PacketLogger::getInstance()
+#define logger PacketLogger::get_instance()
 
 namespace {
 
@@ -49,6 +50,10 @@ namespace {
 
 		logger.log(&packet);
 		logger.log(&packet);
+		logger.close_log();
+
+		PacketLogReader reader(LOG_FILENAME);
+		reader.get_trace();
 	}
 
 }

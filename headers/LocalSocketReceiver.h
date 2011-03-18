@@ -72,7 +72,7 @@ public:
     virtual ~LocalSocketReceiver();
     int get_socket();
 
-    string & getFile();
+    string & get_file();
 
     void recv(string & message);
     virtual void receive(string & message) = 0;

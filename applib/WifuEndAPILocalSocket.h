@@ -54,7 +54,7 @@ private:
      * Copy constructor.  Should never be called.
      * @param other The WifuEndAPILocalSocket to copy.
      */
-    WifuEndAPILocalSocket(WifuEndAPILocalSocket const& other) : LocalSocketFullDuplex(getFile()), write_file_("/tmp/WS") {
+    WifuEndAPILocalSocket(WifuEndAPILocalSocket const& other) : LocalSocketFullDuplex(get_file()), write_file_("/tmp/WS") {
         assert(false);
     }
 
@@ -163,7 +163,7 @@ public:
     int wifu_socket(int domain, int type, int protocol) {
         socket_mutex_.wait();
         map<string, string> m;
-        m[FILE_STRING] = getFile();
+        m[FILE_STRING] = get_file();
         m[DOMAIN_STRING] = Utils::itoa(domain);
         m[TYPE_STRING] = Utils::itoa(type);
         m[PROTOCOL_STRING] = Utils::itoa(protocol);
@@ -210,7 +210,7 @@ public:
         AddressPort ap((struct sockaddr_in*) addr);
 
         map<string, string> m;
-        m[FILE_STRING] = getFile();
+        m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[ADDRESS_STRING] = ap.get_address();
         m[PORT_STRING] = Utils::itoa(ap.get_port());
@@ -245,7 +245,7 @@ public:
     int wifu_getsockopt(int fd, int level, int optname, void *__restrict optval, socklen_t *__restrict optlen) {
 
         map<string, string> m;
-        m[FILE_STRING] = getFile();
+        m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[LEVEL_STRING] = Utils::itoa(level);
         m[OPTION_NAME_STRING] = Utils::itoa(optname);
@@ -286,7 +286,7 @@ public:
         memcpy(value, optval, optlen);
 
         map<string, string> m;
-        m[FILE_STRING] = getFile();
+        m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[LEVEL_STRING] = Utils::itoa(level);
         m[OPTION_NAME_STRING] = Utils::itoa(optname);
@@ -326,7 +326,7 @@ public:
 
 
         map<string, string> m;
-        m[FILE_STRING] = getFile();
+        m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[N_STRING] = Utils::itoa(n);
 
@@ -360,7 +360,7 @@ public:
     int wifu_accept(int fd, struct sockaddr* addr, socklen_t *__restrict addr_len) {
 
         map<string, string> m;
-        m[FILE_STRING] = getFile();
+        m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
 
         if (addr != NULL && addr_len != NULL) {
@@ -443,7 +443,7 @@ public:
      */
     ssize_t wifu_sendto(int fd, const void* buf, size_t n, int flags, const struct sockaddr* addr, socklen_t addr_len) {
         map<string, string> m;
-        m[FILE_STRING] = getFile();
+        m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[BUFFER_STRING] = string((const char*) buf, n);
         m[N_STRING] = Utils::itoa(n);
@@ -489,7 +489,7 @@ public:
      */
     ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr, socklen_t *__restrict addr_len) {
         map<string, string> m;
-        m[FILE_STRING] = getFile();
+        m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[N_STRING] = Utils::itoa(n);
         m[FLAGS_STRING] = Utils::itoa(flags);
@@ -539,7 +539,7 @@ public:
         assert(sizeof (struct sockaddr_in) == len);
 
         map<string, string> m;
-        m[FILE_STRING] = getFile();
+        m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
 
         AddressPort ap((struct sockaddr_in*) addr);

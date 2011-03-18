@@ -35,13 +35,13 @@ void WifuEndBackEndLibrary::receive(string& message) {
             Socket* socket = new Socket(domain, type, protocol);
             SocketCollection::instance().push(socket);
 
-            dispatch(new SocketEvent(message, getFile(), socket));
+            dispatch(new SocketEvent(message, get_file(), socket));
             return;
 
         } else {
             map<string, string> response;
             response[SOCKET_STRING] = s;
-            response[FILE_STRING] = getFile();
+            response[FILE_STRING] = get_file();
             response[SOCKET_STRING] = Utils::itoa(-1);
             response[ERRNO] = Utils::itoa(EPROTONOSUPPORT);
             // TODO: May not always want to respond immediately
@@ -53,30 +53,30 @@ void WifuEndBackEndLibrary::receive(string& message) {
 
     } else if (!name.compare(WIFU_BIND_NAME)) {
 
-        dispatch(new BindEvent(message, getFile(), socket));
+        dispatch(new BindEvent(message, get_file(), socket));
         return;
 
     } else if (!name.compare(WIFU_LISTEN_NAME)) {
 
-        dispatch(new ListenEvent(message, getFile(), socket));
+        dispatch(new ListenEvent(message, get_file(), socket));
         return;
 
     } else if (!name.compare(WIFU_ACCEPT_NAME)) {
-        dispatch(new AcceptEvent(message, getFile(), socket));
+        dispatch(new AcceptEvent(message, get_file(), socket));
         return;
 
     } else if (!name.compare(WIFU_SENDTO_NAME)) {
-//        cout << "Dispatching SendEvent" << endl;
-        dispatch(new SendEvent(message, getFile(), socket));
+        cout << "Dispatching SendEvent" << endl;
+        dispatch(new SendEvent(message, get_file(), socket));
         return;
         
     } else if (!name.compare(WIFU_RECVFROM_NAME)) {
-//        cout << "Dispatching ReceiveEvent" << endl;
-        dispatch(new ReceiveEvent(message, getFile(), socket));
+        cout << "Dispatching ReceiveEvent" << endl;
+        dispatch(new ReceiveEvent(message, get_file(), socket));
         return;
 
     } else if (!name.compare(WIFU_CONNECT_NAME)) {
-        dispatch(new ConnectEvent(message, getFile(), socket));
+        dispatch(new ConnectEvent(message, get_file(), socket));
         return;
 
     } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
@@ -90,7 +90,7 @@ void WifuEndBackEndLibrary::receive(string& message) {
 
 void WifuEndBackEndLibrary::library_response(Event* e) {
     ResponseEvent* event = (ResponseEvent*) e;
-    event->put(FILE_STRING, getFile());
+    event->put(FILE_STRING, get_file());
     string file = event->get_write_file();
     string response = event->get_response();
     //        cout << "Response: " << response << endl;
