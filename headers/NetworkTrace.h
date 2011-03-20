@@ -18,10 +18,14 @@ class NetworkTrace : public gc_cleanup {
 public:
 	NetworkTrace();
 
-	void addPacket(WiFuPacket* packet);
+	void add_packet(WiFuPacket* packet);
+
+	void print_trace();
+
+	bool operator ==(const NetworkTrace& other) const;
 
 private:
-	vector<WiFuPacket*> packetList;
+	vector<WiFuPacket*> packet_list_;
 
 };
 

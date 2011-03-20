@@ -14,8 +14,6 @@ PacketLogger& PacketLogger::get_instance() {
 
 PacketLogger::~PacketLogger() {
 	close_log();
-
-	cout << "packet logger destructed" << endl;
 }
 
 void PacketLogger::log(WiFuPacket* packet) {
@@ -39,9 +37,7 @@ PacketLogger::PacketLogger() {
 	fileout_.open(file_name_, ios::out | ios::trunc | ios::binary);
 
 	fill_in_file_header();
-	write_file_header();
-
-	cout << "packet logger constructed" << endl;
+//	write_file_header();
 }
 
 void PacketLogger::set_time() {
