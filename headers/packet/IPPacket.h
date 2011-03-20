@@ -12,9 +12,9 @@
 #include <netinet/ip.h>
 #include "defines.h"
 #include "GarbageCollector.h"
-#include <string>
 #include <sstream>
 #include <string.h>
+#include <iostream>
 
 using namespace std;
 
@@ -40,7 +40,7 @@ public:
     /**
      * Gets the IP version of this packet
      */
-    u_int8_t get_ip_version();
+    u_int8_t get_ip_version() const;
 
     /**
      * Sets the IP version of this packet
@@ -50,12 +50,12 @@ public:
     /**
      * Gets the IP header length of this packet, in bytes
      */
-    u_int8_t get_ip_header_length_bytes();
+    u_int8_t get_ip_header_length_bytes() const;
 
     /**
      * Gets the IP header length of this packet, in 32 bit words
      */
-    u_int8_t get_ip_header_length_words();
+    u_int8_t get_ip_header_length_words() const;
 
     /**
      * Sets the length of the IP header of this packet, in 32 bit words
@@ -65,7 +65,7 @@ public:
     /**
      * Gets the IP TOS of this packet
      */
-    u_int8_t get_ip_tos();
+    u_int8_t get_ip_tos() const;
 
     /**
      * Sets the IP TOS of this packet
@@ -75,7 +75,7 @@ public:
     /**
      * Gets the IP datagram length of this packet
      */
-    u_int16_t get_ip_tot_length();
+    u_int16_t get_ip_tot_length() const;
 
     /**
      * Sets the IP datagram length of this packet
@@ -85,7 +85,7 @@ public:
     /**
      * Gets the IP identifier of this packet
      */
-    u_int16_t get_ip_identifier();
+    u_int16_t get_ip_identifier() const;
 
     /**
      * Sets the IP identifier of this packet
@@ -95,7 +95,7 @@ public:
     /**
      * Gets the IP fragmentation offset of this packet
      */
-    u_int16_t get_ip_fragmentation_offset();
+    u_int16_t get_ip_fragmentation_offset() const;
 
     /**
      * Sets the IP fragmentation offset of this packet
@@ -105,7 +105,7 @@ public:
     /**
      * Gets the IP TTL of this packet
      */
-    u_int8_t get_ip_ttl();
+    u_int8_t get_ip_ttl() const;
 
     /**
      * Sets the IP TTL of this packet
@@ -115,7 +115,7 @@ public:
     /**
      * Gets the IP protocol of this packet
      */
-    u_int8_t get_ip_protocol();
+    u_int8_t get_ip_protocol() const;
 
     /**
      * Sets the IP protocol of this packet
@@ -125,7 +125,7 @@ public:
     /**
      * Gets the IP checksum of this packet
      */
-    u_int16_t get_ip_checksum();
+    u_int16_t get_ip_checksum() const;
 
     /**
      * Sets the IP checksum of this packet
@@ -135,7 +135,7 @@ public:
     /**
      * Gets the source IP address of this packet
      */
-    u_int32_t get_ip_source_address();
+    u_int32_t get_ip_source_address() const;
 
     /**
      * Sets the source IP address of this packet
@@ -145,7 +145,7 @@ public:
     /**
      * Gets a string representation of the source IP address of this packet
      */
-    string get_ip_source_address_s();
+    string get_ip_source_address_s() const;
 
     /**
      * Sets a string representation of the source IP address of this packet
@@ -155,7 +155,7 @@ public:
     /**
      * Gets the destination IP address of this packet
      */
-    u_int32_t get_ip_destination_address();
+    u_int32_t get_ip_destination_address() const;
 
     /**
      * Sets the destination IP address of this packet
@@ -165,7 +165,7 @@ public:
     /**
      * Gets a string representation of the destination IP address of this packet
      */
-    string get_ip_destination_address_s();
+    string get_ip_destination_address_s() const;
 
     /**
      * Sets a string representation of the destination IP address of this packet
@@ -174,16 +174,20 @@ public:
 
     void init();
 
-    bool length_is_set();
+    bool length_is_set() const;
 
-    virtual string to_s();
+    virtual string to_s() const;
 
-    virtual string to_s_format();
+    virtual string to_s_format() const;
 
     /**
      * @return MTU less the packet header(s)
      */
-    virtual int max_data_length();
+    virtual int max_data_length() const;
+
+    virtual bool operator ==(const IPPacket& other) const;
+
+    virtual bool operator !=(const IPPacket& other) const;
 
 private:
     unsigned char payload_[MTU];
@@ -191,5 +195,6 @@ private:
     bool length_set_;
 };
 
-#endif	/* _IPPACKET_H */
+::std::ostream& operator<<(::std::ostream& os, const IPPacket& packet);
 
+#endif	/* _IPPACKET_H */
