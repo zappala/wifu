@@ -50,7 +50,7 @@ void* active_to_passive_thread(void* args) {
 
     // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
-    int size = 10000;
+    int size = 50000;
     char buffer[size];
     memset(buffer, 0, size);
     string all_received = "";
@@ -111,7 +111,7 @@ void active_to_passive_test(int num_bytes) {
 
     cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
-    int size = 10000;
+    int size = 50000;
     char buffer[size];
 
     memcpy(buffer, message.c_str(), message.length());
@@ -138,6 +138,15 @@ TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive) {
     sleep(5);
 }
 
+TEST_F(BackEndMockTestDrop12, sendReceiveTestActiveToPassive12) {
+    active_to_passive_test(2000);
+
+
+    // so we can see if we are doing something incorrect that would otherwise
+    // be covered up by the exiting of this method
+    sleep(5);
+}
+
 TEST_F(BackEndMockTestDrop22, sendReceiveTestActiveToPassive22) {
     active_to_passive_test(1000);
 
@@ -148,7 +157,7 @@ TEST_F(BackEndMockTestDrop22, sendReceiveTestActiveToPassive22) {
 }
 
 TEST_F(BackEndMockTestDrop22Delay32, sendReceiveTestActiveToPassive) {
-    active_to_passive_test(7000);
+    active_to_passive_test(1000);
 
 
     // so we can see if we are doing something incorrect that would otherwise
@@ -175,27 +184,27 @@ TEST_F(BackEndMockTestDrop32, sendReceiveTestActiveToPassive32) {
 }
 
 TEST_F(BackEndMockTestDropRandom10Percent, sendReceiveTestActiveToPassiveDropRandom) {
-    active_to_passive_test(10000);
+    active_to_passive_test(20000);
     sleep(5);
 }
 
-//TEST_F(BackEndMockTestDropRandom20Percent, sendReceiveTestActiveToPassiveDropRandom) {
-//    active_to_passive_test(1000);
-//    sleep(5);
-//}
-//
-//TEST_F(BackEndMockTestDropRandom30Percent, sendReceiveTestActiveToPassiveDropRandom) {
-//    active_to_passive_test(1000);
-//    sleep(5);
-//}
-//
-//TEST_F(BackEndMockTestDropRandom40Percent, sendReceiveTestActiveToPassiveDropRandom) {
-//    active_to_passive_test(1000);
-//    sleep(5);
-//}
-//
+TEST_F(BackEndMockTestDropRandom20Percent, sendReceiveTestActiveToPassiveDropRandom) {
+    active_to_passive_test(20000);
+    sleep(5);
+}
+
+TEST_F(BackEndMockTestDropRandom30Percent, sendReceiveTestActiveToPassiveDropRandom) {
+    active_to_passive_test(20000);
+    sleep(5);
+}
+
+TEST_F(BackEndMockTestDropRandom40Percent, sendReceiveTestActiveToPassiveDropRandom) {
+    active_to_passive_test(20000);
+    sleep(5);
+}
+
 TEST_F(BackEndMockTestDropRandom50Percent, sendReceiveTestActiveToPassiveDropRandom) {
-    active_to_passive_test(10000);
+    active_to_passive_test(20000);
     sleep(5);
 }
 //

@@ -50,7 +50,7 @@ void* send_receive_thread(void* args) {
 
     // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
-    int size = 10000;
+    int size = 50000;
     char buffer[size];
 
     memcpy(buffer, message.c_str(), message.length());
@@ -142,6 +142,15 @@ TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActive) {
     sleep(5);
 }
 
+TEST_F(BackEndMockTestDrop12, sendReceiveTestPassiveToActiveDrop12) {
+    send_receive_test(2000);
+
+
+    // so we can see if we are doing something incorrect that would otherwise
+    // be covered up by the exiting of this method
+    sleep(5);
+}
+
 TEST_F(BackEndMockTestDrop33, sendReceiveTestPassiveToActiveDrop33) {
     send_receive_test(100);
 
@@ -161,30 +170,30 @@ TEST_F(BackEndMockTestDrop23, sendReceiveTestPassiveToActiveDrop23) {
 }
 
 TEST_F(BackEndMockTestDropRandom10Percent, sendReceiveTestPassiveToActiveDropRandom) {
-    send_receive_test(10000);
+    send_receive_test(20000);
     sleep(5);
 }
 
-//TEST_F(BackEndMockTestDropRandom20Percent, sendReceiveTestPassiveToActiveDropRandom) {
-//    send_receive_test(10000);
-//    sleep(5);
-//}
-//
-//TEST_F(BackEndMockTestDropRandom30Percent, sendReceiveTestPassiveToActiveDropRandom) {
-//    send_receive_test(10000);
-//    sleep(5);
-//}
+TEST_F(BackEndMockTestDropRandom20Percent, sendReceiveTestPassiveToActiveDropRandom) {
+    send_receive_test(20000);
+    sleep(5);
+}
 
-//TEST_F(BackEndMockTestDropRandom40Percent, sendReceiveTestPassiveToActiveDropRandom) {
-//    send_receive_test(10000);
-//    sleep(5);
-//}
-//
-//TEST_F(BackEndMockTestDropRandom50Percent, sendReceiveTestPassiveToActiveDropRandom) {
-//    send_receive_test(10000);
-//    sleep(5);
-//}
-//
+TEST_F(BackEndMockTestDropRandom30Percent, sendReceiveTestPassiveToActiveDropRandom) {
+    send_receive_test(20000);
+    sleep(5);
+}
+
+TEST_F(BackEndMockTestDropRandom40Percent, sendReceiveTestPassiveToActiveDropRandom) {
+    send_receive_test(20000);
+    sleep(5);
+}
+
+TEST_F(BackEndMockTestDropRandom50Percent, sendReceiveTestPassiveToActiveDropRandom) {
+    send_receive_test(20000);
+    sleep(5);
+}
+
 //TEST_F(BackEndMockTestDropRandom60Percent, sendReceiveTestPassiveToActiveDropRandom) {
 //    send_receive_test(10000);
 //    sleep(5);

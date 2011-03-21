@@ -152,7 +152,7 @@ bool ReliabilityState::check_and_resend_packet(Context* c, Socket* s, WiFuPacket
 
         //Decrement the counter - need an accurate seq. num.
         rc->set_seq_counter(rc->get_seq_counter() - 1);
-        
+//        rc->set_seq_counter(packet->get_tcp_ack_number());
         //Resend
         //ResendPacketEvent* e = new ResendPacketEvent(s, last_sent);
         //Dispatcher::instance().enqueue(e);

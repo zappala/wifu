@@ -51,7 +51,7 @@ void SlowStart::exit(Context* c) {
 }
 
 void SlowStart::send_data(Context* c, Event* e, bool received_naked_ack) {
-    cout << "SlowStart::send_data()" << endl;
+//    cout << "SlowStart::send_data()" << endl;
     CongestionControlContext* context = (CongestionControlContext*) c;
 
     if (!context->can_send_data()) {

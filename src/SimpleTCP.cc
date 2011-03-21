@@ -71,8 +71,6 @@ void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
     if (c->get_connection_manager()->is_connected(e->get_socket())) {
         c->get_congestion_control()->receive_packet(e);
     }
-
-    
     c->get_reliability()->receive_packet(e);
 }
 
