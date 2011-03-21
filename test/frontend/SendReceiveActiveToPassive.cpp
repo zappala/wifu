@@ -138,6 +138,15 @@ TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive) {
     sleep(5);
 }
 
+TEST_F(BackEndMockTestDrop10, sendReceiveTestActiveToPassive10) {
+    active_to_passive_test(2000);
+
+
+    // so we can see if we are doing something incorrect that would otherwise
+    // be covered up by the exiting of this method
+    sleep(5);
+}
+
 TEST_F(BackEndMockTestDrop12, sendReceiveTestActiveToPassive12) {
     active_to_passive_test(2000);
 

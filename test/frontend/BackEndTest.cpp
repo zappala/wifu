@@ -56,6 +56,10 @@ string BackEndMockTestDropNone::get_mock_file() {
     return "drop_none.conf";
 }
 
+string BackEndMockTestDrop10::get_mock_file() {
+    return "drop_1_0.conf";
+}
+
 string BackEndMockTestDrop12::get_mock_file() {
     return "drop_1_2.conf";
 }

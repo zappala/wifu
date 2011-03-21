@@ -49,6 +49,12 @@ public:
     string get_mock_file();
 };
 
+
+class BackEndMockTestDrop10 : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
 class BackEndMockTestDrop12 : public BackEndMockTest {
 public:
     string get_mock_file();
