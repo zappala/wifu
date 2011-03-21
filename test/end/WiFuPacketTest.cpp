@@ -38,8 +38,8 @@ namespace {
             header->version = 11;
 
             struct wifu_packet_header* wheader = (struct wifu_packet_header*) (buffer + sizeof (struct iphdr));
-            wheader->dport = dest_->get_port();
-            wheader->sport = source_->get_port();
+            wheader->dport = htons(dest_->get_port());
+            wheader->sport = htons(source_->get_port());
 
             unsigned char* payload = buffer + (sizeof (struct iphdr) + sizeof (struct wifu_packet_header));
             memcpy(payload, data, strlen(data));

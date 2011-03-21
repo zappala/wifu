@@ -30,19 +30,19 @@ void WiFuPacket::set_data(unsigned char* data, int length) {
 }
 
 u_int16_t WiFuPacket::get_source_port() {
-    return ports_->sport;
+    return ntohs(ports_->sport);
 }
 
 void WiFuPacket::set_source_port(u_int16_t port) {
-    ports_->sport = port;
+    ports_->sport = htons(port);
 }
 
 u_int16_t WiFuPacket::get_destination_port() {
-    return ports_->dport;
+    return ntohs(ports_->dport);
 }
 
 void WiFuPacket::set_destination_port(u_int16_t port) {
-    ports_->dport = port;
+    ports_->dport = htons(port);
 }
 
 AddressPort* WiFuPacket::get_source_address_port() {

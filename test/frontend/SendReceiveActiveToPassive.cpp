@@ -148,7 +148,7 @@ TEST_F(BackEndMockTestDrop22, sendReceiveTestPassiveToActive22) {
 }
 
 TEST_F(BackEndMockTestDrop22Delay32, sendReceiveTestPassiveToActive) {
-    active_to_passive_test(1000);
+    active_to_passive_test(7000);
 
 
     // so we can see if we are doing something incorrect that would otherwise

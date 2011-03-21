@@ -39,21 +39,21 @@ namespace {
 
             tcp_header_ = (struct tcphdr*) (buffer + sizeof (struct iphdr));
             tcp_header_->ack = 1;
-            tcp_header_->ack_seq = 2;
+            tcp_header_->ack_seq = htonl(2);
             tcp_header_->check = 3;
-            tcp_header_->dest = dest_->get_port();
+            tcp_header_->dest = htons(dest_->get_port());
             tcp_header_->doff = sizeof (struct tcphdr) / 4;
             tcp_header_->fin = 1;
             tcp_header_->psh = 1;
             tcp_header_->res1 = 1;
             tcp_header_->res2 = 1;
             tcp_header_->rst = 1;
-            tcp_header_->seq = 4;
-            tcp_header_->source = source_->get_port();
+            tcp_header_->seq = htonl(4);
+            tcp_header_->source = htons(source_->get_port());
             tcp_header_->syn = 1;
             tcp_header_->urg = 1;
-            tcp_header_->urg_ptr = 6;
-            tcp_header_->window = 7;
+            tcp_header_->urg_ptr = htons(6);
+            tcp_header_->window = htons(7);
 
             unsigned char* payload = buffer + (sizeof (struct iphdr) + sizeof (struct tcphdr));
             memcpy(payload, data, strlen(data));

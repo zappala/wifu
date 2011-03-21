@@ -33,19 +33,19 @@ void TCPPacket::set_data(unsigned char* data, int length) {
 }
 
 u_int32_t TCPPacket::get_tcp_sequence_number() {
-    return tcp_->seq;
+    return ntohl(tcp_->seq);
 }
 
 void TCPPacket::set_tcp_sequence_number(u_int32_t seq_num) {
-    tcp_->seq = seq_num;
+    tcp_->seq = htonl(seq_num);
 }
 
 u_int32_t TCPPacket::get_tcp_ack_number() {
-    return tcp_->ack_seq;
+    return ntohl(tcp_->ack_seq);
 }
 
 void TCPPacket::set_tcp_ack_number(u_int32_t ack_num) {
-    tcp_->ack_seq = ack_num;
+    tcp_->ack_seq = htonl(ack_num);
 }
 
 int TCPPacket::get_tcp_header_length_bytes() {
@@ -109,11 +109,11 @@ void TCPPacket::set_tcp_fin(bool fin) {
 }
 
 u_int16_t TCPPacket::get_tcp_receive_window_size() {
-    return tcp_->window;
+    return ntohs(tcp_->window);
 }
 
 void TCPPacket::set_tcp_receive_window_size(u_int16_t window) {
-    tcp_->window = window;
+    tcp_->window = htons(window);
 }
 
 u_int16_t TCPPacket::get_tcp_checksum() {
@@ -125,11 +125,11 @@ void TCPPacket::set_tcp_checksum(u_int16_t checksum) {
 }
 
 u_int16_t TCPPacket::get_tcp_urgent_pointer() {
-    return tcp_->urg_ptr;
+    return ntohs(tcp_->urg_ptr);
 }
 
 void TCPPacket::set_tcp_urgent_pointer(u_int16_t urg_ptr) {
-    tcp_->urg_ptr = urg_ptr;
+    tcp_->urg_ptr = htons(urg_ptr);
 }
 
 void TCPPacket::init() {
