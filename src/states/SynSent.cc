@@ -36,7 +36,6 @@ void SynSent::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         response->set_destination_port(destination->get_port());
         response->set_source_port(source->get_port());
         
-        response->set_tcp_ack(true);
         response->set_data(data, 0);
 
         SendPacketEvent* event = new SendPacketEvent(e->get_socket(), response);

@@ -56,6 +56,11 @@ public:
      */
     void execute(IModule* m);
 
+    /**
+     * @return The stirng representation of the exact time at which this timer is supposed to go off.
+     */
+    string to_s();
+
 private:
     /**
      * Holds the absolute time when this TimeoutEvent should time out.

@@ -14,7 +14,7 @@ void SlowStart::send_packet(Context* c, SendPacketEvent* e) {
 }
 
 void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
-//    cout << "SlowStart::receive_packet(), socket: " << e->get_socket() << endl;
+    cout << "SlowStart::receive_packet(), socket: " << e->get_socket() << endl;
     CongestionControlContext* context = (CongestionControlContext*) c;
     context->set_can_send_data(true);
     TCPPacket* p = (TCPPacket*) e->get_packet();
@@ -51,7 +51,7 @@ void SlowStart::exit(Context* c) {
 }
 
 void SlowStart::send_data(Context* c, Event* e, bool received_naked_ack) {
-//    cout << "SlowStart::send_data()" << endl;
+    cout << "SlowStart::send_data()" << endl;
     CongestionControlContext* context = (CongestionControlContext*) c;
 
     if (!context->can_send_data()) {
@@ -92,12 +92,14 @@ void SlowStart::send_data(Context* c, Event* e, bool received_naked_ack) {
 //    cout << "SlowStart::send_data(), data: " << data << endl;
 
     if (received_naked_ack && p->get_data_length_bytes() == 0) {
-//        cout << "SlowStart::send_data(), returning early" << endl;
+        cout << "SlowStart::send_data(), returning early" << endl;
         return;
     }
 
     context->set_can_send_data(false);
 
+    cout << "SlowStart::send_data(), sending a packet:" << endl;
+    cout << p->to_s() << endl;
     SendPacketEvent* event = new SendPacketEvent(s, p);
     Dispatcher::instance().enqueue(event);
 }

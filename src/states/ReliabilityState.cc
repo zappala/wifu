@@ -13,7 +13,7 @@ void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) 
 
     //cout << "ReliabilityState::receive_packet: Socket pointer = " << s << "\n";
     //cout << "ReliabilityState::receive_packet: SYN = " << packet->is_tcp_syn() << ", ACK = " << packet->is_tcp_ack() << "\n";
-//    cout << "ReliabilityState::receive_packet: Seq. number = " << packet->get_tcp_sequence_number() << ", ACK number = " << packet->get_tcp_ack_number() << " SOCKET: " << e->get_socket() << "\n";
+    cout << "ReliabilityState::receive_packet: Seq. number = " << packet->get_tcp_sequence_number() << ", ACK number = " << packet->get_tcp_ack_number() << " SOCKET: " << e->get_socket() << "\n";
 
     cancel_timer(c, packet);
     bool resent = check_and_resend_packet(c, e->get_socket(), packet);
@@ -86,8 +86,8 @@ void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
         return;
     }
 
-    cout << "In ReliabilityState::timer_fired(); means timeout on socket: " << e->get_socket() << endl;
-
+    //cout << "In ReliabilityState::timer_fired(); means timeout on socket: " << e->get_socket() << endl;
+    cout << "ReliabilityState::timer_fired(), current time: " << TimeoutEvent(e->get_socket(), 0 , 0).to_s() << endl;
     ResendPacketEvent* event = new ResendPacketEvent(e->get_socket(), rc->get_last_packet_sent());
     Dispatcher::instance().enqueue(event);
 }
@@ -117,6 +117,7 @@ void ReliabilityState::create_save_and_dispatch_timeout_event(
     ReliabilityContext* rc = (ReliabilityContext*) c;
 
     TimeoutEvent* timeout = new TimeoutEvent(s, seconds, nanoseconds);
+    cout << "ReliabilityState::create_timout(): TimeoutEvent to go off at: " << timeout->to_s() << endl;
 //    cout << "ReliabilityState::create_save_and_dispatch_timeout_event(): TimeoutEvent: " << timeout << endl;
     rc->set_saved_timeout(timeout);
     Dispatcher::instance().enqueue(timeout);
@@ -130,7 +131,7 @@ void ReliabilityState::cancel_timer(Context* c, WiFuPacket* p) {
     //Cancel timer if'n we get an ack number higher than the last (highest) seq num we sent.
     if (last_sent != 0 && packet->get_tcp_ack_number() > last_sent->get_tcp_sequence_number()) {
         rc->set_saved_timeout(0);
-//        cout << "ReliabilityState::receive_packet: Timer canceled.\n";
+        cout << "ReliabilityState::receive_packet: Timer canceled.\n";
     } else if (last_sent == 0) {
         assert(rc->get_saved_timeout() == 0);
     }
@@ -140,6 +141,7 @@ bool ReliabilityState::check_and_resend_packet(Context* c, Socket* s, WiFuPacket
     ReliabilityContext* rc = (ReliabilityContext*) c;
     TCPPacket* packet = (TCPPacket*) p;
     TCPPacket* last_sent = rc->get_last_packet_sent();
+    cout << "ReliabilityStat::check_and_resend_packet()" << endl;
 
     //Retransmit when we receive something we believe we have ACKed
     //That is, our last sent ACK is strictly greater than the received sequence number

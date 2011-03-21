@@ -51,6 +51,7 @@ void SimpleTCP::listen(ListenEvent* e) {
 }
 
 void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
+    cout << "SimpleTCP::receive_packet()" << endl;
     IContextContainer* c = get_context(e->get_socket());
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
@@ -63,11 +64,15 @@ void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
     }
     cout << endl;
 
-    // TODO: this may cause issues
+    // This must come first as we may need to get connected before we process anything else
+    c->get_connection_manager()->receive_packet(e);
+    
+    cout << "SimpleTCP::receive_packet() 2" << endl;
     if (c->get_connection_manager()->is_connected(e->get_socket())) {
         c->get_congestion_control()->receive_packet(e);
     }
-    c->get_connection_manager()->receive_packet(e);
+
+    
     c->get_reliability()->receive_packet(e);
 }
 
@@ -76,10 +81,11 @@ void SimpleTCP::send_packet(SendPacketEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
-    if (c->get_connection_manager()->is_connected(e->get_socket())) {
-        c->get_connection_manager()->send_packet(e);
-
-    }
+    //    if (c->get_connection_manager()->is_connected(e->get_socket())) {
+    //        c->get_connection_manager()->send_packet(e);
+    //
+    //    }
+    c->get_connection_manager()->send_packet(e);
     c->get_congestion_control()->send_packet(e);
     c->get_reliability()->send_packet(e);
 
@@ -152,7 +158,7 @@ void SimpleTCP::resend_packet(ResendPacketEvent* e) {
 
     // Probably don't want to change states when we resend
     // TODO: Does connection manager need to know about a resend?
-    //    c->get_connection_manager()->resend_packet(s, p);
+    c->get_connection_manager()->resend_packet(e);
 
     // TODO: I think reliability needs to know about a resend (so it can start up another timer)
     c->get_reliability()->resend_packet(e);

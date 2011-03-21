@@ -25,6 +25,9 @@ void ReliabilityContext::set_last_packet_received(TCPPacket* p) {
 }
 
 void ReliabilityContext::set_saved_timeout(TimeoutEvent* te) {
+    if (te == 0 && saved_timeout_ != 0) {
+        cout << "Cancelling timer: " << saved_timeout_->to_s() << endl;
+    }
     saved_timeout_ = te;
 }
 
