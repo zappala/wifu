@@ -11,6 +11,7 @@
 #include "gtest/gtest.h"
 #include "packet/IPPacket.h"
 #include "AddressPort.h"
+#include <iostream>
 
 using namespace std;
 
@@ -18,7 +19,6 @@ namespace {
 
     class IPPacketHelper {
     public:
-
         IPPacketHelper() : data("This is some cool data") {
             struct iphdr* header = (struct iphdr*) buffer;
             header->check = 1;
@@ -53,7 +53,7 @@ namespace {
 
     private:
         unsigned short length_;
-        unsigned char buffer[1500];
+        unsigned char buffer[MTU];
         const char* data;
     };
 
@@ -226,6 +226,22 @@ namespace {
         int exp = 1500 - 20;
 
         ASSERT_EQ(exp, p.max_data_length());
+    }
+
+    TEST(IPPacketTest, equals) {
+        IPPacketHelper helper;
+
+        IPPacket packet1;
+        packet1.set_data(helper.get_buffer(), helper.length());
+
+        IPPacket packet2;
+        packet2.set_data(helper.get_buffer(), helper.length());
+
+//        packet2.set_ip_protocol(16);
+
+        ASSERT_EQ(packet1, packet2);
+
+        cout << packet2.to_s_format();
     }
 }
 

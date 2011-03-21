@@ -7,10 +7,31 @@
 
 #include "NetworkTrace.h"
 
-NetworkTrace::NetworkTrace() {
+NetworkTrace::NetworkTrace() {}
 
+void NetworkTrace::add_packet(WiFuPacket* packet) {
+	packet_list_.push_back(packet);
 }
 
-void NetworkTrace::addPacket(WiFuPacket* packet) {
-	packetList.push_back(packet);
+void NetworkTrace::print_trace() {
+//	for (int index = 0; index < packet_list_.size(); ++index) {
+//		if (index == 0)
+//			cout << /*packet_list_.at(index)->to_s_format().c_str()*/ "bunny rabits" << endl;
+//		cout << packet_list_.at(index)->to_s() << endl << endl;
+//	}
+//	cout << "size of vector: " << packet_list_.size();
+	WiFuPacket* face = packet_list_[0];
+//	face->to_s_format();
+	face->get_ip_destination_address();
+	cout << face->get_ip_protocol();
+//	cout << "hi " << yes;
+}
+
+bool NetworkTrace::operator ==(const NetworkTrace& other) const {
+	if (packet_list_.size() == other.packet_list_.size())
+		for (int index; index < packet_list_.size(); ++index)
+			if (packet_list_.at(index) != other.packet_list_.at(index))
+				return false;
+
+	return true;
 }
