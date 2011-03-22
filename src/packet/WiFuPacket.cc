@@ -71,16 +71,16 @@ int WiFuPacket::max_data_length() {
 
 string WiFuPacket::to_s() {
     stringstream s;
-    s << IPPacket::to_s() << endl;
-    s << "wifu ";
-    s << (int) get_source_port() << " ";
-    s << (int) get_destination_port();
+    s << IPPacket::to_s() << endl
+      << "wifu "
+      << (int) get_source_port() << " "
+      << (int) get_destination_port();
     return s.str();
 }
 
 string WiFuPacket::to_s_format() {
     stringstream s;
-    s << IPPacket::to_s_format() << endl;
-    s << "# wifu source_port destination_port";
+    s << IPPacket::to_s_format() << endl
+      << "# wifu source_port destination_port";
     return s.str();
 }

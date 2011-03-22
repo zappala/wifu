@@ -156,25 +156,25 @@ int TCPPacket::max_data_length() {
 
 string TCPPacket::to_s() {
     stringstream s;
-    s << IPPacket::to_s() << endl;
-    s << "tcp ";
-    s << get_source_port() << " ";
-    s << get_destination_port() << " ";
-    s << get_tcp_sequence_number() << " ";
-    s << get_tcp_ack_number() << " ";
-    s << get_tcp_header_length_bytes() << " ";
-    s << is_tcp_urg() << " ";
-    s << is_tcp_ack() << " ";
-    s << is_tcp_psh() << " ";
-    s << is_tcp_rst() << " ";
-    s << is_tcp_syn() << " ";
-    s << is_tcp_fin();
+    s << IPPacket::to_s() << endl
+      << "tcp "
+      << get_source_port() << " "
+      << get_destination_port() << " "
+      << get_tcp_sequence_number() << " "
+      << get_tcp_ack_number() << " "
+      << get_tcp_header_length_bytes() << " "
+      << is_tcp_urg() << " "
+      << is_tcp_ack() << " "
+      << is_tcp_psh() << " "
+      << is_tcp_rst() << " "
+      << is_tcp_syn() << " "
+      << is_tcp_fin();
     return s.str();
 }
 
 string TCPPacket::to_s_format() {
     stringstream s;
-    s << IPPacket::to_s_format() << endl;
-    s << "# tcp sport dport seq_num ack_num header_length URG ACK PSH RST SYN FIN";
+    s << IPPacket::to_s_format() << endl
+      << "# tcp sport dport seq_num ack_num header_length URG ACK PSH RST SYN FIN";
     return s.str();
 }

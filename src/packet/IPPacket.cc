@@ -175,13 +175,13 @@ int IPPacket::max_data_length() const {
 
 string IPPacket::to_s() const {
     stringstream s;
-    s << "ip ";
-    s << get_ip_source_address_s() << " ";
-    s << get_ip_destination_address_s() << " ";
-    s << (int)get_ip_protocol() << " ";
-    s << get_ip_tot_length() << " ";
-    s << (int)get_ip_header_length_bytes() << " ";
-    s << (int)get_ip_ttl();
+    s << "ip "
+      << get_ip_source_address_s() << " "
+      << get_ip_destination_address_s() << " "
+      << (int)get_ip_protocol() << " "
+      << get_ip_tot_length() << " "
+      << (int)get_ip_header_length_bytes() << " "
+      << (int)get_ip_ttl();
     return s.str();
 }
 
