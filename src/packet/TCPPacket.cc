@@ -1,7 +1,4 @@
-#include <netinet/tcp.h>
-
 #include "packet/TCPPacket.h"
-#include "packet/WiFuPacket.h"
 
 TCPPacket::TCPPacket() : WiFuPacket() {
     init();
