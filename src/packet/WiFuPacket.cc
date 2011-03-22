@@ -76,7 +76,6 @@ string WiFuPacket::to_s() {
     s << (int) get_source_port() << " ";
     s << (int) get_destination_port();
     return s.str();
-
 }
 
 string WiFuPacket::to_s_format() {

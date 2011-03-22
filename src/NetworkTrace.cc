@@ -14,17 +14,11 @@ void NetworkTrace::add_packet(WiFuPacket* packet) {
 }
 
 void NetworkTrace::print_trace() {
-//	for (int index = 0; index < packet_list_.size(); ++index) {
-//		if (index == 0)
-//			cout << /*packet_list_.at(index)->to_s_format().c_str()*/ "bunny rabits" << endl;
-//		cout << packet_list_.at(index)->to_s() << endl << endl;
-//	}
-//	cout << "size of vector: " << packet_list_.size();
-	WiFuPacket* face = packet_list_[0];
-//	face->to_s_format();
-	face->get_ip_destination_address();
-	cout << face->get_ip_protocol();
-//	cout << "hi " << yes;
+	for (int index = 0; index < packet_list_.size(); ++index) {
+		if (index == 0)
+			cout << packet_list_.at(index)->to_s_format().c_str() << endl;
+		cout << packet_list_.at(index)->to_s() << endl;
+	}
 }
 
 bool NetworkTrace::operator ==(const NetworkTrace& other) const {

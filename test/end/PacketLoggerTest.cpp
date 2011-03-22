@@ -49,10 +49,8 @@ namespace {
 //				"ip_payload_length" << packet.get_ip_max_payload_length_bytes();
 
 		logger.log(&packet);
-//		logger.log(&packet);
+		logger.log(&packet);
 		logger.close_log();
-
-		cout << packet.to_s_format() << endl << packet.to_s() << endl << endl;
 
 		PacketLogReader reader(LOG_FILENAME);
 		NetworkTrace* trace = reader.get_trace();
