@@ -204,6 +204,6 @@ bool IPPacket::operator !=(const IPPacket& other) const {
 	return !(*this == other);
 }
 
-::std::ostream& operator<<(::std::ostream& os, const IPPacket& packet) {
+ostream& operator <<(ostream& os, const IPPacket& packet) {
 	return os << packet.to_s_format() << endl << packet.to_s();
 }
