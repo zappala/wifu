@@ -39,7 +39,7 @@ void SynSent::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         response->set_data(data, 0);
 
         SendPacketEvent* event = new SendPacketEvent(e->get_socket(), response);
-        Dispatcher::instance().enqueue(event);
+//        Dispatcher::instance().enqueue(event);
 
         cmc->set_state(new Established());
         return;

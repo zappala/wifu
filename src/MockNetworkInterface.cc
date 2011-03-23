@@ -52,7 +52,7 @@ void MockNetworkInterface::network_send(Event* e) {
     }
 
     cout << "Socket " << s << " received packet: " << endl;
-    cout << "MockNetworkInterface::network_send()" << endl;
+    cout << "MockNetworkInterface::network_send() (mocking a receive)" << endl;
     cout << p->to_s_format() << endl;
     cout << p->to_s() << endl;
 

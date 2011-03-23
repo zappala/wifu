@@ -130,7 +130,7 @@ void active_to_passive_test(int num_bytes) {
 }
 
 TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive) {
-    active_to_passive_test(100);
+    active_to_passive_test(10);
 
 
     // so we can see if we are doing something incorrect that would otherwise
@@ -139,7 +139,7 @@ TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive) {
 }
 
 TEST_F(BackEndMockTestDrop10, sendReceiveTestActiveToPassive10) {
-    active_to_passive_test(2000);
+    active_to_passive_test(10);
 
 
     // so we can see if we are doing something incorrect that would otherwise
@@ -148,7 +148,7 @@ TEST_F(BackEndMockTestDrop10, sendReceiveTestActiveToPassive10) {
 }
 
 TEST_F(BackEndMockTestDrop12, sendReceiveTestActiveToPassive12) {
-    active_to_passive_test(2000);
+    active_to_passive_test(10);
 
 
     // so we can see if we are doing something incorrect that would otherwise
@@ -157,7 +157,7 @@ TEST_F(BackEndMockTestDrop12, sendReceiveTestActiveToPassive12) {
 }
 
 TEST_F(BackEndMockTestDrop22, sendReceiveTestActiveToPassive22) {
-    active_to_passive_test(1000);
+    active_to_passive_test(10);
 
 
     // so we can see if we are doing something incorrect that would otherwise
@@ -165,7 +165,7 @@ TEST_F(BackEndMockTestDrop22, sendReceiveTestActiveToPassive22) {
     sleep(5);
 }
 
-TEST_F(BackEndMockTestDrop22Delay32, sendReceiveTestActiveToPassive) {
+TEST_F(BackEndMockTestDrop22Delay32, sendReceiveTestActiveToPassive2232) {
     active_to_passive_test(1000);
 
 
