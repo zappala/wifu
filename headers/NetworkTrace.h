@@ -10,6 +10,7 @@
 
 #include "GarbageCollector.h"
 #include "packet/WiFuPacket.h"
+#include "packet/TCPPacket.h"
 #include <vector>
 
 using namespace std;
@@ -20,13 +21,25 @@ public:
 
 	void add_packet(WiFuPacket* packet);
 
-	void print_trace();
+	void print_trace() const;
+
+	string get_TCPPacket_trace(NetworkTrace& other) const;
+
+	int get_length() const;
 
 	bool operator ==(const NetworkTrace& other) const;
 
 private:
+	bool equal_size_traces(const NetworkTrace& one, const NetworkTrace& two) const;
+
+	string print_TCPPacket(WiFuPacket* packet) const;
+
+	string print_nonequal_TCPPackets(WiFuPacket* one, WiFuPacket* two) const;
+
 	vector<WiFuPacket*> packet_list_;
 
 };
+
+ostream& operator <<(ostream& os, const NetworkTrace& packet);
 
 #endif /* NETWORKTRACE_H_ */

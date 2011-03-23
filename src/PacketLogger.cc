@@ -37,7 +37,7 @@ PacketLogger::PacketLogger() {
 	fileout_.open(file_name_, ios::out | ios::trunc | ios::binary);
 
 	fill_in_file_header();
-//	write_file_header();
+	write_file_header();
 }
 
 void PacketLogger::set_time() {
@@ -56,5 +56,4 @@ void PacketLogger::fill_in_file_header() {
 
 void PacketLogger::write_file_header() {
 	fileout_.write(reinterpret_cast<const char*>(&file_header_), sizeof(PcapFileHeader));
-	cout << "file header written" << endl;
 }

@@ -1,5 +1,4 @@
 #include "MockNetworkInterface.h"
-#include "exceptions/IOError.h"
 
 MockNetworkInterface& MockNetworkInterface::instance() {
     static MockNetworkInterface instance_;

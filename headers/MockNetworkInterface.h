@@ -13,6 +13,7 @@
 #include "packet/TCPPacket.h"
 #include "OptionParser.h"
 #include "exceptions/IllegalStateException.h"
+#include "exceptions/IOError.h"
 
 class MockNetworkInterface : public INetworkInterface {
 public:

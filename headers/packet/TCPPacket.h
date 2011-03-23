@@ -8,9 +8,8 @@
 #ifndef _TCPPACKET_H
 #define	_TCPPACKET_H
 
-#include "WiFuPacket.h"
+#include "packet/WiFuPacket.h"
 #include <netinet/tcp.h>
-
 
 class TCPPacket : public WiFuPacket {
 public:

@@ -195,6 +195,6 @@ private:
     bool length_set_;
 };
 
-::std::ostream& operator<<(::std::ostream& os, const IPPacket& packet);
+ostream& operator <<(ostream& os, const IPPacket& packet);
 
 #endif	/* _IPPACKET_H */
