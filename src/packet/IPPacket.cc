@@ -192,10 +192,12 @@ string IPPacket::to_s_format() const {
 }
 
 bool IPPacket::operator ==(const IPPacket& other) const {
-	if (length_is_set() && other.length_is_set())
-		if (get_ip_tot_length() == other.get_ip_tot_length())
-			if (memcmp(payload_, other.payload_, get_ip_tot_length()) == 0)
-				return true;
+	if (get_ip_tot_length() == other.get_ip_tot_length())
+	{
+		int biggest_tot_length = get_ip_tot_length() > other.get_ip_tot_length() ? get_ip_tot_length() : other.get_ip_tot_length();
+		if (memcmp(payload_, other.payload_, biggest_tot_length) == 0)
+			return true;
+	}
 
 	return false;
 }

@@ -21,9 +21,7 @@ public:
 
 	void add_packet(WiFuPacket* packet);
 
-	void print_trace() const;
-
-	string get_TCPPacket_trace(NetworkTrace& other) const;
+	string get_packet_trace(NetworkTrace& other) const;
 
 	int get_length() const;
 
@@ -32,14 +30,14 @@ public:
 private:
 	bool equal_size_traces(const NetworkTrace& one, const NetworkTrace& two) const;
 
-	string print_TCPPacket(WiFuPacket* packet) const;
+	string get_packet_string(int packet_number, WiFuPacket* packet) const;
 
-	string print_nonequal_TCPPackets(WiFuPacket* one, WiFuPacket* two) const;
+	string get_nonequal_packets_string(int packet_number, WiFuPacket* one, WiFuPacket* two) const;
 
 	vector<WiFuPacket*> packet_list_;
 
 };
 
-ostream& operator <<(ostream& os, const NetworkTrace& packet);
+ostream& operator <<(ostream& os, const NetworkTrace& trace);
 
 #endif /* NETWORKTRACE_H_ */
