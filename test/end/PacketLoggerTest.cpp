@@ -30,11 +30,6 @@ namespace {
 		unsigned char data1[] = "hello";		//whatever data, could be blank ("") too I suppose (which won't be needed when we update the init method to set this right off the bat for when you don't want any data in the packet)
 		packet->set_data(data1, sizeof(data1));	//set_data has to be called so that ip_tot is updated
 
-//		TCPPacket* odd_packet = new TCPPacket();
-//		odd_packet->set_ip_protocol(SIMPLE_TCP);
-//		unsigned char data2[] = "hello1";
-//		odd_packet->set_data(data2, sizeof(data2));
-
 		/*
 		 * These should only be called in the RawSocket* files (which they are right now).
 		 * They are called here so that a fake network trace is written to the log.
