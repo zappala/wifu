@@ -206,9 +206,6 @@ void Protocol::connection_established(Event* e) {
 
     Socket* new_socket = event->get_new_socket();
 
-    SocketCollection::instance().push(new_socket);
-
-    sockets_.insert(new_socket);
     new_connection_established(event);
 
     AcceptEvent* a_event = event->get_accept_event();
