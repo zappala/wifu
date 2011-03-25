@@ -20,6 +20,9 @@ ssize_t RawSocketSender::send(WiFuPacket* p) {
         perror("RawSocketSender: Error Sending Packet");
         // TODO: What should we do on a fail?
     }
+
+    PacketLogger::get_instance().log(p);
+
     return ret;
 }
 

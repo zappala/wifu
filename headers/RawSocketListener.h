@@ -26,6 +26,7 @@
 #include "Semaphore.h"
 #include "defines.h"
 #include "PacketFactory.h"
+#include "PacketLogger.h"
 
 #define MAX_EVENTS 100
 

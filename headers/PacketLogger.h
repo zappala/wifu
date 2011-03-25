@@ -8,15 +8,16 @@
 #ifndef PACKETLOGGER_H_
 #define PACKETLOGGER_H_
 
-#include <iostream>
 #include <fstream>
-
-#include "packet/WiFuPacket.h"
 #include <stdint.h>
 #include <sys/time.h>
-#include "defines.h"
 
-#define LOG_FILENAME "hello.pcap"
+#include "packet/WiFuPacket.h"
+#include "exceptions/IOError.h"
+#include "defines.h"
+#include "BinarySemaphore.h"
+
+#define LOG_FILENAME "wifu-end_log.pcap"
 
 using namespace std;
 
@@ -51,10 +52,10 @@ public:
 
 	void log(WiFuPacket* packet);
 
-	void close_log();
-
 private:
 	PacketLogger();
+
+	void close_log();
 
 	void set_time();
 
@@ -67,6 +68,7 @@ private:
 	PcapFileHeader file_header_;
 	PcapPacketHeader packet_header_;
 	timeval time_;
+	BinarySemaphore lock_;
 };
 
 #endif /* PACKETLOGGER_H_ */

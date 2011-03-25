@@ -22,8 +22,16 @@ NetworkTrace* PacketLogReader::get_trace() {
 		while (more_packets_to_read()) {
 			read_in_packet_header();
 
-			WiFuPacket* packet = new WiFuPacket();
-			filein_.read((char*)packet->get_payload(), get_packet_header_pointer()->incl_len);
+			if (get_packet_header_pointer()->incl_len <= MTU)
+				filein_.read(packet_payload_, get_packet_header_pointer()->incl_len);
+			else
+				throw MalformedPacketException();
+
+			iphdr* header = reinterpret_cast<iphdr*>(packet_payload_);
+			int protocol = header->protocol;
+
+			WiFuPacket* packet = get_new_packet(protocol);
+			memcpy(packet->get_payload(), packet_payload_, get_packet_header_pointer()->incl_len);
 
 			trace->add_packet(packet);
 		}
@@ -36,6 +44,8 @@ NetworkTrace* PacketLogReader::get_trace() {
 
 void PacketLogReader::open_log() {
 	filein_.open(filename_, ios::in | ios::binary);
+	if (filein_.fail())
+		throw IOError();
 }
 
 void PacketLogReader::close_log() {
@@ -77,4 +87,16 @@ bool PacketLogReader::more_packets_to_read() {
 		return true;
 	else
 		return false;
+}
+
+WiFuPacket* PacketLogReader::get_new_packet(int protocol) {
+	switch (protocol)
+	{
+	case SIMPLE_TCP:
+		return new TCPPacket();
+	case 0:
+		throw PacketProtocolNotSetException();
+	default:
+		throw UnknownProtocolException();
+	}
 }

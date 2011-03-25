@@ -10,6 +10,13 @@
 
 #include "NetworkTrace.h"
 #include "PacketLogger.h"
+#include "defines.h"
+#include "exceptions/MalformedPacketException.h"
+#include "exceptions/UnknownProtocolException.h"
+#include "exceptions/PacketProtocolNotSetException.h"
+#include "exceptions/IOError.h"
+#include "packet/IPPacket.h"
+#include "packet/TCPPacket.h"
 #include <fstream>
 #include <iostream>
 
@@ -35,12 +42,15 @@ private:
 
 	bool more_packets_to_read();
 
+	WiFuPacket* get_new_packet(int protocol);
+
 	const char* filename_;
 	ifstream filein_;
 	int log_length_;
 
 	char pcap_file_header_buffer_[sizeof(PcapFileHeader)];
 	char pcap_packet_header_buffer_[sizeof(PcapPacketHeader)];
+	char packet_payload_[MTU];
 
 };
 

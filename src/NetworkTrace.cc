@@ -13,73 +13,65 @@ void NetworkTrace::add_packet(WiFuPacket* packet) {
 	packet_list_.push_back(packet);
 }
 
-void NetworkTrace::print_trace() const {
-	for (int index = 0; index < packet_list_.size(); ++index) {
-		if (index == 0)
-			cout << packet_list_.at(index)->to_s_format().c_str() << endl;
-		cout << packet_list_.at(index)->to_s() << endl;
-	}
-}
-
-string NetworkTrace::get_TCPPacket_trace(NetworkTrace& other) const {
+string NetworkTrace::get_packet_trace(NetworkTrace& other) const {
 	stringstream stream;
 	stream << endl <<
-			  "*********** Packet Trace ***********" << endl <<
-			  "Printing traces starting from time 0" << endl <<
-			  endl;
-	if (!equal_size_traces(*this, other)) {
-		bool this_is_shorter = packet_list_.size() < other.packet_list_.size();
-		int shorter_max;
-		if (this_is_shorter)
-			shorter_max = packet_list_.size();
-		else
-			shorter_max = other.packet_list_.size();
+			  "*********** Packet Trace ***********" << endl;
 
-		int first_nonequal_index = -1;
-		for (int index = 0; index < shorter_max; ++index)
+	int packet_number = 1;
+	int first_nonequal_index = -1;
+	int number_of_packets_in_shorter = packet_list_.size() < other.packet_list_.size() ? packet_list_.size() : other.packet_list_.size();
+
+	for (int index = 0; index < number_of_packets_in_shorter; ++index, ++packet_number)
+	{
+		if (index == 0)
+			stream << packet_list_.at(0)->to_s_format() << endl;
+
+		if ( (*(packet_list_.at(index))) == (*(other.packet_list_.at(index))) && first_nonequal_index == -1)
 		{
 			if (index == 0)
-				stream << ((TCPPacket*)packet_list_.at(0))->to_s_format() << endl;
+				stream << "== Identical packets" << endl;
 
-			stream << "WHAT THE? " << ((*(packet_list_.at(index))) == (*(other.packet_list_.at(index)))) << endl;
-
-			//section to delete
-//			stream << print_TCPPacket(packet_list_.at(index)) << endl;
-			stream << print_TCPPacket(other.packet_list_.at(index)) << endl;
-			//
-
-			if ( (*(packet_list_.at(index))) == (*(other.packet_list_.at(index))) && first_nonequal_index == -1)
-				stream << print_TCPPacket(packet_list_.at(index)) << endl;
-//			else if (first_nonequal_index == -1)
-//			{
-//				stream << print_nonequal_TCPPackets(packet_list_.at(index), other.packet_list_.at(index)) << endl;
-//				first_nonequal_index = index;
-//			}
-//			else
-//			{
-//				if (first_nonequal_index == index + 1)
-//					stream << "Successive packets will not be checked for equality" << endl;
-//				stream << "--" << endl <<
-//						  print_TCPPacket(packet_list_.at(index)) << endl <<
-//						  print_TCPPacket(other.packet_list_.at(index)) << endl;
-//			}
+			stream << get_packet_string(packet_number, packet_list_.at(index)) << endl;
 		}
+		else if (first_nonequal_index == -1)
+		{
+			stream << get_nonequal_packets_string(packet_number, packet_list_.at(index), other.packet_list_.at(index)) << endl;
+			first_nonequal_index = index;
+		}
+		else
+		{
+			stream << endl <<
+					  "Expected:" << endl <<
+					  get_packet_string(packet_number, packet_list_.at(index)) << endl <<
+					  "Actual:" << endl <<
+					  get_packet_string(packet_number, other.packet_list_.at(index)) << endl;
+		}
+	}
 
-//		vector<WiFuPacket*> shorter_list = this_is_shorter ? packet_list_ : other.packet_list_;
-//		vector<WiFuPacket*> longer_list = this_is_shorter ? packet_list_ : other.packet_list_;
-//		for (int index = shorter_list.size(); index < longer_list.size(); ++index)
-//		{
-//			if (index == shorter_list.size())
-//			{
-//				stream << "--" << endl;
-//				if (this_is_shorter)
-//					stream << "Expected packets:" << endl;
-//				else
-//					stream << "Actual packets:" << endl;
-//			}
-//
-//			stream << print_TCPPacket(longer_list.at(index)) << endl;
-//		}
+
+	if (!equal_size_traces(*this, other))
+	{
+		bool this_is_shorter = packet_list_.size() < other.packet_list_.size();
+		vector<WiFuPacket*> shorter_list = this_is_shorter ? packet_list_ : other.packet_list_;
+		vector<WiFuPacket*> longer_list = this_is_shorter ? other.packet_list_ : packet_list_;
+		for (int index = number_of_packets_in_shorter; index < longer_list.size(); ++index, ++packet_number)
+		{
+			if (index == number_of_packets_in_shorter)
+			{
+				if (packet_number == 1)
+					stream << longer_list.at(index)->to_s_format() << endl;
+				if (packet_number > 1)
+					stream << endl;
+				stream << "++ ";
+				if (this_is_shorter)
+					stream << "Extra actual packets" << endl;
+				else
+					stream << "Extra expected packets" << endl;
+			}
+
+			stream << get_packet_string(packet_number, longer_list.at(index)) << endl;
+		}
 	}
 
 	return stream.str();
@@ -91,8 +83,8 @@ int NetworkTrace::get_length() const {
 
 bool NetworkTrace::operator ==(const NetworkTrace& other) const {
 	if (equal_size_traces(*this, other)) {
-		for (int index; index < packet_list_.size(); ++index)
-			if (packet_list_.at(index) != other.packet_list_.at(index))
+		for (int index = 0; index < packet_list_.size(); ++index)
+			if (*packet_list_.at(index) != *other.packet_list_.at(index))
 				return false;
 		return true;
 	}
@@ -104,21 +96,26 @@ bool NetworkTrace::equal_size_traces(const NetworkTrace& one, const NetworkTrace
 	return one.packet_list_.size() == two.packet_list_.size();
 }
 
-string NetworkTrace::print_TCPPacket(WiFuPacket* packet) const {
-	return static_cast<TCPPacket*>(packet)->to_s();
-}
-
-string NetworkTrace::print_nonequal_TCPPackets(WiFuPacket* one, WiFuPacket* two) const {
+string NetworkTrace::get_packet_string(int packet_number, WiFuPacket* packet) const {
 	stringstream stream;
-	stream << "== First non-equal TCPPackets ==" << endl <<
-			  "Expected:" << endl <<
-	          print_TCPPacket(one) << endl <<
-	          "Actual:" << endl <<
-	          print_TCPPacket(two) << endl <<
-	          "================================" << endl;
+	stream << packet_number << endl <<
+			  packet->to_s();
 	return stream.str();
 }
 
-ostream& operator <<(ostream& os, const NetworkTrace& packet) {
-	return os << "Size of trace: " << packet.get_length();
+string NetworkTrace::get_nonequal_packets_string(int packet_number, WiFuPacket* one, WiFuPacket* two) const {
+	stringstream stream;
+	if (packet_number > 1)
+		stream << endl;
+	stream << "!= First non-equal packets" << endl <<
+			  "Expected:" << endl <<
+	          get_packet_string(packet_number, one) << endl <<
+	          "Actual:" << endl <<
+	          get_packet_string(packet_number, one) << endl <<
+	          "*Successive packets will not be checked for equality";
+	return stream.str();
+}
+
+ostream& operator <<(ostream& os, const NetworkTrace& trace) {
+	return os << "Size of trace: " << trace.get_length();
 }
