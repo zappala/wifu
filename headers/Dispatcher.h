@@ -59,6 +59,11 @@ public:
      */
     void process(Event*);
 
+    /**
+     * @see QueueProcessor::process()
+     */
+    bool should_enqueue(Event* event);
+
 private:
     /**
      * Map of Event name to a vector of QueueProcessor objects.

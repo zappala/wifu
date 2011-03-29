@@ -202,18 +202,18 @@ def build(bld):
 #	bld.add_post_fun(post)
 
 def get_files(dir, regex):
-        list = []
-        for filename in os.listdir (dir):
-            # Ignore subfolders
-            path = os.path.join (dir, filename)
-            if os.path.isdir (path):
-                continue
+    list = []
+    for filename in os.listdir (dir):
+        # Ignore subfolders
+        path = os.path.join (dir, filename)
+        if os.path.isdir (path):
+            continue
 
-            # Ignore mismatched regex
-            if not re.match(regex, filename):
-                continue
+        # Ignore mismatched regex
+        if not re.match(regex, filename):
+            continue
 
-            list.append(path)
+        list.append(path)
 
-        list.sort()
-        return list
+    list.sort()
+    return list

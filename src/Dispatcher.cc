@@ -40,6 +40,20 @@ void Dispatcher::process(Event * e) {
     mutex_.post();
 }
 
+bool Dispatcher::should_enqueue(Event* event) {
+	mutex_.wait();
+	vector<QueueProcessor<Event*>*>* queue_processor = map_[type_name(*event)];
+	mutex_.post();
+
+	if (queue_processor == NULL)
+	{
+//		log_WARNING(" is not mapped to a QueueProcessor");
+		return false;
+	}
+	else
+		return true;
+}
+
 Dispatcher::Dispatcher() : QueueProcessor<Event*>() {
     mutex_.init(1);
 }
