@@ -12,6 +12,8 @@
 #include <sstream>
 #include <map>
 
+#include "exceptions/WiFuException.h"
+
 #include "defines.h"
 
 using namespace std;

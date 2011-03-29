@@ -2,13 +2,15 @@
 
 void QueryStringParser::parse(string& message, map<string, string>& values) {
 	size_t end = message.find_first_of('?', 0);
+	if (end == string::npos)
+		throw WiFuException("Malformed query");
+
 	string name = message.substr(0, end);
 
 	values[NAME_STRING] = name;
 	string key;
 	string value;
 	size_t begin;
-
 
 	while(1) {
 		// Find Key
