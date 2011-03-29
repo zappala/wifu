@@ -28,8 +28,8 @@ def configure(conf):
 	conf.env['LIBPATH'] += ['../lib/gtest']
 	conf.env['LIBPATH'] += ['../lib/pantheios']
 	conf.env['LIB_PTHREAD'] = ['pthread']
-	conf.env['STATICLIB'] += ['gtest']
 	
+	conf.env['STATICLIB'] += ['gtest']
 	conf.env['STATICLIB'] += ['pantheios.1.core.gcc44']
 	
 	#Use the top two for logging to a file, the bottom two for logging to console 
@@ -38,6 +38,7 @@ def configure(conf):
 	conf.env['STATICLIB'] += ['pantheios.1.be.fprintf.gcc44']
 	conf.env['STATICLIB'] += ['pantheios.1.bec.fprintf.gcc44']
 
+	#Always use these
 	conf.env['STATICLIB'] += ['pantheios.1.fe.all.gcc44']
 	conf.env['STATICLIB'] += ['pantheios.1.util.gcc44']
 	
@@ -170,7 +171,7 @@ def build_wifu_end_test(bld):
 
 	test_end = bld(features='cxx cprogram',
         source=filesToUse,
-        includes='preliminary headers lib/gc/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers',
+        includes='preliminary headers lib/gc/include lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers',
         uselib='PTHREAD RT',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp','gc','cord'],
