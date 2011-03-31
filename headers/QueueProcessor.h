@@ -35,7 +35,7 @@ struct QueueProcessorStruct {
  * Thread to dequeue objects from.  Calls DequeueCallback<T>::process() upon dequeing an element.
  */
 template<class T>
-void * thread(void * arg) {
+void* thread(void * arg) {
     struct QueueProcessorStruct<T> * obj = (struct QueueProcessorStruct<T> *) arg;
 
     DequeueCallback<T> * callback = obj->callback;
@@ -45,7 +45,7 @@ void * thread(void * arg) {
     obj->sem->post();
     start->wait();
 
-    while (1) {
+    while (true) {
         callback->process(queue->dequeue());
     }
 }
@@ -88,8 +88,7 @@ public:
      * Cleans up this QueueProcessor object.
      */
     virtual ~QueueProcessor() {
-        int val = pthread_cancel(thread_);
-        if(val) {
+        if (pthread_cancel(thread_)) {
             cout << "Error canceling thread: " << errno << endl;
         }
     }
@@ -103,10 +102,9 @@ public:
      * @param signal If true, raises a SIG_ENQUEUE_EVENT signal.
      */
     virtual void enqueue(T object, bool signal = false) {
-        if(!should_enqueue(object)) {
-            return;
+        if (should_enqueue(object)) {
+        	queue_->enqueue(object, signal);
         }
-        queue_->enqueue(object, signal);
     }
 
     /**
