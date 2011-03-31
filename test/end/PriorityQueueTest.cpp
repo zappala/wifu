@@ -36,7 +36,7 @@ namespace {
         TimeoutEvent event1(s, 5, 0);
         TimeoutEvent event2(s, 10, 0);
 
-        signalRaised == false;
+        signalRaised = false;
         signal(SIG_ENQUEUE_EVENT, enqueueHandler);
         priorityQueue.enqueue(&event1, true);
         ASSERT_TRUE(signalRaised == true);
@@ -49,12 +49,12 @@ namespace {
         ASSERT_TRUE(priorityQueue.size() == 3);
     }
 
-    void* enqueuer(void * priorityQueue) {
+    void* enqueuer(void* priorityQueue) {
         Socket* s = new Socket(0,1,2);
         TimeoutEvent* event1 = new TimeoutEvent(s, 5, 0);
         PriorityQueue<Event*, EventComparator>* pQueue =
                 (PriorityQueue<Event*, EventComparator>*) priorityQueue;
-        signalRaised == false;
+        signalRaised = false;
         usleep(100000);
         pQueue->enqueue(event1, true);
     }
@@ -65,8 +65,9 @@ namespace {
         ASSERT_TRUE(priorityQueue.size() == 0);
         ASSERT_TRUE(priorityQueue.isEmpty() == true);
 
+        signal(SIG_ENQUEUE_EVENT, enqueueHandler);
         if (pthread_create(&enqueueThread, NULL, &enqueuer, &priorityQueue) != 0)
-            ASSERT_TRUE(false);
+            FAIL();
         priorityQueue.dequeue();
         ASSERT_TRUE(priorityQueue.size() == 0);
         ASSERT_TRUE(priorityQueue.isEmpty() == true);
@@ -116,12 +117,36 @@ namespace {
 
         pthread_cancel(enqueueThread);
         if (pthread_create(&enqueueThread, NULL, &enqueuer, &priorityQueue) != 0)
-            ASSERT_TRUE(false);
+            FAIL();
         priorityQueue.dequeue();
         ASSERT_TRUE(priorityQueue.size() == 0);
         ASSERT_TRUE(priorityQueue.isEmpty() == true);
         ASSERT_TRUE(signalRaised == true);
         pthread_cancel(enqueueThread);
+    }
+
+    TEST(PriorityQueueTest, clear) {
+        PriorityQueue<Event*, EventComparator> priorityQueue;
+        ASSERT_TRUE(priorityQueue.size() == 0);
+        ASSERT_TRUE(priorityQueue.isEmpty() == true);
+
+        Socket* s = new Socket(0,1,2);
+        TimeoutEvent event1(s, 0, 0);
+        TimeoutEvent event2(s, 5, 0);
+        TimeoutEvent event3(s, 10, 100);
+        TimeoutEvent event4(s, 15, 0);
+
+        priorityQueue.enqueue(&event3);
+        priorityQueue.enqueue(&event2);
+        priorityQueue.enqueue(&event4);
+        priorityQueue.enqueue(&event1);
+        priorityQueue.enqueue(&event4);
+        ASSERT_TRUE(priorityQueue.size() == 5);
+        ASSERT_TRUE(priorityQueue.isEmpty() == false);
+
+        priorityQueue.clear();
+        ASSERT_TRUE(priorityQueue.size() == 0);
+		ASSERT_TRUE(priorityQueue.isEmpty() == true);
     }
 
 }
