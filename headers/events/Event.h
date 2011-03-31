@@ -13,6 +13,7 @@
 #include "GarbageCollector.h"
 #include "IModule.h"
 #include "Socket.h"
+#include "exceptions/WiFuException.h"
 
 class IModule;
 
@@ -32,7 +33,6 @@ public:
 
     /**
      * Constructs an Event object.
-     *
      */
     Event();
 

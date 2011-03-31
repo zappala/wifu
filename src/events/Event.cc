@@ -7,8 +7,10 @@ Event::Event() : socket_(0) {}
 Event::~Event() {}
 
 Socket* Event::get_socket() {
-    assert(socket_);
-    return socket_;
+    if (socket_ == NULL)
+    	throw WiFuException("Socket not set on Event");
+    else
+    	return socket_;
 }
 
 void Event::set_socket(Socket* socket) {
@@ -17,5 +19,5 @@ void Event::set_socket(Socket* socket) {
 }
 
 bool Event::less_than(Event* rhs) {
-    return true;
+    throw WiFuException("less_than has not been overridden");
 }
