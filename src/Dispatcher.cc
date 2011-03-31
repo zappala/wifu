@@ -6,7 +6,7 @@ Dispatcher& Dispatcher::instance() {
 }
 
 Dispatcher::~Dispatcher() {
-    clear();
+	reset();
 }
 
 void Dispatcher::map_event(event_name name, QueueProcessor<Event*>* q) {
@@ -23,29 +23,38 @@ void Dispatcher::map_event(event_name name, QueueProcessor<Event*>* q) {
 }
 
 void Dispatcher::reset() {
-    clear();
+    mutex_.wait();
+    tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*>::iterator itr = map_.begin();
+    while (itr != map_.end()) {
+        vector<QueueProcessor<Event*>*>* v = itr->second;
+        delete v;
+        ++itr;
+    }
+    map_.clear();
+    mutex_.post();
 }
 
-void Dispatcher::process(Event * e) {
+void Dispatcher::process(Event* e) {
     mutex_.wait();
     //cout << "Event name: " << type_name(*e) << endl;
+
+    //assuming should_enqueue is called in QueueProcessor::enqueue(..) and did its job, this variable should never be NULL
     vector<QueueProcessor<Event*>*>* queue_processors = map_[type_name(*e)];
 
-    if (queue_processors != NULL) {
-        for (int i = 0; i < queue_processors->size(); i++) {
-            //cout << "Processing: " << type_name(*e) << endl;
-            queue_processors->at(i)->enqueue(e);
-        }
-    }
+	for (int i = 0; i < queue_processors->size(); i++) {
+		//cout << "Processing: " << type_name(*e) << endl;
+		queue_processors->at(i)->enqueue(e);
+	}
+
     mutex_.post();
 }
 
 bool Dispatcher::should_enqueue(Event* event) {
 	mutex_.wait();
-	vector<QueueProcessor<Event*>*>* queue_processor = map_[type_name(*event)];
+	vector<QueueProcessor<Event*>*>* queue_processors = map_[type_name(*event)];
 	mutex_.post();
 
-	if (queue_processor == NULL)
+	if (queue_processors == NULL)
 	{
 //		log_WARNING(" is not mapped to a QueueProcessor");
 		return false;
@@ -56,16 +65,4 @@ bool Dispatcher::should_enqueue(Event* event) {
 
 Dispatcher::Dispatcher() : QueueProcessor<Event*>() {
     mutex_.init(1);
-}
-
-void Dispatcher::clear() {
-    mutex_.wait();
-    tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*>::iterator itr = map_.begin();
-    while (itr != map_.end()) {
-        vector<QueueProcessor<Event*>*>* v = itr->second;
-        delete v;
-        ++itr;
-    }
-    map_.clear();
-    mutex_.post();
 }

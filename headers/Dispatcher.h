@@ -44,7 +44,7 @@ public:
     void map_event(event_name, QueueProcessor<Event*>*);
 
     /**
-     * Resets all mappings from event name to QueueProcessors and deletes the QueueProcessors.
+     * Clears all mappings from event names to QueueProcessors and deletes the QueueProcessors.
      */
     void reset();
 
@@ -61,6 +61,7 @@ public:
 
     /**
      * @see QueueProcessor::process()
+     * @see QueueProcessor::enqueue(T, bool)
      */
     bool should_enqueue(Event* event);
 
@@ -80,10 +81,6 @@ private:
      */
     Dispatcher();
 
-    /**
-     * Is called by reset() and the destructor.
-     */
-    void clear();
 };
 
 #endif	/* _DISPATCHER_H */
