@@ -7,10 +7,12 @@ Event::Event() : socket_(0) {}
 Event::~Event() {}
 
 Socket* Event::get_socket() {
-    if (socket_ == NULL)
+    if (socket_ == NULL) {
     	throw WiFuException("Socket not set on Event");
-    else
+    }
+    else {
     	return socket_;
+    }
 }
 
 void Event::set_socket(Socket* socket) {
