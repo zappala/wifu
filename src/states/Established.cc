@@ -20,7 +20,7 @@ void Established::enter(Context* c) {
 
     switch (cmc->get_connection_type()) {
         case ACTIVE_OPEN:
-//            cout << "Established::enter(), Active Open" << endl;
+            cout << "Established::enter(), Active Open" << endl;
             response = new ResponseEvent(event->get_socket(), event->get_name(), event->get_map()[FILE_STRING]);
             response->put(ERRNO, Utils::itoa(0));
             response->put(RETURN_VALUE_STRING, Utils::itoa(0));
@@ -28,10 +28,10 @@ void Established::enter(Context* c) {
             break;
 
         case ESTABLISHED:
-//            cout << "Established::enter(), Established" << endl;
+            cout << "Established::enter(), Established" << endl;
             break;
         case PASSIVE_OPEN:
-//            cout << "Established::enter(), Passive Open" << endl;
+            cout << "Established::enter(), Passive Open" << endl;
             break;
         default:
             break;

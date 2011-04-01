@@ -38,12 +38,6 @@ public:
 
     void send_to(Context* c, SendEvent* e);
 
-private:
-    void send_data(Context* c, Event* e, bool received_naked_ack);
-    void append_data_to_send_buffer(Context* c, SendEvent* e);
-
-    
-
 };
 
 

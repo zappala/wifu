@@ -17,13 +17,13 @@ void SynSent::exit(Context* c) {
 }
 
 void SynSent::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
-//    cout << "SynSent::receive_packet()" << endl;
+    cout << "SynSent::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();
 
 
     if (packet->is_tcp_syn() && packet->is_tcp_ack()) {
-//        cout << "SynSent::receive_packet(): Packet is SYNACK" << endl;
+        cout << "SynSent::receive_packet(): Packet is SYNACK" << endl;
         unsigned char* data = (unsigned char*) "";
         AddressPort* destination = packet->get_source_address_port();
         AddressPort* source = packet->get_dest_address_port();
@@ -37,9 +37,10 @@ void SynSent::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         response->set_source_port(source->get_port());
         
         response->set_data(data, 0);
+        response->set_tcp_ack(true);
 
         SendPacketEvent* event = new SendPacketEvent(e->get_socket(), response);
-//        Dispatcher::instance().enqueue(event);
+        Dispatcher::instance().enqueue(event);
 
         cmc->set_state(new Established());
         return;

@@ -17,7 +17,7 @@ void Closed::exit(Context* c) {
 }
 
 void Closed::connect(Context* c, ConnectEvent* e) {
-//    cout << "In Closed::connect()" << endl;
+    cout << "In Closed::connect()" << endl;
     Socket* s = e->get_socket();
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(ACTIVE_OPEN);

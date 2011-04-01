@@ -18,14 +18,14 @@ void Accept::exit(Context* c) {
 }
 
 void Accept::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
-//    cout << "Accept::receive_packet()" << endl;
+    cout << "Accept::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();
 
     Socket* listening_socket = e->get_socket();
 
     if(packet->is_tcp_syn()) {
-//        cout << "Accept::receive_packet(): Packet is a SYN" << endl;
+        cout << "Accept::receive_packet(): Packet is a SYN" << endl;
 
         // TODO: we are reusing the same local address/port (not calling new)
         // This may be okay...but I don't want to think about it now

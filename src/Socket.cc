@@ -12,8 +12,7 @@ type_(type),
 protocol_(protocol),
 local_(local),
 remote_(remote),
-is_passive_(false),
-receive_info_(0) {
+is_passive_(false) {
 
 }
 
@@ -110,12 +109,4 @@ string& Socket::get_send_buffer() {
 
 string& Socket::get_resend_buffer() {
     return resend_buffer_;
-}
-
-ReceiveInformation* Socket::get_receive_info() {
-    return receive_info_;
-}
-
-void Socket::set_receive_info(ReceiveInformation* info) {
-    receive_info_ = info;
 }

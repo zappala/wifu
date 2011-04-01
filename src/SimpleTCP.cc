@@ -53,45 +53,17 @@ void SimpleTCP::listen(ListenEvent* e) {
 void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
     cout << "SimpleTCP::receive_packet()" << endl;
     IContextContainer* c = get_context(e->get_socket());
-    Socket* s = e->get_socket();
-    TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    // Don't overfill the receive buffer
-    // TODO: we may want to process the packet, just not save the data?
-    if (s->get_receive_buffer().size() + p->get_data_length_bytes() > MAX_BUFFER_SIZE) {
-        cout << "SimpleTCP::receive_packet(), Dropping packet" << endl;
-        return;
-    }
-
-    bool connected = c->get_connection_manager()->is_connected(s);
-
-    // This must come first as we may need to get connected before we process anything else
     c->get_connection_manager()->receive_packet(e);
-
-    
-    cout << "SimpleTCP::receive_packet() 2" << endl;
-    if (c->get_connection_manager()->is_connected(s)) {
-        c->get_congestion_control()->receive_packet(e);
-
-        if(!connected) {
-            // just became connected, must set congestion control to be able to send packets without waiting for a response
-            CongestionControlContext* ccc = (CongestionControlContext*) c->get_congestion_control();
-            ccc->set_can_send_data(true);
-        }
-    }
+    c->get_congestion_control()->receive_packet(e);
     c->get_reliability()->receive_packet(e);
-    
 }
 
 void SimpleTCP::send_packet(SendPacketEvent* e) {
-    //    cout << "SimpleTCP::send_packet()" << endl;
+    cout << "SimpleTCP::send_packet()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
-    //    if (c->get_connection_manager()->is_connected(e->get_socket())) {
-    //        c->get_connection_manager()->send_packet(e);
-    //
-    //    }
     c->get_connection_manager()->send_packet(e);
     c->get_congestion_control()->send_packet(e);
     c->get_reliability()->send_packet(e);
@@ -156,7 +128,7 @@ void SimpleTCP::timer_fired_event(TimerFiredEvent* e) {
 }
 
 void SimpleTCP::resend_packet(ResendPacketEvent* e) {
-    //    cout << "In SimpleTCP::resend_event()\n";
+    cout << "In SimpleTCP::resend_event()\n";
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -174,7 +146,7 @@ void SimpleTCP::resend_packet(ResendPacketEvent* e) {
 }
 
 void SimpleTCP::send_to(SendEvent* e) {
-//        cout << "SimpleTCP::send_to()" << endl;
+    cout << "SimpleTCP::send_to()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -184,15 +156,15 @@ void SimpleTCP::send_to(SendEvent* e) {
         return;
     }
 
-//    cout << "SimpleTCP::send_to(), we are connected" << endl;
+    //    cout << "SimpleTCP::send_to(), we are connected" << endl;
     c->get_connection_manager()->send_to(e);
     c->get_reliability()->send_to(e);
     c->get_congestion_control()->send_to(e);
-    
+
 }
 
 void SimpleTCP::receive_from(ReceiveEvent* e) {
-    //    cout << "SimpleTCP::receive_from()" << endl;
+    cout << "SimpleTCP::receive_from()" << endl;
 
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
@@ -204,7 +176,6 @@ void SimpleTCP::receive_from(ReceiveEvent* e) {
 
 void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {
     TCPPacket* packet = (TCPPacket*) p;
-    //    cout << "SimpleTCP::send_network_packet(): SYN: " << packet->is_tcp_syn() << " ACK: " << packet->is_tcp_ack() << endl;
     NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
     Dispatcher::instance().enqueue(e);
 }

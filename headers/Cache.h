@@ -8,7 +8,9 @@
 #ifndef _CACHE_H
 #define	_CACHE_H
 
-class Cache {
+#include "GarbageCollector.h"
+
+class Cache : public gc {
     
 };
 

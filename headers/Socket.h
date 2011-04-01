@@ -15,7 +15,6 @@
 #include "GarbageCollector.h"
 #include "AddressPort.h"
 #include "observer/Observable.h"
-#include "ReceiveInformation.h"
 
 using namespace std;
 // TODO: do we need to protect this with a Semaphore, like a monitor?
@@ -75,10 +74,6 @@ public:
     
     string& get_resend_buffer();
 
-    ReceiveInformation* get_receive_info();
-
-    void set_receive_info(ReceiveInformation* info);
-
 private:
     AddressPort* local_;
     AddressPort* remote_;
@@ -89,7 +84,6 @@ private:
 
     bool is_passive_;
 
-    ReceiveInformation* receive_info_;
     string receive_buffer_;
     string send_buffer_;
     string resend_buffer_;

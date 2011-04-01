@@ -147,8 +147,6 @@ void Protocol::library_receive(Event* e) {
         return;
     }
 
-//    cout << "Protocol::library_receive(), saving information" << endl;
-    s->set_receive_info(new ReceiveInformation(event->get_map()[FILE_STRING], event->get_receive_buffer_size()));
     check_and_send_receive_response(e);
 
     receive_from(event);
@@ -193,6 +191,7 @@ void Protocol::network_receive(Event* e) {
 }
 
 void Protocol::connection_established(Event* e) {
+    cout << "Protocol::connection_established()" << endl;
     // TODO: a lot of this code is the same as in library_socket, refactor later
     ConnectionEstablishedEvent* event = (ConnectionEstablishedEvent*) e;
 
@@ -223,9 +222,6 @@ void Protocol::connection_initiated(Event* e) {
     Socket* listening_socket = event->get_socket();
     Socket* new_socket = event->get_new_socket();
 
-//    cout << "Protocol::connection_initiated(), listening_socket: " << listening_socket << endl;
-//    cout << "Protocol::connection_initiated(), new_socket: " << new_socket << endl;
-
     sockets_.insert(new_socket);
 
     // TODO: Error Check: socket(s)
@@ -234,14 +230,11 @@ void Protocol::connection_initiated(Event* e) {
 }
 
 void Protocol::timer_fired(Event* e) {
-//    cout << "Protocol::timer_fired()" << endl;
     TimerFiredEvent* event = (TimerFiredEvent*) e;
     Socket* socket = event->get_socket();
 
-//    cout << "Protocol::timer_fired(), socket: " << socket << endl;
 
     if (!sockets_.contains(socket)) {
-//        cout << "Protocol::timerfired: We don't have this socket...\n";
         return;
     }
 
@@ -253,7 +246,6 @@ void Protocol::resend(Event* e) {
     Socket* socket = event->get_socket();
 
     if (!sockets_.contains(socket)) {
-//        cout << "Protocol::resend: We don't have this socket...\n";
         return;
     }
 
@@ -261,42 +253,5 @@ void Protocol::resend(Event* e) {
 }
 
 void Protocol::check_and_send_receive_response(Event* e) {
-//    cout << "Protocol::check_and_send_receive_response()" << endl;
-    Socket* s = e->get_socket();
-    ReceiveInformation* info = s->get_receive_info();
 
-//    cout << "Data to send to application (this is received data): " << s->get_receive_buffer() << endl;
-    if (!info) {
-        // cannot send response because no one has called receive yet
-        return;
-    }
-
-    assert(is_connected(s));
-
-    int size = info->get_receiving_buffer_size();
-    if (size && s->get_receive_buffer().length() > 0) {
-        // I have data to return
-
-        AddressPort* ap = s->get_remote_address_port();
-
-        string name(WIFU_RECVFROM_NAME);
-        ResponseEvent* response = new ResponseEvent(s, name, info->get_file());
-
-        response->put(BUFFER_STRING, s->get_receive_buffer().substr(0, size));
-        s->get_receive_buffer().erase(0, size);
-
-        response->put(ADDRESS_STRING, ap->get_address());
-        response->put(PORT_STRING, Utils::itoa(ap->get_port()));
-        response->put(LENGTH_STRING, Utils::itoa(sizeof (ap->get_network_struct())));
-
-        int return_value = response->get_value(BUFFER_STRING).length();
-        response->put(RETURN_VALUE_STRING, Utils::itoa(return_value));
-        response->put(ERRNO, Utils::itoa(0));
-
-        assert(return_value <= size);
-
-        dispatch(response);
-//        cout << "Protocol::check_and_send_receive_response(), response dispatched" << endl;
-        s->set_receive_info(0);
-    }
 }
