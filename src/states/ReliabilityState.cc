@@ -30,12 +30,12 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
     rc->set_seq_number(seq_num + 1);
 
     u_int32_t ack_num = rc->get_ack_number();
-    if(ack_num != 0) {
+    if (ack_num != 0) {
         p->set_tcp_ack(true);
         p->set_tcp_ack_number(ack_num);
     }
 
-    if(!p->is_naked_ack()) {
+    if (!p->is_naked_ack()) {
         SimpleTCPCache* cache = (SimpleTCPCache*) CacheMap::instance().get(s);
         cache->save_packet(p);
         Dispatcher::instance().enqueue(new TimeoutEvent(s, 1, 0));
@@ -43,7 +43,11 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
 }
 
 void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
-
+    Socket* s = e->get_socket();
+    SimpleTCPCache* cache = (SimpleTCPCache*) CacheMap::instance().get(s);
+    WiFuPacket* p = cache->get_packet();
+    ResendPacketEvent* event = new ResendPacketEvent(e->get_socket(), p);
+    Dispatcher::instance().enqueue(event);
 }
 
 void ReliabilityState::resend_packet(Context* c, ResendPacketEvent* e) {
