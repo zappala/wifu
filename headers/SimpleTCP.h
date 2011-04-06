@@ -35,6 +35,9 @@ private:
     tr1::unordered_map<Socket*, IContextContainer*> map_;
     tr1::unordered_map<Socket*, IContextContainer*>::iterator itr_;
 
+    bool is_room_in_send_buffer(SendEvent* e);
+    void save_in_buffer_and_send_events(SendEvent* e);
+
     
 
 public:

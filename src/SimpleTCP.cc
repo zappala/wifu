@@ -1,6 +1,5 @@
 #include "SimpleTCP.h"
 
-
 SimpleTCP::SimpleTCP() : Protocol(SIMPLE_TCP) {
 }
 
@@ -159,26 +158,16 @@ void SimpleTCP::send_to(SendEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
-    int num_bytes_to_send = e->data_length();
-
     bool connected = c->get_connection_manager()->is_connected(s);
-    bool room = s->get_send_buffer().size() + num_bytes_to_send <= MAX_BUFFER_SIZE;
-
-    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+    bool room = is_room_in_send_buffer(e);
 
     if (connected && room) {
         cout << "SimpleTCP::send_to(), appending to send buffer" << endl;
-        const char* data = (const char*) e->get_data();
-        s->get_send_buffer().append(data, num_bytes_to_send);
-
-        response->put(RETURN_VALUE_STRING, Utils::itoa(num_bytes_to_send));
-        response->put(ERRNO, Utils::itoa(0));
-
-        dispatch(response);
-        dispatch(new SendBufferNotEmptyEvent(s));
+        save_in_buffer_and_send_events(e);
 
     } else if (!connected) {
         cout << "SimpleTCP::send_to(), not connected!" << endl;
+        ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
         response->put(RETURN_VALUE_STRING, Utils::itoa(-1));
         response->put(ERRNO, Utils::itoa(ENOTCONN));
         dispatch(response);
@@ -223,8 +212,15 @@ void SimpleTCP::icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e) {
 
 void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
     cout << "SimpleTCP::icontext_send_buffer_not_full()" << endl;
+
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
+
+    SendEvent* saved_send_event = c->get_saved_send_event();
+
+    if(saved_send_event && is_room_in_send_buffer(saved_send_event)) {
+        save_in_buffer_and_send_events(saved_send_event);
+    }
 
     c->get_congestion_control()->icontext_send_buffer_not_full(e);
     c->get_connection_manager()->icontext_send_buffer_not_full(e);
@@ -237,7 +233,27 @@ bool SimpleTCP::is_connected(Socket* s) {
 }
 
 void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {
-    TCPPacket* packet = (TCPPacket*) p;
     NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
     Dispatcher::instance().enqueue(e);
+}
+
+bool SimpleTCP::is_room_in_send_buffer(SendEvent* e) {
+    Socket* s = e->get_socket();
+    int num_bytes_to_send = e->data_length();
+    return s->get_send_buffer().size() + num_bytes_to_send <= MAX_BUFFER_SIZE;
+}
+
+void SimpleTCP::save_in_buffer_and_send_events(SendEvent* e) {
+    int num_bytes_to_send = e->data_length();
+    const char* data = (const char*) e->get_data();
+
+    Socket* s = e->get_socket();
+    s->get_send_buffer().append(data, num_bytes_to_send);
+
+    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+    response->put(RETURN_VALUE_STRING, Utils::itoa(num_bytes_to_send));
+    response->put(ERRNO, Utils::itoa(0));
+
+    dispatch(response);
+    dispatch(new SendBufferNotEmptyEvent(s));
 }

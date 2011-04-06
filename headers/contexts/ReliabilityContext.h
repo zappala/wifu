@@ -24,23 +24,15 @@ public:
     ReliabilityContext();
     virtual ~ReliabilityContext();
 
-    void set_last_packet_sent(TCPPacket* p);
-    TCPPacket* get_last_packet_sent();
+    void set_seq_number(u_int32_t value);
+    u_int32_t get_seq_number();
 
-    void set_last_packet_received(TCPPacket* p);
-    TCPPacket* get_last_packet_received();
-
-    void set_saved_timeout(TimeoutEvent* te);
-    TimeoutEvent* get_saved_timeout();
-
-    void set_seq_counter(u_int32_t value);
-    u_int32_t get_seq_counter();
+    void set_ack_number(u_int32_t value);
+    u_int32_t get_ack_number();
 
 private:
-    TCPPacket* last_packet_sent_;
-    TCPPacket* last_packet_received_;
-    u_int32_t seq_counter_;
-    TimeoutEvent* saved_timeout_;
+    u_int32_t seq_number_;
+    u_int32_t ack_number_;
 };
 
 #endif	/* RELIABILITYCONTEXT_H */
