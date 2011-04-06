@@ -19,6 +19,9 @@
 #include "events/SendBufferNotEmpty.h"
 #include "events/SendBufferNotFull.h"
 
+#include "CacheMap.h"
+#include "SimpleTCPCache.h"
+
 class SimpleTCP : public Protocol {
 private:
     SimpleTCP();
@@ -31,6 +34,8 @@ private:
 
     tr1::unordered_map<Socket*, IContextContainer*> map_;
     tr1::unordered_map<Socket*, IContextContainer*>::iterator itr_;
+
+    
 
 public:
     static SimpleTCP& instance();

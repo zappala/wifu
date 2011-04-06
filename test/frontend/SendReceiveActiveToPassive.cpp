@@ -125,12 +125,11 @@ void active_to_passive_test(int num_bytes) {
     }
 
     EXPECT_EQ(message.length(), num_sent);
-    pthread_cancel(t);
 
 }
 
 TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive) {
-    active_to_passive_test(10);
+    active_to_passive_test(1);
 
 
     // so we can see if we are doing something incorrect that would otherwise

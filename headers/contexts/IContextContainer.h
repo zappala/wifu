@@ -28,10 +28,16 @@ public:
 
     IContext* get_connection_manager();
 
+    SendEvent* get_saved_send_event();
+
+    void set_saved_send_event(SendEvent* e);
+
 private:
     IContext* reliability_;
     IContext* cc_;
     IContext* cm_;
+
+    SendEvent* saved_send_event_;
 
 };
 

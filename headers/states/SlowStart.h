@@ -19,8 +19,10 @@
 #include "events/SendPacketEvent.h"
 #include "events/NetworkReceivePacketEvent.h"
 #include "events/ResponseEvent.h"
+#include "events/SendBufferNotEmpty.h"
 #include "Dispatcher.h"
-
+#include "CacheMap.h"
+#include "SimpleTCPCache.h"
 #include "packet/TCPPacket.h"
 
 
@@ -37,6 +39,8 @@ public:
     void exit(Context* c);
 
     void send_to(Context* c, SendEvent* e);
+
+    void state_send_buffer_not_empty(Context* c, SendBufferNotEmpty* e);
 
 };
 

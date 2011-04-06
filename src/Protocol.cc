@@ -120,7 +120,7 @@ void Protocol::library_connect(Event* e) {
 
     // TODO: Error check
 
-//    cout << "In library connect" << endl;
+    //    cout << "In library connect" << endl;
     connect(event);
 }
 
@@ -138,7 +138,7 @@ void Protocol::library_accept(Event* e) {
 }
 
 void Protocol::library_receive(Event* e) {
-//    cout << "Protocol::library_receive()" << endl;
+    //    cout << "Protocol::library_receive()" << endl;
     ReceiveEvent* event = (ReceiveEvent*) e;
 
     Socket* s = event->get_socket();
@@ -153,7 +153,7 @@ void Protocol::library_receive(Event* e) {
 }
 
 void Protocol::library_send(Event* e) {
-//    cout << "Protocol::library_send()" << endl;
+    //    cout << "Protocol::library_send()" << endl;
     SendEvent* event = (SendEvent*) e;
 
     // call contexts
@@ -161,7 +161,7 @@ void Protocol::library_send(Event* e) {
 }
 
 void Protocol::send(Event* e) {
-//    cout << "Protocol::send()" << endl;
+    //    cout << "Protocol::send()" << endl;
     SendPacketEvent* event = (SendPacketEvent*) e;
 
     Socket* socket = event->get_socket();
@@ -174,7 +174,7 @@ void Protocol::send(Event* e) {
 }
 
 void Protocol::network_receive(Event* e) {
-//    cout << "Protocol::network_receive()" << endl;
+    //    cout << "Protocol::network_receive()" << endl;
 
     NetworkReceivePacketEvent* event = (NetworkReceivePacketEvent*) e;
 
@@ -253,13 +253,34 @@ void Protocol::resend(Event* e) {
 }
 
 void Protocol::send_buffer_not_empty(Event* e) {
+    SendBufferNotEmpty* event = (SendBufferNotEmpty*) e;
+    Socket* socket = event->get_socket();
 
+    if (!sockets_.contains(socket)) {
+        return;
+    }
+
+    icontext_send_buffer_not_empty(event);
 }
 
 void Protocol::send_buffer_not_full(Event* e) {
+    SendBufferNotFull* event = (SendBufferNotFull*) e;
+    Socket* socket = event->get_socket();
 
+    if (!sockets_.contains(socket)) {
+        return;
+    }
+
+    icontext_send_buffer_not_full(event);
 }
 
 void Protocol::receive_buffer_not_empty(Event* e) {
-    
+    ReceiveBufferNotEmpty* event = (ReceiveBufferNotEmpty*) e;
+    Socket* socket = event->get_socket();
+
+    if (!sockets_.contains(socket)) {
+        return;
+    }
+
+    icontext_receive_buffer_not_empty(event);
 }

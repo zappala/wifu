@@ -1,5 +1,6 @@
 #include "SimpleTCP.h"
 
+
 SimpleTCP::SimpleTCP() : Protocol(SIMPLE_TCP) {
 }
 
@@ -25,6 +26,8 @@ void SimpleTCP::socket(SocketEvent* e) {
     Socket* s = e->get_socket();
     save_socket(s);
     IContextContainer* c = get_context(s);
+
+    CacheMap::instance().put(s, new SimpleTCPCache());
 
     c->get_congestion_control()->socket(e);
     c->get_connection_manager()->socket(e);
@@ -108,6 +111,12 @@ void SimpleTCP::new_conneciton_initiated(ConnectionInitiatedEvent* e) {
     IContextContainer* new_cc = new IContextContainer();
     save_socket(listening_socket, new_cc);
 
+    // Move the Cache over
+    Cache* listening_cache = CacheMap::instance().get(listening_socket);
+    assert(listening_cache);
+    CacheMap::instance().put(new_socket, listening_cache);
+    CacheMap::instance().put(listening_socket, new SimpleTCPCache());
+
     // Tell the listening socket's (new) context that a new connection is occuring
     // (This is basically a hack so the new context can move back to the appropriate state.)
     new_cc->get_congestion_control()->new_conneciton_initiated(e);
@@ -150,17 +159,34 @@ void SimpleTCP::send_to(SendEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
-    // ensure we are connected
-    if (!c->get_connection_manager()->is_connected(s)) {
-        // TODO: return the correct error
-        return;
+    int num_bytes_to_send = e->data_length();
+
+    bool connected = c->get_connection_manager()->is_connected(s);
+    bool room = s->get_send_buffer().size() + num_bytes_to_send <= MAX_BUFFER_SIZE;
+
+    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+
+    if (connected && room) {
+        cout << "SimpleTCP::send_to(), appending to send buffer" << endl;
+        const char* data = (const char*) e->get_data();
+        s->get_send_buffer().append(data, num_bytes_to_send);
+
+        response->put(RETURN_VALUE_STRING, Utils::itoa(num_bytes_to_send));
+        response->put(ERRNO, Utils::itoa(0));
+
+        dispatch(response);
+        dispatch(new SendBufferNotEmpty(s));
+
+    } else if (!connected) {
+        cout << "SimpleTCP::send_to(), not connected!" << endl;
+        response->put(RETURN_VALUE_STRING, Utils::itoa(-1));
+        response->put(ERRNO, Utils::itoa(ENOTCONN));
+        dispatch(response);
+
+    } else {
+        cout << "SimpleTCP::send_to(), saving send event" << endl;
+        c->set_saved_send_event(e);
     }
-
-    //    cout << "SimpleTCP::send_to(), we are connected" << endl;
-    c->get_connection_manager()->send_to(e);
-    c->get_reliability()->send_to(e);
-    c->get_congestion_control()->send_to(e);
-
 }
 
 void SimpleTCP::receive_from(ReceiveEvent* e) {
@@ -184,15 +210,19 @@ void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmpty* e) {
 }
 
 void SimpleTCP::icontext_send_buffer_not_empty(SendBufferNotEmpty* e) {
+    cout << "SimpleTCP::icontext_send_buffer_not_empty()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
     c->get_congestion_control()->icontext_send_buffer_not_empty(e);
+
+    // TODO: likely don't need to call these two methods
     c->get_connection_manager()->icontext_send_buffer_not_empty(e);
     c->get_reliability()->icontext_send_buffer_not_empty(e);
 }
 
 void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFull* e) {
+    cout << "SimpleTCP::icontext_send_buffer_not_full()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -201,13 +231,13 @@ void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFull* e) {
     c->get_reliability()->icontext_send_buffer_not_full(e);
 }
 
+bool SimpleTCP::is_connected(Socket* s) {
+    IContextContainer* c = get_context(s);
+    return c->get_connection_manager()->is_connected(s);
+}
+
 void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {
     TCPPacket* packet = (TCPPacket*) p;
     NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
     Dispatcher::instance().enqueue(e);
-}
-
-bool SimpleTCP::is_connected(Socket* s) {
-    IContextContainer* c = get_context(s);
-    return c->get_connection_manager()->is_connected(s);
 }
