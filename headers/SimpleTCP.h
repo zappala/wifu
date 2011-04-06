@@ -15,6 +15,9 @@
 #include "contexts/IContextContainer.h"
 #include "contexts/ReliabilityContext.h"
 #include "events/ReceiveEvent.h"
+#include "events/ReceiveBufferNotEmpty.h"
+#include "events/SendBufferNotEmpty.h"
+#include "events/SendBufferNotFull.h"
 
 class SimpleTCP : public Protocol {
 private:
@@ -63,6 +66,12 @@ public:
     bool is_connected(Socket* s);
 
     void receive_from(ReceiveEvent* e);
+
+    void icontext_receive_buffer_not_empty(ReceiveBufferNotEmpty* e);
+
+    void icontext_send_buffer_not_empty(SendBufferNotEmpty* e);
+
+    void icontext_send_buffer_not_full(SendBufferNotFull* e);
 };
 
 #endif	/* SIMPLETCP_H */

@@ -24,6 +24,9 @@
 #include "events/ConnectionInitiatedEvent.h"
 #include "events/SendEvent.h"
 #include "events/ReceiveEvent.h"
+#include "events/SendBufferNotEmpty.h"
+#include "events/SendBufferNotFull.h"
+#include "events/ReceiveBufferNotEmpty.h"
 
 using namespace std;
 
@@ -47,6 +50,10 @@ public:
 
     virtual void timer_fired_event(TimerFiredEvent* e) = 0;
     virtual void resend_packet(ResendPacketEvent* e) = 0;
+
+    virtual void icontext_send_buffer_not_empty(SendBufferNotEmpty*) = 0;
+    virtual void icontext_send_buffer_not_full(SendBufferNotFull*) = 0;
+    virtual void icontext_receive_buffer_not_empty(ReceiveBufferNotEmpty*) = 0;
 };
 
 #endif	/* ICONTEXT_H */

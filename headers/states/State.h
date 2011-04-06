@@ -67,6 +67,12 @@ public:
 
     virtual void resend_packet(Context*, ResendPacketEvent* e);
 
+    virtual void state_send_buffer_not_empty(Context*, SendBufferNotEmpty*);
+
+    virtual void state_send_buffer_not_full(Context*, SendBufferNotFull*);
+
+    virtual void state_receive_buffer_not_empty(Context*, ReceiveBufferNotEmpty*);
+
     void enter_state(string);
 
     void leave_state(string);

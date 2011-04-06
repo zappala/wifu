@@ -174,6 +174,33 @@ void SimpleTCP::receive_from(ReceiveEvent* e) {
     c->get_reliability()->receive_from(e);
 }
 
+void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmpty* e) {
+    Socket* s = e->get_socket();
+    IContextContainer* c = get_context(s);
+
+    c->get_congestion_control()->icontext_receive_buffer_not_empty(e);
+    c->get_connection_manager()->icontext_receive_buffer_not_empty(e);
+    c->get_reliability()->icontext_receive_buffer_not_empty(e);
+}
+
+void SimpleTCP::icontext_send_buffer_not_empty(SendBufferNotEmpty* e) {
+    Socket* s = e->get_socket();
+    IContextContainer* c = get_context(s);
+
+    c->get_congestion_control()->icontext_send_buffer_not_empty(e);
+    c->get_connection_manager()->icontext_send_buffer_not_empty(e);
+    c->get_reliability()->icontext_send_buffer_not_empty(e);
+}
+
+void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFull* e) {
+    Socket* s = e->get_socket();
+    IContextContainer* c = get_context(s);
+
+    c->get_congestion_control()->icontext_send_buffer_not_full(e);
+    c->get_connection_manager()->icontext_send_buffer_not_full(e);
+    c->get_reliability()->icontext_send_buffer_not_full(e);
+}
+
 void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {
     TCPPacket* packet = (TCPPacket*) p;
     NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
