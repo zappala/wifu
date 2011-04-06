@@ -213,6 +213,20 @@ public:
      */
     virtual void connection_initiated(Event* e) {
     }
+
+    virtual void send_buffer_not_full(Event* e) {
+
+    }
+
+    virtual void send_buffer_not_empty(Event* e) {
+
+    }
+
+    virtual void receive_buffer_not_empty(Event* e) {
+
+    }
+
+
 };
 
 #endif	/* _IMODULE_H */

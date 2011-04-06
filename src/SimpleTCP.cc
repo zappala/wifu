@@ -88,7 +88,7 @@ void SimpleTCP::accept(AcceptEvent* e) {
 }
 
 void SimpleTCP::new_connection_established(ConnectionEstablishedEvent* e) {
-
+    cout << "SimpleTCP::new_connection_established()" << endl;
 
 }
 

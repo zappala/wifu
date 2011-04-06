@@ -125,6 +125,7 @@ void Protocol::library_connect(Event* e) {
 }
 
 void Protocol::library_accept(Event* e) {
+    cout << "Protocol::library_accept(), Event socket: " << e->get_socket() << endl;
     AcceptEvent* event = (AcceptEvent*) e;
 
     Socket* socket = event->get_socket();
@@ -208,6 +209,7 @@ void Protocol::connection_established(Event* e) {
     new_connection_established(event);
 
     AcceptEvent* a_event = event->get_accept_event();
+
     ResponseEvent* response = new ResponseEvent(socket, a_event->get_name(), a_event->get_map()[FILE_STRING]);
     response->put(ERRNO, Utils::itoa(0));
     response->put(RETURN_VALUE_STRING, Utils::itoa(new_socket->get_socket_id()));

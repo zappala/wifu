@@ -1,6 +1,5 @@
 #include "WifuEndBackEndLibrary.h"
 
-
 WifuEndBackEndLibrary& WifuEndBackEndLibrary::instance() {
     static WifuEndBackEndLibrary instance_;
     return instance_;
@@ -13,7 +12,7 @@ void WifuEndBackEndLibrary::receive(string& message) {
     // TODO: this method is way too long (and will likely get bigger)
     // TODO: refactor this method to use objects as much as possible
 
-//    cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
+    //    cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
 
 
     map<string, string> m;
@@ -68,7 +67,7 @@ void WifuEndBackEndLibrary::receive(string& message) {
     } else if (!name.compare(WIFU_SENDTO_NAME)) {
         dispatch(new SendEvent(message, get_file(), socket));
         return;
-        
+
     } else if (!name.compare(WIFU_RECVFROM_NAME)) {
         dispatch(new ReceiveEvent(message, get_file(), socket));
         return;
@@ -91,7 +90,7 @@ void WifuEndBackEndLibrary::library_response(Event* e) {
     event->put(FILE_STRING, get_file());
     string file = event->get_write_file();
     string response = event->get_response();
-    //        cout << "Response: " << response << endl;
+//    cout << "Response: " << response << endl;
     send_to(file, response);
 }
 
