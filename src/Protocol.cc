@@ -148,7 +148,6 @@ void Protocol::library_receive(Event* e) {
         return;
     }
 
-    check_and_send_receive_response(e);
 
     receive_from(event);
 }
@@ -188,7 +187,6 @@ void Protocol::network_receive(Event* e) {
     // TODO: Error check
     // We will potentially save data before we are connected; however, we won't pass data to the application until we are connected.
     receive_packet(event);
-    check_and_send_receive_response(e);
 }
 
 void Protocol::connection_established(Event* e) {
@@ -254,6 +252,14 @@ void Protocol::resend(Event* e) {
     resend_packet(event);
 }
 
-void Protocol::check_and_send_receive_response(Event* e) {
+void Protocol::send_buffer_not_empty(Event* e) {
 
+}
+
+void Protocol::send_buffer_not_full(Event* e) {
+
+}
+
+void Protocol::receive_buffer_not_empty(Event* e) {
+    
 }

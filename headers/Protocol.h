@@ -80,9 +80,13 @@ public:
 
     virtual void resend(Event* e);
 
-private:
+    virtual void send_buffer_not_empty(Event* e);
 
-    void check_and_send_receive_response(Event* e);
+    virtual void send_buffer_not_full(Event* e);
+
+    virtual void receive_buffer_not_empty(Event* e);
+
+private:
 
     int protocol_;
 
