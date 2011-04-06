@@ -30,9 +30,14 @@ public:
     void set_ack_number(u_int32_t value);
     u_int32_t get_ack_number();
 
+    void set_timeout_event(TimeoutEvent* e);
+    TimeoutEvent* get_timeout_event();
+
 private:
     u_int32_t seq_number_;
     u_int32_t ack_number_;
+
+    TimeoutEvent* timeout_event_;
 };
 
 #endif	/* RELIABILITYCONTEXT_H */

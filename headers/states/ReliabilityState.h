@@ -23,6 +23,8 @@
 #include "events/TimerFiredEvent.h"
 #include "events/TimerEvent.h"
 #include "events/ResendPacketEvent.h"
+#include "events/CancelTimerEvent.h"
+
 #include "SimpleTCPCache.h"
 #include "CacheMap.h"
 
@@ -38,7 +40,6 @@ public:
     void exit(Context* c);
     void send_packet(Context* c, SendPacketEvent* e);
     void timer_fired(Context* c, TimerFiredEvent* e);
-    void resend_packet(Context* c, ResendPacketEvent* e);
 };
 
 #endif	/* RELIABILITYSTATE_H */
