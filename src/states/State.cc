@@ -47,11 +47,11 @@ void State::send_packet(Context* c, SendPacketEvent* e) {}
 
 void State::resend_packet(Context*, ResendPacketEvent* e) {}
 
-void State::state_receive_buffer_not_empty(Context*, ReceiveBufferNotEmpty*) {}
+void State::state_receive_buffer_not_empty(Context*, ReceiveBufferNotEmptyEvent*) {}
 
-void State::state_send_buffer_not_empty(Context*, SendBufferNotEmpty*) {}
+void State::state_send_buffer_not_empty(Context*, SendBufferNotEmptyEvent*) {}
 
-void State::state_send_buffer_not_full(Context*, SendBufferNotFull*) {}
+void State::state_send_buffer_not_full(Context*, SendBufferNotFullEvent*) {}
 
 void State::enter_state(string state) {
     //cout << "Entering " << state << " State" << endl;

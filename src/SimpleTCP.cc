@@ -175,7 +175,7 @@ void SimpleTCP::send_to(SendEvent* e) {
         response->put(ERRNO, Utils::itoa(0));
 
         dispatch(response);
-        dispatch(new SendBufferNotEmpty(s));
+        dispatch(new SendBufferNotEmptyEvent(s));
 
     } else if (!connected) {
         cout << "SimpleTCP::send_to(), not connected!" << endl;
@@ -200,7 +200,7 @@ void SimpleTCP::receive_from(ReceiveEvent* e) {
     c->get_reliability()->receive_from(e);
 }
 
-void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmpty* e) {
+void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -209,7 +209,7 @@ void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmpty* e) {
     c->get_reliability()->icontext_receive_buffer_not_empty(e);
 }
 
-void SimpleTCP::icontext_send_buffer_not_empty(SendBufferNotEmpty* e) {
+void SimpleTCP::icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e) {
     cout << "SimpleTCP::icontext_send_buffer_not_empty()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
@@ -221,7 +221,7 @@ void SimpleTCP::icontext_send_buffer_not_empty(SendBufferNotEmpty* e) {
     c->get_reliability()->icontext_send_buffer_not_empty(e);
 }
 
-void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFull* e) {
+void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
     cout << "SimpleTCP::icontext_send_buffer_not_full()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);

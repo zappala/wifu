@@ -19,7 +19,7 @@
 #include "events/SendPacketEvent.h"
 #include "events/NetworkReceivePacketEvent.h"
 #include "events/ResponseEvent.h"
-#include "events/SendBufferNotEmpty.h"
+#include "events/SendBufferNotEmptyEvent.h"
 #include "Dispatcher.h"
 #include "CacheMap.h"
 #include "SimpleTCPCache.h"
@@ -40,7 +40,7 @@ public:
 
     void send_to(Context* c, SendEvent* e);
 
-    void state_send_buffer_not_empty(Context* c, SendBufferNotEmpty* e);
+    void state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e);
 
 };
 

@@ -19,7 +19,7 @@ void SlowStart::send_to(Context* c, SendEvent* e) {
 
 }
 
-void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmpty* e) {
+void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e) {
     cout << "SlowStart::state_send_buffer_not_empty()" << endl;
 
     Socket* s = e->get_socket();
@@ -47,7 +47,7 @@ void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmpty* e) {
         p->set_data((unsigned char*) data.c_str(), data.size());
 
         Dispatcher::instance().enqueue(new SendPacketEvent(s, p));
-        Dispatcher::instance().enqueue(new SendBufferNotFull(s));
+        Dispatcher::instance().enqueue(new SendBufferNotFullEvent(s));
     }
 }
 

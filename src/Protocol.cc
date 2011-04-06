@@ -253,7 +253,7 @@ void Protocol::resend(Event* e) {
 }
 
 void Protocol::send_buffer_not_empty(Event* e) {
-    SendBufferNotEmpty* event = (SendBufferNotEmpty*) e;
+    SendBufferNotEmptyEvent* event = (SendBufferNotEmptyEvent*) e;
     Socket* socket = event->get_socket();
 
     if (!sockets_.contains(socket)) {
@@ -264,7 +264,7 @@ void Protocol::send_buffer_not_empty(Event* e) {
 }
 
 void Protocol::send_buffer_not_full(Event* e) {
-    SendBufferNotFull* event = (SendBufferNotFull*) e;
+    SendBufferNotFullEvent* event = (SendBufferNotFullEvent*) e;
     Socket* socket = event->get_socket();
 
     if (!sockets_.contains(socket)) {
@@ -275,7 +275,7 @@ void Protocol::send_buffer_not_full(Event* e) {
 }
 
 void Protocol::receive_buffer_not_empty(Event* e) {
-    ReceiveBufferNotEmpty* event = (ReceiveBufferNotEmpty*) e;
+    ReceiveBufferNotEmptyEvent* event = (ReceiveBufferNotEmptyEvent*) e;
     Socket* socket = event->get_socket();
 
     if (!sockets_.contains(socket)) {

@@ -15,9 +15,9 @@
 #include "contexts/IContextContainer.h"
 #include "contexts/ReliabilityContext.h"
 #include "events/ReceiveEvent.h"
-#include "events/ReceiveBufferNotEmpty.h"
-#include "events/SendBufferNotEmpty.h"
-#include "events/SendBufferNotFull.h"
+#include "events/ReceiveBufferNotEmptyEvent.h"
+#include "events/SendBufferNotEmptyEvent.h"
+#include "events/SendBufferNotFullEvent.h"
 
 #include "CacheMap.h"
 #include "SimpleTCPCache.h"
@@ -72,11 +72,11 @@ public:
 
     void receive_from(ReceiveEvent* e);
 
-    void icontext_receive_buffer_not_empty(ReceiveBufferNotEmpty* e);
+    void icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e);
 
-    void icontext_send_buffer_not_empty(SendBufferNotEmpty* e);
+    void icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e);
 
-    void icontext_send_buffer_not_full(SendBufferNotFull* e);
+    void icontext_send_buffer_not_full(SendBufferNotFullEvent* e);
 };
 
 #endif	/* SIMPLETCP_H */
