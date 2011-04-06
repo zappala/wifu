@@ -6,8 +6,6 @@ SimpleTCPCache::SimpleTCPCache() : Cache(), packet_(0) {
 }
 
 WiFuPacket* SimpleTCPCache::get_packet() {
-    assert(!is_empty());
-
     WiFuPacket* p = packet_;
     return p;
 }

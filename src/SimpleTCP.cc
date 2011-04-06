@@ -28,28 +28,25 @@ void SimpleTCP::socket(SocketEvent* e) {
 
     CacheMap::instance().put(s, new SimpleTCPCache());
 
-    c->get_congestion_control()->socket(e);
     c->get_connection_manager()->socket(e);
     c->get_reliability()->socket(e);
+    c->get_congestion_control()->socket(e);
 }
 
 void SimpleTCP::bind(BindEvent* e) {
     IContextContainer* c = get_context(e->get_socket());
 
-    c->get_congestion_control()->bind(e);
     c->get_connection_manager()->bind(e);
     c->get_reliability()->bind(e);
+    c->get_congestion_control()->bind(e);
 }
 
 void SimpleTCP::listen(ListenEvent* e) {
     IContextContainer* c = get_context(e->get_socket());
 
-    //    cout << "SimpleTCP::listen: Local AP: " << e->get_socket()->get_local_address_port()->to_s() << endl;
-    //    cout << "SimpleTCP::listen: Remote AP: " << e->get_socket()->get_remote_address_port()->to_s() << endl;
-
-    c->get_congestion_control()->listen(e);
     c->get_connection_manager()->listen(e);
     c->get_reliability()->listen(e);
+    c->get_congestion_control()->listen(e);
 }
 
 void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
@@ -57,8 +54,8 @@ void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
     IContextContainer* c = get_context(e->get_socket());
 
     c->get_connection_manager()->receive_packet(e);
-    c->get_congestion_control()->receive_packet(e);
     c->get_reliability()->receive_packet(e);
+    c->get_congestion_control()->receive_packet(e);
 }
 
 void SimpleTCP::send_packet(SendPacketEvent* e) {
@@ -67,8 +64,8 @@ void SimpleTCP::send_packet(SendPacketEvent* e) {
     IContextContainer* c = get_context(s);
 
     c->get_connection_manager()->send_packet(e);
-    c->get_congestion_control()->send_packet(e);
     c->get_reliability()->send_packet(e);
+    c->get_congestion_control()->send_packet(e);
 
     send_network_packet(s, e->get_packet());
 }
@@ -76,17 +73,17 @@ void SimpleTCP::send_packet(SendPacketEvent* e) {
 void SimpleTCP::connect(ConnectEvent* e) {
     IContextContainer* c = get_context(e->get_socket());
 
-    c->get_congestion_control()->connect(e);
     c->get_connection_manager()->connect(e);
     c->get_reliability()->connect(e);
+    c->get_congestion_control()->connect(e);
 }
 
 void SimpleTCP::accept(AcceptEvent* e) {
     IContextContainer* c = get_context(e->get_socket());
 
-    c->get_congestion_control()->accept(e);
     c->get_connection_manager()->accept(e);
     c->get_reliability()->accept(e);
+    c->get_congestion_control()->accept(e);
 }
 
 void SimpleTCP::new_connection_established(ConnectionEstablishedEvent* e) {
@@ -118,9 +115,9 @@ void SimpleTCP::new_conneciton_initiated(ConnectionInitiatedEvent* e) {
 
     // Tell the listening socket's (new) context that a new connection is occuring
     // (This is basically a hack so the new context can move back to the appropriate state.)
-    new_cc->get_congestion_control()->new_conneciton_initiated(e);
     new_cc->get_connection_manager()->new_conneciton_initiated(e);
     new_cc->get_reliability()->new_conneciton_initiated(e);
+    new_cc->get_congestion_control()->new_conneciton_initiated(e);
 }
 
 void SimpleTCP::close() {
@@ -130,9 +127,9 @@ void SimpleTCP::timer_fired_event(TimerFiredEvent* e) {
     //    cout << "In SimpleTCP::timer_fired()\n";
     IContextContainer* c = get_context(e->get_socket());
 
-    c->get_congestion_control()->timer_fired_event(e);
     c->get_connection_manager()->timer_fired_event(e);
     c->get_reliability()->timer_fired_event(e);
+    c->get_congestion_control()->timer_fired_event(e);
 }
 
 void SimpleTCP::resend_packet(ResendPacketEvent* e) {
@@ -140,15 +137,9 @@ void SimpleTCP::resend_packet(ResendPacketEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
-    // TODO: Does congestion control need to know about a resend?
-    c->get_congestion_control()->resend_packet(e);
-
-    // Probably don't want to change states when we resend
-    // TODO: Does connection manager need to know about a resend?
     c->get_connection_manager()->resend_packet(e);
-
-    // TODO: I think reliability needs to know about a resend (so it can start up another timer)
     c->get_reliability()->resend_packet(e);
+    c->get_congestion_control()->resend_packet(e);
 
     send_network_packet(s, e->get_packet());
 }
@@ -184,18 +175,18 @@ void SimpleTCP::receive_from(ReceiveEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
-    c->get_congestion_control()->receive_from(e);
     c->get_connection_manager()->receive_from(e);
     c->get_reliability()->receive_from(e);
+    c->get_congestion_control()->receive_from(e);
 }
 
 void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
-    c->get_congestion_control()->icontext_receive_buffer_not_empty(e);
     c->get_connection_manager()->icontext_receive_buffer_not_empty(e);
     c->get_reliability()->icontext_receive_buffer_not_empty(e);
+    c->get_congestion_control()->icontext_receive_buffer_not_empty(e);
 }
 
 void SimpleTCP::icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e) {
@@ -203,11 +194,9 @@ void SimpleTCP::icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
-    c->get_congestion_control()->icontext_send_buffer_not_empty(e);
-
-    // TODO: likely don't need to call these two methods
     c->get_connection_manager()->icontext_send_buffer_not_empty(e);
     c->get_reliability()->icontext_send_buffer_not_empty(e);
+    c->get_congestion_control()->icontext_send_buffer_not_empty(e);
 }
 
 void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
@@ -222,9 +211,9 @@ void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
         save_in_buffer_and_send_events(saved_send_event);
     }
 
-    c->get_congestion_control()->icontext_send_buffer_not_full(e);
     c->get_connection_manager()->icontext_send_buffer_not_full(e);
     c->get_reliability()->icontext_send_buffer_not_full(e);
+    c->get_congestion_control()->icontext_send_buffer_not_full(e);
 }
 
 bool SimpleTCP::is_connected(Socket* s) {
