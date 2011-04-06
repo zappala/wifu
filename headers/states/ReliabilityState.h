@@ -23,6 +23,8 @@
 #include "events/TimerFiredEvent.h"
 #include "events/TimerEvent.h"
 #include "events/ResendPacketEvent.h"
+#include "SimpleTCPCache.h"
+#include "CacheMap.h"
 
 using namespace std;
 
