@@ -64,6 +64,7 @@ def configure(conf):
 	if Options.options.debug:
 		print "Configuring with debugging symbols"
 		conf.env['CXXFLAGS'] += ['-g']
+		conf.env['CXXFLAGS'] += ['-O0']
 
 def post(ctx):
 	import os
