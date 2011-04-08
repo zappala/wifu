@@ -35,10 +35,14 @@ public:
 
     void receive_packet(Context* c, NetworkReceivePacketEvent* e);
     void state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e);
+    void send_packet(Context* c, SendPacketEvent* e);
 
     void enter(Context* c);
     void exit(Context* c);
 
+private:
+    int outstanding_;
+    u_int32_t last_sent_sequence_number_;
     
 
 };
