@@ -29,30 +29,38 @@ void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         unsigned char* data = (unsigned char*) "";
         p->set_data(data, 0);
 
-        Dispatcher::instance().enqueue(new SendPacketEvent(s, p));
+        Event* spe = new SendPacketEvent(s, p);
+        
+        cout << "SlowStart::receive_packet() A: Packet: " << p << endl;
+
+        Dispatcher::instance().enqueue(spe);
     }
     else if(cache->is_empty() && s->get_send_buffer().size() > 0) {
         // send data
-        TCPPacket* p = new TCPPacket();
+//        TCPPacket* p = new TCPPacket();
+//
+//        string data = s->get_send_buffer().substr(0, p->max_data_length());
+//        s->get_send_buffer().erase(0, data.size());
+//
+//        AddressPort* destination = s->get_remote_address_port();
+//        AddressPort* source = s->get_local_address_port();
+//
+//        p->set_ip_protocol(SIMPLE_TCP);
+//
+//        p->set_ip_destination_address_s(destination->get_address());
+//        p->set_destination_port(destination->get_port());
+//
+//        p->set_ip_source_address_s(source->get_address());
+//        p->set_source_port(source->get_port());
+//
+//        p->set_data((unsigned char*) data.c_str(), data.size());
+//
+//        Event* spe = new SendPacketEvent(s, p);
 
-        string data = s->get_send_buffer().substr(0, p->max_data_length());
-        s->get_send_buffer().erase(0, p->max_data_length());
+//        cout << "SlowStart::receive_packet() B: Packet: " << p << endl;
 
-        AddressPort* destination = s->get_remote_address_port();
-        AddressPort* source = s->get_local_address_port();
-
-        p->set_ip_protocol(SIMPLE_TCP);
-
-        p->set_ip_destination_address_s(destination->get_address());
-        p->set_destination_port(destination->get_port());
-
-        p->set_ip_source_address_s(source->get_address());
-        p->set_source_port(source->get_port());
-
-        p->set_data((unsigned char*) data.c_str(), data.size());
-
-        Dispatcher::instance().enqueue(new SendPacketEvent(s, p));
-        Dispatcher::instance().enqueue(new SendBufferNotFullEvent(s));
+//        Dispatcher::instance().enqueue(spe);
+//        Dispatcher::instance().enqueue(new SendBufferNotFullEvent(s));
     }
     
 }
@@ -69,7 +77,7 @@ void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent*
         TCPPacket* p = new TCPPacket();
 
         string data = s->get_send_buffer().substr(0, p->max_data_length());
-        s->get_send_buffer().erase(0, p->max_data_length());
+        s->get_send_buffer().erase(0, data.size());
 
         AddressPort* destination = s->get_remote_address_port();
         AddressPort* source = s->get_local_address_port();
@@ -84,8 +92,13 @@ void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent*
 
         p->set_data((unsigned char*) data.c_str(), data.size());
 
-        Dispatcher::instance().enqueue(new SendPacketEvent(s, p));
-        Dispatcher::instance().enqueue(new SendBufferNotFullEvent(s));
+        Event* spe = new SendPacketEvent(s, p);
+        Event* sbnf = new SendBufferNotFullEvent(s);
+
+        cout << "SlowStart::state_send_buffer_not_empty(): Packet: " << p << endl;
+
+        Dispatcher::instance().enqueue(spe);
+        Dispatcher::instance().enqueue(sbnf);
     }
 }
 

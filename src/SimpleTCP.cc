@@ -124,7 +124,7 @@ void SimpleTCP::close() {
 }
 
 void SimpleTCP::timer_fired_event(TimerFiredEvent* e) {
-    //    cout << "In SimpleTCP::timer_fired()\n";
+        cout << "In SimpleTCP::timer_fired()\n";
     IContextContainer* c = get_context(e->get_socket());
 
     c->get_connection_manager()->timer_fired_event(e);
@@ -133,7 +133,7 @@ void SimpleTCP::timer_fired_event(TimerFiredEvent* e) {
 }
 
 void SimpleTCP::resend_packet(ResendPacketEvent* e) {
-    cout << "In SimpleTCP::resend_event()\n";
+    cout << "In SimpleTCP::resend_packet()\n";
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -179,6 +179,7 @@ void SimpleTCP::receive_from(ReceiveEvent* e) {
         create_and_dispatch_received_data(e);
     }
     else {
+        assert(c->get_saved_receive_event() == NULL);
         c->set_saved_receive_event(e);
     }
     
@@ -266,7 +267,7 @@ void SimpleTCP::create_and_dispatch_received_data(ReceiveEvent* e) {
     int buffer_size = e->get_receive_buffer_size();
     
     string data = s->get_receive_buffer().substr(0, buffer_size);
-    s->get_receive_buffer().erase(0, buffer_size);
+    s->get_receive_buffer().erase(0, data.size());
 
     ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
     response->put(BUFFER_STRING, data);

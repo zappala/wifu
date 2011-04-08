@@ -32,7 +32,13 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
     }
 
     if (!p->is_naked_ack()) {
+        cout << "ReliabilityState::send_packet(), Caching the Packet: " << p << endl;
+
         SimpleTCPCache* cache = (SimpleTCPCache*) CacheMap::instance().get(s);
+        if(cache->get_packet()) {
+            cout << "ReliabilityState::send_packet(), Packet in cache: " << cache->get_packet() << endl;
+        }
+        assert(cache->get_packet() == NULL);
         cache->save_packet(p);
 
         TimeoutEvent* timeout_event = new TimeoutEvent(s, 1, 0);
@@ -105,7 +111,11 @@ void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) 
         unsigned char* data = (unsigned char*) "";
         p->set_data(data, 0);
 
-        Dispatcher::instance().enqueue(new SendPacketEvent(s, p));
+        Event* spe = new SendPacketEvent(s, p);
+
+        cout << "ReliabilityState::receive_packet(), Case 4, Packet: " << p << endl;
+
+        Dispatcher::instance().enqueue(spe);
     }
     cout << "ReliabilityState::receive_packet(), returning" << endl;
 }
