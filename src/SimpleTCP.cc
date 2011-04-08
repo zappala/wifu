@@ -175,6 +175,13 @@ void SimpleTCP::receive_from(ReceiveEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
+    if(s->get_receive_buffer().size() > 0) {
+        create_and_dispatch_received_data(e);
+    }
+    else {
+        c->set_saved_receive_event(e);
+    }
+    
     c->get_connection_manager()->receive_from(e);
     c->get_reliability()->receive_from(e);
     c->get_congestion_control()->receive_from(e);
@@ -183,6 +190,13 @@ void SimpleTCP::receive_from(ReceiveEvent* e) {
 void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
+
+    ReceiveEvent* receive_event = c->get_saved_receive_event();
+
+    if(receive_event != NULL && s->get_receive_buffer().size() > 0) {
+        create_and_dispatch_received_data(receive_event);
+        c->set_saved_receive_event(NULL);
+    }
 
     c->get_connection_manager()->icontext_receive_buffer_not_empty(e);
     c->get_reliability()->icontext_receive_buffer_not_empty(e);
@@ -245,4 +259,22 @@ void SimpleTCP::save_in_buffer_and_send_events(SendEvent* e) {
 
     dispatch(response);
     dispatch(new SendBufferNotEmptyEvent(s));
+}
+
+void SimpleTCP::create_and_dispatch_received_data(ReceiveEvent* e) {
+    Socket* s = e->get_socket();
+    int buffer_size = e->get_receive_buffer_size();
+    
+    string data = s->get_receive_buffer().substr(0, buffer_size);
+    s->get_receive_buffer().erase(0, buffer_size);
+
+    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+    response->put(BUFFER_STRING, data);
+    response->put(ADDRESS_STRING, s->get_remote_address_port()->get_address());
+    response->put(PORT_STRING, Utils::itoa(s->get_remote_address_port()->get_port()));
+    response->put(RETURN_VALUE_STRING, Utils::itoa(data.size()));
+    response->put(ERRNO, Utils::itoa(0));
+
+    dispatch(response);
+
 }

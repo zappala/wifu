@@ -515,7 +515,7 @@ public:
         data->get_semaphore()->wait();
         ssize_t ret_val = data->get_return_value();
 
-        // TODO: fill in the actual vale of addr_len according to man 2 recvfrom()
+        // TODO: fill in the actual vale of addr_len and addr according to man 2 recvfrom()
 
         if (ret_val > 0) {
             memcpy(buf, data->get_payload(), ret_val);

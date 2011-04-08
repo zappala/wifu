@@ -46,10 +46,12 @@ void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
     SimpleTCPCache* cache = (SimpleTCPCache*) CacheMap::instance().get(s);
 
     WiFuPacket* p = cache->get_packet();
-    cache->save_packet(0);
 
-    ResendPacketEvent* event = new ResendPacketEvent(e->get_socket(), p);
-    Dispatcher::instance().enqueue(event);
+    if (p) {
+        cache->save_packet(0);
+        ResendPacketEvent* event = new ResendPacketEvent(e->get_socket(), p);
+        Dispatcher::instance().enqueue(event);
+    }
 }
 
 void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
@@ -60,7 +62,7 @@ void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) 
     SimpleTCPCache* cache = (SimpleTCPCache*) CacheMap::instance().get(s);
     TCPPacket* cached_packet = (TCPPacket*) cache->get_packet();
 
-    if(cached_packet == 0) {
+    if (cached_packet == 0) {
         cout << "ReliabilityState::receive_packet(), cached_packet is null" << endl;
     }
 
@@ -78,18 +80,14 @@ void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) 
             s->get_receive_buffer().append((const char*) p->get_data(), p->get_data_length_bytes());
             Dispatcher::instance().enqueue(new ReceiveBufferNotEmptyEvent(s));
         }
-    }
-
-    else if (p->get_tcp_sequence_number() - 1 == rc->get_ack_number()) {
+    } else if (p->get_tcp_sequence_number() - 1 == rc->get_ack_number()) {
         cout << "ReliabilityState::receive_packet(), Case 3" << endl;
         rc->set_ack_number(p->get_tcp_sequence_number() + 1);
         if (p->get_data_length_bytes() > 0) {
             s->get_receive_buffer().append((const char*) p->get_data(), p->get_data_length_bytes());
             Dispatcher::instance().enqueue(new ReceiveBufferNotEmptyEvent(s));
         }
-    }
-
-    else if (p->get_tcp_sequence_number() + 1 == rc->get_ack_number() && cache->is_empty()) {
+    } else if (p->get_tcp_sequence_number() + 1 == rc->get_ack_number() && cache->is_empty()) {
         cout << "ReliabilityState::receive_packet(), Case 4" << endl;
         rc->set_seq_number(rc->get_seq_number() - 1);
         TCPPacket* p = new TCPPacket();

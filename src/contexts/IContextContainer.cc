@@ -1,6 +1,6 @@
 #include "contexts/IContextContainer.h"
 
-IContextContainer::IContextContainer() : saved_send_event_(0) {
+IContextContainer::IContextContainer() : saved_send_event_(0), saved_receive_event_(0) {
     reliability_ = new ReliabilityContext();
     cc_ = new CongestionControlContext();
     cm_ = new ConnectionManagerContext();
@@ -28,4 +28,12 @@ SendEvent* IContextContainer::get_saved_send_event() {
 
 void IContextContainer::set_saved_send_event(SendEvent* e) {
     saved_send_event_ = e;
+}
+
+ReceiveEvent* IContextContainer::get_saved_receive_event() {
+    return saved_receive_event_;
+}
+
+void IContextContainer::set_saved_receive_event(ReceiveEvent* e) {
+    saved_receive_event_ = e;
 }

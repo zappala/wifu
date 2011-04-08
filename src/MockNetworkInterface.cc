@@ -26,6 +26,7 @@ void MockNetworkInterface::network_send(Event* e) {
     int delay = get_delay(tcp_packet);
 
     cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
+    assert(p);
     cout << p->to_s_format() << endl;
     cout << p->to_s() << endl;
     // drop the packet
@@ -34,6 +35,8 @@ void MockNetworkInterface::network_send(Event* e) {
         cout << "MockNetworkInterface::network_send(), Dropping packet" << endl;
         return;
     }
+
+    cout << "MockNetworkInterface::network_send(), Before sleep" << endl;
     
     usleep(delay);
 
