@@ -124,18 +124,18 @@ namespace {
         ASSERT_TRUE((*dest) == (*p.get_dest_address_port()));
     }
 
-    TEST(TCPPacketTest, BufferConstructor) {
-        TCPPacketHelper helper;
-        TCPPacket p(helper.get_buffer(), helper.length());
-        test_constructor(p, helper);
-    }
-
-    TEST(TCPPacketTest, CopyConstructor) {
-        TCPPacketHelper helper;
-        TCPPacket p(helper.get_buffer(), helper.length());
-        TCPPacket c(p);
-        test_constructor(c, helper);
-    }
+//    TEST(TCPPacketTest, BufferConstructor) {
+//        TCPPacketHelper helper;
+//        TCPPacket p(helper.get_buffer(), helper.length());
+//        test_constructor(p, helper);
+//    }
+//
+//    TEST(TCPPacketTest, CopyConstructor) {
+//        TCPPacketHelper helper;
+//        TCPPacket p(helper.get_buffer(), helper.length());
+//        TCPPacket c(p);
+//        test_constructor(c, helper);
+//    }
 
     TEST(TCPPacketTest, SequenceNumberTest) {
         RandomNumberSet<u_int32_t> random;

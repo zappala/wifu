@@ -4,13 +4,13 @@ WiFuPacket::WiFuPacket() : IPPacket() {
     init();
 }
 
-WiFuPacket::WiFuPacket(IPPacket& p) : IPPacket(p) {
-    init();
-}
-
-WiFuPacket::WiFuPacket(unsigned char* buffer, int length) : IPPacket(buffer, length) {
-    init();
-}
+//WiFuPacket::WiFuPacket(IPPacket& p) : IPPacket(p) {
+//    init();
+//}
+//
+//WiFuPacket::WiFuPacket(unsigned char* buffer, int length) : IPPacket(buffer, length) {
+//    init();
+//}
 
 WiFuPacket::~WiFuPacket() {
 
@@ -63,6 +63,7 @@ void WiFuPacket::init() {
     ports_ = (struct wifu_packet_header*) get_next_header();
     source_ = 0;
     dest_ = 0;
+    set_ip_tot_length(get_ip_header_length_bytes() + sizeof (struct wifu_packet_header));
 }
 
 int WiFuPacket::max_data_length() {

@@ -15,8 +15,8 @@ class TCPPacket : public WiFuPacket {
 public:
 
     TCPPacket();
-    TCPPacket(IPPacket&);
-    TCPPacket(unsigned char* buffer, int length);
+//    TCPPacket(IPPacket&);
+//    TCPPacket(unsigned char* buffer, int length);
     ~TCPPacket();
 
     virtual unsigned char* get_data();

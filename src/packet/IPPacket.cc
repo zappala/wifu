@@ -1,20 +1,14 @@
 #include "packet/IPPacket.h"
 
 IPPacket::IPPacket() : length_set_(false) {
-    ip_ = (struct iphdr*) payload_;
-
-    set_ip_version(4);
-    set_ip_header_length_words(sizeof(struct iphdr) / 4);
-    set_ip_tos(0);
-    set_ip_fragmentation_offset(0);
-    set_ip_ttl(MAX_TTL);
+	init();
 }
 
-IPPacket::IPPacket(IPPacket& p) : length_set_(false) {
-    ip_ = (struct iphdr*) payload_;
-
-    memcpy(payload_, p.payload_, p.get_ip_tot_length());
-}
+//IPPacket::IPPacket(IPPacket& p) : length_set_(false) {
+//    ip_ = (struct iphdr*) payload_;
+//
+//    memcpy(payload_, p.payload_, p.get_ip_tot_length());
+//}
 
 IPPacket::IPPacket(unsigned char* buffer, int length) : length_set_(false) {
     ip_ = (struct iphdr*) payload_;
@@ -162,7 +156,22 @@ void IPPacket::set_ip_destination_address_s(string daddr) {
 }
 
 void IPPacket::init() {
-    
+    ip_ = (struct iphdr*) payload_;
+
+    memset(ip_, 0, sizeof(iphdr));
+
+    set_ip_version(4);
+    set_ip_header_length_words(sizeof(struct iphdr) / 4);
+    //tos
+    set_ip_tot_length(get_ip_header_length_bytes());
+    //id
+    //flags
+    //fragmentation offset
+    set_ip_ttl(MAX_TTL);
+    //protocol
+    //checksum
+    //source
+    //destination
 }
 
 bool IPPacket::length_is_set() const {

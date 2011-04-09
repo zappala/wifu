@@ -4,13 +4,13 @@ TCPPacket::TCPPacket() : WiFuPacket() {
     init();
 }
 
-TCPPacket::TCPPacket(IPPacket& p) : WiFuPacket(p) {
-    init();
-}
-
-TCPPacket::TCPPacket(unsigned char* buffer, int length) : WiFuPacket(buffer, length) {
-    init();
-}
+//TCPPacket::TCPPacket(IPPacket& p) : WiFuPacket(p) {
+//    init();
+//}
+//
+//TCPPacket::TCPPacket(unsigned char* buffer, int length) : WiFuPacket(buffer, length) {
+//    init();
+//}
 
 TCPPacket::~TCPPacket() {
 
@@ -132,6 +132,7 @@ void TCPPacket::set_tcp_urgent_pointer(u_int16_t urg_ptr) {
 void TCPPacket::init() {
     tcp_ = (struct tcphdr*) get_next_header();
     set_tcp_header_length_words(sizeof (struct tcphdr) / 4);
+    set_ip_tot_length(get_ip_header_length_bytes() + sizeof (struct tcphdr));
 }
 
 bool TCPPacket::is_naked_ack() {

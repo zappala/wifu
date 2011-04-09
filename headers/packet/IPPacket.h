@@ -14,7 +14,6 @@
 #include "GarbageCollector.h"
 #include <sstream>
 #include <string.h>
-#include <iostream>
 
 using namespace std;
 
@@ -22,7 +21,7 @@ class IPPacket : public gc {
 public:
 
     IPPacket();
-    IPPacket(IPPacket&);
+//    IPPacket(IPPacket&);
     IPPacket(unsigned char* buffer, int length);
 
     ~IPPacket();

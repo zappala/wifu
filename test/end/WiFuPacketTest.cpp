@@ -96,18 +96,18 @@ namespace {
         ASSERT_TRUE(!strncmp(helper.get_data(), (const char*) p.get_data(), strlen(helper.get_data())));
     }
 
-    TEST(WiFuPacketTest, BufferConstructor) {
-        WiFuPacketHelper helper;
-        WiFuPacket p(helper.get_buffer(), helper.length());
-        test_constructor(p, helper);
-    }
-
-    TEST(WiFuPacketTest, CopyConstructor) {
-        WiFuPacketHelper helper;
-        WiFuPacket p(helper.get_buffer(), helper.length());
-        WiFuPacket c(p);
-        test_constructor(c, helper);
-    }
+//    TEST(WiFuPacketTest, BufferConstructor) {
+//        WiFuPacketHelper helper;
+//        WiFuPacket p(helper.get_buffer(), helper.length());
+//        test_constructor(p, helper);
+//    }
+//
+//    TEST(WiFuPacketTest, CopyConstructor) {
+//        WiFuPacketHelper helper;
+//        WiFuPacket p(helper.get_buffer(), helper.length());
+//        WiFuPacket c(p);
+//        test_constructor(c, helper);
+//    }
 
     TEST(WiFuPacketTest, SourcePort) {
         WiFuPacket p;

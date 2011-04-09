@@ -21,8 +21,8 @@ struct wifu_packet_header {
 class WiFuPacket : public IPPacket {
 public:
     WiFuPacket();
-    WiFuPacket(IPPacket&);
-    WiFuPacket(unsigned char* buffer, int length);
+//    WiFuPacket(IPPacket&);
+//    WiFuPacket(unsigned char* buffer, int length);
     ~WiFuPacket();
 
     virtual unsigned char* get_data();
