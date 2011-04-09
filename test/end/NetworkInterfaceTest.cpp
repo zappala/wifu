@@ -63,7 +63,6 @@ namespace {
     }
 
     TEST(NetworkInterface, all) {
-
         int protocol = 101;
         int num_packets = 100;
         int packet_size = 1450;
@@ -142,6 +141,7 @@ namespace {
     	FakeNetworkModule fnm;
     	dispatcher.map_event(type_name(NetworkSendPacketEvent), &fnm);
         dispatcher.map_event(type_name(NetworkReceivePacketEvent), &network);
+        dispatcher.start_processing();
 
         int protocol = 101;
         int packet_size = 1450;
