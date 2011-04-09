@@ -11,14 +11,14 @@
 #include "NetworkTrace.h"
 #include "PacketLogger.h"
 #include "defines.h"
+#include "exceptions/WiFuException.h"
 #include "exceptions/MalformedPacketException.h"
-#include "exceptions/UnknownProtocolException.h"
 #include "exceptions/PacketProtocolNotSetException.h"
 #include "exceptions/IOError.h"
 #include "packet/IPPacket.h"
 #include "packet/TCPPacket.h"
 #include <fstream>
-#include <iostream>
+#include <sstream>
 
 using namespace std;
 
