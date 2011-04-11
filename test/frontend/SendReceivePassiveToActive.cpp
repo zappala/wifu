@@ -64,7 +64,9 @@ void* send_receive_thread(void* args) {
     }
 
     EXPECT_EQ(message.length(), num_sent);
+    cout << "SendReceivePassiveToActive, sent message: " << message << endl;
 
+    sleep(5);
 }
 
 /**
@@ -103,7 +105,7 @@ void send_receive_test(int num_bytes) {
     client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
     result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     timer.stop();
-    ASSERT_EQ(0, result);
+    EXPECT_EQ(0, result);
 
     cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
@@ -121,24 +123,44 @@ void send_receive_test(int num_bytes) {
         all_received.append(actual);
 
 
-        ASSERT_EQ(1, return_value);
-        ASSERT_EQ(exp, actual);
+        EXPECT_EQ(1, return_value);
+        EXPECT_EQ(exp, actual);
 
     }
 
-    ASSERT_EQ(expected, all_received);
+    EXPECT_EQ(expected, all_received);
 
-//    cout << "IntegrationTest::send_receive_test(), received the following: " << all_received << endl;
+    cout << "IntegrationTest::send_receive_test(), received the following: " << all_received << endl;
+    sleep(5);
 
 }
 
-TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActive) {
+TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActive1) {
+    send_receive_test(1);
+}
+
+TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActive10) {
     send_receive_test(10);
+}
 
+TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActive100) {
+    send_receive_test(100);
+}
 
-    // so we can see if we are doing something incorrect that would otherwise
-    // be covered up by the exiting of this method
-    sleep(5);
+TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActive1000) {
+    send_receive_test(1000);
+}
+
+TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActive2000) {
+    send_receive_test(2000);
+}
+
+TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActive5000) {
+    send_receive_test(5000);
+}
+
+TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActive50000) {
+    send_receive_test(50000);
 }
 
 TEST_F(BackEndMockTestDrop10, sendReceiveTestPassiveToActiveDrop10) {
