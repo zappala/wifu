@@ -17,7 +17,7 @@
 #include "defines.h"
 #include "BinarySemaphore.h"
 
-#define LOG_FILENAME "wifu-end_log.pcap"
+#define LOG_FILENAME "wifu-log.pcap"
 
 using namespace std;
 
@@ -46,7 +46,7 @@ struct PcapPacketHeader {
 
 class PacketLogger {
 public:
-	static PacketLogger& get_instance();
+	static PacketLogger& instance();
 
 	~PacketLogger();
 

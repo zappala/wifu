@@ -18,6 +18,9 @@
 
 #include "../headers/BackEndTest.h"
 
+#include "../headers/PacketLogReader.h"
+#include "../headers/packet/TCPPacket.h"
+
 void* thread(void* args) {
 
     struct var* v = (struct var*) args;
@@ -80,20 +83,33 @@ void connect_test() {
     ASSERT_EQ(0, result);
 
     cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
+    sleep(5);
 }
 
 TEST_F(BackEndTest, connectTest) {
     connect_test();
-
-    // so we can see if we are doing something incorrect that would otherwise
-    // be covered up by the exiting of this method
-    sleep(5);
 }
 
 TEST_F(BackEndMockTestDropNone, mockConnectTest) {
     connect_test();
+}
 
-    // so we can see if we are doing something incorrect that would otherwise
-    // be covered up by the exiting of this method
-    sleep(5);
+void compare_traces(NetworkTrace& expected) {
+    PacketLogReader reader(LOG_FILENAME);
+    NetworkTrace* actual = reader.get_trace();
+
+    ASSERT_EQ(expected, *actual) << expected.get_packet_trace(*actual);
+}
+
+
+// Drop packets
+TEST_F(BackEndMockTestDrop10, mockConnectTest10) {
+    connect_test();
+
+    NetworkTrace expected;
+    TCPPacket* p = new TCPPacket();
+
+    expected.add_packet(p);
+
+    compare_traces(expected);
 }

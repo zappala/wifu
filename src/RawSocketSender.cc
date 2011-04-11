@@ -18,7 +18,7 @@ ssize_t RawSocketSender::send(WiFuPacket* p) {
         // TODO: What should we do on a fail?
     }
 
-    PacketLogger::get_instance().log(p);
+    PacketLogger::instance().log(p);
 
     return ret;
 }
