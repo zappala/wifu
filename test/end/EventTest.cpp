@@ -9,47 +9,62 @@
 #include "events/Event.h"
 #include "Socket.h"
 #include "IModule.h"
+#include "StandardPortManagerCreator.h"
 
 using namespace std;
 
 namespace {
 
-	class StubEvent : public Event {
-	public:
-		StubEvent() : Event() {}
+    class EventTest : public ::testing::Test {
+    protected:
+        virtual void SetUp() {
+            PortManagerFactory::instance().set_creator(new StandardPortManagerCreator());
+        }
+        virtual void TearDown() {
 
-		StubEvent(Socket* s) : Event(s) {}
+        }
+    };
 
-		void execute(IModule* m) {}
+    class StubEvent : public Event {
+    public:
 
-	};
+        StubEvent() : Event() {
+        }
 
-	TEST(Event, SocketConstructor) {
-		Socket* socket = new Socket(0, 0, 0);
-		StubEvent event(socket);
+        StubEvent(Socket* s) : Event(s) {
+        }
 
-		ASSERT_TRUE(*socket == *event.get_socket());
+        void execute(IModule* m) {
+        }
 
+    };
 
-		StubEvent* e1 = new StubEvent();
-		StubEvent* e2 = new StubEvent();
-		ASSERT_THROW(e1->less_than(e2), WiFuException);
-	}
+    TEST_F(EventTest, SocketConstructor) {
+        Socket* socket = new Socket(0, 0, 0);
+        StubEvent event(socket);
 
-	TEST(Event, BlankConstructor) {
-		StubEvent event;
-
-		ASSERT_THROW(event.get_socket(), WiFuException);
-
-		Socket* socket = new Socket(1, 1, 1);
-		event.set_socket(socket);
-
-		ASSERT_TRUE(*socket == *event.get_socket());
+        ASSERT_TRUE(*socket == *event.get_socket());
 
 
-		StubEvent* e1 = new StubEvent();
-		StubEvent* e2 = new StubEvent();
-		ASSERT_THROW(e1->less_than(e2), WiFuException);
-	}
+        StubEvent* e1 = new StubEvent();
+        StubEvent* e2 = new StubEvent();
+        ASSERT_THROW(e1->less_than(e2), WiFuException);
+    }
+
+    TEST_F(EventTest, BlankConstructor) {
+        StubEvent event;
+
+        ASSERT_THROW(event.get_socket(), WiFuException);
+
+        Socket* socket = new Socket(1, 1, 1);
+        event.set_socket(socket);
+
+        ASSERT_TRUE(*socket == *event.get_socket());
+
+
+        StubEvent* e1 = new StubEvent();
+        StubEvent* e2 = new StubEvent();
+        ASSERT_THROW(e1->less_than(e2), WiFuException);
+    }
 
 }
