@@ -15,6 +15,8 @@
 #include "GarbageCollector.h"
 #include "AddressPort.h"
 #include "observer/Observable.h"
+#include "IPortManagerCreator.h"
+#include "PortManagerFactory.h"
 
 using namespace std;
 // TODO: do we need to protect this with a Semaphore, like a monitor?
@@ -29,8 +31,8 @@ public:
     Socket(int domain,
             int type,
             int protocol,
-            AddressPort* local = new AddressPort("0.0.0.0", PortManager::instance().get()),
-            AddressPort* remote = new AddressPort("0.0.0.0", PortManager::instance().get()));
+            AddressPort* local = new AddressPort("0.0.0.0", PortManagerFactory::instance().create().get()),
+            AddressPort* remote = new AddressPort("0.0.0.0", PortManagerFactory::instance().create().get()));
 
     /**
      * Cleans up this Socket object.

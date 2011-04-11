@@ -24,7 +24,7 @@ namespace {
 
         virtual void SetUp() {
             collection.reset();
-            PortManager::instance().reset();
+            PortManagerFactory::instance().create().reset();
             SocketManager::instance().reset();
         }
 

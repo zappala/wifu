@@ -45,7 +45,7 @@ string BackEndTest::getOutputFromCommand(char* cmd) {
 // BackEndMockTest
 
 string BackEndMockTest::get_command() {
-    string cmd = "./wifu-end --network mock --mockfile ";
+    string cmd = "./wifu-end --network mock --passive_port 1000 --mockfile ";
     cmd.append(get_mock_file());
     return cmd;
 }

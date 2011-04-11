@@ -101,15 +101,28 @@ void compare_traces(NetworkTrace& expected) {
     ASSERT_EQ(expected, *actual) << expected.get_packet_trace(*actual);
 }
 
-
-// Drop packets
-TEST_F(BackEndMockTestDrop10, mockConnectTest10) {
+void drop_syn() {
     connect_test();
 
     NetworkTrace expected;
-    TCPPacket* p = new TCPPacket();
 
-    expected.add_packet(p);
+    TCPPacket* syn = new TCPPacket();
+    syn->set_ip_protocol(SIMPLE_TCP);
+    syn->set_ip_source_address_s("127.0.0.1");
+    syn->set_ip_destination_address_s("127.0.0.1");
+    syn->set_destination_port(5002);
+    syn->set_tcp_sequence_number(1);
+    syn->set_tcp_ack_number(0);
+    syn->set_tcp_syn(true);
+    
+    expected.add_packet(syn);
+    expected.add_packet(syn);
 
     compare_traces(expected);
+}
+
+// Drop packets
+
+TEST_F(BackEndMockTestDrop10, mockConnectTest10) {
+    drop_syn();
 }

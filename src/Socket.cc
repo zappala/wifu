@@ -18,8 +18,8 @@ is_passive_(false) {
 
 Socket::~Socket() {
     SocketManager::instance().remove(socket_);
-    PortManager::instance().remove(local_->get_port());
-    PortManager::instance().remove(remote_->get_port());
+    PortManagerFactory::instance().create().remove(local_->get_port());
+    PortManagerFactory::instance().create().remove(remote_->get_port());
 
     if (local_) {
         delete local_;

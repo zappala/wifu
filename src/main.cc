@@ -24,6 +24,8 @@
 #include "NetworkInterfaceFactory.h"
 #include "StandardNetworkInterfaceCreator.h"
 #include "MockNetworkInterfaceCreator.h"
+#include "StandardPortManagerCreator.h"
+#include "MockPortManagerCreator.h"
 
 //events
 #include "TimeoutEventManager.h"
@@ -56,6 +58,8 @@
 #include "Dispatcher.h"
 #include "Socket.h"
 #include "WifuEndBackEndLibrary.h"
+#include "PortManagerFactory.h"
+
 
 using namespace std;
 
@@ -86,9 +90,11 @@ void setup_network_interface(string& type) {
     if (type == "standard") {
         log_INFORMATIONAL("Using standard network interface");
         NetworkInterfaceFactory::instance().set_creator(new StandardNetworkInterfaceCreator());
+        PortManagerFactory::instance().set_creator(new StandardPortManagerCreator());
     } else if (type == "mock") {
         log_INFORMATIONAL("Using mock network interface");
         NetworkInterfaceFactory::instance().set_creator(new MockNetworkInterfaceCreator());
+        PortManagerFactory::instance().set_creator(new MockPortManagerCreator());
     }
 }
 
@@ -106,10 +112,12 @@ int main(int argc, char** argv) {
     string network_type = "standard";
     string network = "network";
     string mockfile = "mockfile";
+    string passive_port = "passive_port";
 
     static struct option long_options[] = {
         {network.c_str(), required_argument, NULL, 0},
         {mockfile.c_str(), required_argument, NULL, 0},
+        {passive_port.c_str(), required_argument, NULL, 0},
         {0, 0, 0, 0}
     };
 
