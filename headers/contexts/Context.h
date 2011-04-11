@@ -64,6 +64,12 @@ public:
 
     virtual void receive_from(ReceiveEvent* e);
 
+    virtual void icontext_send_buffer_not_empty(SendBufferNotEmptyEvent*);
+
+    virtual void icontext_send_buffer_not_full(SendBufferNotFullEvent*);
+
+    virtual void icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent*);
+
 private:
     State* current_;
 

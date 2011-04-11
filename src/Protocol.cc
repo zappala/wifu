@@ -120,11 +120,12 @@ void Protocol::library_connect(Event* e) {
 
     // TODO: Error check
 
-//    cout << "In library connect" << endl;
+    //    cout << "In library connect" << endl;
     connect(event);
 }
 
 void Protocol::library_accept(Event* e) {
+    cout << "Protocol::library_accept(), Event socket: " << e->get_socket() << endl;
     AcceptEvent* event = (AcceptEvent*) e;
 
     Socket* socket = event->get_socket();
@@ -137,7 +138,7 @@ void Protocol::library_accept(Event* e) {
 }
 
 void Protocol::library_receive(Event* e) {
-//    cout << "Protocol::library_receive()" << endl;
+    //    cout << "Protocol::library_receive()" << endl;
     ReceiveEvent* event = (ReceiveEvent*) e;
 
     Socket* s = event->get_socket();
@@ -147,13 +148,12 @@ void Protocol::library_receive(Event* e) {
         return;
     }
 
-    check_and_send_receive_response(e);
 
     receive_from(event);
 }
 
 void Protocol::library_send(Event* e) {
-//    cout << "Protocol::library_send()" << endl;
+    //    cout << "Protocol::library_send()" << endl;
     SendEvent* event = (SendEvent*) e;
 
     // call contexts
@@ -161,7 +161,7 @@ void Protocol::library_send(Event* e) {
 }
 
 void Protocol::send(Event* e) {
-//    cout << "Protocol::send()" << endl;
+    //    cout << "Protocol::send()" << endl;
     SendPacketEvent* event = (SendPacketEvent*) e;
 
     Socket* socket = event->get_socket();
@@ -174,7 +174,7 @@ void Protocol::send(Event* e) {
 }
 
 void Protocol::network_receive(Event* e) {
-//    cout << "Protocol::network_receive()" << endl;
+    //    cout << "Protocol::network_receive()" << endl;
 
     NetworkReceivePacketEvent* event = (NetworkReceivePacketEvent*) e;
 
@@ -187,7 +187,6 @@ void Protocol::network_receive(Event* e) {
     // TODO: Error check
     // We will potentially save data before we are connected; however, we won't pass data to the application until we are connected.
     receive_packet(event);
-    check_and_send_receive_response(e);
 }
 
 void Protocol::connection_established(Event* e) {
@@ -208,6 +207,7 @@ void Protocol::connection_established(Event* e) {
     new_connection_established(event);
 
     AcceptEvent* a_event = event->get_accept_event();
+
     ResponseEvent* response = new ResponseEvent(socket, a_event->get_name(), a_event->get_map()[FILE_STRING]);
     response->put(ERRNO, Utils::itoa(0));
     response->put(RETURN_VALUE_STRING, Utils::itoa(new_socket->get_socket_id()));
@@ -252,6 +252,35 @@ void Protocol::resend(Event* e) {
     resend_packet(event);
 }
 
-void Protocol::check_and_send_receive_response(Event* e) {
+void Protocol::send_buffer_not_empty(Event* e) {
+    SendBufferNotEmptyEvent* event = (SendBufferNotEmptyEvent*) e;
+    Socket* socket = event->get_socket();
 
+    if (!sockets_.contains(socket)) {
+        return;
+    }
+
+    icontext_send_buffer_not_empty(event);
+}
+
+void Protocol::send_buffer_not_full(Event* e) {
+    SendBufferNotFullEvent* event = (SendBufferNotFullEvent*) e;
+    Socket* socket = event->get_socket();
+
+    if (!sockets_.contains(socket)) {
+        return;
+    }
+
+    icontext_send_buffer_not_full(event);
+}
+
+void Protocol::receive_buffer_not_empty(Event* e) {
+    ReceiveBufferNotEmptyEvent* event = (ReceiveBufferNotEmptyEvent*) e;
+    Socket* socket = event->get_socket();
+
+    if (!sockets_.contains(socket)) {
+        return;
+    }
+
+    icontext_receive_buffer_not_empty(event);
 }

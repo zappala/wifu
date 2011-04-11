@@ -15,6 +15,12 @@
 #include "contexts/IContextContainer.h"
 #include "contexts/ReliabilityContext.h"
 #include "events/ReceiveEvent.h"
+#include "events/ReceiveBufferNotEmptyEvent.h"
+#include "events/SendBufferNotEmptyEvent.h"
+#include "events/SendBufferNotFullEvent.h"
+
+#include "CacheMap.h"
+#include "SimpleTCPCache.h"
 
 class SimpleTCP : public Protocol {
 private:
@@ -28,6 +34,12 @@ private:
 
     tr1::unordered_map<Socket*, IContextContainer*> map_;
     tr1::unordered_map<Socket*, IContextContainer*>::iterator itr_;
+
+    bool is_room_in_send_buffer(SendEvent* e);
+    void save_in_buffer_and_send_events(SendEvent* e);
+    void create_and_dispatch_received_data(ReceiveEvent* e);
+
+    
 
 public:
     static SimpleTCP& instance();
@@ -63,6 +75,12 @@ public:
     bool is_connected(Socket* s);
 
     void receive_from(ReceiveEvent* e);
+
+    void icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e);
+
+    void icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e);
+
+    void icontext_send_buffer_not_full(SendBufferNotFullEvent* e);
 };
 
 #endif	/* SIMPLETCP_H */

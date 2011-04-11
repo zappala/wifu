@@ -106,7 +106,7 @@ public:
      * @see SocketData
      */
     void receive(string& message) {
-        //        cout << "Response:\t" << message << endl;
+//        cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
@@ -120,7 +120,7 @@ public:
         }
 
         if (!response_[NAME_STRING].compare(WIFU_RECVFROM_NAME)) {
-//            cout << "WifuEndAPILocalSocket::receive(): " << response_[BUFFER_STRING];
+            //            cout << "WifuEndAPILocalSocket::receive(): " << response_[BUFFER_STRING];
             sockets.get(socket)->set_payload(response_[BUFFER_STRING]);
         }
 
@@ -141,6 +141,7 @@ public:
         int error = atoi(response_[ERRNO].c_str());
 
         SocketData* data = sockets.get(socket);
+
         assert(data);
 
         data->set_error(error);
@@ -372,11 +373,12 @@ public:
         }
 
         string message = QueryStringParser::create(WIFU_ACCEPT_NAME, m);
+        //        cout << "WifuEndAPILocalSocket::wifu_accept(), sending message to back end." << endl;
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
-        data->get_semaphore()->wait();
 
+        data->get_semaphore()->wait();
 
         socklen_t length = data->get_address_port_length();
         memcpy(addr_len, &length, sizeof (socklen_t));
@@ -385,6 +387,7 @@ public:
         int new_socket = data->get_return_value();
         sockets.put(new_socket, new SocketData());
 
+        //        cout << "WifuEndAPILocalSocket::wifu_accept(), returning..." << endl;
         return new_socket;
     }
 
@@ -447,7 +450,7 @@ public:
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[BUFFER_STRING] = string((const char*) buf, n);
         m[N_STRING] = Utils::itoa(n);
-//        cout << "wifu_sendto(), buffer: " << m[BUFFER_STRING] << endl;
+        //        cout << "wifu_sendto(), buffer: " << m[BUFFER_STRING] << endl;
         m[FLAGS_STRING] = Utils::itoa(flags);
 
 
@@ -512,11 +515,11 @@ public:
         data->get_semaphore()->wait();
         ssize_t ret_val = data->get_return_value();
 
-        // TODO: fill in the actual vale of addr_len according to man 2 recvfrom()
+        // TODO: fill in the actual vale of addr_len and addr according to man 2 recvfrom()
 
         if (ret_val > 0) {
             memcpy(buf, data->get_payload(), ret_val);
-//            cout << "wifu_recvfrom(), buffer: " << (const char*) buf << endl;
+            //            cout << "wifu_recvfrom(), buffer: " << (const char*) buf << endl;
         }
         return ret_val;
     }

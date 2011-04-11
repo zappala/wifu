@@ -14,6 +14,9 @@
 #include "CongestionControlContext.h"
 #include "ConnectionManagerContext.h"
 
+#include "events/ReceiveEvent.h"
+#include "events/SendEvent.h"
+
 using namespace std;
 
 class IContextContainer : public gc {
@@ -28,10 +31,21 @@ public:
 
     IContext* get_connection_manager();
 
+    SendEvent* get_saved_send_event();
+
+    void set_saved_send_event(SendEvent* e);
+
+    ReceiveEvent* get_saved_receive_event();
+
+    void set_saved_receive_event(ReceiveEvent* e);
+
 private:
     IContext* reliability_;
     IContext* cc_;
     IContext* cm_;
+
+    SendEvent* saved_send_event_;
+    ReceiveEvent* saved_receive_event_;
 
 };
 

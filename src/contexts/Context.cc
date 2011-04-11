@@ -83,3 +83,15 @@ bool Context::is_connected(Socket* s) {
 void Context::receive_from(ReceiveEvent* e) {
     get_state()->receive_from(this, e);
 }
+
+void Context::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e) {
+    get_state()->state_receive_buffer_not_empty(this, e);
+}
+
+void Context::icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e) {
+    get_state()->state_send_buffer_not_empty(this, e);
+}
+
+void Context::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
+    get_state()->state_send_buffer_not_full(this, e);
+}

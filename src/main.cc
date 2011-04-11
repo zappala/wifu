@@ -39,6 +39,9 @@
 #include "events/TimeoutEvent.h"
 #include "events/ConnectionInitiatedEvent.h"
 #include "events/ConnectEvent.h"
+#include "events/ReceiveBufferNotEmptyEvent.h"
+#include "events/SendBufferNotEmptyEvent.h"
+#include "events/SendBufferNotFullEvent.h"
 
 //protocols
 #include "ProtocolManager.h"
@@ -148,6 +151,9 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(ResendPacketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(ReceiveEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(SendEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(SendBufferNotFullEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &SimpleTCP::instance());
 
 
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());

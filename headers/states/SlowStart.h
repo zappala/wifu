@@ -19,8 +19,10 @@
 #include "events/SendPacketEvent.h"
 #include "events/NetworkReceivePacketEvent.h"
 #include "events/ResponseEvent.h"
+#include "events/SendBufferNotEmptyEvent.h"
 #include "Dispatcher.h"
-
+#include "CacheMap.h"
+#include "SimpleTCPCache.h"
 #include "packet/TCPPacket.h"
 
 
@@ -31,12 +33,17 @@ public:
     SlowStart();
     virtual ~SlowStart();
 
-    void send_packet(Context* c, SendPacketEvent* e);
     void receive_packet(Context* c, NetworkReceivePacketEvent* e);
+    void state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e);
+    void send_packet(Context* c, SendPacketEvent* e);
+
     void enter(Context* c);
     void exit(Context* c);
 
-    void send_to(Context* c, SendEvent* e);
+private:
+    int outstanding_;
+    u_int32_t last_sent_sequence_number_;
+    
 
 };
 

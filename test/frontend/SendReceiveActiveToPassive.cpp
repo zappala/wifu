@@ -68,6 +68,7 @@ void* active_to_passive_thread(void* args) {
 
     }
     EXPECT_EQ(expected, all_received);
+    cout << "Received: " << all_received << endl;
 }
 
 /**
@@ -125,114 +126,98 @@ void active_to_passive_test(int num_bytes) {
     }
 
     EXPECT_EQ(message.length(), num_sent);
-    pthread_cancel(t);
 
-}
+    cout << "Sent: " << message << endl;
 
-TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive) {
-    active_to_passive_test(10);
-
-
-    // so we can see if we are doing something incorrect that would otherwise
-    // be covered up by the exiting of this method
     sleep(5);
 }
+
+TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive1) {
+    active_to_passive_test(1);
+}
+
+TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive10) {
+    active_to_passive_test(10);
+}
+
+TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive100) {
+    active_to_passive_test(100);
+}
+
+TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive1000) {
+    active_to_passive_test(1000);
+}
+
+TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive2000) {
+    active_to_passive_test(2000);
+}
+
+TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive5000) {
+    active_to_passive_test(5000);
+}
+
+TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive50000) {
+    active_to_passive_test(50000);
+}
+
+
 
 TEST_F(BackEndMockTestDrop10, sendReceiveTestActiveToPassive10) {
     active_to_passive_test(10);
-
-
-    // so we can see if we are doing something incorrect that would otherwise
-    // be covered up by the exiting of this method
-    sleep(5);
 }
 
 TEST_F(BackEndMockTestDrop12, sendReceiveTestActiveToPassive12) {
     active_to_passive_test(10);
-
-
-    // so we can see if we are doing something incorrect that would otherwise
-    // be covered up by the exiting of this method
-    sleep(5);
 }
 
 TEST_F(BackEndMockTestDrop22, sendReceiveTestActiveToPassive22) {
     active_to_passive_test(10);
-
-
-    // so we can see if we are doing something incorrect that would otherwise
-    // be covered up by the exiting of this method
-    sleep(5);
 }
 
 TEST_F(BackEndMockTestDrop22Delay32, sendReceiveTestActiveToPassive2232) {
     active_to_passive_test(1000);
-
-
-    // so we can see if we are doing something incorrect that would otherwise
-    // be covered up by the exiting of this method
-    sleep(5);
 }
 
 TEST_F(BackEndMockTestDrop24, sendReceiveTestActiveToPassive24) {
     active_to_passive_test(100);
-
-
-    // so we can see if we are doing something incorrect that would otherwise
-    // be covered up by the exiting of this method
-    sleep(5);
 }
 
 TEST_F(BackEndMockTestDrop32, sendReceiveTestActiveToPassive32) {
     active_to_passive_test(100);
-
-
-    // so we can see if we are doing something incorrect that would otherwise
-    // be covered up by the exiting of this method
-    sleep(5);
 }
 
 TEST_F(BackEndMockTestDropRandom10Percent, sendReceiveTestActiveToPassiveDropRandom) {
     active_to_passive_test(20000);
-    sleep(5);
 }
 
 TEST_F(BackEndMockTestDropRandom20Percent, sendReceiveTestActiveToPassiveDropRandom) {
     active_to_passive_test(20000);
-    sleep(5);
 }
 
 TEST_F(BackEndMockTestDropRandom30Percent, sendReceiveTestActiveToPassiveDropRandom) {
     active_to_passive_test(20000);
-    sleep(5);
 }
 
 TEST_F(BackEndMockTestDropRandom40Percent, sendReceiveTestActiveToPassiveDropRandom) {
     active_to_passive_test(20000);
-    sleep(5);
 }
 
 TEST_F(BackEndMockTestDropRandom50Percent, sendReceiveTestActiveToPassiveDropRandom) {
     active_to_passive_test(20000);
-    sleep(5);
 }
 //
 //TEST_F(BackEndMockTestDropRandom60Percent, sendReceiveTestActiveToPassiveDropRandom) {
 //    active_to_passive_test(1000);
-//    sleep(5);
 //}
 //
 //TEST_F(BackEndMockTestDropRandom70Percent, sendReceiveTestActiveToPassiveDropRandom) {
 //    active_to_passive_test(1000);
-//    sleep(5);
 //}
 //
 //TEST_F(BackEndMockTestDropRandom80Percent, sendReceiveTestActiveToPassiveDropRandom) {
 //    active_to_passive_test(1000);
-//    sleep(5);
 //}
 //
 //TEST_F(BackEndMockTestDropRandom90Percent, sendReceiveTestActiveToPassiveDropRandom) {
 //    active_to_passive_test(1000);
-//    sleep(5);
 //}

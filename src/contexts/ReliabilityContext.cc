@@ -1,6 +1,6 @@
 #include "contexts/ReliabilityContext.h"
 
-ReliabilityContext::ReliabilityContext() : Context(), seq_counter_(1), last_packet_sent_(0), last_packet_received_(0) {
+ReliabilityContext::ReliabilityContext() : Context(), seq_number_(1), ack_number_(0), timeout_event_(0) {
     set_state(new ReliabilityState());
 }
 
@@ -8,37 +8,27 @@ ReliabilityContext::~ReliabilityContext() {
 
 }
 
-TCPPacket* ReliabilityContext::get_last_packet_sent() {
-    return last_packet_sent_;
+void ReliabilityContext::set_seq_number(u_int32_t value) {
+    seq_number_ = value;
 }
 
-void ReliabilityContext::set_last_packet_sent(TCPPacket* p) {
-    last_packet_sent_ = p;
+u_int32_t ReliabilityContext::get_seq_number() {
+    return seq_number_;
 }
 
-TCPPacket* ReliabilityContext::get_last_packet_received() {
-    return last_packet_received_;
+void ReliabilityContext::set_ack_number(u_int32_t value) {
+    ack_number_ = value;
 }
 
-void ReliabilityContext::set_last_packet_received(TCPPacket* p) {
-    last_packet_received_ = p;
+u_int32_t ReliabilityContext::get_ack_number() {
+    return ack_number_;
 }
 
-void ReliabilityContext::set_saved_timeout(TimeoutEvent* te) {
-    if (te == 0 && saved_timeout_ != 0) {
-        cout << "Cancelling timer: " << saved_timeout_->to_s() << endl;
-    }
-    saved_timeout_ = te;
+void ReliabilityContext::set_timeout_event(TimeoutEvent* e) {
+    timeout_event_ = e;
 }
 
-TimeoutEvent* ReliabilityContext::get_saved_timeout() {
-    return saved_timeout_;
-}
-
-void ReliabilityContext::set_seq_counter(u_int32_t value) {
-    seq_counter_ = value;
-}
-
-u_int32_t ReliabilityContext::get_seq_counter() {
-    return seq_counter_;
+TimeoutEvent* ReliabilityContext::get_timeout_event() {
+    assert(timeout_event_);
+    return timeout_event_;
 }
