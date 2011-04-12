@@ -137,7 +137,6 @@ TCPPacket* get_ack() {
     return ack;
 }
 
-
 void drop_none() {
     connect_test();
     NetworkTrace expected;
@@ -197,4 +196,35 @@ void drop_syn() {
 
 TEST_F(BackEndMockTestDrop10, mockConnectTest10) {
     drop_syn();
+}
+
+void drop_synack() {
+    connect_test();
+
+    NetworkTrace expected;
+
+    // Send
+    expected.add_packet(get_syn());
+    // resend
+    expected.add_packet(get_syn());
+    // receive
+    expected.add_packet(get_syn());
+
+
+    // send
+    expected.add_packet(get_synack());
+    // receive
+    expected.add_packet(get_synack());
+
+
+    // send
+    expected.add_packet(get_ack());
+    // receive
+    expected.add_packet(get_ack());
+
+    compare_traces(expected);
+}
+
+TEST_F(BackEndMockTestDrop12, mockConnectTest12) {
+    drop_synack();
 }
