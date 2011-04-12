@@ -90,10 +90,6 @@ TEST_F(BackEndTest, connectTest) {
     connect_test();
 }
 
-TEST_F(BackEndMockTestDropNone, mockConnectTest) {
-    connect_test();
-}
-
 void compare_traces(NetworkTrace& expected) {
     PacketLogReader reader(LOG_FILENAME);
     NetworkTrace* actual = reader.get_trace();
@@ -101,22 +97,98 @@ void compare_traces(NetworkTrace& expected) {
     ASSERT_EQ(expected, *actual) << expected.get_packet_trace(*actual);
 }
 
-void drop_syn() {
-    connect_test();
-
-    NetworkTrace expected;
-
+TCPPacket* get_syn() {
     TCPPacket* syn = new TCPPacket();
     syn->set_ip_protocol(SIMPLE_TCP);
     syn->set_ip_source_address_s("127.0.0.1");
     syn->set_ip_destination_address_s("127.0.0.1");
     syn->set_destination_port(5002);
+    syn->set_source_port(1000);
     syn->set_tcp_sequence_number(1);
     syn->set_tcp_ack_number(0);
     syn->set_tcp_syn(true);
-    
-    expected.add_packet(syn);
-    expected.add_packet(syn);
+    return syn;
+}
+
+TCPPacket* get_synack() {
+    TCPPacket* synack = new TCPPacket();
+    synack->set_ip_protocol(SIMPLE_TCP);
+    synack->set_ip_source_address_s("127.0.0.1");
+    synack->set_ip_destination_address_s("127.0.0.1");
+    synack->set_destination_port(1000);
+    synack->set_source_port(5002);
+    synack->set_tcp_sequence_number(1);
+    synack->set_tcp_ack_number(2);
+    synack->set_tcp_syn(true);
+    synack->set_tcp_ack(true);
+    return synack;
+}
+
+TCPPacket* get_ack() {
+    TCPPacket* ack = new TCPPacket();
+    ack->set_ip_protocol(SIMPLE_TCP);
+    ack->set_ip_source_address_s("127.0.0.1");
+    ack->set_ip_destination_address_s("127.0.0.1");
+    ack->set_destination_port(5002);
+    ack->set_source_port(1000);
+    ack->set_tcp_sequence_number(2);
+    ack->set_tcp_ack_number(2);
+    ack->set_tcp_ack(true);
+    return ack;
+}
+
+
+void drop_none() {
+    connect_test();
+    NetworkTrace expected;
+
+    // send
+    expected.add_packet(get_syn());
+    // receive
+    expected.add_packet(get_syn());
+
+
+    // send
+    expected.add_packet(get_synack());
+    // receive
+    expected.add_packet(get_synack());
+
+
+    // send
+    expected.add_packet(get_ack());
+    // receive
+    expected.add_packet(get_ack());
+
+    compare_traces(expected);
+}
+
+TEST_F(BackEndMockTestDropNone, mockConnectTest) {
+    drop_none();
+}
+
+void drop_syn() {
+    connect_test();
+
+    NetworkTrace expected;
+
+    // Send and drop
+    expected.add_packet(get_syn());
+    // resend
+    expected.add_packet(get_syn());
+    // receive
+    expected.add_packet(get_syn());
+
+
+    // send
+    expected.add_packet(get_synack());
+    // receive
+    expected.add_packet(get_synack());
+
+
+    // send
+    expected.add_packet(get_ack());
+    // receive
+    expected.add_packet(get_ack());
 
     compare_traces(expected);
 }
