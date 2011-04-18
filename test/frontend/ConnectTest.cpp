@@ -205,7 +205,40 @@ void drop_synack() {
 
     // Send
     expected.add_packet(get_syn());
+    // receive
+    expected.add_packet(get_syn());
+
+    // send (drop)
+    expected.add_packet(get_synack());
+
     // resend
+    expected.add_packet(get_syn());
+    // recieve
+    expected.add_packet(get_syn());
+
+    // resend
+    expected.add_packet(get_synack());
+    // receive
+    expected.add_packet(get_synack());
+    
+    // send
+    expected.add_packet(get_ack());
+    // receive
+    expected.add_packet(get_ack());
+
+    compare_traces(expected);
+}
+
+TEST_F(BackEndMockTestDrop12Delay12, mockConnectTestDrop12Delay12) {
+    drop_synack();
+}
+
+void drop_ack() {
+    connect_test();
+
+    NetworkTrace expected;
+
+    // Send
     expected.add_packet(get_syn());
     // receive
     expected.add_packet(get_syn());
@@ -225,6 +258,6 @@ void drop_synack() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop12, mockConnectTest12) {
-    drop_synack();
+TEST_F(BackEndMockTestDrop22, mockConnectTest22) {
+    drop_ack();
 }

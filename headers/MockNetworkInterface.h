@@ -8,6 +8,9 @@
 #ifndef _MOCKNETWORKINTERFACE_H
 #define	_MOCKNETWORKINTERFACE_H
 
+
+#include <map>
+
 #include "INetworkInterface.h"
 #include "events/NetworkReceivePacketEvent.h"
 #include "packet/TCPPacket.h"
@@ -33,6 +36,8 @@ public:
 
     void network_send(Event* e);
 
+    void timer_fired(Event* e);
+
 private:
     MockNetworkInterface();
 
@@ -48,12 +53,18 @@ private:
 
     void read_config_file();
 
+    void receive(WiFuPacket* p);
+
     // innermost pair is seq/ack number
     // outermost pair is pair of seq/ack number to delay
     // delay of -1 means drop
     vector< pair< pair<int, int>, int> > control_nums_to_delay_;
 
     int percent_;
+
+    map<TimeoutEvent*, TCPPacket*> delayed_;
+
+    Socket* fake_socket_;
 };
 
 #endif	/* _MOCKNETWORKINTERFACE_H */

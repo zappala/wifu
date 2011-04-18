@@ -143,6 +143,7 @@ int main(int argc, char** argv) {
     network_interface->start();
 
     dispatcher.map_event(type_name(NetworkSendPacketEvent), network_interface);
+    dispatcher.map_event(type_name(TimerFiredEvent), network_interface);
     dispatcher.map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
     dispatcher.map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
 

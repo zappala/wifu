@@ -34,16 +34,26 @@ void MockNetworkInterface::network_send(Event* e) {
     cout << p->to_s() << endl;
     logger.log(p);
     // drop the packet
-//    cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
+    //    cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
     if (delay == -1) {
         cout << "MockNetworkInterface::network_send(), Dropping packet" << endl;
         return;
     }
 
     cout << "MockNetworkInterface::network_send(), Before sleep" << endl;
-    
-    usleep(delay);
 
+    if (delay > 0) {
+        // delay is in microseconds
+        TimeoutEvent* timer = new TimeoutEvent(fake_socket_, 0, delay * 1000);
+        delayed_[timer] = tcp_packet;
+        Dispatcher::instance().enqueue(timer);
+        return;
+    }
+
+    receive(p);
+}
+
+void MockNetworkInterface::receive(WiFuPacket* p) {
     AddressPort* local = p->get_dest_address_port();
     AddressPort* remote = p->get_source_address_port();
 
@@ -68,28 +78,40 @@ void MockNetworkInterface::network_send(Event* e) {
     Dispatcher::instance().enqueue(response);
 }
 
+void MockNetworkInterface::timer_fired(Event* e) {
+    TimerFiredEvent* event = (TimerFiredEvent*) e;
+
+    map<TimeoutEvent*, TCPPacket*>::iterator itr = delayed_.find(event->get_timeout_event());
+    if (itr != delayed_.end()) {
+        cout << "MockNetworkInterface::timer_fired()" << endl;
+        receive(itr->second);
+        delayed_.erase(itr);
+    }
+}
+
 MockNetworkInterface::MockNetworkInterface() : INetworkInterface() {
     read_config_file();
 
     srand(time(NULL));
     percent_ = -1;
+
+    fake_socket_ = new Socket(0, 0, 0);
 }
 
 int MockNetworkInterface::get_delay(TCPPacket* p) {
     int delay = 0;
 
-    if(percent_ > 0) {
+    if (percent_ > 0) {
         int random = rand() % 100 + 1;
-        if(random <= percent_) {
+        if (random <= percent_) {
             delay = -1;
         }
-    }
-    else if (!control_nums_to_delay_.empty()) {
+    } else if (!control_nums_to_delay_.empty()) {
         pair<pair<int, int>, int> numbers = control_nums_to_delay_.front();
         int seq = numbers.first.first;
         int ack = numbers.first.second;
 
-        if(seq == -1 && ack == -1) {
+        if (seq == -1 && ack == -1) {
             percent_ = numbers.second;
         }
 
@@ -131,9 +153,8 @@ void MockNetworkInterface::read_config_file() {
 
         }
 
-    }
-    catch(IOError e) {
+    } catch (IOError e) {
         // TODO: make this better somehow.  (Print to stderr?)
-//        cout << "Error in parsing/reading file" << endl;
+        //        cout << "Error in parsing/reading file" << endl;
     }
 }
