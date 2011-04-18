@@ -21,6 +21,10 @@ public:
 
 	void add_packet(WiFuPacket* packet);
 
+	/**
+	 * This method assumes that this object is the expected trace while 'other'
+	 * is what was actually was logged
+	 */
 	string get_packet_trace(NetworkTrace& other) const;
 
 	int get_length() const;

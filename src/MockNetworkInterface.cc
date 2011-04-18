@@ -1,5 +1,7 @@
 #include "MockNetworkInterface.h"
+#include "PacketLogger.h"
 
+#define logger PacketLogger::get_instance()
 
 MockNetworkInterface& MockNetworkInterface::instance() {
     static MockNetworkInterface instance_;
