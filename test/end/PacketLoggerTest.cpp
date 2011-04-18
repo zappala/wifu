@@ -39,7 +39,11 @@ namespace {
 
         NetworkTrace expected; //the sent and received packets that you expect from the daemon's perspective
         expected.add_packet(packet);
-        expected.add_packet(packet);
+        TCPPacket* p = new TCPPacket(); //be sure to call 'new'
+        p->set_ip_protocol(SIMPLE_TCP); //very important
+        p->set_data(data1, sizeof (data1));
+        p->set_tcp_fin(true);
+        expected.add_packet(p);
 
         PacketLogReader log_reader(LOG_FILENAME);
         NetworkTrace* actual = log_reader.get_trace();
