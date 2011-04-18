@@ -82,6 +82,8 @@ void WifuEndBackEndLibrary::receive(string& message) {
     } else if (!name.compare(WIFU_SETSOCKOPT_NAME)) {
         int return_val = 0;
         //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+    } else if (!name.compare(WIFU_CLOSE_NAME)) {
+        dispatch(new CloseEvent(message, get_file(), socket));
     }
 }
 
@@ -90,7 +92,7 @@ void WifuEndBackEndLibrary::library_response(Event* e) {
     event->put(FILE_STRING, get_file());
     string file = event->get_write_file();
     string response = event->get_response();
-//    cout << "Response: " << response << endl;
+    //    cout << "Response: " << response << endl;
     send_to(file, response);
 }
 

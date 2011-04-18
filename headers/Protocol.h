@@ -22,6 +22,7 @@
 #include "events/ConnectionEstablishedEvent.h"
 #include "events/TimerFiredEvent.h"
 #include "events/ResendPacketEvent.h"
+#include "events/CloseEvent.h"
 
 #include "HashSet.h"
 #include "Socket.h"
@@ -67,6 +68,8 @@ public:
     virtual void library_receive(Event* e);
 
     virtual void library_send(Event* e);
+
+    virtual void library_close(Event* e);
 
     virtual void send(Event* e);
 

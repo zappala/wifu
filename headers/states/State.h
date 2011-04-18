@@ -19,6 +19,7 @@
 #include "events/ConnectEvent.h"
 #include "events/SendPacketEvent.h"
 #include "events/ResendPacketEvent.h"
+#include "events/CloseEvent.h"
 
 #include <string>
 #include "contexts/Context.h"
@@ -61,7 +62,7 @@ public:
 
     virtual void connect(Context*, ConnectEvent*);
 
-    virtual void close(Context*);
+    virtual void state_close(Context*, CloseEvent*);
 
     virtual void send_packet(Context*, SendPacketEvent* e);
 

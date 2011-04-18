@@ -559,6 +559,19 @@ public:
 
     }
 
+    int wifu_close(int fd) {
+        map<string, string> m;
+        m[FILE_STRING] = get_file();
+        m[SOCKET_STRING] = Utils::itoa(fd);
+
+        string message = QueryStringParser::create(WIFU_CLOSE_NAME, m);
+        send_to(write_file_, message);
+
+        SocketData* data = sockets.get(fd);
+        data->get_semaphore()->wait();
+        return data->get_return_value();
+    }
+
 private:
     /**
      * The file this WifuEndAPILocalSocket will write to in order to send messages to the back-end (usually /tmp/WS)

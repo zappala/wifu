@@ -120,7 +120,13 @@ void SimpleTCP::new_conneciton_initiated(ConnectionInitiatedEvent* e) {
     new_cc->get_congestion_control()->new_conneciton_initiated(e);
 }
 
-void SimpleTCP::close() {
+void SimpleTCP::icontext_close(CloseEvent* e) {
+    cout << "SimpleTCP::icontext_close()" << endl;
+    IContextContainer* c = get_context(e->get_socket());
+
+    c->get_connection_manager()->icontext_close(e);
+    c->get_reliability()->icontext_close(e);
+    c->get_congestion_control()->icontext_close(e);
 }
 
 void SimpleTCP::timer_fired_event(TimerFiredEvent* e) {

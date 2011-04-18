@@ -24,6 +24,7 @@
 #include "events/AcceptEvent.h"
 #include "events/ReceiveEvent.h"
 #include "events/SendEvent.h"
+#include "events/CloseEvent.h"
 #include "PortManager.h"
 
 /**

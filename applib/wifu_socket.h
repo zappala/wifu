@@ -80,6 +80,8 @@ ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct 
    __THROW.  */
 int wifu_connect (int fd, const struct sockaddr* addr, socklen_t len);
 
+int wifu_close(int fd);
+
 
 #endif	/* WIFU_SOCKET_H */
 

@@ -48,7 +48,7 @@ public:
 
     virtual void new_conneciton_initiated(ConnectionInitiatedEvent* e);
 
-    virtual void close();
+    virtual void icontext_close(CloseEvent* e);
 
     virtual void receive_packet(NetworkReceivePacketEvent* e);
 

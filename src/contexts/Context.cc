@@ -52,8 +52,8 @@ void Context::new_conneciton_initiated(ConnectionInitiatedEvent* e) {
     get_state()->new_connection_initiated(this, e);
 }
 
-void Context::close() {
-    get_state()->close(this);
+void Context::icontext_close(CloseEvent* e) {
+    get_state()->state_close(this, e);
 }
 
 void Context::receive_packet(NetworkReceivePacketEvent* e) {

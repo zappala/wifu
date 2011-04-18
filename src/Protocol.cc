@@ -160,6 +160,15 @@ void Protocol::library_send(Event* e) {
     send_to(event);
 }
 
+void Protocol::library_close(Event* e) {
+    CloseEvent* event = (CloseEvent*)e;
+    if(!sockets_.contains(event->get_socket())) {
+        // TODO: return an error?
+        return;
+    }
+    icontext_close(event);
+}
+
 void Protocol::send(Event* e) {
     //    cout << "Protocol::send()" << endl;
     SendPacketEvent* event = (SendPacketEvent*) e;

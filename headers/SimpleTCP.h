@@ -64,7 +64,7 @@ public:
 
     void new_conneciton_initiated(ConnectionInitiatedEvent* e);
 
-    void close();
+    void icontext_close(CloseEvent* e);
 
     void timer_fired_event(TimerFiredEvent* e);
 

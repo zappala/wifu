@@ -41,7 +41,7 @@ void State::timer_fired(Context* c, TimerFiredEvent* e) {}
 
 void State::connect(Context* c, ConnectEvent* e) {}
 
-void State::close(Context* c) {}
+void State::state_close(Context* c, CloseEvent* e) {}
 
 void State::send_packet(Context* c, SendPacketEvent* e) {}
 

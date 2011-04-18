@@ -44,3 +44,7 @@ ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct 
 int wifu_connect (int fd, const struct sockaddr* addr, socklen_t len) {
     return end_socket.wifu_connect(fd, addr, len);
 }
+
+int wifu_close(int fd) {
+    return end_socket.wifu_close(fd);
+}
