@@ -276,6 +276,7 @@ TEST_F(BackEndMockTestDrop32, sendReceiveTestActiveToPassive32) {
 void drop_first_data_ack() {
     string data = random_string(1);
     active_to_passive_test(data);
+    sleep(2);
 
     NetworkTrace expected;
 
