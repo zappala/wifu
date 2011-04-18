@@ -20,6 +20,7 @@
 #include "../headers/BackEndTest.h"
 
 #include "../headers/PacketTraceHelper.h"
+#include "Utils.h"
 
 void* active_to_passive_thread(void* args) {
 
@@ -72,6 +73,7 @@ void* active_to_passive_thread(void* args) {
     }
     EXPECT_EQ(expected, all_received);
     cout << "Received: " << all_received << endl;
+    sem->post();
 }
 
 /**
@@ -131,7 +133,10 @@ void active_to_passive_test(string message) {
 
     cout << "Sent: " << message << endl;
 
-    sleep(5);
+    struct timespec ts;
+    // wait max of 30 mins
+    Utils::get_timespec_future_time(60 * 30, 0, &ts);
+    v.sem_->timed_wait(&ts);
 }
 
 TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive1) {
@@ -351,5 +356,9 @@ TEST_F(BackEndMockTestDropRandom40Percent, sendReceiveTestActiveToPassiveDropRan
 }
 
 TEST_F(BackEndMockTestDropRandom50Percent, sendReceiveTestActiveToPassiveDropRandom) {
+    active_to_passive_test(random_string(20000));
+}
+
+TEST_F(BackEndMockTestDropRandom60Percent, sendReceiveTestActiveToPassiveDropRandom) {
     active_to_passive_test(random_string(20000));
 }

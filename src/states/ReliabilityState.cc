@@ -35,10 +35,10 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
         cout << "ReliabilityState::send_packet(), Caching the Packet: " << p << endl;
 
         SimpleTCPCache* cache = (SimpleTCPCache*) CacheMap::instance().get(s);
-        if(cache->get_packet()) {
+        if (cache->get_packet()) {
             cout << "ReliabilityState::send_packet(), Packet in cache: " << cache->get_packet() << endl;
         }
-        assert(cache->get_packet() == NULL);
+//        assert(cache->get_packet() == NULL);
         cache->save_packet(p);
 
         TimeoutEvent* timeout_event = new TimeoutEvent(s, 1, 0);
@@ -48,15 +48,22 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
 }
 
 void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
+    cout << "ReliabilityState::timer_fired()" << endl;
+    ReliabilityContext* rc = (ReliabilityContext*) c;
     Socket* s = e->get_socket();
     SimpleTCPCache* cache = (SimpleTCPCache*) CacheMap::instance().get(s);
 
     WiFuPacket* p = cache->get_packet();
 
     if (p) {
-        cache->save_packet(0);
+        cout << "ReliabilityState::timer_fired(), cached packet is NOT null" << endl;
+//        cache->save_packet(0);
         ResendPacketEvent* event = new ResendPacketEvent(e->get_socket(), p);
         Dispatcher::instance().enqueue(event);
+
+        TimeoutEvent* timeout_event = new TimeoutEvent(s, 1, 0);
+        rc->set_timeout_event(timeout_event);
+        Dispatcher::instance().enqueue(timeout_event);
     }
 }
 
@@ -97,7 +104,7 @@ void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) 
         cout << "ReliabilityState::receive_packet(), Case 4" << endl;
         rc->set_seq_number(rc->get_seq_number() - 1);
 
-        if(p->get_data_length_bytes() > 0) {
+        if (p->get_data_length_bytes() > 0) {
             // will send ack in congestion control
             return;
         }
