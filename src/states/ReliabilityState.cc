@@ -96,6 +96,12 @@ void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) 
     } else if (p->get_tcp_sequence_number() + 1 == rc->get_ack_number() && cache->is_empty()) {
         cout << "ReliabilityState::receive_packet(), Case 4" << endl;
         rc->set_seq_number(rc->get_seq_number() - 1);
+
+        if(p->get_data_length_bytes() > 0) {
+            // will send ack in congestion control
+            return;
+        }
+
         TCPPacket* p = new TCPPacket();
         p->set_ip_protocol(SIMPLE_TCP);
 

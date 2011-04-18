@@ -134,7 +134,6 @@ void active_to_passive_test(string message) {
     sleep(5);
 }
 
-
 TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive1) {
     active_to_passive_test(random_string(1));
 }
@@ -233,7 +232,7 @@ void drop_first_data_packet() {
     expected.add_packet(get_ack());
     // receive
     expected.add_packet(get_ack());
-    
+
 
     TCPPacket* data_packet = get_base_tcp_packet();
     data_packet->set_data((unsigned char*) data.c_str(), data.size());
@@ -262,13 +261,77 @@ void drop_first_data_packet() {
     // receive
     expected.add_packet(ack);
 
-
-
     compare_traces(expected);
 }
 
 TEST_F(BackEndMockTestDrop32, sendReceiveTestActiveToPassive32) {
     drop_first_data_packet();
+}
+
+void drop_first_data_ack() {
+    string data = random_string(1);
+    active_to_passive_test(data);
+
+    NetworkTrace expected;
+
+    // Send
+    expected.add_packet(get_syn());
+    // receive
+    expected.add_packet(get_syn());
+
+    // send
+    expected.add_packet(get_synack());
+    // receive
+    expected.add_packet(get_synack());
+
+    // send
+    expected.add_packet(get_ack());
+    // receive
+    expected.add_packet(get_ack());
+
+    // connected
+
+    TCPPacket* data_packet = get_base_tcp_packet();
+    data_packet->set_data((unsigned char*) data.c_str(), data.size());
+    data_packet->set_tcp_sequence_number(3);
+    data_packet->set_tcp_ack_number(2);
+    data_packet->set_source_port(1000);
+    data_packet->set_destination_port(5002);
+    data_packet->set_tcp_ack(true);
+
+    // send
+    expected.add_packet(data_packet);
+    // receive
+    expected.add_packet(data_packet);
+
+    TCPPacket* ack = get_base_tcp_packet();
+    ack->set_tcp_sequence_number(2);
+    ack->set_tcp_ack_number(4);
+    ack->set_source_port(5002);
+    ack->set_destination_port(1000);
+    ack->set_tcp_ack(true);
+
+    // send (drop)
+    expected.add_packet(ack);
+
+    // resend
+    expected.add_packet(data_packet);
+    // receive
+    expected.add_packet(data_packet);
+
+    // send
+    expected.add_packet(ack);
+    // receive
+    expected.add_packet(ack);
+    
+
+
+
+    compare_traces(expected);
+}
+
+TEST_F(BackEndMockTestDrop24, sendReceiveTestActiveToPassive24) {
+    drop_first_data_ack();
 }
 
 TEST_F(BackEndMockTestDropRandom10Percent, sendReceiveTestActiveToPassiveDropRandom) {
