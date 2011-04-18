@@ -198,7 +198,7 @@ TEST_F(BackEndMockTestDrop10, mockConnectTest10) {
     drop_syn();
 }
 
-void drop_synack() {
+void drop_synack12_delay_synack12() {
     connect_test();
 
     NetworkTrace expected;
@@ -230,7 +230,43 @@ void drop_synack() {
 }
 
 TEST_F(BackEndMockTestDrop12Delay12, mockConnectTestDrop12Delay12) {
-    drop_synack();
+    drop_synack12_delay_synack12();
+}
+
+void drop_synack12_delay_syn10() {
+    connect_test();
+
+    NetworkTrace expected;
+
+    // Send
+    expected.add_packet(get_syn());
+    // receive
+    expected.add_packet(get_syn());
+
+    // send (drop)
+    expected.add_packet(get_synack());
+
+    // resend (delayed)
+    expected.add_packet(get_syn());
+
+    // resend
+    expected.add_packet(get_synack());
+    // receive
+    expected.add_packet(get_synack());
+    
+    // send
+    expected.add_packet(get_ack());
+    // receive
+    expected.add_packet(get_ack());
+
+    // receive
+    expected.add_packet(get_syn());
+
+    compare_traces(expected);
+}
+
+TEST_F(BackEndMockTestDrop12Delay10, mockConnectTestDrop12Delay10) {
+    drop_synack12_delay_syn10();
 }
 
 void drop_ack() {
@@ -243,17 +279,24 @@ void drop_ack() {
     // receive
     expected.add_packet(get_syn());
 
-
     // send
     expected.add_packet(get_synack());
     // receive
     expected.add_packet(get_synack());
 
+    // send
+    expected.add_packet(get_ack());
+
+    // resend
+    expected.add_packet(get_synack());
+    // receive
+    expected.add_packet(get_synack());
 
     // send
     expected.add_packet(get_ack());
     // receive
     expected.add_packet(get_ack());
+
 
     compare_traces(expected);
 }

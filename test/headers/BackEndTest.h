@@ -65,6 +65,11 @@ public:
     string get_mock_file();
 };
 
+class BackEndMockTestDrop12Delay10 : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
 class BackEndMockTestDrop22 : public BackEndMockTest {
 public:
     string get_mock_file();

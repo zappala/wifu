@@ -68,6 +68,10 @@ string BackEndMockTestDrop12Delay12::get_mock_file() {
     return "drop_1_2_delay_1_2.conf";
 }
 
+string BackEndMockTestDrop12Delay10::get_mock_file() {
+    return "drop_1_2_delay_1_0.conf";
+}
+
 string BackEndMockTestDrop22::get_mock_file() {
     return "drop_2_2.conf";
 }
