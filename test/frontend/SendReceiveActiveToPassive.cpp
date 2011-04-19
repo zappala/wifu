@@ -220,6 +220,7 @@ TEST_F(BackEndMockTestDrop22, sendReceiveTestActiveToPassive22) {
 void drop_first_data_packet() {
     string data = random_string(1);
     active_to_passive_test(data);
+    sleep(2);
 
     NetworkTrace expected;
 
