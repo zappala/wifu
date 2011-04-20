@@ -12,6 +12,13 @@
 #include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
 
+#include "states/LastAck.h"
+
+#include "events/ResponseEvent.h"
+#include "events/CloseEvent.h"
+
+#include "packet/TCPPacket.h"
+
 class CloseWait : public State {
 public:
     CloseWait();
@@ -19,7 +26,7 @@ public:
     virtual void enter(Context* c);
     virtual void exit(Context* c);
 
-    virtual void close(Context* c);
+    virtual void state_close(Context* c, CloseEvent* e);
 };
 
 #endif	/* CLOSEWAIT_H */

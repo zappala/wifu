@@ -8,13 +8,16 @@
 #ifndef FINWAIT1_H
 #define	FINWAIT1_H
 
-#include "State.h"
+
 #include "contexts/Context.h"
+#include "contexts/ConnectionManagerContext.h"
+
 #include "events/NetworkReceivePacketEvent.h"
 #include "packet/TCPPacket.h"
 #include "Socket.h"
-#include "contexts/ConnectionManagerContext.h"
 
+#include "states/State.h"
+#include "states/FinWait2.h"
 
 class FinWait1 : public State {
 public:

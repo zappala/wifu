@@ -141,9 +141,10 @@ void close_active_to_passive_test(string message) {
     v.sem_->wait();
 
     wifu_close(client);
+    sleep(5);
 
 }
 
 TEST_F(BackEndMockTestDropNone, closeTestActiveToPassive) {
-//    close_active_to_passive_test(random_string(1));
+    close_active_to_passive_test(random_string(1));
 }

@@ -39,10 +39,6 @@ public:
 
     void enter(Context* c);
     void exit(Context* c);
-
-
-    
-
 };
 
 

@@ -15,9 +15,15 @@
 #include "contexts/ConnectionManagerContext.h"
 
 #include "states/Established.h"
+#include "states/FinWait1.h"
+#include "states/CloseWait.h"
+
 #include "events/ResponseEvent.h"
 #include "events/ConnectEvent.h"
 #include "events/NetworkReceivePacketEvent.h"
+#include "events/CloseEvent.h"
+
+#include "packet/TCPPacket.h"
 
 using namespace std;
 
@@ -29,11 +35,9 @@ public:
     virtual void exit(Context* c);
 
     void receive_packet(Context* c, NetworkReceivePacketEvent* e);
-
-    void receive_from(Context* c, ReceiveEvent* e);
-
     bool state_can_receive(Context* c, Socket* s);
     bool state_can_send(Context* c, Socket* s);
+    void state_close(Context* c, CloseEvent* e);
 };
 
 #endif	/* ESTABLISHED_H */

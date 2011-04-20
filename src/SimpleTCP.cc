@@ -122,15 +122,26 @@ void SimpleTCP::new_conneciton_initiated(ConnectionInitiatedEvent* e) {
 
 void SimpleTCP::icontext_close(CloseEvent* e) {
     cout << "SimpleTCP::icontext_close()" << endl;
-    IContextContainer* c = get_context(e->get_socket());
+    Socket* s = e->get_socket();
+    IContextContainer* c = get_context(s);
+    CongestionControlContext* ccc = (CongestionControlContext*) c->get_congestion_control();
 
-    c->get_connection_manager()->icontext_close(e);
-    c->get_reliability()->icontext_close(e);
-    c->get_congestion_control()->icontext_close(e);
+    if (s->get_send_buffer().empty() && ccc->get_num_outstanding() == 0) {
+        cout << "SimpleTCP::icontext_close(), calling connection manager" << endl;
+        c->get_connection_manager()->icontext_close(e);
+    } else {
+        c->set_saved_close_event(e);
+    }
+
+    // TODO: return error, if necessary
+    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+    response->put(ERRNO, Utils::itoa(0));
+    dispatch(response);
 }
 
 void SimpleTCP::timer_fired_event(TimerFiredEvent* e) {
-        cout << "In SimpleTCP::timer_fired()\n";
+    cout << "In SimpleTCP::timer_fired()\n";
     IContextContainer* c = get_context(e->get_socket());
 
     c->get_connection_manager()->timer_fired_event(e);
@@ -181,14 +192,13 @@ void SimpleTCP::receive_from(ReceiveEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
-    if(s->get_receive_buffer().size() > 0) {
+    if (s->get_receive_buffer().size() > 0) {
         create_and_dispatch_received_data(e);
-    }
-    else {
+    } else {
         assert(c->get_saved_receive_event() == NULL);
         c->set_saved_receive_event(e);
     }
-    
+
     c->get_connection_manager()->receive_from(e);
     c->get_reliability()->receive_from(e);
     c->get_congestion_control()->receive_from(e);
@@ -200,7 +210,7 @@ void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e)
 
     ReceiveEvent* receive_event = c->get_saved_receive_event();
 
-    if(receive_event != NULL && s->get_receive_buffer().size() > 0) {
+    if (receive_event != NULL && s->get_receive_buffer().size() > 0) {
         create_and_dispatch_received_data(receive_event);
         c->set_saved_receive_event(NULL);
     }
@@ -228,7 +238,7 @@ void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
 
     SendEvent* saved_send_event = c->get_saved_send_event();
 
-    if(saved_send_event && is_room_in_send_buffer(saved_send_event)) {
+    if (saved_send_event && is_room_in_send_buffer(saved_send_event)) {
         save_in_buffer_and_send_events(saved_send_event);
     }
 
@@ -276,7 +286,7 @@ void SimpleTCP::save_in_buffer_and_send_events(SendEvent* e) {
 void SimpleTCP::create_and_dispatch_received_data(ReceiveEvent* e) {
     Socket* s = e->get_socket();
     int buffer_size = e->get_receive_buffer_size();
-    
+
     string data = s->get_receive_buffer().substr(0, buffer_size);
     s->get_receive_buffer().erase(0, data.size());
 
