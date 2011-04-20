@@ -21,7 +21,7 @@ void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    if(p->is_tcp_ack() && p->get_tcp_ack_number() - 1 == last_sent_sequence_number_) {
+    if(outstanding_ > 0 && p->is_tcp_ack() && p->get_tcp_ack_number() - 1 == last_sent_sequence_number_) {
         --outstanding_;
     }
 
@@ -79,6 +79,8 @@ void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         Dispatcher::instance().enqueue(spe);
         Dispatcher::instance().enqueue(new SendBufferNotFullEvent(s));
     }
+
+    cout << "SlowStart::receive_packet(), #outstanding: " << outstanding_ << endl;
 }
 
 void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e) {
