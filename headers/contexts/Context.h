@@ -60,7 +60,9 @@ public:
 
     virtual void send_to(SendEvent* e);
 
-    virtual bool is_connected(Socket*);
+    virtual bool icontext_can_send(Socket*);
+
+    virtual bool icontext_can_receive(Socket*);
 
     virtual void receive_from(ReceiveEvent* e);
 

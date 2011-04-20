@@ -40,9 +40,7 @@ public:
     void enter(Context* c);
     void exit(Context* c);
 
-private:
-    int outstanding_;
-    u_int32_t last_sent_sequence_number_;
+
     
 
 };

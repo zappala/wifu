@@ -1,6 +1,6 @@
 #include "contexts/CongestionControlContext.h"
 
-CongestionControlContext::CongestionControlContext() : Context(), can_send_(true) {
+CongestionControlContext::CongestionControlContext() : Context() {
     set_state(new SlowStart());
 }
 
@@ -8,18 +8,18 @@ CongestionControlContext::~CongestionControlContext() {
 
 }
 
-bool CongestionControlContext::can_send_data() {
-    return can_send_;
+int CongestionControlContext::get_num_outstanding() {
+    return outstanding_;
 }
 
-void CongestionControlContext::set_can_send_data(bool can_send) {
-    can_send_ = can_send;
+void CongestionControlContext::set_num_outstanding(int outstanding) {
+    outstanding_ = outstanding;
 }
 
-SendEvent* CongestionControlContext::get_buffered_send_event() {
-    return buffered_send_event_;
+u_int32_t CongestionControlContext::get_last_sent_sequence_number() {
+    return last_sent_sequence_number_;
 }
 
-void CongestionControlContext::set_buffered_send_event(SendEvent* e) {
-    buffered_send_event_ = e;
+void CongestionControlContext::set_last_sent_sequence_number(u_int32_t last_sent_sequence_number) {
+    last_sent_sequence_number_ = last_sent_sequence_number;
 }

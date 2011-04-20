@@ -26,3 +26,7 @@ void FinWait1::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     Socket* s = e->get_socket();
     
 }
+
+bool FinWait1::state_can_receive(Context* c, Socket* s) {
+    return true;
+}

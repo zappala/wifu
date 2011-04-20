@@ -143,7 +143,7 @@ void Protocol::library_receive(Event* e) {
 
     Socket* s = event->get_socket();
 
-    if (!is_connected(s)) {
+    if (!icontext_can_receive(s)) {
         // TODO: respond with error
         return;
     }
@@ -155,6 +155,11 @@ void Protocol::library_receive(Event* e) {
 void Protocol::library_send(Event* e) {
     //    cout << "Protocol::library_send()" << endl;
     SendEvent* event = (SendEvent*) e;
+
+    if(!icontext_can_send(e->get_socket())) {
+        // TODO: respond with error
+        return;
+    }
 
     // call contexts
     send_to(event);

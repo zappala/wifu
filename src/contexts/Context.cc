@@ -76,8 +76,12 @@ void Context::send_to(SendEvent* e) {
     get_state()->send_to(this, e);
 }
 
-bool Context::is_connected(Socket* s) {
-    return get_state()->is_connected(this, s);
+bool Context::icontext_can_send(Socket* s) {
+    return get_state()->state_can_send(this, s);
+}
+
+bool Context::icontext_can_receive(Socket* s) {
+    return get_state()->state_can_receive(this, s);
 }
 
 void Context::receive_from(ReceiveEvent* e) {

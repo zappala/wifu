@@ -1,6 +1,6 @@
 #include "states/SlowStart.h"
 
-SlowStart::SlowStart() : outstanding_(0), last_sent_sequence_number_(0) {
+SlowStart::SlowStart() : State() {
 }
 
 SlowStart::~SlowStart() {
@@ -8,21 +8,24 @@ SlowStart::~SlowStart() {
 }
 
 void SlowStart::send_packet(Context* c, SendPacketEvent* e) {
+    CongestionControlContext* ccc = (CongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
-    last_sent_sequence_number_ = p->get_tcp_sequence_number();
+
+    ccc->set_last_sent_sequence_number(p->get_tcp_sequence_number());
 
     if(p->is_tcp_syn()) {
-        ++outstanding_;
+        ccc->set_num_outstanding(ccc->get_num_outstanding() + 1);
     }
 }
 
 void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     cout << "SlowStart::receive_packet()" << endl;
+    CongestionControlContext* ccc = (CongestionControlContext*) c;
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    if(outstanding_ > 0 && p->is_tcp_ack() && p->get_tcp_ack_number() - 1 == last_sent_sequence_number_) {
-        --outstanding_;
+    if(ccc->get_num_outstanding() > 0 && p->is_tcp_ack() && p->get_tcp_ack_number() - 1 == ccc->get_last_sent_sequence_number()) {
+        ccc->set_num_outstanding(ccc->get_num_outstanding() - 1);
     }
 
 
@@ -49,7 +52,7 @@ void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 
         Dispatcher::instance().enqueue(spe);
     }
-    else if(!outstanding_ && s->get_send_buffer().size() > 0) {
+    else if(!ccc->get_num_outstanding() && s->get_send_buffer().size() > 0) {
         assert(p->is_tcp_ack());
         // receive an ACK
         // send data
@@ -73,22 +76,22 @@ void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 
         Event* spe = new SendPacketEvent(s, p);
 
-        ++outstanding_;
+        ccc->set_num_outstanding(ccc->get_num_outstanding() + 1);
         cout << "SlowStart::receive_packet() B: Packet: " << p << endl;
 
         Dispatcher::instance().enqueue(spe);
         Dispatcher::instance().enqueue(new SendBufferNotFullEvent(s));
     }
 
-    cout << "SlowStart::receive_packet(), #outstanding: " << outstanding_ << endl;
+    cout << "SlowStart::receive_packet(), #outstanding: " << ccc->get_num_outstanding() << endl;
 }
 
 void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e) {
     cout << "SlowStart::state_send_buffer_not_empty()" << endl;
-
+    CongestionControlContext* ccc = (CongestionControlContext*) c;
     Socket* s = e->get_socket();
 
-    if (!outstanding_ && s->get_send_buffer().size() > 0) {
+    if (!ccc->get_num_outstanding() && s->get_send_buffer().size() > 0) {
 
         TCPPacket* p = new TCPPacket();
 
@@ -114,7 +117,7 @@ void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent*
 
         cout << "SlowStart::state_send_buffer_not_empty(): Packet: " << p << endl;
 
-        ++outstanding_;
+        ccc->set_num_outstanding(ccc->get_num_outstanding() + 1);
         Dispatcher::instance().enqueue(spe);
         Dispatcher::instance().enqueue(sbnf);
     }

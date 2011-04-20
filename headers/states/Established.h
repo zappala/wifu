@@ -8,6 +8,9 @@
 #ifndef ESTABLISHED_H
 #define	ESTABLISHED_H
 
+#include "State.h"
+
+
 #include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
 
@@ -28,8 +31,9 @@ public:
     void receive_packet(Context* c, NetworkReceivePacketEvent* e);
 
     void receive_from(Context* c, ReceiveEvent* e);
-    bool is_connected(Context*, Socket*);
 
+    bool state_can_receive(Context* c, Socket* s);
+    bool state_can_send(Context* c, Socket* s);
 };
 
 #endif	/* ESTABLISHED_H */

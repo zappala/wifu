@@ -28,15 +28,16 @@ public:
     CongestionControlContext();
     virtual ~CongestionControlContext();
 
-    bool can_send_data();
-    void set_can_send_data(bool can_send);
+    int get_num_outstanding();
+    void set_num_outstanding(int outstanding);
 
-    SendEvent* get_buffered_send_event();
-    void set_buffered_send_event(SendEvent* e);
+    u_int32_t get_last_sent_sequence_number();
+    void set_last_sent_sequence_number(u_int32_t last_sent_seq);
+
 
 private:
-    bool can_send_;
-    SendEvent* buffered_send_event_;
+    int outstanding_;
+    u_int32_t last_sent_sequence_number_;
 
 };
 

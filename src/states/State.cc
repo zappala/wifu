@@ -25,7 +25,12 @@ void State::accept(Context* c, AcceptEvent* e) {}
 
 void State::send_to(Context*, SendEvent*) {}
 
-bool State::is_connected(Context*, Socket*) {
+
+bool State::state_can_receive(Context* c, Socket* s) {
+    return false;
+}
+
+bool State::state_can_send(Context* c, Socket* s) {
     return false;
 }
 

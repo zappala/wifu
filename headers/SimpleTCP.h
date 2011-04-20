@@ -72,7 +72,9 @@ public:
 
     void send_to(SendEvent* e);
 
-    bool is_connected(Socket* s);
+    bool icontext_can_send(Socket* s);
+
+    bool icontext_can_receive(Socket* s);
 
     void receive_from(ReceiveEvent* e);
 

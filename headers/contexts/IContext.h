@@ -44,7 +44,9 @@ public:
     virtual void new_connection_established(ConnectionEstablishedEvent* e) = 0;
     virtual void new_conneciton_initiated(ConnectionInitiatedEvent* e) = 0;
     virtual void icontext_close(CloseEvent*) = 0;
-    virtual bool is_connected(Socket*) = 0;
+
+    virtual bool icontext_can_send(Socket*) = 0;
+    virtual bool icontext_can_receive(Socket*) = 0;
 
     virtual void send_to(SendEvent* e) = 0;
     virtual void receive_from(ReceiveEvent* e) = 0;

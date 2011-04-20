@@ -155,7 +155,7 @@ void SimpleTCP::send_to(SendEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
-    bool connected = c->get_connection_manager()->is_connected(s);
+    bool connected = c->get_connection_manager()->icontext_can_send(s);
     bool room = is_room_in_send_buffer(e);
 
     if (connected && room) {
@@ -237,9 +237,14 @@ void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
     c->get_congestion_control()->icontext_send_buffer_not_full(e);
 }
 
-bool SimpleTCP::is_connected(Socket* s) {
+bool SimpleTCP::icontext_can_send(Socket* s) {
     IContextContainer* c = get_context(s);
-    return c->get_connection_manager()->is_connected(s);
+    return c->get_connection_manager()->icontext_can_send(s);
+}
+
+bool SimpleTCP::icontext_can_receive(Socket* s) {
+    IContextContainer* c = get_context(s);
+    return c->get_connection_manager()->icontext_can_receive(s);
 }
 
 void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {

@@ -48,7 +48,9 @@ public:
 
     virtual void send_to(Context*, SendEvent*);
 
-    virtual bool is_connected(Context*, Socket*);
+    virtual bool state_can_send(Context*, Socket*);
+
+    virtual bool state_can_receive(Context*, Socket*);
 
     virtual void receive_from(Context*, ReceiveEvent*);
 

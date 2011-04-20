@@ -59,6 +59,10 @@ void Established::receive_from(Context* c, ReceiveEvent* e) {
 //    cout << "Established::receive_from()" << endl;
 }
 
-bool Established::is_connected(Context*, Socket* s) {
+bool Established::state_can_receive(Context*, Socket* s) {
+    return true;
+}
+
+bool Established::state_can_send(Context*, Socket* s) {
     return true;
 }
