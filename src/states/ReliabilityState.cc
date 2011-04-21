@@ -56,7 +56,7 @@ void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
     WiFuPacket* p = cache->get_packet();
 
     if (p) {
-        cout << "ReliabilityState::timer_fired(), cached packet is NOT null" << endl;
+        cout << "ReliabilityState::timer_fired(), cached packet is NOT null, socket: " << s << endl;
 //        cache->save_packet(0);
         ResendPacketEvent* event = new ResendPacketEvent(e->get_socket(), p);
         Dispatcher::instance().enqueue(event);

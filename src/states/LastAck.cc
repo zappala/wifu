@@ -21,7 +21,7 @@ void LastAck::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     TCPPacket* p = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();
 
-    if (p->is_tcp_ack()) {
+    if (p->is_naked_ack()) {
         Dispatcher::instance().enqueue(new DeleteSocketEvent(s));
         cmc->set_state(new Closed());
     }
