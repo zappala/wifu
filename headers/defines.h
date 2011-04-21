@@ -33,6 +33,7 @@
 #define WIFU_GETSOCKOPT_NAME "wifu_getsockopt"
 #define WIFU_SETSOCKOPT_NAME "wifu_setsockopt"
 #define WIFU_CLOSE_NAME "wifu_close"
+#define WIFU_PRECLOSE_NAME "wifu_preclose"
 
 // variable names
 #define SOCKET_STRING "socket"

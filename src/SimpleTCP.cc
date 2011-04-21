@@ -63,7 +63,7 @@ void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
 
      if (close_event && s->get_send_buffer().empty() && ccc->get_num_outstanding() == 0) {
         cout << "SimpleTCP::receive_packet(), sending out close event" << endl;
-        dispatch(close_event);
+        c->get_connection_manager()->icontext_close(close_event);
         c->set_saved_close_event(0);
     }
 }
