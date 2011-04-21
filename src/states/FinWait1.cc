@@ -26,8 +26,8 @@ void FinWait1::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     TCPPacket* p = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();
 
-    if (p->is_tcp_fin()) {
-        cout << "FinWait1::receive_packet(), FIN" << endl;
+    if (p->is_tcp_fin() && p->is_tcp_ack()) {
+        cout << "FinWait1::receive_packet(), FIN/ACK" << endl;
         unsigned char* data = (unsigned char*) "";
         AddressPort* destination = s->get_remote_address_port();
         AddressPort* source = s->get_local_address_port();
@@ -45,7 +45,7 @@ void FinWait1::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         SendPacketEvent* event = new SendPacketEvent(s, response);
         Dispatcher::instance().enqueue(event);
 
-        cmc->set_state(new Closing());
+        cmc->set_state(new TimeWait());
         
     } else if (p->is_tcp_ack()) {
         cout << "FinWait1::receive_packet(), ACK" << endl;

@@ -42,15 +42,11 @@ string BackEndTest::getOutputFromCommand(char* cmd) {
     return result;
 }
 
-// BackEndMockTest
-
 string BackEndMockTest::get_command() {
     string cmd = "./wifu-end --network mock --passive_port 1000 --mockfile ";
     cmd.append(get_mock_file());
     return cmd;
 }
-
-// BackEndMockTestDropNone
 
 string BackEndMockTestDropNone::get_mock_file() {
     return "drop_none.conf";
@@ -80,27 +76,36 @@ string BackEndMockTestDrop22Delay32::get_mock_file() {
     return "drop_2_2_delay_3_2.conf";
 }
 
-//Drops the 3 3 packet twice
 string BackEndMockTestDrop33::get_mock_file() {
     return "drop_3_3.conf";
 }
-
-//Drops the 2 3 packet twice
 
 string BackEndMockTestDrop23::get_mock_file() {
     return "drop_2_3.conf";
 }
 
-// BackEndMockTestDrop24
-
 string BackEndMockTestDrop24::get_mock_file() {
     return "drop_2_4.conf";
 }
 
-// BackEndMockTestDrop32
-
 string BackEndMockTestDrop32::get_mock_file() {
     return "drop_3_2.conf";
+}
+
+string BackEndMockTestDrop43::get_mock_file() {
+    return "drop_4_3.conf";
+}
+
+string BackEndMockTestDrop35::get_mock_file() {
+    return "drop_3_5.conf";
+}
+
+string BackEndMockTestDrop45::get_mock_file() {
+    return "drop_4_5.conf";
+}
+
+string BackEndMockTestDrop55::get_mock_file() {
+    return "drop_5_5.conf";
 }
 
 string BackEndMockTestDropRandom10Percent::get_mock_file() {

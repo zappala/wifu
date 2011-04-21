@@ -106,7 +106,7 @@ public:
      * @see SocketData
      */
     void receive(string& message) {
-        cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
+//        cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());

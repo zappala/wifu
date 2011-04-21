@@ -104,6 +104,22 @@ public:
     string get_mock_file();
 };
 
+class BackEndMockTestDrop43 : public BackEndMockTest {
+    string get_mock_file();
+};
+
+class BackEndMockTestDrop35 : public BackEndMockTest {
+    string get_mock_file();
+};
+
+class BackEndMockTestDrop45 : public BackEndMockTest {
+    string get_mock_file();
+};
+
+class BackEndMockTestDrop55 : public BackEndMockTest {
+    string get_mock_file();
+};
+
 class BackEndMockTestDropRandom10Percent : public BackEndMockTest {
 public:
     string get_mock_file();
