@@ -132,7 +132,7 @@ void close_active_to_passive_test(string message) {
 
     cout << "Sent: " << message << endl;
     wifu_close(client);
-    sleep(5);
+    sleep(35);
 
 }
 

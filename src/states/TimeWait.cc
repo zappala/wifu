@@ -10,7 +10,7 @@ TimeWait::~TimeWait() {
 
 void TimeWait::enter(Context* c) {
     ConnectionManagerContext* ccc = (ConnectionManagerContext*) c;
-    timeout_event_ = new TimeoutEvent(ccc->get_socket(), 30, 0);
+    timeout_event_ = new TimeoutEvent(ccc->get_socket(), TWO_MSL, 0);
     Dispatcher::instance().enqueue(timeout_event_);
 }
 

@@ -15,6 +15,7 @@
 #include "contexts/ConnectionManagerContext.h"
 #include "events/DeleteSocketEvent.h"
 #include "states/Closed.h"
+#include "defines.h"
 
 class TimeWait : public State {
 public:
