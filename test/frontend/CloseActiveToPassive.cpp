@@ -59,10 +59,10 @@ void* close_active_to_passive_thread(void* args) {
     memset(buffer, 0, size);
     string all_received = "";
 
-    while(true) {
+    while (true) {
         int return_value = wifu_recv(connection, &buffer, 1, 0);
 
-        if(return_value == 0) {
+        if (return_value == 0) {
             cout << "Close Thread BREAK" << endl;
             break;
         }
@@ -136,11 +136,13 @@ void close_active_to_passive_test(string message) {
 
 }
 
-void drop_none() {
-    string data = random_string(length);
+void close_active_to_passive_drop_none() {
+    string data = random_string(1);
     close_active_to_passive_test(data);
 
     NetworkTrace expected;
+
+    // Connect
 
     // Send
     expected.add_packet(get_syn());
@@ -156,6 +158,8 @@ void drop_none() {
     expected.add_packet(get_ack());
     // receive
     expected.add_packet(get_ack());
+
+    // Data
 
     TCPPacket* data_packet = get_ack();
     data_packet->set_data((unsigned char*) data.c_str(), data.size());
@@ -179,11 +183,67 @@ void drop_none() {
     // receive
     expected.add_packet(ack);
 
+    // Close
+    // Active to Passive
+    TCPPacket* fin1 = get_base_tcp_packet();
+    fin1->set_tcp_sequence_number(4);
+    fin1->set_tcp_ack_number(3);
+    fin1->set_source_port(1000);
+    fin1->set_destination_port(5002);
+    fin1->set_tcp_fin(true);
+    fin1->set_tcp_ack(true);
+
+    // send
+    expected.add_packet(fin1);
+    // receive
+    expected.add_packet(fin1);
+
+    TCPPacket* ack1 = get_base_tcp_packet();
+    ack1->set_tcp_sequence_number(3);
+    ack1->set_tcp_ack_number(5);
+    ack1->set_source_port(5002);
+    ack1->set_destination_port(1000);
+    ack1->set_tcp_ack(true);
+
+    // send
+    expected.add_packet(ack1);
+    // receive
+    expected.add_packet(ack1);
+
+    // Close
+    // Passive to Active
+    TCPPacket* fin2 = get_base_tcp_packet();
+    fin2->set_tcp_sequence_number(4);
+    fin2->set_tcp_ack_number(5);
+    fin2->set_source_port(5002);
+    fin2->set_destination_port(1000);
+    fin2->set_tcp_fin(true);
+    fin2->set_tcp_ack(true);
+
+    // send
+    expected.add_packet(fin2);
+    // receive
+    expected.add_packet(fin2);
+    
+
+    TCPPacket* ack2 = get_base_tcp_packet();
+    ack2->set_tcp_sequence_number(5);
+    ack2->set_tcp_ack_number(5);
+    ack2->set_source_port(1000);
+    ack2->set_destination_port(5002);
+    ack2->set_tcp_ack(true);
+
+    // send
+    expected.add_packet(ack2);
+    // receive
+    expected.add_packet(ack2);
+
+
 
 
     compare_traces(expected);
 }
 
 TEST_F(BackEndMockTestDropNone, closeTestActiveToPassive) {
-    drop_none();
+    close_active_to_passive_drop_none();
 }
