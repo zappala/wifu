@@ -190,6 +190,7 @@ private:
      * The AddressPort returned from the back-end (on calls like accept())
      */
     AddressPort* address_;
+
 };
 
 #endif	/* _SOCKETDATA_H */

@@ -569,6 +569,8 @@ public:
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
+
+        sockets.delete_at(fd);
         return data->get_return_value();
     }
 
