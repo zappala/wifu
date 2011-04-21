@@ -51,11 +51,21 @@ void SimpleTCP::listen(ListenEvent* e) {
 
 void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
     cout << "SimpleTCP::receive_packet()" << endl;
-    IContextContainer* c = get_context(e->get_socket());
+    Socket* s = e->get_socket();
+    IContextContainer* c = get_context(s);
+
+    CloseEvent* close_event = c->get_saved_close_event();
+    CongestionControlContext* ccc = (CongestionControlContext*) c->get_congestion_control();
 
     c->get_connection_manager()->receive_packet(e);
     c->get_reliability()->receive_packet(e);
     c->get_congestion_control()->receive_packet(e);
+
+     if (close_event && s->get_send_buffer().empty() && ccc->get_num_outstanding() == 0) {
+        cout << "SimpleTCP::receive_packet(), sending out close event" << endl;
+        dispatch(close_event);
+        c->set_saved_close_event(0);
+    }
 }
 
 void SimpleTCP::send_packet(SendPacketEvent* e) {
@@ -130,6 +140,7 @@ void SimpleTCP::icontext_close(CloseEvent* e) {
         cout << "SimpleTCP::icontext_close(), calling connection manager" << endl;
         c->get_connection_manager()->icontext_close(e);
     } else {
+        cout << "SimpleTCP::icontext_close(), saving close event" << endl;
         c->set_saved_close_event(e);
     }
 
@@ -237,10 +248,14 @@ void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
     IContextContainer* c = get_context(s);
 
     SendEvent* saved_send_event = c->get_saved_send_event();
+    
+
 
     if (saved_send_event && is_room_in_send_buffer(saved_send_event)) {
         save_in_buffer_and_send_events(saved_send_event);
     }
+
+   
 
     c->get_connection_manager()->icontext_send_buffer_not_full(e);
     c->get_reliability()->icontext_send_buffer_not_full(e);
@@ -255,6 +270,15 @@ bool SimpleTCP::icontext_can_send(Socket* s) {
 bool SimpleTCP::icontext_can_receive(Socket* s) {
     IContextContainer* c = get_context(s);
     return c->get_connection_manager()->icontext_can_receive(s);
+}
+
+void SimpleTCP::icontext_delete_socket(DeleteSocketEvent* e) {
+    Socket* s = e->get_socket();
+    IContextContainer* c = get_context(s);
+
+    c->get_connection_manager()->icontext_delete_socket(e);
+    c->get_reliability()->icontext_delete_socket(e);
+    c->get_congestion_control()->icontext_delete_socket(e);
 }
 
 void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {
@@ -300,3 +324,5 @@ void SimpleTCP::create_and_dispatch_received_data(ReceiveEvent* e) {
     dispatch(response);
 
 }
+
+

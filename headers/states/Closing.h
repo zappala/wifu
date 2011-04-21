@@ -14,6 +14,7 @@
 #include "packet/TCPPacket.h"
 #include "Socket.h"
 #include "contexts/ConnectionManagerContext.h"
+#include "states/TimeWait.h"
 
 class Closing : public State {
 public:

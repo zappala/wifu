@@ -83,6 +83,8 @@ public:
     void icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e);
 
     void icontext_send_buffer_not_full(SendBufferNotFullEvent* e);
+
+    void icontext_delete_socket(DeleteSocketEvent* e);
 };
 
 #endif	/* SIMPLETCP_H */

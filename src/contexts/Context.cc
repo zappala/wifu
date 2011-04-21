@@ -99,3 +99,7 @@ void Context::icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e) {
 void Context::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
     get_state()->state_send_buffer_not_full(this, e);
 }
+
+void Context::icontext_delete_socket(DeleteSocketEvent* e) {
+    
+}

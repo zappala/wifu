@@ -9,15 +9,15 @@ CloseWait::~CloseWait() {
 }
 
 void CloseWait::enter(Context* c) {
-
+    cout << "CloseWait::enter()" << endl;
 }
 
 void CloseWait::exit(Context* c) {
-
+    cout << "CloseWait::exit()" << endl;
 }
 
 void CloseWait::state_close(Context* c, CloseEvent* e) {
-    cout << "Established::state_close()" << endl;
+    cout << "CloseWait::state_close()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     Socket* s = e->get_socket();
 
@@ -38,6 +38,10 @@ void CloseWait::state_close(Context* c, CloseEvent* e) {
 
     SendPacketEvent* event = new SendPacketEvent(s, response);
     Dispatcher::instance().enqueue(event);
+
+
+
+
 
     cmc->set_state(new LastAck());
     return;

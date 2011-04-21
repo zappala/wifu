@@ -298,3 +298,13 @@ void Protocol::receive_buffer_not_empty(Event* e) {
 
     icontext_receive_buffer_not_empty(event);
 }
+
+void Protocol::delete_socket(Event* e) {
+    DeleteSocketEvent* event = (DeleteSocketEvent*) e;
+    Socket* socket = event->get_socket();
+
+    if (!sockets_.contains(socket)) {
+        return;
+    }
+    icontext_delete_socket(event);
+}

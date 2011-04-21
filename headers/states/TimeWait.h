@@ -13,6 +13,8 @@
 #include "events/TimerFiredEvent.h"
 #include "events/TimeoutEvent.h"
 #include "contexts/ConnectionManagerContext.h"
+#include "events/DeleteSocketEvent.h"
+#include "states/Closed.h"
 
 class TimeWait : public State {
 public:
@@ -22,6 +24,9 @@ public:
     virtual void exit(Context* c);
 
     virtual void timer_fired(Context* c, TimerFiredEvent* e);
+
+private:
+    TimeoutEvent* timeout_event_;
 };
 
 #endif	/* TIMEWAIT_H */

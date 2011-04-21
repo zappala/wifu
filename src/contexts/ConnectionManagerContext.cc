@@ -37,3 +37,17 @@ AcceptEvent* ConnectionManagerContext::get_accept_event() {
 void ConnectionManagerContext::set_accept_event(AcceptEvent* e) {
     a_event_ = e;
 }
+
+string& ConnectionManagerContext::get_file() {
+    if(c_event_) {
+        return c_event_->get_map()[FILE_STRING];
+    }
+    return a_event_->get_map()[FILE_STRING];
+}
+
+Socket* ConnectionManagerContext::get_socket() {
+    if(c_event_) {
+        return c_event_->get_socket();
+    }
+    return a_event_->get_socket();
+}

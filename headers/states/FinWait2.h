@@ -15,6 +15,8 @@
 #include "Socket.h"
 #include "contexts/ConnectionManagerContext.h"
 
+#include "states/TimeWait.h"
+
 
 class FinWait2 : public State {
 public:

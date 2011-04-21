@@ -80,6 +80,13 @@ void Established::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         Dispatcher::instance().enqueue(event);
 
         cmc->set_state(new CloseWait());
+
+        string name = WIFU_CLOSE_NAME;
+        ResponseEvent* response_event = new ResponseEvent(s, name, cmc->get_file());
+        response_event->put(RETURN_VALUE_STRING, Utils::itoa(0));
+        response_event->put(ERRNO, Utils::itoa(0));
+        Dispatcher::instance().enqueue(response_event);
+
         return;
     }
 
@@ -118,7 +125,12 @@ void Established::state_close(Context* c, CloseEvent* e) {
         SendPacketEvent* event = new SendPacketEvent(s, response);
         Dispatcher::instance().enqueue(event);
 
+
+
+
         cmc->set_state(new FinWait1());
+
+
         return;
     }
 }

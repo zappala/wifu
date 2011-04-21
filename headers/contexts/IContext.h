@@ -28,6 +28,7 @@
 #include "events/SendBufferNotFullEvent.h"
 #include "events/ReceiveBufferNotEmptyEvent.h"
 #include "events/CloseEvent.h"
+#include "events/DeleteSocketEvent.h"
 
 using namespace std;
 
@@ -57,6 +58,7 @@ public:
     virtual void icontext_send_buffer_not_empty(SendBufferNotEmptyEvent*) = 0;
     virtual void icontext_send_buffer_not_full(SendBufferNotFullEvent*) = 0;
     virtual void icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent*) = 0;
+    virtual void icontext_delete_socket(DeleteSocketEvent*) = 0;
 };
 
 #endif	/* ICONTEXT_H */

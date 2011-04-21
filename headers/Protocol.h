@@ -89,6 +89,8 @@ public:
 
     virtual void receive_buffer_not_empty(Event* e);
 
+    virtual void delete_socket(Event* e);
+
 private:
 
     int protocol_;

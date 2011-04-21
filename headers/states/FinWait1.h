@@ -18,6 +18,7 @@
 
 #include "states/State.h"
 #include "states/FinWait2.h"
+#include "states/Closing.h"
 
 class FinWait1 : public State {
 public:

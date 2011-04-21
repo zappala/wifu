@@ -13,7 +13,7 @@ void SlowStart::send_packet(Context* c, SendPacketEvent* e) {
 
     ccc->set_last_sent_sequence_number(p->get_tcp_sequence_number());
 
-    if(p->is_tcp_syn()) {
+    if(p->is_tcp_syn() || p->is_tcp_fin()) {
         ccc->set_num_outstanding(ccc->get_num_outstanding() + 1);
     }
 }

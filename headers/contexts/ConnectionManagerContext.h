@@ -42,6 +42,9 @@ public:
     ConnectionType get_connection_type();
     void set_connection_type(ConnectionType type);
 
+    string& get_file();
+    Socket* get_socket();
+
 private:
     int back_log_;
     ConnectionType type_;

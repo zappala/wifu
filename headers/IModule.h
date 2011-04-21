@@ -226,6 +226,10 @@ public:
 
     }
 
+    virtual void delete_socket(Event* e) {
+        
+    }
+
 
 };
 

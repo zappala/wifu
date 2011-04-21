@@ -14,6 +14,7 @@
 #include "packet/TCPPacket.h"
 #include "Socket.h"
 #include "contexts/ConnectionManagerContext.h"
+#include "events/DeleteSocketEvent.h"
 
 class LastAck : public State {
 public:

@@ -72,6 +72,8 @@ public:
 
     virtual void icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent*);
 
+    virtual void icontext_delete_socket(DeleteSocketEvent*);
+
 private:
     State* current_;
 
