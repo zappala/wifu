@@ -31,6 +31,9 @@
 #include "SocketCollection.h"
 #include "contexts/IContext.h"
 
+#include "events/ConnectionInitiatedEvent.h"
+#include "events/ReceiveEvent.h"
+
 
 #include "packet/TCPPacket.h"
 

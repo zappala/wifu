@@ -1,6 +1,5 @@
 #include "Protocol.h"
-#include "events/ConnectionInitiatedEvent.h"
-#include "events/ReceiveEvent.h"
+
 
 Protocol::Protocol(int protocol) : Module(), protocol_(protocol) {
 
@@ -300,6 +299,7 @@ void Protocol::receive_buffer_not_empty(Event* e) {
 }
 
 void Protocol::delete_socket(Event* e) {
+    cout << "Protocol::delete_socket()" << endl;
     DeleteSocketEvent* event = (DeleteSocketEvent*) e;
     Socket* socket = event->get_socket();
 
@@ -307,4 +307,18 @@ void Protocol::delete_socket(Event* e) {
         return;
     }
     icontext_delete_socket(event);
+
+    sockets_.remove(socket);
+    assert(!sockets_.contains(socket));
+
+    SocketCollectionGetByIdVisitor visitor1(socket->get_socket_id());
+    SocketCollection::instance().accept(&visitor1);
+    assert(visitor1.get_socket() == socket);
+
+    SocketCollection::instance().remove(socket);
+    
+    SocketCollectionGetByIdVisitor visitor(socket->get_socket_id());
+    SocketCollection::instance().accept(&visitor);
+    assert(visitor.get_socket() == NULL);
+
 }

@@ -273,12 +273,16 @@ bool SimpleTCP::icontext_can_receive(Socket* s) {
 }
 
 void SimpleTCP::icontext_delete_socket(DeleteSocketEvent* e) {
+    cout << "SimpleTCP::icontext_delete_socket()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
     c->get_connection_manager()->icontext_delete_socket(e);
     c->get_reliability()->icontext_delete_socket(e);
     c->get_congestion_control()->icontext_delete_socket(e);
+
+    map_.erase(s);
+    assert(map_.find(s) == map_.end());
 }
 
 void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {
