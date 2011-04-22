@@ -84,6 +84,9 @@ string BackEndMockTestDrop33::get_mock_file() {
     return "drop_3_3.conf";
 }
 
+string BackEndMockTestDrop34::get_mock_file() {
+    return "drop_3_4.conf";
+}
 string BackEndMockTestDrop23::get_mock_file() {
     return "drop_2_3.conf";
 }
@@ -100,6 +103,10 @@ string BackEndMockTestDrop43::get_mock_file() {
     return "drop_4_3.conf";
 }
 
+string BackEndMockTestDrop44::get_mock_file() {
+    return "drop_4_4.conf";
+}
+
 string BackEndMockTestDrop35::get_mock_file() {
     return "drop_3_5.conf";
 }
@@ -108,8 +115,20 @@ string BackEndMockTestDrop45::get_mock_file() {
     return "drop_4_5.conf";
 }
 
+string BackEndMockTestDrop46::get_mock_file() {
+    return "drop_4_6.conf";
+}
+
+string BackEndMockTestDrop54::get_mock_file() {
+    return "drop_5_4.conf";
+}
+
 string BackEndMockTestDrop55::get_mock_file() {
     return "drop_5_5.conf";
+}
+
+string BackEndMockTestDrop44Drop54::get_mock_file() {
+    return "drop_4_4_drop_5_4.conf";
 }
 
 string BackEndMockTestDrop35Drop45::get_mock_file() {

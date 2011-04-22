@@ -49,7 +49,6 @@ public:
     string get_mock_file();
 };
 
-
 class BackEndMockTestDrop10 : public BackEndMockTest {
 public:
     string get_mock_file();
@@ -102,14 +101,21 @@ public:
     string get_mock_file();
 };
 
-//Drops the 3 3 packet twice
-
 class BackEndMockTestDrop33 : public BackEndMockTest {
 public:
     string get_mock_file();
 };
 
+class BackEndMockTestDrop34 : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
 class BackEndMockTestDrop43 : public BackEndMockTest {
+    string get_mock_file();
+};
+
+class BackEndMockTestDrop44 : public BackEndMockTest {
     string get_mock_file();
 };
 
@@ -121,7 +127,19 @@ class BackEndMockTestDrop45 : public BackEndMockTest {
     string get_mock_file();
 };
 
+class BackEndMockTestDrop46 : public BackEndMockTest {
+    string get_mock_file();
+};
+
+class BackEndMockTestDrop54 : public BackEndMockTest {
+    string get_mock_file();
+};
+
 class BackEndMockTestDrop55 : public BackEndMockTest {
+    string get_mock_file();
+};
+
+class BackEndMockTestDrop44Drop54 : public BackEndMockTest {
     string get_mock_file();
 };
 
