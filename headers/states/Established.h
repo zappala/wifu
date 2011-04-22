@@ -32,10 +32,10 @@ class Established : public State {
 public:
     Established();
     virtual ~Established();
-    virtual void enter(Context* c);
-    virtual void exit(Context* c);
+    virtual void state_enter(Context* c);
+    virtual void state_exit(Context* c);
 
-    void receive_packet(Context* c, NetworkReceivePacketEvent* e);
+    void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
     bool state_can_receive(Context* c, Socket* s);
     bool state_can_send(Context* c, Socket* s);
     void state_close(Context* c, CloseEvent* e);

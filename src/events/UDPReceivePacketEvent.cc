@@ -5,5 +5,5 @@ UDPReceivePacketEvent::UDPReceivePacketEvent(Socket* socket, WiFuPacket* packet)
 UDPReceivePacketEvent::~UDPReceivePacketEvent() {}
 
 void UDPReceivePacketEvent::execute(IModule* m) {
-	m->udp_receive(this);
+	m->imodule_udp_receive(this);
 }

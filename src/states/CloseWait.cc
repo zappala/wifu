@@ -8,11 +8,11 @@ CloseWait::~CloseWait() {
 
 }
 
-void CloseWait::enter(Context* c) {
+void CloseWait::state_enter(Context* c) {
 //    cout << "CloseWait::enter()" << endl;
 }
 
-void CloseWait::exit(Context* c) {
+void CloseWait::state_exit(Context* c) {
 //    cout << "CloseWait::exit()" << endl;
 }
 

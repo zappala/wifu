@@ -12,7 +12,7 @@ ConnectionInitiatedEvent::~ConnectionInitiatedEvent() {
 }
 
 void ConnectionInitiatedEvent::execute(IModule* m) {
-    m->connection_initiated(this);
+    m->imodule_connection_initiated(this);
 }
 
 Socket* ConnectionInitiatedEvent::get_new_socket() {

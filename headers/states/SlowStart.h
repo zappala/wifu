@@ -33,12 +33,9 @@ public:
     SlowStart();
     virtual ~SlowStart();
 
-    void receive_packet(Context* c, NetworkReceivePacketEvent* e);
+    void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
     void state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e);
-    void send_packet(Context* c, SendPacketEvent* e);
-
-    void enter(Context* c);
-    void exit(Context* c);
+    void state_send_packet(Context* c, SendPacketEvent* e);
 };
 
 

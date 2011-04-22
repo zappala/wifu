@@ -87,7 +87,7 @@ void WifuEndBackEndLibrary::receive(string& message) {
     }
 }
 
-void WifuEndBackEndLibrary::library_response(Event* e) {
+void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
     ResponseEvent* event = (ResponseEvent*) e;
     event->put(FILE_STRING, get_file());
     string file = event->get_write_file();

@@ -61,7 +61,7 @@ public:
      *
      * @see NetworkSendPacketEvent
      */
-    virtual void network_send(Event* e) = 0;
+    virtual void imodule_network_send(Event* e) = 0;
 };
 
 #endif	/* _INETWORKINTERFACE_H */

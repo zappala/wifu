@@ -8,15 +8,7 @@ Closed::~Closed() {
 
 }
 
-void Closed::enter(Context* c) {
-    enter_state("Closed");
-}
-
-void Closed::exit(Context* c) {
-    leave_state("Closed");
-}
-
-void Closed::connect(Context* c, ConnectEvent* e) {
+void Closed::state_connect(Context* c, ConnectEvent* e) {
 //    cout << "In Closed::connect()" << endl;
     Socket* s = e->get_socket();
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
@@ -56,7 +48,7 @@ void Closed::connect(Context* c, ConnectEvent* e) {
     cmc->set_state(new SynSent());
 }
 
-void Closed::listen(Context* c, ListenEvent* e) {
+void Closed::state_listen(Context* c, ListenEvent* e) {
 //    cout << "Closed::listen()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(PASSIVE_OPEN);
@@ -66,13 +58,13 @@ void Closed::listen(Context* c, ListenEvent* e) {
     cmc->set_state(new Listen());
 }
 
-void Closed::new_connection_established(Context* c, ConnectionEstablishedEvent* e) {
+void Closed::state_new_connection_established(Context* c, ConnectionEstablishedEvent* e) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(ESTABLISHED);
     c->set_state(new Established());
 }
 
-void Closed::new_connection_initiated(Context* c, ConnectionInitiatedEvent* e) {
+void Closed::state_new_connection_initiated(Context* c, ConnectionInitiatedEvent* e) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(PASSIVE_OPEN);
     c->set_state(new Accept());

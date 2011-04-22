@@ -25,7 +25,7 @@ namespace {
             timedout = false;
         }
 
-        void timeout(Event* e) {
+        void imodule_timeout(Event* e) {
             timedout = true;
         }
 

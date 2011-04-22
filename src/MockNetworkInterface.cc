@@ -18,10 +18,10 @@ void MockNetworkInterface::start() {
 void MockNetworkInterface::register_protocol(int protocol, PacketFactory* pf) {
 }
 
-void MockNetworkInterface::network_receive(WiFuPacket* p) {
+void MockNetworkInterface::imodule_network_receive(WiFuPacket* p) {
 }
 
-void MockNetworkInterface::network_send(Event* e) {
+void MockNetworkInterface::imodule_network_send(Event* e) {
     NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
     WiFuPacket* p = event->get_packet();
     TCPPacket* tcp_packet = (TCPPacket*) p;
@@ -78,7 +78,7 @@ void MockNetworkInterface::receive(WiFuPacket* p) {
     Dispatcher::instance().enqueue(response);
 }
 
-void MockNetworkInterface::timer_fired(Event* e) {
+void MockNetworkInterface::imodule_timer_fired(Event* e) {
     TimerFiredEvent* event = (TimerFiredEvent*) e;
 
     map<TimeoutEvent*, TCPPacket*>::iterator itr = delayed_.find(event->get_timeout_event());

@@ -22,10 +22,10 @@ class FinWait2 : public State {
 public:
     FinWait2();
     virtual ~FinWait2();
-    virtual void enter(Context* c);
-    virtual void exit(Context* c);
+    virtual void state_enter(Context* c);
+    virtual void state_exit(Context* c);
 
-    virtual void receive_packet(Context* c, NetworkReceivePacketEvent* e);
+    virtual void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
     virtual bool state_can_receive(Context* c, Socket* s);
 };
 

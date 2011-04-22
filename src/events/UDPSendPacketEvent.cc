@@ -5,5 +5,5 @@ UDPSendPacketEvent::UDPSendPacketEvent(Socket* socket, WiFuPacket* packet) : Pac
 UDPSendPacketEvent::~UDPSendPacketEvent() {}
 
 void UDPSendPacketEvent::execute(IModule* m) {
-	m->udp_send(this);
+	m->imodule_udp_send(this);
 }

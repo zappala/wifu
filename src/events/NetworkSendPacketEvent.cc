@@ -5,5 +5,5 @@ NetworkSendPacketEvent::NetworkSendPacketEvent(Socket* socket, WiFuPacket* packe
 NetworkSendPacketEvent::~NetworkSendPacketEvent() {}
 
 void NetworkSendPacketEvent::execute(IModule* m) {
-	m->network_send(this);
+	m->imodule_network_send(this);
 }

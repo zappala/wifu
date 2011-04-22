@@ -46,7 +46,7 @@ public:
      */
     void receive(string& message);
 
-    void library_response(Event* e);
+    void imodule_library_response(Event* e);
 
 private:
     WifuEndBackEndLibrary();

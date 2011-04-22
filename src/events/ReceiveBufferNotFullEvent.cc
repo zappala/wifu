@@ -9,5 +9,5 @@ ReceiveBufferNotFullEvent::~ReceiveBufferNotFullEvent() {
 }
 
 void ReceiveBufferNotFullEvent::execute(IModule* m) {
-    m->receive_buffer_not_full(this);
+    m->imodule_receive_buffer_not_full(this);
 }

@@ -5,5 +5,5 @@ NetworkReceivePacketEvent::NetworkReceivePacketEvent(Socket* socket, WiFuPacket*
 NetworkReceivePacketEvent::~NetworkReceivePacketEvent() {}
 
 void NetworkReceivePacketEvent::execute(IModule* m) {
-	m->network_receive(this);
+	m->imodule_network_receive(this);
 }

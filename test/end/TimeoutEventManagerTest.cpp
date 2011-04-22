@@ -46,7 +46,7 @@ namespace {
             return instance_;
         }
 
-        void timer_fired(Event* e) {
+        void imodule_timer_fired(Event* e) {
             q_->enqueue(e);
             sem->post();
         }

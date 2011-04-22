@@ -24,7 +24,7 @@ TimeoutEventManager::~TimeoutEventManager() {
 
 }
 
-void TimeoutEventManager::cancel_timer(Event * e) {
+void TimeoutEventManager::imodule_cancel_timer(Event * e) {
 //    cout << "Cancelling Timer" << endl;
     CancelTimerEvent* event = (CancelTimerEvent*) e;
     canceled_events_.insert(event->get_timeout_event());
@@ -33,7 +33,7 @@ void TimeoutEventManager::cancel_timer(Event * e) {
     TimeoutManagerSemaphore.post();
 }
 
-void TimeoutEventManager::timeout(Event* e) {
+void TimeoutEventManager::imodule_timeout(Event* e) {
 //    cout << "In timeout() in TimeoutEventManager\n";
     TimeoutEvent* event = (TimeoutEvent*) e;
 
@@ -62,7 +62,7 @@ void TimeoutEventManager::enqueue(Event* e, bool signal) {
     // so the CancelTimerEvent doesn't get stuck behind any
     // TimeoutEvents
     if(!strcmp(type_name(*e), type_name(CancelTimerEvent))){
-        cancel_timer(e);
+        imodule_cancel_timer(e);
         return;
     }
 

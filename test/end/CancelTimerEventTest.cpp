@@ -25,7 +25,7 @@ namespace {
             timerCanceled = false;
         }
 
-        void cancel_timer(Event* e) {
+        void imodule_cancel_timer(Event* e) {
             timerCanceled = true;
         }
 

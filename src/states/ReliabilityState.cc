@@ -6,15 +6,7 @@ ReliabilityState::ReliabilityState() {
 ReliabilityState::~ReliabilityState() {
 }
 
-void ReliabilityState::enter(Context* c) {
-    enter_state("ReliabilityState");
-}
-
-void ReliabilityState::exit(Context* c) {
-    leave_state("ReliabilityState");
-}
-
-void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
+void ReliabilityState::state_send_packet(Context* c, SendPacketEvent* e) {
 //    cout << "ReliabilityState::send_packet()" << endl;
 
     ReliabilityContext* rc = (ReliabilityContext*) c;
@@ -47,7 +39,7 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
     }
 }
 
-void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
+void ReliabilityState::state_timer_fired(Context* c, TimerFiredEvent* e) {
 //    cout << "ReliabilityState::timer_fired()" << endl;
     ReliabilityContext* rc = (ReliabilityContext*) c;
     Socket* s = e->get_socket();
@@ -67,7 +59,7 @@ void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
     }
 }
 
-void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void ReliabilityState::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 //    cout << "ReliabilityState::receive_packet()" << endl;
     ReliabilityContext* rc = (ReliabilityContext*) c;
     Socket* s = e->get_socket();

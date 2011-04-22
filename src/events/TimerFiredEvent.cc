@@ -5,5 +5,5 @@ TimerFiredEvent::TimerFiredEvent(TimeoutEvent* timeout_event) : TimerEvent(timeo
 TimerFiredEvent::~TimerFiredEvent() {}
 
 void TimerFiredEvent::execute(IModule* m) {
-	m->timer_fired(this);
+	m->imodule_timer_fired(this);
 }

@@ -8,15 +8,15 @@ SynSent::~SynSent() {
 
 }
 
-void SynSent::enter(Context* c) {
+void SynSent::state_enter(Context* c) {
 
 }
 
-void SynSent::exit(Context* c) {
+void SynSent::state_exit(Context* c) {
 
 }
 
-void SynSent::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void SynSent::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 //    cout << "SynSent::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();

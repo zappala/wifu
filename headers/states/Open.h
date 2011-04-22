@@ -19,8 +19,6 @@ class Open : public State {
 public:
     Open();
     virtual ~Open();
-    virtual void enter(Context* c);
-    virtual void exit(Context* c);
     virtual void close(Context* c);
 };
 

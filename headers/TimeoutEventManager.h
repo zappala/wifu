@@ -67,14 +67,14 @@ public:
      *
      * @param e The (Timeout)Event which timed out.
      */
-    virtual void timeout(Event* e);
+    virtual void imodule_timeout(Event* e);
 
     /**
      * Prevent an Event from timing out.
      *
      * @param e The Event which we no longer wish to time out.
      */
-    virtual void cancel_timer(Event* e);
+    virtual void imodule_cancel_timer(Event* e);
 
 
 private:

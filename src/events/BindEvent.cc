@@ -5,5 +5,5 @@ BindEvent::BindEvent(string& message, string& file, Socket* s) : LibraryEvent(me
 BindEvent::~BindEvent() {}
 
 void BindEvent::execute(IModule* m) {
-	m->library_bind(this);
+	m->imodule_library_bind(this);
 }

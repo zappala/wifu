@@ -24,7 +24,7 @@ namespace {
             sent = false;
         }
 
-        void send(Event* e) {
+        void imodule_send(Event* e) {
             sent = true;
         }
 

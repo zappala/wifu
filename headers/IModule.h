@@ -45,7 +45,7 @@ public:
      *
      * @param e The event which triggered a timeout action.
      */
-    virtual void timeout(Event* e) {
+    virtual void imodule_timeout(Event* e) {
     }
 
     /**
@@ -53,7 +53,7 @@ public:
      *
      * @param e The event which triggered a timer fired action.
      */
-    virtual void timer_fired(Event* e) {
+    virtual void imodule_timer_fired(Event* e) {
     }
 
     /**
@@ -61,7 +61,7 @@ public:
      *
      * @param e The event which triggered a cancel timer action.
      */
-    virtual void cancel_timer(Event* e) {
+    virtual void imodule_cancel_timer(Event* e) {
     }
 
 
@@ -70,7 +70,7 @@ public:
      *
      * @param e The event which triggered a network send action.
      */
-    virtual void network_send(Event* e) {
+    virtual void imodule_network_send(Event* e) {
     }
 
     /**
@@ -78,7 +78,7 @@ public:
      *
      * @param e The event which triggered a network send action.
      */
-    virtual void network_receive(Event* e) {
+    virtual void imodule_network_receive(Event* e) {
     }
 
     /**
@@ -86,7 +86,7 @@ public:
      *
      * @param e The event which triggered a udp send action.
      */
-    virtual void udp_send(Event* e) {
+    virtual void imodule_udp_send(Event* e) {
     }
 
     /**
@@ -94,15 +94,7 @@ public:
      *
      * @param e The event which triggered a udp send action.
      */
-    virtual void udp_receive(Event* e) {
-    }
-
-    /**
-     * Called when e's execute() method determines that this IModule should respond to a data action.
-     *
-     * @param e The event which triggered a data action.
-     */
-    virtual void data(Event* e) {
+    virtual void imodule_udp_receive(Event* e) {
     }
 
     /**
@@ -110,7 +102,7 @@ public:
      *
      * @param e The event which triggered a send action.
      */
-    virtual void send(Event* e) {
+    virtual void imodule_send(Event* e) {
         
     }
 
@@ -119,7 +111,7 @@ public:
      *
      * @param e The event which triggered a resend action.
      */
-    virtual void resend(Event* e) {
+    virtual void imodule_resend(Event* e) {
         
     }
 
@@ -130,7 +122,7 @@ public:
      *
      * @param e The event which triggered a library_socket action.
      */
-    virtual void library_socket(Event* e) {
+    virtual void imodule_library_socket(Event* e) {
     }
 
     /**
@@ -138,7 +130,7 @@ public:
      *
      * @param e The event which triggered a library_bind action.
      */
-    virtual void library_bind(Event* e) {
+    virtual void imodule_library_bind(Event* e) {
     }
 
     /**
@@ -146,7 +138,7 @@ public:
      *
      * @param e The event which triggered a library_listen action.
      */
-    virtual void library_listen(Event* e) {
+    virtual void imodule_library_listen(Event* e) {
     }
 
     /**
@@ -154,7 +146,7 @@ public:
      *
      * @param e The event which triggered a library_accept action.
      */
-    virtual void library_accept(Event* e) {
+    virtual void imodule_library_accept(Event* e) {
     }
 
     /**
@@ -162,7 +154,7 @@ public:
      *
      * @param e The event which triggered a library_send action.
      */
-    virtual void library_send(Event* e) {
+    virtual void imodule_library_send(Event* e) {
     }
 
     /**
@@ -170,7 +162,7 @@ public:
      *
      * @param e The event which triggered a library_receive action.
      */
-    virtual void library_receive(Event* e) {
+    virtual void imodule_library_receive(Event* e) {
     }
 
     /**
@@ -178,7 +170,7 @@ public:
      *
      * @param e The event which triggered a library_close action.
      */
-    virtual void library_close(Event* e) {
+    virtual void imodule_library_close(Event* e) {
     }
 
     /**
@@ -186,7 +178,7 @@ public:
      *
      * @param e The event which triggered a library_connect action.
      */
-    virtual void library_connect(Event* e) {
+    virtual void imodule_library_connect(Event* e) {
     }
 
     /**
@@ -194,7 +186,7 @@ public:
      *
      * @param e The event which triggered a library_response action.
      */
-    virtual void library_response(Event* e) {
+    virtual void imodule_library_response(Event* e) {
     }
     // </editor-fold>
 
@@ -203,7 +195,7 @@ public:
      *
      * @param e The event which triggered a connection established action.
      */
-    virtual void connection_established(Event* e) {
+    virtual void imodule_connection_established(Event* e) {
     }
 
     /**
@@ -211,26 +203,26 @@ public:
      *
      * @param e The event which triggered a connection established action.
      */
-    virtual void connection_initiated(Event* e) {
+    virtual void imodule_connection_initiated(Event* e) {
     }
 
-    virtual void send_buffer_not_full(Event* e) {
-
-    }
-
-    virtual void send_buffer_not_empty(Event* e) {
+    virtual void imodule_send_buffer_not_full(Event* e) {
 
     }
 
-    virtual void receive_buffer_not_empty(Event* e) {
+    virtual void imodule_send_buffer_not_empty(Event* e) {
 
     }
 
-    virtual void receive_buffer_not_full(Event* e) {
+    virtual void imodule_receive_buffer_not_empty(Event* e) {
+
+    }
+
+    virtual void imodule_receive_buffer_not_full(Event* e) {
         
     }
 
-    virtual void delete_socket(Event* e) {
+    virtual void imodule_delete_socket(Event* e) {
         
     }
 

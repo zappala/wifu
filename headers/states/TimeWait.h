@@ -21,10 +21,10 @@ class TimeWait : public State {
 public:
     TimeWait();
     virtual ~TimeWait();
-    virtual void enter(Context* c);
-    virtual void exit(Context* c);
+    virtual void state_enter(Context* c);
+    virtual void state_exit(Context* c);
 
-    virtual void timer_fired(Context* c, TimerFiredEvent* e);
+    virtual void state_timer_fired(Context* c, TimerFiredEvent* e);
 
 private:
     TimeoutEvent* timeout_event_;

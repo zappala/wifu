@@ -21,10 +21,10 @@ class Accept : public State {
 public:
     Accept();
     virtual ~Accept();
-    virtual void enter(Context* c);
-    virtual void exit(Context* c);
+    virtual void state_enter(Context* c);
+    virtual void state_exit(Context* c);
 
-    void receive_packet(Context* c, NetworkReceivePacketEvent* e);
+    void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
     void state_close(Context* c, CloseEvent* e);
 };
 

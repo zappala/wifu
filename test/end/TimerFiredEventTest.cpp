@@ -23,7 +23,7 @@ namespace {
 			timerFired = false;
 		}
 
-		void timer_fired(Event* e) {
+		void imodule_timer_fired(Event* e) {
 			timerFired = true;
 		}
 

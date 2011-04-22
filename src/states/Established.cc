@@ -8,7 +8,7 @@ Established::~Established() {
 
 }
 
-void Established::enter(Context* c) {
+void Established::state_enter(Context* c) {
     // TODO: spawn new Socket.
 //    cout << "Established::enter()" << endl;
 
@@ -41,12 +41,12 @@ void Established::enter(Context* c) {
 
 }
 
-void Established::exit(Context* c) {
+void Established::state_exit(Context* c) {
 //    cout << "Established::exit()" << endl;
 
 }
 
-void Established::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void Established::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 //    cout << "Established::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();

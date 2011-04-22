@@ -20,7 +20,7 @@ bool TimeoutEvent::less_than(Event* e) {
 }
 
 void TimeoutEvent::execute(IModule* m) {
-	m->timeout(this);
+	m->imodule_timeout(this);
 }
 
 string TimeoutEvent::to_s() {

@@ -36,41 +36,41 @@ public:
 
     virtual ~State();
 
-    virtual void enter(Context*);
+    virtual void state_enter(Context*);
 
-    virtual void exit(Context*);
+    virtual void state_exit(Context*);
 
-    virtual void socket(Context*, SocketEvent* e);
+    virtual void state_socket(Context*, SocketEvent* e);
 
-    virtual void bind(Context*, BindEvent* e);
+    virtual void state_bind(Context*, BindEvent* e);
 
-    virtual void listen(Context*, ListenEvent* e);
+    virtual void state_listen(Context*, ListenEvent* e);
 
-    virtual void accept(Context*, AcceptEvent*);
+    virtual void state_accept(Context*, AcceptEvent*);
 
-    virtual void send_to(Context*, SendEvent*);
+    virtual void state_send(Context*, SendEvent*);
 
     virtual bool state_can_send(Context*, Socket*);
 
     virtual bool state_can_receive(Context*, Socket*);
 
-    virtual void receive_from(Context*, ReceiveEvent*);
+    virtual void state_receive(Context*, ReceiveEvent*);
 
-    virtual void new_connection_established(Context*, ConnectionEstablishedEvent* e);
+    virtual void state_new_connection_established(Context*, ConnectionEstablishedEvent* e);
 
-    virtual void new_connection_initiated(Context*, ConnectionInitiatedEvent* e);
+    virtual void state_new_connection_initiated(Context*, ConnectionInitiatedEvent* e);
 
-    virtual void receive_packet(Context*, NetworkReceivePacketEvent* e);
+    virtual void state_receive_packet(Context*, NetworkReceivePacketEvent* e);
 
-    virtual void timer_fired(Context*, TimerFiredEvent*);
+    virtual void state_timer_fired(Context*, TimerFiredEvent*);
 
-    virtual void connect(Context*, ConnectEvent*);
+    virtual void state_connect(Context*, ConnectEvent*);
 
     virtual void state_close(Context*, CloseEvent*);
 
-    virtual void send_packet(Context*, SendPacketEvent* e);
+    virtual void state_send_packet(Context*, SendPacketEvent* e);
 
-    virtual void resend_packet(Context*, ResendPacketEvent* e);
+    virtual void state_resend_packet(Context*, ResendPacketEvent* e);
 
     virtual void state_send_buffer_not_empty(Context*, SendBufferNotEmptyEvent*);
 
@@ -81,10 +81,6 @@ public:
     virtual void state_receive_buffer_not_full(Context*, ReceiveBufferNotFullEvent*);
 
     virtual void state_delete_socket(Context*, DeleteSocketEvent*);
-
-    void enter_state(string);
-
-    void leave_state(string);
 
 };
 

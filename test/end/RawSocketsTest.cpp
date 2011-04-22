@@ -30,7 +30,7 @@ public:
         }
     }
 
-    void network_receive(WiFuPacket* p) {
+    void imodule_network_receive(WiFuPacket* p) {
         message_ = (const char*) p->get_data();
         sem_.post();
     }

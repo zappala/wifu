@@ -5,5 +5,5 @@ SocketEvent::SocketEvent(string& message, string& file, Socket* socket) : Librar
 SocketEvent::~SocketEvent() {}
 
 void SocketEvent::execute(IModule* m) {
-	m->library_socket(this);
+	m->imodule_library_socket(this);
 }

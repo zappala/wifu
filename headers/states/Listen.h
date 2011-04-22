@@ -19,10 +19,10 @@ class Listen : public State {
 public:
     Listen();
     virtual ~Listen();
-    virtual void enter(Context* c);
-    virtual void exit(Context* c);
+    virtual void state_enter(Context* c);
+    virtual void state_exit(Context* c);
 
-    void accept(Context* c, AcceptEvent* e);
+    void state_accept(Context* c, AcceptEvent* e);
 
 };
 

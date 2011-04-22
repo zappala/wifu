@@ -8,7 +8,7 @@ Protocol::~Protocol() {
 
 }
 
-void Protocol::library_socket(Event* e) {
+void Protocol::imodule_library_socket(Event* e) {
     SocketEvent* event = (SocketEvent*) e;
 
     Socket* s = event->get_socket();
@@ -28,7 +28,7 @@ void Protocol::library_socket(Event* e) {
     dispatch(response);
 }
 
-void Protocol::library_bind(Event* e) {
+void Protocol::imodule_library_bind(Event* e) {
     BindEvent* event = (BindEvent*) e;
 
     int error = 0;
@@ -70,7 +70,7 @@ void Protocol::library_bind(Event* e) {
     dispatch(response);
 }
 
-void Protocol::library_listen(Event* e) {
+void Protocol::imodule_library_listen(Event* e) {
     ListenEvent* event = (ListenEvent*) e;
 
     Socket* socket = event->get_socket();
@@ -108,7 +108,7 @@ void Protocol::library_listen(Event* e) {
     dispatch(response);
 }
 
-void Protocol::library_connect(Event* e) {
+void Protocol::imodule_library_connect(Event* e) {
     ConnectEvent* event = (ConnectEvent*) e;
 
     Socket* socket = event->get_socket();
@@ -122,7 +122,7 @@ void Protocol::library_connect(Event* e) {
     icontext_connect(event);
 }
 
-void Protocol::library_accept(Event* e) {
+void Protocol::imodule_library_accept(Event* e) {
     //    cout << "Protocol::library_accept(), Event socket: " << e->get_socket() << endl;
     AcceptEvent* event = (AcceptEvent*) e;
 
@@ -135,7 +135,7 @@ void Protocol::library_accept(Event* e) {
     icontext_accept(event);
 }
 
-void Protocol::library_receive(Event* e) {
+void Protocol::imodule_library_receive(Event* e) {
     //    cout << "Protocol::library_receive()" << endl;
     ReceiveEvent* event = (ReceiveEvent*) e;
 
@@ -150,7 +150,7 @@ void Protocol::library_receive(Event* e) {
     icontext_receive(event);
 }
 
-void Protocol::library_send(Event* e) {
+void Protocol::imodule_library_send(Event* e) {
     //    cout << "Protocol::library_send()" << endl;
     SendEvent* event = (SendEvent*) e;
 
@@ -163,7 +163,7 @@ void Protocol::library_send(Event* e) {
     icontext_send(event);
 }
 
-void Protocol::library_close(Event* e) {
+void Protocol::imodule_library_close(Event* e) {
     CloseEvent* event = (CloseEvent*) e;
     if (!sockets_.contains(event->get_socket())) {
         // TODO: return an error?
@@ -172,7 +172,7 @@ void Protocol::library_close(Event* e) {
     icontext_close(event);
 }
 
-void Protocol::send(Event* e) {
+void Protocol::imodule_send(Event* e) {
     //    cout << "Protocol::send()" << endl;
     SendPacketEvent* event = (SendPacketEvent*) e;
 
@@ -185,7 +185,7 @@ void Protocol::send(Event* e) {
     icontext_send_packet(event);
 }
 
-void Protocol::network_receive(Event* e) {
+void Protocol::imodule_network_receive(Event* e) {
     //    cout << "Protocol::network_receive()" << endl;
 
     NetworkReceivePacketEvent* event = (NetworkReceivePacketEvent*) e;
@@ -201,7 +201,7 @@ void Protocol::network_receive(Event* e) {
     icontext_receive_packet(event);
 }
 
-void Protocol::connection_established(Event* e) {
+void Protocol::imodule_connection_established(Event* e) {
     //    cout << "Protocol::connection_established()" << endl;
     // TODO: a lot of this code is the same as in library_socket, refactor later
     ConnectionEstablishedEvent* event = (ConnectionEstablishedEvent*) e;
@@ -229,7 +229,7 @@ void Protocol::connection_established(Event* e) {
     dispatch(response);
 }
 
-void Protocol::connection_initiated(Event* e) {
+void Protocol::imodule_connection_initiated(Event* e) {
     ConnectionInitiatedEvent* event = (ConnectionInitiatedEvent*) e;
     Socket* listening_socket = event->get_socket();
     Socket* new_socket = event->get_new_socket();
@@ -241,7 +241,7 @@ void Protocol::connection_initiated(Event* e) {
     icontext_new_conneciton_initiated(event);
 }
 
-void Protocol::timer_fired(Event* e) {
+void Protocol::imodule_timer_fired(Event* e) {
     TimerFiredEvent* event = (TimerFiredEvent*) e;
     Socket* socket = event->get_socket();
 
@@ -253,7 +253,7 @@ void Protocol::timer_fired(Event* e) {
     icontext_timer_fired_event(event);
 }
 
-void Protocol::resend(Event* e) {
+void Protocol::imodule_resend(Event* e) {
     ResendPacketEvent* event = (ResendPacketEvent*) e;
     Socket* socket = event->get_socket();
 
@@ -264,7 +264,7 @@ void Protocol::resend(Event* e) {
     icontext_resend_packet(event);
 }
 
-void Protocol::send_buffer_not_empty(Event* e) {
+void Protocol::imodule_send_buffer_not_empty(Event* e) {
     SendBufferNotEmptyEvent* event = (SendBufferNotEmptyEvent*) e;
     Socket* socket = event->get_socket();
 
@@ -275,7 +275,7 @@ void Protocol::send_buffer_not_empty(Event* e) {
     icontext_send_buffer_not_empty(event);
 }
 
-void Protocol::send_buffer_not_full(Event* e) {
+void Protocol::imodule_send_buffer_not_full(Event* e) {
     SendBufferNotFullEvent* event = (SendBufferNotFullEvent*) e;
     Socket* socket = event->get_socket();
 
@@ -286,7 +286,7 @@ void Protocol::send_buffer_not_full(Event* e) {
     icontext_send_buffer_not_full(event);
 }
 
-void Protocol::receive_buffer_not_empty(Event* e) {
+void Protocol::imodule_receive_buffer_not_empty(Event* e) {
     ReceiveBufferNotEmptyEvent* event = (ReceiveBufferNotEmptyEvent*) e;
     Socket* socket = event->get_socket();
 
@@ -308,7 +308,7 @@ void Protocol::receive_buffer_not_full(Event* e) {
     icontext_receive_buffer_not_full(event);
 }
 
-void Protocol::delete_socket(Event* e) {
+void Protocol::imodule_delete_socket(Event* e) {
     //    cout << "Protocol::delete_socket()" << endl;
     DeleteSocketEvent* event = (DeleteSocketEvent*) e;
     Socket* socket = event->get_socket();

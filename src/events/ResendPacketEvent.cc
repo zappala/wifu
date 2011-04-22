@@ -4,5 +4,5 @@ ResendPacketEvent::ResendPacketEvent(Socket* s, WiFuPacket* p) : PacketEvent(s, 
 }
 
 void ResendPacketEvent::execute(IModule* m) {
-    m->resend(this);
+    m->imodule_resend(this);
 }

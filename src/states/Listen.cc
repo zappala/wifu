@@ -8,15 +8,15 @@ Listen::~Listen() {
 
 }
 
-void Listen::enter(Context* c) {
+void Listen::state_enter(Context* c) {
 
 }
 
-void Listen::exit(Context* c) {
+void Listen::state_exit(Context* c) {
 
 }
 
-void Listen::accept(Context* c, AcceptEvent* e) {
+void Listen::state_accept(Context* c, AcceptEvent* e) {
     // TODO: set up the back log with a Semaphore.
     // Wait here
 

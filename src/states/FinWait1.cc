@@ -8,11 +8,11 @@ FinWait1::~FinWait1() {
 
 }
 
-void FinWait1::enter(Context* c) {
+void FinWait1::state_enter(Context* c) {
 //    cout << "FinWait1::enter()" << endl;
 }
 
-void FinWait1::exit(Context* c) {
+void FinWait1::state_exit(Context* c) {
 //    cout << "FinWait1::exit()" << endl;
 }
 
@@ -20,7 +20,7 @@ void FinWait1::close(Context* c) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
 }
 
-void FinWait1::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void FinWait1::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 //    cout << "FinWait1::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();

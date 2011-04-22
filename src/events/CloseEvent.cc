@@ -9,5 +9,5 @@ CloseEvent::~CloseEvent() {
 }
 
 void CloseEvent::execute(IModule* m) {
-    m->library_close(this);
+    m->imodule_library_close(this);
 }

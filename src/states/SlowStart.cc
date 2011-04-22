@@ -7,7 +7,7 @@ SlowStart::~SlowStart() {
 
 }
 
-void SlowStart::send_packet(Context* c, SendPacketEvent* e) {
+void SlowStart::state_send_packet(Context* c, SendPacketEvent* e) {
     CongestionControlContext* ccc = (CongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
@@ -18,7 +18,7 @@ void SlowStart::send_packet(Context* c, SendPacketEvent* e) {
     }
 }
 
-void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void SlowStart::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 //    cout << "SlowStart::receive_packet()" << endl;
     CongestionControlContext* ccc = (CongestionControlContext*) c;
     Socket* s = e->get_socket();
@@ -121,12 +121,4 @@ void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent*
         Dispatcher::instance().enqueue(spe);
         Dispatcher::instance().enqueue(sbnf);
     }
-}
-
-void SlowStart::enter(Context* c) {
-    enter_state("SlowStart");
-}
-
-void SlowStart::exit(Context* c) {
-    leave_state("SlowStart");
 }

@@ -9,5 +9,5 @@ DeleteSocketEvent::~DeleteSocketEvent() {
 }
 
 void DeleteSocketEvent::execute(IModule* m) {
-    m->delete_socket(this);
+    m->imodule_delete_socket(this);
 }

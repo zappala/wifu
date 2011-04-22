@@ -8,15 +8,15 @@ Closing::~Closing() {
 
 }
 
-void Closing::enter(Context* c) {
+void Closing::state_enter(Context* c) {
 
 }
 
-void Closing::exit(Context* c) {
+void Closing::state_exit(Context* c) {
 
 }
 
-void Closing::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void Closing::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();

@@ -5,7 +5,7 @@ ReceiveEvent::ReceiveEvent(string& message, string& file, Socket* s) : LibraryEv
 }
 
 void ReceiveEvent::execute(IModule* m) {
-    m->library_receive(this);
+    m->imodule_library_receive(this);
 }
 
 int ReceiveEvent::get_receive_buffer_size() {

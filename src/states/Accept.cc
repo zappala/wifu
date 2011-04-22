@@ -9,15 +9,15 @@ Accept::~Accept() {
 
 }
 
-void Accept::enter(Context* c) {
+void Accept::state_enter(Context* c) {
 
 }
 
-void Accept::exit(Context* c) {
+void Accept::state_exit(Context* c) {
 
 }
 
-void Accept::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void Accept::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 //    cout << "Accept::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();

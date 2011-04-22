@@ -8,15 +8,15 @@ SynReceived::~SynReceived() {
 
 }
 
-void SynReceived::enter(Context* c) {
+void SynReceived::state_enter(Context* c) {
 //    cout << "Entering SynReceived State" << endl;
 }
 
-void SynReceived::exit(Context* c) {
+void SynReceived::state_exit(Context* c) {
 
 }
 
-void SynReceived::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void SynReceived::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 //    cout << "SynReceived::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();

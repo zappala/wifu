@@ -27,9 +27,9 @@ public:
 
     void register_protocol(int, PacketFactory*);
 
-    void network_receive(WiFuPacket*);
+    void imodule_network_receive(WiFuPacket*);
 
-    void network_send(Event*);
+    void imodule_network_send(Event*);
 
 private:
 

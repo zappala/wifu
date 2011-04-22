@@ -49,52 +49,52 @@ public:
      * Dispatches a response
      * @param e SocketEvent
      */
-    virtual void library_socket(Event* e);
+    virtual void imodule_library_socket(Event* e);
 
     /**
      * Default implementation of what a protocol will do when a bind Event is received
      * @param e BindEvent
      */
-    virtual void library_bind(Event* e);
+    virtual void imodule_library_bind(Event* e);
 
-    virtual void library_listen(Event* e);
+    virtual void imodule_library_listen(Event* e);
 
     // TODO: refactor this to use the template pattern.
     // Have common code here then abstract method calls which will
     // call the actual protocol implementaion by which the event can be
     // processed.
 
-    virtual void library_connect(Event* e);
+    virtual void imodule_library_connect(Event* e);
 
-    virtual void library_accept(Event* e);
+    virtual void imodule_library_accept(Event* e);
 
-    virtual void library_receive(Event* e);
+    virtual void imodule_library_receive(Event* e);
 
-    virtual void library_send(Event* e);
+    virtual void imodule_library_send(Event* e);
 
-    virtual void library_close(Event* e);
+    virtual void imodule_library_close(Event* e);
 
-    virtual void send(Event* e);
+    virtual void imodule_send(Event* e);
 
-    virtual void network_receive(Event* e);
+    virtual void imodule_network_receive(Event* e);
 
-    virtual void connection_established(Event* e);
+    virtual void imodule_connection_established(Event* e);
 
-    virtual void connection_initiated(Event* e);
+    virtual void imodule_connection_initiated(Event* e);
 
-    virtual void timer_fired(Event* e);
+    virtual void imodule_timer_fired(Event* e);
 
-    virtual void resend(Event* e);
+    virtual void imodule_resend(Event* e);
 
-    virtual void send_buffer_not_empty(Event* e);
+    virtual void imodule_send_buffer_not_empty(Event* e);
 
-    virtual void send_buffer_not_full(Event* e);
+    virtual void imodule_send_buffer_not_full(Event* e);
 
-    virtual void receive_buffer_not_empty(Event* e);
+    virtual void imodule_receive_buffer_not_empty(Event* e);
 
     virtual void receive_buffer_not_full(Event* e);
 
-    virtual void delete_socket(Event* e);
+    virtual void imodule_delete_socket(Event* e);
 
 private:
 

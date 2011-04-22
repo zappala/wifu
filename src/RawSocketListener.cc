@@ -40,7 +40,7 @@ void* listener(void* arg) {
 
             PacketLogger::instance().log(packet);
 
-            callback->network_receive(packet);
+            callback->imodule_network_receive(packet);
         }
     }
 }

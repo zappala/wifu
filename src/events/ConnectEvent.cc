@@ -5,7 +5,7 @@ ConnectEvent::ConnectEvent(string& message, string& file, Socket* s) : LibraryEv
 ConnectEvent::~ConnectEvent() {}
 
 void ConnectEvent::execute(IModule* m) {
-	m->library_connect(this);
+	m->imodule_library_connect(this);
 }
 
 AddressPort* ConnectEvent::get_destination() {

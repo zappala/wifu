@@ -5,5 +5,5 @@ AcceptEvent::AcceptEvent(string& message, string& file, Socket* s) : LibraryEven
 AcceptEvent::~AcceptEvent() {}
 
 void AcceptEvent::execute(IModule* m) {
-	m->library_accept(this);
+	m->imodule_library_accept(this);
 }

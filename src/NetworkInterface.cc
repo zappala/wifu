@@ -16,7 +16,7 @@ void NetworkInterface::register_protocol(int protocol, PacketFactory* pf) {
     listener_.register_protocol(protocol, pf);
 }
 
-void NetworkInterface::network_receive(WiFuPacket* p) {
+void NetworkInterface::imodule_network_receive(WiFuPacket* p) {
     AddressPort* remote = p->get_source_address_port();
     AddressPort* local = p->get_dest_address_port();
 
@@ -36,7 +36,7 @@ void NetworkInterface::network_receive(WiFuPacket* p) {
     Dispatcher::instance().enqueue(e);
 }
 
-void NetworkInterface::network_send(Event* e) {
+void NetworkInterface::imodule_network_send(Event* e) {
     NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
     // TODO: Check return value (bytes sent)?
     sender_.send(event->get_packet());

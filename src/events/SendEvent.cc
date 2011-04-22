@@ -5,7 +5,7 @@ SendEvent::SendEvent(string& message, string& file, Socket* s) : LibraryEvent(me
 }
 
 void SendEvent::execute(IModule* m) {
-    m->library_send(this);
+    m->imodule_library_send(this);
 }
 
 unsigned char * SendEvent::get_data() {

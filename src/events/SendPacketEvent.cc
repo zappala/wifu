@@ -3,5 +3,5 @@
 SendPacketEvent::SendPacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {}
 
 void SendPacketEvent::execute(IModule* m) {
-	m->send(this);
+	m->imodule_send(this);
 }

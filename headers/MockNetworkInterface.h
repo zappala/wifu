@@ -32,11 +32,11 @@ public:
 
     void register_protocol(int protocol, PacketFactory* pf);
 
-    void network_receive(WiFuPacket* p);
+    void imodule_network_receive(WiFuPacket* p);
 
-    void network_send(Event* e);
+    void imodule_network_send(Event* e);
 
-    void timer_fired(Event* e);
+    void imodule_timer_fired(Event* e);
 
 private:
     MockNetworkInterface();

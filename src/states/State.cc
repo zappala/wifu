@@ -11,19 +11,19 @@ State::State() {}
 
 State::~State() {}
 
-void State::enter(Context* c) {}
+void State::state_enter(Context* c) {}
 
-void State::exit(Context* c) {}
+void State::state_exit(Context* c) {}
 
-void State::socket(Context* c, SocketEvent* e) {}
+void State::state_socket(Context* c, SocketEvent* e) {}
 
-void State::bind(Context* c, BindEvent* e) {}
+void State::state_bind(Context* c, BindEvent* e) {}
 
-void State::listen(Context* c, ListenEvent* e) {}
+void State::state_listen(Context* c, ListenEvent* e) {}
 
-void State::accept(Context* c, AcceptEvent* e) {}
+void State::state_accept(Context* c, AcceptEvent* e) {}
 
-void State::send_to(Context*, SendEvent*) {}
+void State::state_send(Context*, SendEvent*) {}
 
 
 bool State::state_can_receive(Context* c, Socket* s) {
@@ -34,23 +34,23 @@ bool State::state_can_send(Context* c, Socket* s) {
     return false;
 }
 
-void State::receive_from(Context*, ReceiveEvent*) {}
+void State::state_receive(Context*, ReceiveEvent*) {}
 
-void State::new_connection_established(Context* c, ConnectionEstablishedEvent* e) {}
+void State::state_new_connection_established(Context* c, ConnectionEstablishedEvent* e) {}
 
-void State::new_connection_initiated(Context*, ConnectionInitiatedEvent* e) {}
+void State::state_new_connection_initiated(Context*, ConnectionInitiatedEvent* e) {}
 
-void State::receive_packet(Context* c, NetworkReceivePacketEvent* e) {}
+void State::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {}
 
-void State::timer_fired(Context* c, TimerFiredEvent* e) {}
+void State::state_timer_fired(Context* c, TimerFiredEvent* e) {}
 
-void State::connect(Context* c, ConnectEvent* e) {}
+void State::state_connect(Context* c, ConnectEvent* e) {}
 
 void State::state_close(Context* c, CloseEvent* e) {}
 
-void State::send_packet(Context* c, SendPacketEvent* e) {}
+void State::state_send_packet(Context* c, SendPacketEvent* e) {}
 
-void State::resend_packet(Context*, ResendPacketEvent* e) {}
+void State::state_resend_packet(Context*, ResendPacketEvent* e) {}
 
 void State::state_receive_buffer_not_empty(Context*, ReceiveBufferNotEmptyEvent*) {}
 
@@ -61,11 +61,3 @@ void State::state_send_buffer_not_empty(Context*, SendBufferNotEmptyEvent*) {}
 void State::state_send_buffer_not_full(Context*, SendBufferNotFullEvent*) {}
 
 void State::state_delete_socket(Context*, DeleteSocketEvent*) {}
-
-void State::enter_state(string state) {
-//    cout << "Entering " << state << " State" << endl;
-}
-
-void State::leave_state(string state) {
-//    cout << "Leaving " << state << " State" << endl;
-}

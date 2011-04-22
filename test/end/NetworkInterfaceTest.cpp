@@ -34,13 +34,13 @@ namespace {
             s.init(0);
         }
 
-        void network_receive(Event* e) {
+        void imodule_network_receive(Event* e) {
             NetworkReceivePacketEvent* event = (NetworkReceivePacketEvent*) e;
             p = event->get_packet();
             s.post();
         }
 
-        void network_send(Event* event) {
+        void imodule_network_send(Event* event) {
         	NetworkSendPacketEvent* sendEvent = (NetworkSendPacketEvent*) event;
         	sender.send(sendEvent->get_packet());
         	s.post();

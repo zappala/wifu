@@ -23,8 +23,8 @@ class CloseWait : public State {
 public:
     CloseWait();
     virtual ~CloseWait();
-    virtual void enter(Context* c);
-    virtual void exit(Context* c);
+    virtual void state_enter(Context* c);
+    virtual void state_exit(Context* c);
 
     virtual void state_close(Context* c, CloseEvent* e);
 };

@@ -21,7 +21,7 @@ void ResponseEvent::put(const char* key, string value) {
 }
 
 void ResponseEvent::execute(IModule* m) {
-	m->library_response(this);
+	m->imodule_library_response(this);
 }
 
 string ResponseEvent::get_write_file() {
