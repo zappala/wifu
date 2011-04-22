@@ -54,6 +54,8 @@ void State::resend_packet(Context*, ResendPacketEvent* e) {}
 
 void State::state_receive_buffer_not_empty(Context*, ReceiveBufferNotEmptyEvent*) {}
 
+void State::state_receive_buffer_not_full(Context*, ReceiveBufferNotFullEvent*) {}
+
 void State::state_send_buffer_not_empty(Context*, SendBufferNotEmptyEvent*) {}
 
 void State::state_send_buffer_not_full(Context*, SendBufferNotFullEvent*) {}
@@ -61,9 +63,9 @@ void State::state_send_buffer_not_full(Context*, SendBufferNotFullEvent*) {}
 void State::state_delete_socket(Context*, DeleteSocketEvent*) {}
 
 void State::enter_state(string state) {
-    cout << "Entering " << state << " State" << endl;
+//    cout << "Entering " << state << " State" << endl;
 }
 
 void State::leave_state(string state) {
-    cout << "Leaving " << state << " State" << endl;
+//    cout << "Leaving " << state << " State" << endl;
 }

@@ -17,6 +17,7 @@
 #include "events/ReceiveEvent.h"
 #include "events/SendEvent.h"
 #include "events/CloseEvent.h"
+#include "events/NetworkReceivePacketEvent.h"
 
 using namespace std;
 
@@ -44,6 +45,10 @@ public:
 
     void set_saved_close_event(CloseEvent* e);
 
+    NetworkReceivePacketEvent* get_fin();
+
+    void set_fin(NetworkReceivePacketEvent* e);
+
 private:
     IContext* reliability_;
     IContext* cc_;
@@ -52,6 +57,7 @@ private:
     SendEvent* saved_send_event_;
     ReceiveEvent* saved_receive_event_;
     CloseEvent* close_event_;
+    NetworkReceivePacketEvent* fin_;
 };
 
 #endif	/* CONTEXTCONTAINER_H */

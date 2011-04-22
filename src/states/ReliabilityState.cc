@@ -15,7 +15,7 @@ void ReliabilityState::exit(Context* c) {
 }
 
 void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
-    cout << "ReliabilityState::send_packet()" << endl;
+//    cout << "ReliabilityState::send_packet()" << endl;
 
     ReliabilityContext* rc = (ReliabilityContext*) c;
     Socket* s = e->get_socket();
@@ -32,11 +32,11 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
     }
 
     if (!p->is_naked_ack()) {
-        cout << "ReliabilityState::send_packet(), Caching the Packet: " << p << endl;
+//        cout << "ReliabilityState::send_packet(), Caching the Packet: " << p << endl;
 
         SimpleTCPCache* cache = (SimpleTCPCache*) CacheMap::instance().get(s);
         if (cache->get_packet()) {
-            cout << "ReliabilityState::send_packet(), Packet in cache: " << cache->get_packet() << endl;
+//            cout << "ReliabilityState::send_packet(), Packet in cache: " << cache->get_packet() << endl;
         }
 //        assert(cache->get_packet() == NULL);
         cache->save_packet(p);
@@ -48,7 +48,7 @@ void ReliabilityState::send_packet(Context* c, SendPacketEvent* e) {
 }
 
 void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
-    cout << "ReliabilityState::timer_fired()" << endl;
+//    cout << "ReliabilityState::timer_fired()" << endl;
     ReliabilityContext* rc = (ReliabilityContext*) c;
     Socket* s = e->get_socket();
     SimpleTCPCache* cache = (SimpleTCPCache*) CacheMap::instance().get(s);
@@ -56,7 +56,7 @@ void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
     WiFuPacket* p = cache->get_packet();
 
     if (p) {
-        cout << "ReliabilityState::timer_fired(), cached packet is NOT null, socket: " << s << endl;
+//        cout << "ReliabilityState::timer_fired(), cached packet is NOT null, socket: " << s << endl;
 //        cache->save_packet(0);
         ResendPacketEvent* event = new ResendPacketEvent(e->get_socket(), p);
         Dispatcher::instance().enqueue(event);
@@ -68,40 +68,37 @@ void ReliabilityState::timer_fired(Context* c, TimerFiredEvent* e) {
 }
 
 void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
-    cout << "ReliabilityState::receive_packet()" << endl;
+//    cout << "ReliabilityState::receive_packet()" << endl;
     ReliabilityContext* rc = (ReliabilityContext*) c;
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
     SimpleTCPCache* cache = (SimpleTCPCache*) CacheMap::instance().get(s);
     TCPPacket* cached_packet = (TCPPacket*) cache->get_packet();
 
-    if (cached_packet == 0) {
-        cout << "ReliabilityState::receive_packet(), cached_packet is null" << endl;
-    }
 
     if (p->is_tcp_ack() && cached_packet && p->get_tcp_ack_number() - 1 == cached_packet->get_tcp_sequence_number()) {
-        cout << "ReliabilityState::receive_packet(), Case 1" << endl;
+//        cout << "ReliabilityState::receive_packet(), Case 1" << endl;
         cache->save_packet(0);
         Event* cancel_timer_event = new CancelTimerEvent(rc->get_timeout_event());
         Dispatcher::instance().enqueue(cancel_timer_event);
     }
 
     if (p->get_tcp_sequence_number() == rc->get_ack_number() || rc->get_ack_number() == 0) {
-        cout << "ReliabilityState::receive_packet(), Case 2" << endl;
+//        cout << "ReliabilityState::receive_packet(), Case 2" << endl;
         rc->set_ack_number(p->get_tcp_sequence_number() + 1);
         if (p->get_data_length_bytes() > 0) {
             s->get_receive_buffer().append((const char*) p->get_data(), p->get_data_length_bytes());
             Dispatcher::instance().enqueue(new ReceiveBufferNotEmptyEvent(s));
         }
     } else if (p->get_tcp_sequence_number() - 1 == rc->get_ack_number()) {
-        cout << "ReliabilityState::receive_packet(), Case 3" << endl;
+//        cout << "ReliabilityState::receive_packet(), Case 3" << endl;
         rc->set_ack_number(p->get_tcp_sequence_number() + 1);
         if (p->get_data_length_bytes() > 0) {
             s->get_receive_buffer().append((const char*) p->get_data(), p->get_data_length_bytes());
             Dispatcher::instance().enqueue(new ReceiveBufferNotEmptyEvent(s));
         }
     } else if (p->get_tcp_sequence_number() + 1 == rc->get_ack_number() && cache->is_empty()) {
-        cout << "ReliabilityState::receive_packet(), Case 4" << endl;
+//        cout << "ReliabilityState::receive_packet(), Case 4" << endl;
         rc->set_seq_number(rc->get_seq_number() - 1);
 
         if (p->get_data_length_bytes() > 0) {
@@ -126,9 +123,9 @@ void ReliabilityState::receive_packet(Context* c, NetworkReceivePacketEvent* e) 
 
         Event* spe = new SendPacketEvent(s, p);
 
-        cout << "ReliabilityState::receive_packet(), Case 4, Packet: " << p << endl;
+//        cout << "ReliabilityState::receive_packet(), Case 4, Packet: " << p << endl;
 
         Dispatcher::instance().enqueue(spe);
     }
-    cout << "ReliabilityState::receive_packet(), returning" << endl;
+//    cout << "ReliabilityState::receive_packet(), returning" << endl;
 }

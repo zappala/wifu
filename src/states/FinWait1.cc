@@ -9,11 +9,11 @@ FinWait1::~FinWait1() {
 }
 
 void FinWait1::enter(Context* c) {
-    cout << "FinWait1::enter()" << endl;
+//    cout << "FinWait1::enter()" << endl;
 }
 
 void FinWait1::exit(Context* c) {
-    cout << "FinWait1::exit()" << endl;
+//    cout << "FinWait1::exit()" << endl;
 }
 
 void FinWait1::close(Context* c) {
@@ -21,13 +21,13 @@ void FinWait1::close(Context* c) {
 }
 
 void FinWait1::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
-    cout << "FinWait1::receive_packet()" << endl;
+//    cout << "FinWait1::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();
 
     if (p->is_tcp_fin() && p->is_tcp_ack()) {
-        cout << "FinWait1::receive_packet(), FIN/ACK" << endl;
+//        cout << "FinWait1::receive_packet(), FIN/ACK" << endl;
         unsigned char* data = (unsigned char*) "";
         AddressPort* destination = s->get_remote_address_port();
         AddressPort* source = s->get_local_address_port();
@@ -48,7 +48,7 @@ void FinWait1::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         cmc->set_state(new TimeWait());
         
     } else if (p->is_tcp_ack()) {
-        cout << "FinWait1::receive_packet(), ACK" << endl;
+//        cout << "FinWait1::receive_packet(), ACK" << endl;
         cmc->set_state(new FinWait2());
     }
 }

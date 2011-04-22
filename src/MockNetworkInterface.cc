@@ -28,19 +28,19 @@ void MockNetworkInterface::network_send(Event* e) {
 
     int delay = get_delay(tcp_packet);
 
-    cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
+//    cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
     assert(p);
-    cout << p->to_s_format() << endl;
-    cout << p->to_s() << endl;
+//    cout << p->to_s_format() << endl;
+//    cout << p->to_s() << endl;
     logger.log(p);
     // drop the packet
     //    cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
     if (delay == -1) {
-        cout << "MockNetworkInterface::network_send(), Dropping packet" << endl;
+//        cout << "MockNetworkInterface::network_send(), Dropping packet" << endl;
         return;
     }
 
-    cout << "MockNetworkInterface::network_send(), Before sleep" << endl;
+//    cout << "MockNetworkInterface::network_send(), Before sleep" << endl;
 
     if (delay > 0) {
         // delay is in microseconds
@@ -68,11 +68,11 @@ void MockNetworkInterface::receive(WiFuPacket* p) {
         return;
     }
 
-    cout << "Socket " << s << " received packet: " << endl;
-    cout << "MockNetworkInterface::network_send() (mocking a receive)" << endl;
+//    cout << "Socket " << s << " received packet: " << endl;
+//    cout << "MockNetworkInterface::network_send() (mocking a receive)" << endl;
     logger.log(p);
-    cout << p->to_s_format() << endl;
-    cout << p->to_s() << endl;
+//    cout << p->to_s_format() << endl;
+//    cout << p->to_s() << endl;
 
     Event* response = new NetworkReceivePacketEvent(s, p);
     Dispatcher::instance().enqueue(response);
@@ -83,7 +83,7 @@ void MockNetworkInterface::timer_fired(Event* e) {
 
     map<TimeoutEvent*, TCPPacket*>::iterator itr = delayed_.find(event->get_timeout_event());
     if (itr != delayed_.end()) {
-        cout << "MockNetworkInterface::timer_fired()" << endl;
+//        cout << "MockNetworkInterface::timer_fired()" << endl;
         receive(itr->second);
         delayed_.erase(itr);
     }

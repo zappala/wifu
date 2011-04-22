@@ -49,7 +49,7 @@ void* close_send_receive_thread(void* args) {
     string address("127.0.0.1");
     string res = ap.get_address();
     EXPECT_EQ(address, res);
-    cout << "Connected to: " << ap.to_s() << endl;
+//    cout << "Connected to: " << ap.to_s() << endl;
 
     // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
@@ -67,7 +67,7 @@ void* close_send_receive_thread(void* args) {
     }
 
     EXPECT_EQ(message.length(), num_sent);
-    cout << "SendReceivePassiveToActive, sent message: " << message << endl;
+//    cout << "SendReceivePassiveToActive, sent message: " << message << endl;
     wifu_close(connection);
 }
 
@@ -109,7 +109,7 @@ void close_send_receive_test(string message) {
     timer.stop();
     EXPECT_EQ(0, result);
 
-    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
+//    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
     int size = 1500;
     char buffer[size];
@@ -132,7 +132,7 @@ void close_send_receive_test(string message) {
 
     EXPECT_EQ(expected, all_received);
     wifu_close(client);
-    cout << "IntegrationTest::send_receive_test(), received the following: " << all_received << endl;
+//    cout << "IntegrationTest::send_receive_test(), received the following: " << all_received << endl;
     sleep(15);
 }
 void close_passive_to_active_drop_none() {

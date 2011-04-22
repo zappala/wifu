@@ -105,7 +105,7 @@ namespace {
             ASSERT_TRUE(*dest == *(fnm.p->get_dest_address_port()));
             ASSERT_TRUE(*source == *(fnm.p->get_source_address_port()));
         }
-        cout << "Local AddressPort only, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
+//        cout << "Local AddressPort only, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
 
         // by local AND remote address/port
         socket->set_remote_address_port(source);
@@ -131,7 +131,7 @@ namespace {
             ASSERT_TRUE(*dest == *(fnm.p->get_dest_address_port()));
             ASSERT_TRUE(*source == *(fnm.p->get_source_address_port()));
         }
-        cout << "Local and Remote AddressPort, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
+//        cout << "Local and Remote AddressPort, Time (us) to send and receive " << num_packets << " packets: " << time << endl;
 
     }
 

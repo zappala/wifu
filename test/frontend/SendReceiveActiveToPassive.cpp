@@ -50,7 +50,7 @@ void* active_to_passive_thread(void* args) {
     string address("127.0.0.1");
     string res = ap.get_address();
     EXPECT_EQ(address, res);
-    cout << "Connected to: " << ap.to_s() << endl;
+//    cout << "Connected to: " << ap.to_s() << endl;
 
     // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
@@ -72,7 +72,7 @@ void* active_to_passive_thread(void* args) {
 
     }
     EXPECT_EQ(expected, all_received);
-    cout << "Received: " << all_received << endl;
+//    cout << "Received: " << all_received << endl;
     sem->post();
 }
 
@@ -114,7 +114,7 @@ void active_to_passive_test(string message) {
     timer.stop();
     ASSERT_EQ(0, result);
 
-    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
+//    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
     int size = 50000;
     char buffer[size];
@@ -131,7 +131,7 @@ void active_to_passive_test(string message) {
 
     EXPECT_EQ(message.length(), num_sent);
 
-    cout << "Sent: " << message << endl;
+//    cout << "Sent: " << message << endl;
 
     struct timespec ts;
     // wait max of 30 mins

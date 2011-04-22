@@ -92,6 +92,10 @@ void Context::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e) {
     get_state()->state_receive_buffer_not_empty(this, e);
 }
 
+void Context::icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e) {
+    get_state()->state_receive_buffer_not_full(this, e);
+}
+
 void Context::icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e) {
     get_state()->state_send_buffer_not_empty(this, e);
 }

@@ -1,6 +1,5 @@
 #include "Protocol.h"
 
-
 Protocol::Protocol(int protocol) : Module(), protocol_(protocol) {
 
 }
@@ -124,7 +123,7 @@ void Protocol::library_connect(Event* e) {
 }
 
 void Protocol::library_accept(Event* e) {
-    cout << "Protocol::library_accept(), Event socket: " << e->get_socket() << endl;
+    //    cout << "Protocol::library_accept(), Event socket: " << e->get_socket() << endl;
     AcceptEvent* event = (AcceptEvent*) e;
 
     Socket* socket = event->get_socket();
@@ -143,6 +142,8 @@ void Protocol::library_receive(Event* e) {
     Socket* s = event->get_socket();
 
     if (!icontext_can_receive(s)) {
+        cout << "Protocol::library_receive(), receive buffer: " << s->get_receive_buffer() << endl;
+        // TODO: is everything out of the receive buffer?
         // TODO: respond with error
         return;
     }
@@ -155,7 +156,7 @@ void Protocol::library_send(Event* e) {
     //    cout << "Protocol::library_send()" << endl;
     SendEvent* event = (SendEvent*) e;
 
-    if(!icontext_can_send(e->get_socket())) {
+    if (!icontext_can_send(e->get_socket())) {
         // TODO: respond with error
         return;
     }
@@ -165,8 +166,8 @@ void Protocol::library_send(Event* e) {
 }
 
 void Protocol::library_close(Event* e) {
-    CloseEvent* event = (CloseEvent*)e;
-    if(!sockets_.contains(event->get_socket())) {
+    CloseEvent* event = (CloseEvent*) e;
+    if (!sockets_.contains(event->get_socket())) {
         // TODO: return an error?
         return;
     }
@@ -203,7 +204,7 @@ void Protocol::network_receive(Event* e) {
 }
 
 void Protocol::connection_established(Event* e) {
-    cout << "Protocol::connection_established()" << endl;
+    //    cout << "Protocol::connection_established()" << endl;
     // TODO: a lot of this code is the same as in library_socket, refactor later
     ConnectionEstablishedEvent* event = (ConnectionEstablishedEvent*) e;
 
@@ -298,8 +299,19 @@ void Protocol::receive_buffer_not_empty(Event* e) {
     icontext_receive_buffer_not_empty(event);
 }
 
+void Protocol::receive_buffer_not_full(Event* e) {
+    ReceiveBufferNotFullEvent* event = (ReceiveBufferNotFullEvent*) e;
+    Socket* socket = event->get_socket();
+
+    if (!sockets_.contains(socket)) {
+        return;
+    }
+
+    icontext_receive_buffer_not_full(event);
+}
+
 void Protocol::delete_socket(Event* e) {
-    cout << "Protocol::delete_socket()" << endl;
+    //    cout << "Protocol::delete_socket()" << endl;
     DeleteSocketEvent* event = (DeleteSocketEvent*) e;
     Socket* socket = event->get_socket();
 
@@ -316,7 +328,7 @@ void Protocol::delete_socket(Event* e) {
     assert(visitor1.get_socket() == socket);
 
     SocketCollection::instance().remove(socket);
-    
+
     SocketCollectionGetByIdVisitor visitor(socket->get_socket_id());
     SocketCollection::instance().accept(&visitor);
     assert(visitor.get_socket() == NULL);

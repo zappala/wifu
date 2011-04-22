@@ -21,6 +21,7 @@
 #include "events/ResendPacketEvent.h"
 #include "events/CloseEvent.h"
 #include "events/DeleteSocketEvent.h"
+#include "events/ReceiveBufferNotFullEvent.h"
 
 #include <string>
 #include "contexts/Context.h"
@@ -76,6 +77,8 @@ public:
     virtual void state_send_buffer_not_full(Context*, SendBufferNotFullEvent*);
 
     virtual void state_receive_buffer_not_empty(Context*, ReceiveBufferNotEmptyEvent*);
+
+    virtual void state_receive_buffer_not_full(Context*, ReceiveBufferNotFullEvent*);
 
     virtual void state_delete_socket(Context*, DeleteSocketEvent*);
 

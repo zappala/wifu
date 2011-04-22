@@ -80,6 +80,8 @@ public:
 
     void icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e);
 
+    void icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e);
+
     void icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e);
 
     void icontext_send_buffer_not_full(SendBufferNotFullEvent* e);

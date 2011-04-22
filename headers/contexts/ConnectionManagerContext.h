@@ -17,6 +17,8 @@
 #include "events/ConnectEvent.h"
 #include "events/AcceptEvent.h"
 #include "events/TimerFiredEvent.h"
+#include "events/Event.h"
+#include "events/NetworkReceivePacketEvent.h"
 
 using namespace std;
 

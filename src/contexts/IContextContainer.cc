@@ -1,6 +1,6 @@
 #include "contexts/IContextContainer.h"
 
-IContextContainer::IContextContainer() : saved_send_event_(0), saved_receive_event_(0), close_event_(0) {
+IContextContainer::IContextContainer() : saved_send_event_(0), saved_receive_event_(0), close_event_(0), fin_(0) {
     reliability_ = new ReliabilityContext();
     cc_ = new CongestionControlContext();
     cm_ = new ConnectionManagerContext();
@@ -38,10 +38,18 @@ void IContextContainer::set_saved_receive_event(ReceiveEvent* e) {
     saved_receive_event_ = e;
 }
 
-CloseEvent*  IContextContainer::get_saved_close_event() {
+CloseEvent* IContextContainer::get_saved_close_event() {
     return close_event_;
 }
 
 void IContextContainer::set_saved_close_event(CloseEvent* e) {
     close_event_ = e;
+}
+
+NetworkReceivePacketEvent* IContextContainer::get_fin() {
+    return fin_;
+}
+
+void IContextContainer::set_fin(NetworkReceivePacketEvent* e) {
+    fin_ = e;
 }

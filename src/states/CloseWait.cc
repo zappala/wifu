@@ -9,15 +9,15 @@ CloseWait::~CloseWait() {
 }
 
 void CloseWait::enter(Context* c) {
-    cout << "CloseWait::enter()" << endl;
+//    cout << "CloseWait::enter()" << endl;
 }
 
 void CloseWait::exit(Context* c) {
-    cout << "CloseWait::exit()" << endl;
+//    cout << "CloseWait::exit()" << endl;
 }
 
 void CloseWait::state_close(Context* c, CloseEvent* e) {
-    cout << "CloseWait::state_close()" << endl;
+//    cout << "CloseWait::state_close()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     Socket* s = e->get_socket();
 

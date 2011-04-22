@@ -26,6 +26,7 @@ public:
     virtual void exit(Context* c);
 
     virtual void receive_packet(Context* c, NetworkReceivePacketEvent* e);
+    virtual bool state_can_receive(Context* c, Socket* s);
 };
 
 #endif	/* FINWAIT2_H */

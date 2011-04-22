@@ -17,6 +17,7 @@
 #include "events/ConnectEvent.h"
 #include "events/AcceptEvent.h"
 #include "events/TimerFiredEvent.h"
+#include "events/ReceiveBufferNotFullEvent.h"
 #include "states/State.h"
 
 using namespace std;
@@ -71,6 +72,8 @@ public:
     virtual void icontext_send_buffer_not_full(SendBufferNotFullEvent*);
 
     virtual void icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent*);
+
+    virtual void icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent*);
 
     virtual void icontext_delete_socket(DeleteSocketEvent*);
 

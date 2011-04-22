@@ -42,6 +42,7 @@
 #include "events/ConnectionInitiatedEvent.h"
 #include "events/ConnectEvent.h"
 #include "events/ReceiveBufferNotEmptyEvent.h"
+#include "events/ReceiveBufferNotFullEvent.h"
 #include "events/SendBufferNotEmptyEvent.h"
 #include "events/SendBufferNotFullEvent.h"
 #include "events/CloseEvent.h"
@@ -165,6 +166,7 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(SendBufferNotFullEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(CloseEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(DeleteSocketEvent), &SimpleTCP::instance());
 

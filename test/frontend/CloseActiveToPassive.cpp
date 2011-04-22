@@ -50,7 +50,7 @@ void* close_active_to_passive_thread(void* args) {
     string address("127.0.0.1");
     string res = ap.get_address();
     EXPECT_EQ(address, res);
-    cout << "Connected to: " << ap.to_s() << endl;
+//    cout << "Connected to: " << ap.to_s() << endl;
 
     // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
@@ -63,7 +63,7 @@ void* close_active_to_passive_thread(void* args) {
         int return_value = wifu_recv(connection, &buffer, 1, 0);
 
         if (return_value == 0) {
-            cout << "Close Thread BREAK" << endl;
+//            cout << "Close Thread BREAK" << endl;
             break;
         }
 
@@ -72,7 +72,7 @@ void* close_active_to_passive_thread(void* args) {
     }
     wifu_close(connection);
     EXPECT_EQ(expected, all_received);
-    cout << "Received: " << all_received << endl;
+//    cout << "Received: " << all_received << endl;
 }
 
 /**
@@ -113,7 +113,7 @@ void close_active_to_passive_test(string message) {
     timer.stop();
     ASSERT_EQ(0, result);
 
-    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
+//    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
     int size = 50000;
     char buffer[size];
@@ -130,7 +130,7 @@ void close_active_to_passive_test(string message) {
 
     EXPECT_EQ(message.length(), num_sent);
 
-    cout << "Sent: " << message << endl;
+//    cout << "Sent: " << message << endl;
     wifu_close(client);
     
     // TODO: test send/receive on the socket to ensure we aren't allowed to do anythin after close

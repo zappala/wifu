@@ -22,6 +22,7 @@
 #include "events/ConnectEvent.h"
 #include "events/NetworkReceivePacketEvent.h"
 #include "events/CloseEvent.h"
+#include "events/ReceiveBufferNotFullEvent.h"
 
 #include "packet/TCPPacket.h"
 

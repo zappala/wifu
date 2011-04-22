@@ -49,7 +49,7 @@ void* thread(void* args) {
     string address("127.0.0.1");
     string res = ap.get_address();
     EXPECT_EQ(address, res);
-    cout << "Connected to: " << ap.to_s() << endl;
+//    cout << "Connected to: " << ap.to_s() << endl;
 
 }
 
@@ -84,7 +84,7 @@ void connect_test() {
     timer.stop();
     ASSERT_EQ(0, result);
 
-    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
+//    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
     sleep(5);
 }
 

@@ -9,11 +9,11 @@ FinWait2::~FinWait2() {
 }
 
 void FinWait2::enter(Context* c) {
-    cout << "FinWait2::enter()" << endl;
+//    cout << "FinWait2::enter()" << endl;
 }
 
 void FinWait2::exit(Context* c) {
-    cout << "FinWait2::exit()" << endl;
+//    cout << "FinWait2::exit()" << endl;
 }
 
 void FinWait2::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
@@ -41,4 +41,8 @@ void FinWait2::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 
         cmc->set_state(new TimeWait());
     }
+}
+
+bool FinWait2::state_can_receive(Context* c, Socket* s) {
+    return true;
 }

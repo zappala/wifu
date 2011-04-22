@@ -50,26 +50,32 @@ void SimpleTCP::listen(ListenEvent* e) {
 }
 
 void SimpleTCP::receive_packet(NetworkReceivePacketEvent* e) {
-    cout << "SimpleTCP::receive_packet()" << endl;
+    //    cout << "SimpleTCP::receive_packet()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
     CloseEvent* close_event = c->get_saved_close_event();
     CongestionControlContext* ccc = (CongestionControlContext*) c->get_congestion_control();
 
+    TCPPacket* packet = (TCPPacket*) e->get_packet();
+    if(packet->is_tcp_fin() && !s->get_receive_buffer().empty()) {
+        c->set_fin(e);
+        return;
+    }
+
     c->get_connection_manager()->receive_packet(e);
     c->get_reliability()->receive_packet(e);
     c->get_congestion_control()->receive_packet(e);
 
-     if (close_event && s->get_send_buffer().empty() && ccc->get_num_outstanding() == 0) {
-        cout << "SimpleTCP::receive_packet(), sending out close event" << endl;
+    if (close_event && s->get_send_buffer().empty() && ccc->get_num_outstanding() == 0) {
+        //        cout << "SimpleTCP::receive_packet(), sending out close event" << endl;
         c->get_connection_manager()->icontext_close(close_event);
         c->set_saved_close_event(0);
     }
 }
 
 void SimpleTCP::send_packet(SendPacketEvent* e) {
-    cout << "SimpleTCP::send_packet()" << endl;
+    //    cout << "SimpleTCP::send_packet()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -97,7 +103,7 @@ void SimpleTCP::accept(AcceptEvent* e) {
 }
 
 void SimpleTCP::new_connection_established(ConnectionEstablishedEvent* e) {
-    cout << "SimpleTCP::new_connection_established()" << endl;
+    //    cout << "SimpleTCP::new_connection_established()" << endl;
 
 }
 
@@ -131,16 +137,16 @@ void SimpleTCP::new_conneciton_initiated(ConnectionInitiatedEvent* e) {
 }
 
 void SimpleTCP::icontext_close(CloseEvent* e) {
-    cout << "SimpleTCP::icontext_close()" << endl;
+    //    cout << "SimpleTCP::icontext_close()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
     CongestionControlContext* ccc = (CongestionControlContext*) c->get_congestion_control();
 
     if (s->get_send_buffer().empty() && ccc->get_num_outstanding() == 0) {
-        cout << "SimpleTCP::icontext_close(), calling connection manager" << endl;
+        //        cout << "SimpleTCP::icontext_close(), calling connection manager" << endl;
         c->get_connection_manager()->icontext_close(e);
     } else {
-        cout << "SimpleTCP::icontext_close(), saving close event" << endl;
+        //        cout << "SimpleTCP::icontext_close(), saving close event" << endl;
         c->set_saved_close_event(e);
     }
 
@@ -152,7 +158,7 @@ void SimpleTCP::icontext_close(CloseEvent* e) {
 }
 
 void SimpleTCP::timer_fired_event(TimerFiredEvent* e) {
-    cout << "In SimpleTCP::timer_fired()\n";
+    //    cout << "In SimpleTCP::timer_fired()\n";
     IContextContainer* c = get_context(e->get_socket());
 
     c->get_connection_manager()->timer_fired_event(e);
@@ -161,7 +167,7 @@ void SimpleTCP::timer_fired_event(TimerFiredEvent* e) {
 }
 
 void SimpleTCP::resend_packet(ResendPacketEvent* e) {
-    cout << "In SimpleTCP::resend_packet()\n";
+    //    cout << "In SimpleTCP::resend_packet()\n";
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -173,7 +179,7 @@ void SimpleTCP::resend_packet(ResendPacketEvent* e) {
 }
 
 void SimpleTCP::send_to(SendEvent* e) {
-    cout << "SimpleTCP::send_to()" << endl;
+    //    cout << "SimpleTCP::send_to()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -181,24 +187,24 @@ void SimpleTCP::send_to(SendEvent* e) {
     bool room = is_room_in_send_buffer(e);
 
     if (connected && room) {
-        cout << "SimpleTCP::send_to(), appending to send buffer" << endl;
+        //        cout << "SimpleTCP::send_to(), appending to send buffer" << endl;
         save_in_buffer_and_send_events(e);
 
     } else if (!connected) {
-        cout << "SimpleTCP::send_to(), not connected!" << endl;
+        //        cout << "SimpleTCP::send_to(), not connected!" << endl;
         ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
         response->put(RETURN_VALUE_STRING, Utils::itoa(-1));
         response->put(ERRNO, Utils::itoa(ENOTCONN));
         dispatch(response);
 
     } else {
-        cout << "SimpleTCP::send_to(), saving send event" << endl;
+        //        cout << "SimpleTCP::send_to(), saving send event" << endl;
         c->set_saved_send_event(e);
     }
 }
 
 void SimpleTCP::receive_from(ReceiveEvent* e) {
-    cout << "SimpleTCP::receive_from()" << endl;
+    //    cout << "SimpleTCP::receive_from()" << endl;
 
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
@@ -231,8 +237,22 @@ void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e)
     c->get_congestion_control()->icontext_receive_buffer_not_empty(e);
 }
 
+void SimpleTCP::icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e) {
+    Socket* s = e->get_socket();
+    IContextContainer* c = get_context(s);
+
+    c->get_connection_manager()->icontext_receive_buffer_not_full(e);
+    c->get_reliability()->icontext_receive_buffer_not_full(e);
+    c->get_congestion_control()->icontext_receive_buffer_not_full(e);
+
+    if(c->get_fin() && s->get_receive_buffer().empty()) {
+        dispatch(c->get_fin());
+        c->set_fin(0);
+    }
+}
+
 void SimpleTCP::icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e) {
-    cout << "SimpleTCP::icontext_send_buffer_not_empty()" << endl;
+    //    cout << "SimpleTCP::icontext_send_buffer_not_empty()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -242,20 +262,20 @@ void SimpleTCP::icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e) {
 }
 
 void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
-    cout << "SimpleTCP::icontext_send_buffer_not_full()" << endl;
+    //    cout << "SimpleTCP::icontext_send_buffer_not_full()" << endl;
 
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
     SendEvent* saved_send_event = c->get_saved_send_event();
-    
+
 
 
     if (saved_send_event && is_room_in_send_buffer(saved_send_event)) {
         save_in_buffer_and_send_events(saved_send_event);
     }
 
-   
+
 
     c->get_connection_manager()->icontext_send_buffer_not_full(e);
     c->get_reliability()->icontext_send_buffer_not_full(e);
@@ -273,7 +293,7 @@ bool SimpleTCP::icontext_can_receive(Socket* s) {
 }
 
 void SimpleTCP::icontext_delete_socket(DeleteSocketEvent* e) {
-    cout << "SimpleTCP::icontext_delete_socket()" << endl;
+    //    cout << "SimpleTCP::icontext_delete_socket()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -326,7 +346,7 @@ void SimpleTCP::create_and_dispatch_received_data(ReceiveEvent* e) {
     response->put(ERRNO, Utils::itoa(0));
 
     dispatch(response);
-
+    dispatch(new ReceiveBufferNotFullEvent(s));
 }
 
 

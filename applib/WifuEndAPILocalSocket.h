@@ -143,7 +143,10 @@ public:
         SocketData* data = sockets.get(socket);
 
         // TODO: this is asserting on occasion
-        assert(data);
+        if(!data) {
+            cout << "Socket: " << socket << " is deleted" << endl;
+            assert(data);
+        }
 
         data->set_error(error);
         data->set_return_value(value);
@@ -569,9 +572,11 @@ public:
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
+        cout << "wifu_close(), before waiting" << endl;
         data->get_semaphore()->wait();
 
         sockets.delete_at(fd);
+        cout << "wifu_close(), deleted socket: " << fd << endl;
         return data->get_return_value();
     }
 

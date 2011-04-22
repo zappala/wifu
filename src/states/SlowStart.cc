@@ -19,7 +19,7 @@ void SlowStart::send_packet(Context* c, SendPacketEvent* e) {
 }
 
 void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
-    cout << "SlowStart::receive_packet()" << endl;
+//    cout << "SlowStart::receive_packet()" << endl;
     CongestionControlContext* ccc = (CongestionControlContext*) c;
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
@@ -48,7 +48,7 @@ void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 
         Event* spe = new SendPacketEvent(s, p);
         
-        cout << "SlowStart::receive_packet() A: Packet: " << p << endl;
+//        cout << "SlowStart::receive_packet() A: Packet: " << p << endl;
 
         Dispatcher::instance().enqueue(spe);
     }
@@ -77,17 +77,17 @@ void SlowStart::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         Event* spe = new SendPacketEvent(s, p);
 
         ccc->set_num_outstanding(ccc->get_num_outstanding() + 1);
-        cout << "SlowStart::receive_packet() B: Packet: " << p << endl;
+//        cout << "SlowStart::receive_packet() B: Packet: " << p << endl;
 
         Dispatcher::instance().enqueue(spe);
         Dispatcher::instance().enqueue(new SendBufferNotFullEvent(s));
     }
 
-    cout << "SlowStart::receive_packet(), #outstanding: " << ccc->get_num_outstanding() << endl;
+//    cout << "SlowStart::receive_packet(), #outstanding: " << ccc->get_num_outstanding() << endl;
 }
 
 void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e) {
-    cout << "SlowStart::state_send_buffer_not_empty()" << endl;
+//    cout << "SlowStart::state_send_buffer_not_empty()" << endl;
     CongestionControlContext* ccc = (CongestionControlContext*) c;
     Socket* s = e->get_socket();
 
@@ -115,7 +115,7 @@ void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent*
         Event* spe = new SendPacketEvent(s, p);
         Event* sbnf = new SendBufferNotFullEvent(s);
 
-        cout << "SlowStart::state_send_buffer_not_empty(): Packet: " << p << endl;
+//        cout << "SlowStart::state_send_buffer_not_empty(): Packet: " << p << endl;
 
         ccc->set_num_outstanding(ccc->get_num_outstanding() + 1);
         Dispatcher::instance().enqueue(spe);
