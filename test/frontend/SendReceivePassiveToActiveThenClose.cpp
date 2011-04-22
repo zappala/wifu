@@ -123,7 +123,7 @@ void send_receive_test_with_close(string message) {
         int return_value = wifu_recv(client, &buffer, 1, 0);
 
         if(return_value == 0) {
-            cout << "BREAK" << endl;
+//            cout << "BREAK" << endl;
             break;
         }
 
