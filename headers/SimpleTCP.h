@@ -46,37 +46,37 @@ public:
 
     virtual ~SimpleTCP();
 
-    void socket(SocketEvent* e);
+    void icontext_socket(SocketEvent* e);
 
-    void bind(BindEvent* e);
+    void icontext_bind(BindEvent* e);
 
-    void listen(ListenEvent* e);
+    void icontext_listen(ListenEvent* e);
 
-    void receive_packet(NetworkReceivePacketEvent* e);
+    void icontext_receive_packet(NetworkReceivePacketEvent* e);
 
-    void send_packet(SendPacketEvent* e);
+    void icontext_send_packet(SendPacketEvent* e);
 
-    void connect(ConnectEvent* e);
+    void icontext_connect(ConnectEvent* e);
 
-    void accept(AcceptEvent* e);
+    void icontext_accept(AcceptEvent* e);
 
-    void new_connection_established(ConnectionEstablishedEvent* e);
+    void icontext_new_connection_established(ConnectionEstablishedEvent* e);
 
-    void new_conneciton_initiated(ConnectionInitiatedEvent* e);
+    void icontext_new_conneciton_initiated(ConnectionInitiatedEvent* e);
 
     void icontext_close(CloseEvent* e);
 
-    void timer_fired_event(TimerFiredEvent* e);
+    void icontext_timer_fired_event(TimerFiredEvent* e);
 
-    void resend_packet(ResendPacketEvent* e);
+    void icontext_resend_packet(ResendPacketEvent* e);
 
-    void send_to(SendEvent* e);
+    void icontext_send(SendEvent* e);
 
     bool icontext_can_send(Socket* s);
 
     bool icontext_can_receive(Socket* s);
 
-    void receive_from(ReceiveEvent* e);
+    void icontext_receive(ReceiveEvent* e);
 
     void icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e);
 

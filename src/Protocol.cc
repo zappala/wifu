@@ -19,7 +19,7 @@ void Protocol::library_socket(Event* e) {
     }
 
     sockets_.insert(s);
-    socket(event);
+    icontext_socket(event);
 
     ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
     response->put(ERRNO, Utils::itoa(0));
@@ -53,7 +53,7 @@ void Protocol::library_bind(Event* e) {
 
         if (!v.is_bound()) {
             socket->set_local_address_port(local);
-            bind(event);
+            icontext_bind(event);
             return_val = 0;
         } else {
             error = EINVAL;
@@ -96,7 +96,7 @@ void Protocol::library_listen(Event* e) {
         error = EADDRINUSE;
         return_val = -1;
     } else {
-        listen(event);
+        icontext_listen(event);
     }
 
     ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
@@ -119,7 +119,7 @@ void Protocol::library_connect(Event* e) {
     // TODO: Error check
 
     //    cout << "In library connect" << endl;
-    connect(event);
+    icontext_connect(event);
 }
 
 void Protocol::library_accept(Event* e) {
@@ -132,7 +132,7 @@ void Protocol::library_accept(Event* e) {
     }
 
     // TODO: Error check
-    accept(event);
+    icontext_accept(event);
 }
 
 void Protocol::library_receive(Event* e) {
@@ -147,7 +147,7 @@ void Protocol::library_receive(Event* e) {
     }
 
 
-    receive_from(event);
+    icontext_receive(event);
 }
 
 void Protocol::library_send(Event* e) {
@@ -160,7 +160,7 @@ void Protocol::library_send(Event* e) {
     }
 
     // call contexts
-    send_to(event);
+    icontext_send(event);
 }
 
 void Protocol::library_close(Event* e) {
@@ -182,7 +182,7 @@ void Protocol::send(Event* e) {
     }
 
     // TODO: Error check
-    send_packet(event);
+    icontext_send_packet(event);
 }
 
 void Protocol::network_receive(Event* e) {
@@ -198,7 +198,7 @@ void Protocol::network_receive(Event* e) {
 
     // TODO: Error check
     // We will potentially save data before we are connected; however, we won't pass data to the application until we are connected.
-    receive_packet(event);
+    icontext_receive_packet(event);
 }
 
 void Protocol::connection_established(Event* e) {
@@ -216,7 +216,7 @@ void Protocol::connection_established(Event* e) {
 
     Socket* new_socket = event->get_new_socket();
 
-    new_connection_established(event);
+    icontext_new_connection_established(event);
 
     AcceptEvent* a_event = event->get_accept_event();
 
@@ -238,7 +238,7 @@ void Protocol::connection_initiated(Event* e) {
 
     // TODO: Error Check: socket(s)
 
-    new_conneciton_initiated(event);
+    icontext_new_conneciton_initiated(event);
 }
 
 void Protocol::timer_fired(Event* e) {
@@ -250,7 +250,7 @@ void Protocol::timer_fired(Event* e) {
         return;
     }
 
-    timer_fired_event(event);
+    icontext_timer_fired_event(event);
 }
 
 void Protocol::resend(Event* e) {
@@ -261,7 +261,7 @@ void Protocol::resend(Event* e) {
         return;
     }
 
-    resend_packet(event);
+    icontext_resend_packet(event);
 }
 
 void Protocol::send_buffer_not_empty(Event* e) {

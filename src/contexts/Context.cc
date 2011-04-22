@@ -24,31 +24,31 @@ State* Context::get_state() {
     return current_;
 }
 
-void Context::socket(SocketEvent* e) {
+void Context::icontext_socket(SocketEvent* e) {
     get_state()->socket(this, e);
 }
 
-void Context::bind(BindEvent* e) {
+void Context::icontext_bind(BindEvent* e) {
     get_state()->bind(this, e);
 }
 
-void Context::listen(ListenEvent* e) {
+void Context::icontext_listen(ListenEvent* e) {
     get_state()->listen(this, e);
 }
 
-void Context::connect(ConnectEvent* e) {
+void Context::icontext_connect(ConnectEvent* e) {
     get_state()->connect(this, e);
 }
 
-void Context::accept(AcceptEvent* e) {
+void Context::icontext_accept(AcceptEvent* e) {
     get_state()->accept(this, e);
 }
 
-void Context::new_connection_established(ConnectionEstablishedEvent* e) {
+void Context::icontext_new_connection_established(ConnectionEstablishedEvent* e) {
     get_state()->new_connection_established(this, e);
 }
 
-void Context::new_conneciton_initiated(ConnectionInitiatedEvent* e) {
+void Context::icontext_new_conneciton_initiated(ConnectionInitiatedEvent* e) {
     get_state()->new_connection_initiated(this, e);
 }
 
@@ -56,23 +56,23 @@ void Context::icontext_close(CloseEvent* e) {
     get_state()->state_close(this, e);
 }
 
-void Context::receive_packet(NetworkReceivePacketEvent* e) {
+void Context::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     get_state()->receive_packet(this, e);
 }
 
-void Context::send_packet(SendPacketEvent* e) {
+void Context::icontext_send_packet(SendPacketEvent* e) {
     get_state()->send_packet(this, e);
 }
 
-void Context::timer_fired_event(TimerFiredEvent* e) {
+void Context::icontext_timer_fired_event(TimerFiredEvent* e) {
     get_state()->timer_fired(this, e);
 }
 
-void Context::resend_packet(ResendPacketEvent* e) {
+void Context::icontext_resend_packet(ResendPacketEvent* e) {
     get_state()->resend_packet(this, e);
 }
 
-void Context::send_to(SendEvent* e) {
+void Context::icontext_send(SendEvent* e) {
     get_state()->send_to(this, e);
 }
 
@@ -84,7 +84,7 @@ bool Context::icontext_can_receive(Socket* s) {
     return get_state()->state_can_receive(this, s);
 }
 
-void Context::receive_from(ReceiveEvent* e) {
+void Context::icontext_receive(ReceiveEvent* e) {
     get_state()->receive_from(this, e);
 }
 

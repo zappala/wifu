@@ -35,26 +35,27 @@ using namespace std;
 
 class IContext : public gc {
 public:
-    virtual void socket(SocketEvent* e) = 0;
-    virtual void bind(BindEvent* e) = 0;
-    virtual void listen(ListenEvent* e) = 0;
+    virtual void icontext_socket(SocketEvent* e) = 0;
+    virtual void icontext_bind(BindEvent* e) = 0;
+    virtual void icontext_listen(ListenEvent* e) = 0;
 
-    virtual void receive_packet(NetworkReceivePacketEvent* e) = 0;
-    virtual void send_packet(SendPacketEvent* e) = 0;
-    virtual void connect(ConnectEvent* e) = 0;
-    virtual void accept(AcceptEvent* e) = 0;
-    virtual void new_connection_established(ConnectionEstablishedEvent* e) = 0;
-    virtual void new_conneciton_initiated(ConnectionInitiatedEvent* e) = 0;
+    virtual void icontext_receive_packet(NetworkReceivePacketEvent* e) = 0;
+    virtual void icontext_send_packet(SendPacketEvent* e) = 0;
+
+    virtual void icontext_connect(ConnectEvent* e) = 0;
+    virtual void icontext_accept(AcceptEvent* e) = 0;
+    virtual void icontext_new_connection_established(ConnectionEstablishedEvent* e) = 0;
+    virtual void icontext_new_conneciton_initiated(ConnectionInitiatedEvent* e) = 0;
     virtual void icontext_close(CloseEvent*) = 0;
 
     virtual bool icontext_can_send(Socket*) = 0;
     virtual bool icontext_can_receive(Socket*) = 0;
 
-    virtual void send_to(SendEvent* e) = 0;
-    virtual void receive_from(ReceiveEvent* e) = 0;
+    virtual void icontext_send(SendEvent* e) = 0;
+    virtual void icontext_receive(ReceiveEvent* e) = 0;
 
-    virtual void timer_fired_event(TimerFiredEvent* e) = 0;
-    virtual void resend_packet(ResendPacketEvent* e) = 0;
+    virtual void icontext_timer_fired_event(TimerFiredEvent* e) = 0;
+    virtual void icontext_resend_packet(ResendPacketEvent* e) = 0;
 
     virtual void icontext_send_buffer_not_empty(SendBufferNotEmptyEvent*) = 0;
     virtual void icontext_send_buffer_not_full(SendBufferNotFullEvent*) = 0;
