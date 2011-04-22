@@ -62,3 +62,10 @@ void Accept::receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         cmc->set_state(new SynReceived());
     }
 }
+
+void Accept::state_close(Context* c, CloseEvent* e) {
+    ConnectionManagerContext* cmc = (ConnectionManagerContext*)c;
+    Dispatcher::instance().enqueue(new DeleteSocketEvent(e->get_socket()));
+    cmc->set_state(new Closed());
+
+}

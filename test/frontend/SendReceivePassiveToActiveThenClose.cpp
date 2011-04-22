@@ -69,6 +69,7 @@ void* passive_to_active_thread_with_close(void* args) {
     EXPECT_EQ(message.length(), num_sent);
 //    cout << "SendReceivePassiveToActive, sent message: " << message << endl;
     wifu_close(connection);
+    wifu_close(server);
     sleep(15);
 }
 

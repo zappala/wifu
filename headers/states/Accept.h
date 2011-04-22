@@ -12,6 +12,8 @@
 #include "contexts/ConnectionManagerContext.h"
 #include "states/SynReceived.h"
 #include "events/ConnectEvent.h"
+#include "events/CloseEvent.h"
+#include "states/Closed.h"
 
 using namespace std;
 
@@ -23,6 +25,7 @@ public:
     virtual void exit(Context* c);
 
     void receive_packet(Context* c, NetworkReceivePacketEvent* e);
+    void state_close(Context* c, CloseEvent* e);
 };
 
 #endif	/* _ACCEPT_H */
