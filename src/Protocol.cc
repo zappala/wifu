@@ -142,8 +142,6 @@ void Protocol::library_receive(Event* e) {
     Socket* s = event->get_socket();
 
     if (!icontext_can_receive(s)) {
-        cout << "Protocol::library_receive(), receive buffer: " << s->get_receive_buffer() << endl;
-        // TODO: is everything out of the receive buffer?
         // TODO: respond with error
         return;
     }

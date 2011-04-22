@@ -75,7 +75,6 @@ void* active_to_passive_thread_with_close(void* args) {
     wifu_close(server);
     EXPECT_EQ(expected, all_received);
 //    cout << "Received: " << all_received << endl;
-    sleep(15);
 }
 
 /**
