@@ -29,6 +29,5 @@ void ReliabilityContext::set_timeout_event(TimeoutEvent* e) {
 }
 
 TimeoutEvent* ReliabilityContext::get_timeout_event() {
-    assert(timeout_event_);
     return timeout_event_;
 }

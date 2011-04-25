@@ -92,7 +92,7 @@ public:
 
     virtual void imodule_receive_buffer_not_empty(Event* e);
 
-    virtual void receive_buffer_not_full(Event* e);
+    virtual void imodule_receive_buffer_not_full(Event* e);
 
     virtual void imodule_delete_socket(Event* e);
 

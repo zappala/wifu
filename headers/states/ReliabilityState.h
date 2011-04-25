@@ -27,6 +27,7 @@
 
 #include "SimpleTCPCache.h"
 #include "CacheMap.h"
+#include "HashSet.h"
 
 using namespace std;
 
@@ -38,6 +39,7 @@ public:
     void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
     void state_send_packet(Context* c, SendPacketEvent* e);
     void state_timer_fired(Context* c, TimerFiredEvent* e);
+
 };
 
 #endif	/* RELIABILITYSTATE_H */

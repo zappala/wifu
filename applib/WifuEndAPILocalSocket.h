@@ -145,6 +145,7 @@ public:
         // TODO: this is asserting on occasion
         if(!data) {
             cout << "Socket: " << socket << " is deleted" << endl;
+            cout << "Messaage: " << message << endl;
             assert(data);
         }
 

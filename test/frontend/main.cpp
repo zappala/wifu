@@ -7,6 +7,7 @@
 
 #include "gtest/gtest.h"
 #include <string>
+#include <signal.h>
 
 using namespace std;
 
@@ -21,6 +22,7 @@ void change_dir() {
         chdir(bin.c_str());
     }
 }
+
 
 int main(int argc, char** argv) {
     change_dir();

@@ -50,7 +50,7 @@ void SimpleTCP::icontext_listen(ListenEvent* e) {
 }
 
 void SimpleTCP::icontext_receive_packet(NetworkReceivePacketEvent* e) {
-    //    cout << "SimpleTCP::receive_packet()" << endl;
+//    cout << "SimpleTCP::receive_packet()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -58,8 +58,14 @@ void SimpleTCP::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     CongestionControlContext* ccc = (CongestionControlContext*) c->get_congestion_control();
 
     TCPPacket* packet = (TCPPacket*) e->get_packet();
-    if(packet->is_tcp_fin() && !s->get_receive_buffer().empty()) {
+
+//    cout << "SimpleTCP::receive_packet(): packet: " << packet << endl;
+//    cout << packet->to_s_format() << endl;
+//    cout << packet->to_s() << endl;
+
+    if (packet->is_tcp_fin() && !s->get_receive_buffer().empty()) {
         c->set_fin(e);
+//        cout << "SimpleTCP::receive_packet(), receive buffer is not empty(), returning" << endl;
         return;
     }
 
@@ -204,12 +210,13 @@ void SimpleTCP::icontext_send(SendEvent* e) {
 }
 
 void SimpleTCP::icontext_receive(ReceiveEvent* e) {
-    //    cout << "SimpleTCP::receive_from()" << endl;
+//    cout << "SimpleTCP::receive_from()" << endl;
 
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
     if (s->get_receive_buffer().size() > 0) {
+//        cout << "SimpleTCP::receive_from(), dispatching data to front end" << endl;
         create_and_dispatch_received_data(e);
     } else {
         assert(c->get_saved_receive_event() == NULL);
@@ -222,6 +229,7 @@ void SimpleTCP::icontext_receive(ReceiveEvent* e) {
 }
 
 void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e) {
+//    cout << "SimpleTCP::icontext_receive_buffer_not_empty()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -238,6 +246,8 @@ void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e)
 }
 
 void SimpleTCP::icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e) {
+//    cout << "SimpleTCP::icontext_receive_buffer_not_full()" << endl;
+
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -245,7 +255,8 @@ void SimpleTCP::icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e) {
     c->get_reliability()->icontext_receive_buffer_not_full(e);
     c->get_congestion_control()->icontext_receive_buffer_not_full(e);
 
-    if(c->get_fin() && s->get_receive_buffer().empty()) {
+    if (c->get_fin() && s->get_receive_buffer().empty()) {
+//        cout << "SimpleTCP::icontext_receive_buffer_not_full(), sending out FIN again" << endl;
         dispatch(c->get_fin());
         c->set_fin(0);
     }
@@ -306,6 +317,12 @@ void SimpleTCP::icontext_delete_socket(DeleteSocketEvent* e) {
 }
 
 void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {
+    //    cout << "SimpleTCP::send_network_packet()" << endl;
+    //    cout << "SimpleTCP::send_network_packet(): Packet: " << endl;
+    //
+    //    cout << p->to_s_format() << endl;
+    //    cout << p->to_s() << endl;
+
     NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
     Dispatcher::instance().enqueue(e);
 }
@@ -332,6 +349,7 @@ void SimpleTCP::save_in_buffer_and_send_events(SendEvent* e) {
 }
 
 void SimpleTCP::create_and_dispatch_received_data(ReceiveEvent* e) {
+//    cout << "SimpleTCP::create_and_dispatch_received_data()" << endl;
     Socket* s = e->get_socket();
     int buffer_size = e->get_receive_buffer_size();
 
@@ -346,6 +364,7 @@ void SimpleTCP::create_and_dispatch_received_data(ReceiveEvent* e) {
     response->put(ERRNO, Utils::itoa(0));
 
     dispatch(response);
+//    cout << "SimpleTCP::create_and_dispatch_received_data(), dispatching receive buffer not full event" << endl;
     dispatch(new ReceiveBufferNotFullEvent(s));
 }
 

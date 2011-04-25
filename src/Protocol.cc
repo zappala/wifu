@@ -297,11 +297,13 @@ void Protocol::imodule_receive_buffer_not_empty(Event* e) {
     icontext_receive_buffer_not_empty(event);
 }
 
-void Protocol::receive_buffer_not_full(Event* e) {
+void Protocol::imodule_receive_buffer_not_full(Event* e) {
+//    cout << "Protocol::imodule_receive_buffer_not_full()" << endl;
     ReceiveBufferNotFullEvent* event = (ReceiveBufferNotFullEvent*) e;
     Socket* socket = event->get_socket();
 
     if (!sockets_.contains(socket)) {
+//        cout << "Protocol::imodule_receive_buffer_not_full(), no socket" << endl;
         return;
     }
 

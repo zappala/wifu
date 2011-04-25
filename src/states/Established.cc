@@ -122,10 +122,12 @@ void Established::state_close(Context* c, CloseEvent* e) {
         response->set_data(data, 0);
         response->set_tcp_fin(true);
 
+        cmc->set_state(new FinWait1());
+
         SendPacketEvent* event = new SendPacketEvent(s, response);
         Dispatcher::instance().enqueue(event);
 
-        cmc->set_state(new FinWait1());
+        
 
 
         return;

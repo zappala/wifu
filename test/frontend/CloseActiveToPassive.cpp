@@ -71,6 +71,7 @@ void* close_active_to_passive_thread(void* args) {
         all_received.append(actual);
     }
     wifu_close(connection);
+    wifu_close(server);
     EXPECT_EQ(expected, all_received);
 //    cout << "Received: " << all_received << endl;
 }
@@ -135,7 +136,7 @@ void close_active_to_passive_test(string message) {
     
     // TODO: test send/receive on the socket to ensure we aren't allowed to do anythin after close
 
-    sleep(15);
+    sleep(2);
 
 }
 
