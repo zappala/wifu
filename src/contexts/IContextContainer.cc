@@ -4,6 +4,7 @@ IContextContainer::IContextContainer() : saved_send_event_(0), saved_receive_eve
     reliability_ = new ReliabilityContext();
     cc_ = new CongestionControlContext();
     cm_ = new ConnectionManagerContext();
+    rl_ = new RateLimiterContext();
 }
 
 IContextContainer::IContextContainer(IContextContainer const& other) {
@@ -20,6 +21,10 @@ IContext* IContextContainer::get_reliability() {
 
 IContext* IContextContainer::get_connection_manager() {
     return cm_;
+}
+
+IContext* IContextContainer::get_rate_limiter() {
+    return rl_;
 }
 
 SendEvent* IContextContainer::get_saved_send_event() {

@@ -82,8 +82,9 @@ void SimpleTCP::send_packet(SendPacketEvent* e) {
     c->get_connection_manager()->send_packet(e);
     c->get_reliability()->send_packet(e);
     c->get_congestion_control()->send_packet(e);
+    c->get_rate_limiter()->send_packet(e);
 
-    send_network_packet(s, e->get_packet());
+    //send_network_packet(s, e->get_packet());
 }
 
 void SimpleTCP::connect(ConnectEvent* e) {
