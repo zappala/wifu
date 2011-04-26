@@ -37,6 +37,9 @@ public:
     SocketData() {
         sem_ = new Semaphore();
         sem_->init(0);
+
+        flag_ = new Semaphore();
+        flag_->init(1);
     }
 
     /**
@@ -53,6 +56,10 @@ public:
      */
     Semaphore* get_semaphore() {
         return sem_;
+    }
+
+    Semaphore* get_flag() {
+        return flag_;
     }
 
     /**
@@ -190,6 +197,10 @@ private:
      * The AddressPort returned from the back-end (on calls like accept())
      */
     AddressPort* address_;
+
+    Semaphore* flag_;
+
+    
 
 };
 

@@ -111,7 +111,6 @@ public:
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
 
-
         if (!response_[NAME_STRING].compare(WIFU_SOCKET_NAME)) {
             sockets.put(0, new SocketData());
             sockets.get(0)->set_return_value(socket);
@@ -119,35 +118,41 @@ public:
             return;
         }
 
+        SocketData* data = sockets.get(socket);
+        if (!data && !response_[NAME_STRING].compare(WIFU_CLOSE_NAME)) {
+            // We already closed
+            cout << "WifuEndAPILocalSocket::receive(), Already closed" << message << endl;
+            return;
+        }
+
+        if (!data) {
+            cout << "Socket: " << socket << " is deleted" << endl;
+            cout << "Message: " << message << endl;
+            assert(data);
+        }
+
+        data->get_flag()->wait();
+
         if (!response_[NAME_STRING].compare(WIFU_RECVFROM_NAME)) {
-            //            cout << "WifuEndAPILocalSocket::receive(): " << response_[BUFFER_STRING];
-            sockets.get(socket)->set_payload(response_[BUFFER_STRING]);
+            //cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
+            data->set_payload(response_[BUFFER_STRING]);
         }
 
-        if (!response_[NAME_STRING].compare(WIFU_GETSOCKOPT_NAME)) {
+        else if (!response_[NAME_STRING].compare(WIFU_GETSOCKOPT_NAME)) {
             string response = response_[BUFFER_STRING];
-            sockets.get(socket)->set_payload(response);
-            sockets.get(socket)->set_payload_length(response.size());
+            data->set_payload(response);
+            data->set_payload_length(response.size());
         }
 
-        if (!response_[NAME_STRING].compare(WIFU_ACCEPT_NAME)) {
+        else if (!response_[NAME_STRING].compare(WIFU_ACCEPT_NAME)) {
             string address = response_[ADDRESS_STRING];
             u_int16_t port = atoi(response_[PORT_STRING].c_str());
             AddressPort* ap = new AddressPort(address, port);
-            sockets.get(socket)->set_address_port(ap);
+            data->set_address_port(ap);
         }
 
         int value = atoi(response_[RETURN_VALUE_STRING].c_str());
         int error = atoi(response_[ERRNO].c_str());
-
-        SocketData* data = sockets.get(socket);
-
-        // TODO: this is asserting on occasion
-        if(!data) {
-            cout << "Socket: " << socket << " is deleted" << endl;
-            cout << "Messaage: " << message << endl;
-            assert(data);
-        }
 
         data->set_error(error);
         data->set_return_value(value);
@@ -233,7 +238,10 @@ public:
             errno = error;
         }
 
-        return data->get_return_value();
+        int return_value = data->get_return_value();
+        data->get_flag()->post();
+
+        return return_value;
     }
 
     /**
@@ -270,7 +278,9 @@ public:
             memcpy(optlen, &len, sizeof (socklen_t));
         }
 
-        return data->get_return_value();
+        int return_value = data->get_return_value();
+        data->get_flag()->post();
+        return return_value;
     }
 
     /**
@@ -305,7 +315,9 @@ public:
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
 
-        return data->get_return_value();
+        int return_value = data->get_return_value();
+        data->get_flag()->post();
+        return return_value;
     }
 
     /**
@@ -347,7 +359,9 @@ public:
             errno = error;
         }
 
-        return data->get_return_value();
+        int return_value = data->get_return_value();
+        data->get_flag()->post();
+        return return_value;
     }
 
     /**
@@ -393,6 +407,7 @@ public:
         sockets.put(new_socket, new SocketData());
 
         //        cout << "WifuEndAPILocalSocket::wifu_accept(), returning..." << endl;
+        data->get_flag()->post();
         return new_socket;
     }
 
@@ -473,9 +488,9 @@ public:
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
 
-
-
-        return data->get_return_value();
+        int return_value = data->get_return_value();
+        data->get_flag()->post();
+        return return_value;
     }
 
     /**
@@ -496,6 +511,7 @@ public:
      * The return value may also be 0 if the peer performed an orderly shutdown
      */
     ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr, socklen_t *__restrict addr_len) {
+        //        cout << "wifu_recvfrom()" << endl;
         map<string, string> m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
@@ -517,15 +533,17 @@ public:
         assert(data != NULL);
         assert(data->get_semaphore() != NULL);
 
+        //        cout << "wifu_recvfrom(), waiting" << endl;
         data->get_semaphore()->wait();
-        ssize_t ret_val = data->get_return_value();
 
+        ssize_t ret_val = data->get_return_value();
         // TODO: fill in the actual vale of addr_len and addr according to man 2 recvfrom()
 
         if (ret_val > 0) {
             memcpy(buf, data->get_payload(), ret_val);
-            //            cout << "wifu_recvfrom(), buffer: " << (const char*) buf << endl;
         }
+
+        data->get_flag()->post();
         return ret_val;
     }
 
@@ -560,8 +578,10 @@ public:
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
-        return data->get_return_value();
 
+        int return_value = data->get_return_value();
+        data->get_flag()->post();
+        return return_value;
     }
 
     int wifu_close(int fd) {
@@ -573,12 +593,12 @@ public:
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
-        cout << "wifu_close(), before waiting" << endl;
         data->get_semaphore()->wait();
 
+        int return_value = data->get_return_value();
+
         sockets.delete_at(fd);
-        cout << "wifu_close(), deleted socket: " << fd << endl;
-        return data->get_return_value();
+        return return_value;
     }
 
 private:

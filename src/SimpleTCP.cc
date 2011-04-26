@@ -65,7 +65,7 @@ void SimpleTCP::icontext_receive_packet(NetworkReceivePacketEvent* e) {
 
     if (packet->is_tcp_fin() && !s->get_receive_buffer().empty()) {
         c->set_fin(e);
-//        cout << "SimpleTCP::receive_packet(), receive buffer is not empty(), returning" << endl;
+//        cout << "SimpleTCP::receive_packet(), FIN && receive buffer is not empty(), returning" << endl;
         return;
     }
 
@@ -355,6 +355,8 @@ void SimpleTCP::create_and_dispatch_received_data(ReceiveEvent* e) {
 
     string data = s->get_receive_buffer().substr(0, buffer_size);
     s->get_receive_buffer().erase(0, data.size());
+
+//    cout << "SimpleTCP::create_and_dispatch_received_data(), Buffer: \"" << data << "\"" << endl;
 
     ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
     response->put(BUFFER_STRING, data);

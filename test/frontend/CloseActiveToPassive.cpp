@@ -67,6 +67,10 @@ void* close_active_to_passive_thread(void* args) {
             break;
         }
 
+//        cout << "Received: \"" << buffer << "\"" << endl;
+//        cout << "Num receive: " << return_value << endl;
+        EXPECT_EQ(1, return_value);
+
         string actual(buffer);
         all_received.append(actual);
     }
