@@ -19,3 +19,7 @@ int SocketOptionEvent::get_level() {
 socklen_t SocketOptionEvent::get_option_length() {
     return atoi(get_map()[LENGTH_STRING].c_str());
 }
+
+pair<int, int> SocketOptionEvent::get_level_name_pair() {
+    return make_pair(get_level(), get_option_name());
+}

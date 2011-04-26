@@ -110,3 +110,7 @@ string& Socket::get_send_buffer() {
 string& Socket::get_resend_buffer() {
     return resend_buffer_;
 }
+
+SocketOptions& Socket::get_socket_options() {
+    return socket_options_;
+}

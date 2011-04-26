@@ -17,6 +17,7 @@
 #include "observer/Observable.h"
 #include "IPortManagerCreator.h"
 #include "PortManagerFactory.h"
+#include "SocketOptions.h"
 
 using namespace std;
 // TODO: do we need to protect this with a Semaphore, like a monitor?
@@ -76,6 +77,8 @@ public:
     
     string& get_resend_buffer();
 
+    SocketOptions& get_socket_options();
+
 private:
     AddressPort* local_;
     AddressPort* remote_;
@@ -89,6 +92,8 @@ private:
     string receive_buffer_;
     string send_buffer_;
     string resend_buffer_;
+
+    SocketOptions socket_options_;
 };
 
 #endif	/* _SOCKET_H */

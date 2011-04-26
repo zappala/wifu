@@ -20,12 +20,27 @@ using namespace std;
 namespace {
 
     TEST_F(BackEndMockTestDropNone, socketOptionsTestAll) {
-        int socket = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
 
+
+        int fd = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+
+        int level = 0;
+        int optname = 0;
         int optval = 1;
         socklen_t optlen = sizeof(optval);
 
-        wifu_setsockopt(socket, SOL_TCP, TCP_KEEPCNT, &optval, optlen);
+        wifu_setsockopt(fd, level, optname, &optval, optlen);
+
+        unsigned char buffer[BUFFER_SIZE];
+        memset(buffer, 0, BUFFER_SIZE);
+        socklen_t len = BUFFER_SIZE;
+
+        wifu_getsockopt(fd, level, optname, buffer, &len);
+
+        ASSERT_EQ(optval, atoi((const char*) buffer));
+        
+
+
     }
 }
 

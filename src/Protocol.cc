@@ -337,12 +337,48 @@ void Protocol::imodule_delete_socket(Event* e) {
 
 void Protocol::imodule_library_set_socket_option(Event* e) {
     cout << "Protocol::imodule_library_set_socket_option()" << endl;
-    SetSocketOptionEvent* event = (SetSocketOptionEvent*)e;
+    SetSocketOptionEvent* event = (SetSocketOptionEvent*) e;
+    Socket* socket = event->get_socket();
+
+    if (!sockets_.contains(socket)) {
+        // TODO: return error
+        assert(false);
+        return;
+    }
+
+    // TODO: error check
+    socket->get_socket_options().insert(event->get_level_name_pair(), event->get_option_value());
     icontext_set_socket_option(event);
+
+    ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
+    response->put(ERRNO, Utils::itoa(0));
+    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+    dispatch(response);
 }
 
 void Protocol::imodule_library_get_socket_option(Event* e) {
     cout << "Protocol::imodule_library_get_socket_option()" << endl;
-    GetSocketOptionEvent* event = (GetSocketOptionEvent*)e;
+    GetSocketOptionEvent* event = (GetSocketOptionEvent*) e;
+    Socket* socket = event->get_socket();
+    
+    if (!sockets_.contains(socket)) {
+        // TODO: return error
+        assert(false);
+        return;
+    }
+
+    string value = socket->get_socket_options().get(event->get_level_name_pair());
+
+    if(value.empty()) {
+        // Indicates no option found
+        // TODO: error?
+    }
+
+    ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
+    response->put(ERRNO, Utils::itoa(0));
+    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+    response->put(BUFFER_STRING, value);
+    dispatch(response);
+
     icontext_get_socket_option(event);
 }
