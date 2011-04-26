@@ -30,6 +30,8 @@
 #include "events/ReceiveBufferNotFullEvent.h"
 #include "events/CloseEvent.h"
 #include "events/DeleteSocketEvent.h"
+#include "events/GetSocketOptionEvent.h"
+#include "events/SetSocketOptionEvent.h"
 
 using namespace std;
 
@@ -64,6 +66,9 @@ public:
     virtual void icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent*) = 0;
 
     virtual void icontext_delete_socket(DeleteSocketEvent*) = 0;
+
+    virtual void icontext_set_socket_option(SetSocketOptionEvent*) = 0;
+    virtual void icontext_get_socket_option(GetSocketOptionEvent*) = 0;
 };
 
 #endif	/* ICONTEXT_H */

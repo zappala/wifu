@@ -61,3 +61,7 @@ void State::state_send_buffer_not_empty(Context*, SendBufferNotEmptyEvent*) {}
 void State::state_send_buffer_not_full(Context*, SendBufferNotFullEvent*) {}
 
 void State::state_delete_socket(Context*, DeleteSocketEvent*) {}
+
+void State::state_set_socket_option(Context*, SetSocketOptionEvent*) {}
+
+void State::state_get_socket_option(Context*, GetSocketOptionEvent*) {}

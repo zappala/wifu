@@ -47,6 +47,8 @@
 #include "events/SendBufferNotFullEvent.h"
 #include "events/CloseEvent.h"
 #include "events/DeleteSocketEvent.h"
+#include "events/SetSocketOptionEvent.h"
+#include "events/GetSocketOptionEvent.h"
 
 //protocols
 #include "ProtocolManager.h"
@@ -169,6 +171,8 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(CloseEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(DeleteSocketEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(SetSocketOptionEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(GetSocketOptionEvent), &SimpleTCP::instance());
 
 
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());

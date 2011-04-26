@@ -25,6 +25,8 @@
 #include "events/ReceiveEvent.h"
 #include "events/SendEvent.h"
 #include "events/CloseEvent.h"
+#include "events/GetSocketOptionEvent.h"
+#include "events/SetSocketOptionEvent.h"
 #include "PortManager.h"
 
 /**

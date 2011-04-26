@@ -107,3 +107,11 @@ void Context::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
 void Context::icontext_delete_socket(DeleteSocketEvent* e) {
     get_state()->state_delete_socket(this, e);
 }
+
+void Context::icontext_set_socket_option(SetSocketOptionEvent* e) {
+    get_state()->state_set_socket_option(this, e);
+}
+
+void Context::icontext_get_socket_option(GetSocketOptionEvent* e) {
+    get_state()->state_get_socket_option(this, e);
+}

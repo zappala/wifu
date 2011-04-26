@@ -64,7 +64,6 @@ public:
     virtual void imodule_cancel_timer(Event* e) {
     }
 
-
     /**
      * Called when e's execute() method determines that this IModule should respond to a network send action.
      *
@@ -103,7 +102,7 @@ public:
      * @param e The event which triggered a send action.
      */
     virtual void imodule_send(Event* e) {
-        
+
     }
 
     /**
@@ -112,7 +111,7 @@ public:
      * @param e The event which triggered a resend action.
      */
     virtual void imodule_resend(Event* e) {
-        
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="Library Methods">
@@ -182,6 +181,22 @@ public:
     }
 
     /**
+     * Called when e's execute() method determines that this IModule should respond to a library_set_socket_option action.
+     *
+     * @param e The event which triggered a library_set_socket_option action.
+     */
+    virtual void imodule_library_set_socket_option(Event* e) {
+    }
+
+    /**
+     * Called when e's execute() method determines that this IModule should respond to a library_get_socket_option action.
+     *
+     * @param e The event which triggered a library_get_socket_option action.
+     */
+    virtual void imodule_library_get_socket_option(Event* e) {
+    }
+
+    /**
      * Called when e's execute() method determines that this IModule should respond to a library_response action.
      *
      * @param e The event which triggered a library_response action.
@@ -219,11 +234,11 @@ public:
     }
 
     virtual void imodule_receive_buffer_not_full(Event* e) {
-        
+
     }
 
     virtual void imodule_delete_socket(Event* e) {
-        
+
     }
 
 

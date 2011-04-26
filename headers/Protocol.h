@@ -23,6 +23,8 @@
 #include "events/TimerFiredEvent.h"
 #include "events/ResendPacketEvent.h"
 #include "events/CloseEvent.h"
+#include "events/GetSocketOptionEvent.h"
+#include "events/SetSocketOptionEvent.h"
 
 #include "HashSet.h"
 #include "Socket.h"
@@ -95,6 +97,12 @@ public:
     virtual void imodule_receive_buffer_not_full(Event* e);
 
     virtual void imodule_delete_socket(Event* e);
+
+    virtual void imodule_library_set_socket_option(Event* e);
+
+    virtual void imodule_library_get_socket_option(Event* e);
+
+    
 
 private:
 

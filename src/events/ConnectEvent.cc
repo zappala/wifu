@@ -1,22 +1,20 @@
 #include "events/ConnectEvent.h"
 
-ConnectEvent::ConnectEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s), destination_(0) {}
+ConnectEvent::ConnectEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s), destination_(0) {
+}
 
-ConnectEvent::~ConnectEvent() {}
+ConnectEvent::~ConnectEvent() {
+}
 
 void ConnectEvent::execute(IModule* m) {
-	m->imodule_library_connect(this);
+    m->imodule_library_connect(this);
 }
 
 AddressPort* ConnectEvent::get_destination() {
-	if (!destination_) {
-		string address = get_map()[ADDRESS_STRING];
-		int port = atoi(get_map()[PORT_STRING].c_str());
-		destination_ = new AddressPort(address, port);
-	}
-	return destination_;
+    if (!destination_) {
+        string address = get_map()[ADDRESS_STRING];
+        int port = atoi(get_map()[PORT_STRING].c_str());
+        destination_ = new AddressPort(address, port);
+    }
+    return destination_;
 }
-
-//void ConnectEvent::set_socket_destination() {
-//	get_socket()->set_remote_address_port(get_destination());
-//}

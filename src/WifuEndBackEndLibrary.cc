@@ -1,5 +1,6 @@
 #include "WifuEndBackEndLibrary.h"
 
+
 WifuEndBackEndLibrary& WifuEndBackEndLibrary::instance() {
     static WifuEndBackEndLibrary instance_;
     return instance_;
@@ -20,9 +21,9 @@ void WifuEndBackEndLibrary::receive(string& message) {
 
     string name = m[NAME_STRING];
     string s = m[SOCKET_STRING];
-    int sockInt = atoi(s.c_str());
+    int socket_int = atoi(s.c_str());
     //assert(sockInt != 0);
-    Socket* socket = SocketCollection::instance().get_by_id(sockInt);
+    Socket* socket = SocketCollection::instance().get_by_id(socket_int);
 
     if (!name.compare(WIFU_SOCKET_NAME)) {
 
@@ -51,12 +52,10 @@ void WifuEndBackEndLibrary::receive(string& message) {
 
 
     } else if (!name.compare(WIFU_BIND_NAME)) {
-
         dispatch(new BindEvent(message, get_file(), socket));
         return;
 
     } else if (!name.compare(WIFU_LISTEN_NAME)) {
-
         dispatch(new ListenEvent(message, get_file(), socket));
         return;
 
@@ -77,13 +76,16 @@ void WifuEndBackEndLibrary::receive(string& message) {
         return;
 
     } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
-        int return_val = SO_BINDTODEVICE;
-        //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+        dispatch(new GetSocketOptionEvent(message, get_file(), socket));
+        return;
+
     } else if (!name.compare(WIFU_SETSOCKOPT_NAME)) {
-        int return_val = 0;
-        //            response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
+        dispatch(new SetSocketOptionEvent(message, get_file(), socket));
+        return;
+
     } else if (!name.compare(WIFU_CLOSE_NAME)) {
         dispatch(new CloseEvent(message, get_file(), socket));
+        return;
     }
 }
 

@@ -22,6 +22,8 @@
 #include "events/CloseEvent.h"
 #include "events/DeleteSocketEvent.h"
 #include "events/ReceiveBufferNotFullEvent.h"
+#include "events/SetSocketOptionEvent.h"
+#include "events/GetSocketOptionEvent.h"
 
 #include <string>
 #include "contexts/Context.h"
@@ -81,6 +83,10 @@ public:
     virtual void state_receive_buffer_not_full(Context*, ReceiveBufferNotFullEvent*);
 
     virtual void state_delete_socket(Context*, DeleteSocketEvent*);
+
+    virtual void state_set_socket_option(Context*, SetSocketOptionEvent*);
+
+    virtual void state_get_socket_option(Context*, GetSocketOptionEvent*);
 
 };
 

@@ -298,12 +298,12 @@ void Protocol::imodule_receive_buffer_not_empty(Event* e) {
 }
 
 void Protocol::imodule_receive_buffer_not_full(Event* e) {
-//    cout << "Protocol::imodule_receive_buffer_not_full()" << endl;
+    //    cout << "Protocol::imodule_receive_buffer_not_full()" << endl;
     ReceiveBufferNotFullEvent* event = (ReceiveBufferNotFullEvent*) e;
     Socket* socket = event->get_socket();
 
     if (!sockets_.contains(socket)) {
-//        cout << "Protocol::imodule_receive_buffer_not_full(), no socket" << endl;
+        //        cout << "Protocol::imodule_receive_buffer_not_full(), no socket" << endl;
         return;
     }
 
@@ -333,4 +333,16 @@ void Protocol::imodule_delete_socket(Event* e) {
     SocketCollection::instance().accept(&visitor);
     assert(visitor.get_socket() == NULL);
 
+}
+
+void Protocol::imodule_library_set_socket_option(Event* e) {
+    cout << "Protocol::imodule_library_set_socket_option()" << endl;
+    SetSocketOptionEvent* event = (SetSocketOptionEvent*)e;
+    icontext_set_socket_option(event);
+}
+
+void Protocol::imodule_library_get_socket_option(Event* e) {
+    cout << "Protocol::imodule_library_get_socket_option()" << endl;
+    GetSocketOptionEvent* event = (GetSocketOptionEvent*)e;
+    icontext_get_socket_option(event);
 }

@@ -77,6 +77,10 @@ public:
 
     virtual void icontext_delete_socket(DeleteSocketEvent*);
 
+    virtual void icontext_set_socket_option(SetSocketOptionEvent*);
+
+    virtual void icontext_get_socket_option(GetSocketOptionEvent*);
+
 private:
     State* current_;
 
