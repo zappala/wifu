@@ -296,9 +296,9 @@ public:
      * @return 0 if call was successfull, -1 otherwise (and ERRNO is set appropriately)
      */
     int wifu_setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen) {
-
         assert(optlen < BUFFER_SIZE);
         char value[BUFFER_SIZE];
+        memset(value, 0, BUFFER_SIZE);
         memcpy(value, optval, optlen);
 
         map<string, string> m;
@@ -310,6 +310,7 @@ public:
         m[LENGTH_STRING] = Utils::itoa(optlen);
 
         string message = QueryStringParser::create(WIFU_SETSOCKOPT_NAME, m);
+        cout << "Sending message: " << message << endl;
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
