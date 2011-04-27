@@ -18,6 +18,8 @@ public:
 
     void execute(IModule* m);
     string& get_option_value();
+
+    pair<string, socklen_t> get_value_length_pair();
 };
 
 #endif	/* SETSOCKETOPTIONEVENT_H */

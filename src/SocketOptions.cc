@@ -8,19 +8,19 @@ SocketOptions::~SocketOptions() {
 
 }
 
-void SocketOptions::insert(pair<int, int> key, string& value) {
+void SocketOptions::insert(pair<int, int> key, pair<string, socklen_t> value) {
     map_.insert(make_pair(key, value));
 }
 
-string SocketOptions::get(pair<int, int> key) {
-    map<pair<int, int>, string>::iterator itr = map_.find(key);
+pair<string, socklen_t> SocketOptions::get(pair<int, int> key) {
+    map<pair<int, int>, pair<string, socklen_t> >::iterator itr = map_.find(key);
 
     if (itr != map_.end()) {
         // value is found
         return itr->second;
     }
 
-    return "";
+    return make_pair("", 0);
 }
 
 void SocketOptions::remove(pair<int, int> key) {

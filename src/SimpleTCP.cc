@@ -317,7 +317,7 @@ void SimpleTCP::icontext_delete_socket(DeleteSocketEvent* e) {
 }
 
 void SimpleTCP::icontext_set_socket_option(SetSocketOptionEvent* e) {
-    cout << "SimpleTCP::icontext_set_socket_option()" << endl;
+//    cout << "SimpleTCP::icontext_set_socket_option()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -327,7 +327,7 @@ void SimpleTCP::icontext_set_socket_option(SetSocketOptionEvent* e) {
 }
 
 void SimpleTCP::icontext_get_socket_option(GetSocketOptionEvent* e) {
-    cout << "SimpleTCP::icontext_get_socket_option()" << endl;
+//    cout << "SimpleTCP::icontext_get_socket_option()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 

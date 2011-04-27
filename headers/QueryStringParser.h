@@ -11,7 +11,7 @@
 #include <string>
 #include <sstream>
 #include <map>
-
+#include <iostream>
 #include "exceptions/WiFuException.h"
 
 #include "defines.h"

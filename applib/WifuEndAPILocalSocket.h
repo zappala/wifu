@@ -106,7 +106,7 @@ public:
      * @see SocketData
      */
     void receive(string& message) {
-//        cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
+        //        cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
@@ -137,13 +137,12 @@ public:
             //cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
             data->set_payload(response_[BUFFER_STRING]);
         }
-
         else if (!response_[NAME_STRING].compare(WIFU_GETSOCKOPT_NAME)) {
             string response = response_[BUFFER_STRING];
+            int length = atoi(response_[LENGTH_STRING].c_str());
             data->set_payload(response);
-            data->set_payload_length(response.size());
+            data->set_payload_length(length);
         }
-
         else if (!response_[NAME_STRING].compare(WIFU_ACCEPT_NAME)) {
             string address = response_[ADDRESS_STRING];
             u_int16_t port = atoi(response_[PORT_STRING].c_str());
@@ -310,7 +309,6 @@ public:
         m[LENGTH_STRING] = Utils::itoa(optlen);
 
         string message = QueryStringParser::create(WIFU_SETSOCKOPT_NAME, m);
-        cout << "Sending message: " << message << endl;
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);

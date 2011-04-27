@@ -19,12 +19,12 @@ public:
     SocketOptions();
     virtual ~SocketOptions();
 
-    void insert(pair<int, int> key, string& value);
-    string get(pair<int, int> key);
+    void insert(pair<int, int> key, pair<string, socklen_t> value);
+    pair<string, socklen_t> get(pair<int, int> key);
     void remove(pair<int, int> key);
 
 private:
-    map< pair<int, int>, string> map_;
+    map< pair<int, int>, pair<string, socklen_t> > map_;
 };
 
 #endif	/* SOCKETOPTIONS_H */
