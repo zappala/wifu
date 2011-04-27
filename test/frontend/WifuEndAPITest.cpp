@@ -231,23 +231,6 @@ namespace {
         result = wifu_connect(socket, (struct sockaddr*) ap.get_network_struct_ptr(), len);
         ASSERT_EQ(expected, result);
 
-        //wifu_getsockopt()
-        expected = SO_BINDTODEVICE;
-        const char* optvalue = "Value";
-        socklen_t val_len = 5;
-
-        socklen_t length = 1000;
-        char buf[length];
-        memset(buf, 0, length);
-        result = wifu_getsockopt(socket, 0, SO_BINDTODEVICE, &buf, &length);
-        ASSERT_EQ(expected, result);
-        ASSERT_STREQ(optvalue, buf);
-        ASSERT_EQ(val_len, length);
-
-        //wifu_setsockopt()
-        expected = 0;
-        result = wifu_setsockopt(socket, 0, SO_BINDTODEVICE, optvalue, val_len);
-        ASSERT_EQ(expected, result);
     }
 }
 
