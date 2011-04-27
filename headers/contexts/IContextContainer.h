@@ -13,6 +13,7 @@
 #include "ReliabilityContext.h"
 #include "CongestionControlContext.h"
 #include "ConnectionManagerContext.h"
+#include "RateLimiterContext.h"
 
 #include "events/ReceiveEvent.h"
 #include "events/SendEvent.h"
@@ -32,6 +33,8 @@ public:
     IContext* get_reliability();
 
     IContext* get_connection_manager();
+
+    IContext* get_rate_limiter();
 
     SendEvent* get_saved_send_event();
 
@@ -53,6 +56,7 @@ private:
     IContext* reliability_;
     IContext* cc_;
     IContext* cm_;
+    IContext* rl_;
 
     SendEvent* saved_send_event_;
     ReceiveEvent* saved_receive_event_;

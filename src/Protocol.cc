@@ -316,6 +316,7 @@ void Protocol::imodule_delete_socket(Event* e) {
     Socket* socket = event->get_socket();
 
     if (!sockets_.contains(socket)) {
+        assert(false);
         return;
     }
     icontext_delete_socket(event);

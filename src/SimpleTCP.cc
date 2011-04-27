@@ -88,8 +88,7 @@ void SimpleTCP::icontext_send_packet(SendPacketEvent* e) {
     c->get_connection_manager()->icontext_send_packet(e);
     c->get_reliability()->icontext_send_packet(e);
     c->get_congestion_control()->icontext_send_packet(e);
-
-    send_network_packet(s, e->get_packet());
+    c->get_rate_limiter()->icontext_send_packet(e);
 }
 
 void SimpleTCP::icontext_connect(ConnectEvent* e) {
