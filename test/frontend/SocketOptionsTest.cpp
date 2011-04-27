@@ -121,14 +121,14 @@ namespace {
             string optval = rand() % 2 == 1 ? "on" : "off";
             socklen_t optlen = optval.length();
 
-            int return_val = wifu_setsockopt(fd, SOL_TCP, TCP_TIMESTAMP, optval.c_str(), optlen);
+            int return_val = wifu_setsockopt(fd, SOL_TCP, 5, optval.c_str(), optlen);
             EXPECT_EQ(0, return_val);
 
             unsigned char buffer[BUFFER_SIZE];
             memset(buffer, 0, BUFFER_SIZE);
             socklen_t len = BUFFER_SIZE;
 
-            return_val = wifu_getsockopt(fd, SOL_TCP, TCP_TIMESTAMP, buffer, &len);
+            return_val = wifu_getsockopt(fd, SOL_TCP, 5, buffer, &len);
 
             string actual((const char*) buffer);
             EXPECT_EQ(0, return_val);
