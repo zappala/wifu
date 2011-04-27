@@ -54,6 +54,9 @@
 #define LEVEL_STRING "level"
 #define ERRNO "errno"
 
+// Wifu defined socket options
+#define TCP_TIMESTAMP 20
+
 
 
 // WIFU_PORT is created from the phone number representaion of W-I-F-U

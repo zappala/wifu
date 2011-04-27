@@ -89,8 +89,9 @@ public:
      *
      * @see WifuEndAPILocalSocket::receive()
      */
-    void set_payload(string& payload) {
-        memcpy(payload_, payload.c_str(), payload.size());
+    void set_payload(string& payload, size_t length) {
+        memcpy(payload_, payload.c_str(), length);
+        set_payload_length(length);
     }
 
     /**

@@ -9,7 +9,7 @@ SocketOptions::~SocketOptions() {
 }
 
 void SocketOptions::insert(pair<int, int> key, pair<string, socklen_t> value) {
-    map_.insert(make_pair(key, value));
+    map_[key] = value;
 }
 
 pair<string, socklen_t> SocketOptions::get(pair<int, int> key) {

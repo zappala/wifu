@@ -19,6 +19,11 @@ public:
     void execute(IModule* m);
     string& get_option_value();
 
+    /**
+     * Helper function to create the value pair used in the SocketOptions map.
+     * @return A pair of value and value-length for this socket option event.
+     * @see SocketOptions
+     */
     pair<string, socklen_t> get_value_length_pair();
 };
 

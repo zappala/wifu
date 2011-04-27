@@ -350,6 +350,8 @@ void Protocol::imodule_library_set_socket_option(Event* e) {
     socket->get_socket_options().insert(event->get_level_name_pair(), event->get_value_length_pair());
     icontext_set_socket_option(event);
 
+    pair<string, socklen_t> value = socket->get_socket_options().get(event->get_level_name_pair());
+
     ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
     response->put(ERRNO, Utils::itoa(0));
     response->put(RETURN_VALUE_STRING, Utils::itoa(0));

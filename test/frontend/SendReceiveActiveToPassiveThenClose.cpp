@@ -127,6 +127,7 @@ void active_to_passive_test_with_close(string message) {
 
     // TODO: this only sends one character at a time
     for (int i = 0; i < message.length(); i++) {
+//        cout << "Sending" << endl;
         num_sent += wifu_send(client, &(buffer[i]), count, 0);
     }
 

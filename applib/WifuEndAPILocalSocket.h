@@ -135,15 +135,12 @@ public:
 
         if (!response_[NAME_STRING].compare(WIFU_RECVFROM_NAME)) {
             //cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
-            data->set_payload(response_[BUFFER_STRING]);
-        }
-        else if (!response_[NAME_STRING].compare(WIFU_GETSOCKOPT_NAME)) {
+            data->set_payload(response_[BUFFER_STRING], response_[BUFFER_STRING].length());
+        } else if (!response_[NAME_STRING].compare(WIFU_GETSOCKOPT_NAME)) {
             string response = response_[BUFFER_STRING];
             int length = atoi(response_[LENGTH_STRING].c_str());
-            data->set_payload(response);
-            data->set_payload_length(length);
-        }
-        else if (!response_[NAME_STRING].compare(WIFU_ACCEPT_NAME)) {
+            data->set_payload(response, length);
+        } else if (!response_[NAME_STRING].compare(WIFU_ACCEPT_NAME)) {
             string address = response_[ADDRESS_STRING];
             u_int16_t port = atoi(response_[PORT_STRING].c_str());
             AddressPort* ap = new AddressPort(address, port);
@@ -296,7 +293,7 @@ public:
      */
     int wifu_setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen) {
         assert(optlen < BUFFER_SIZE);
-        char value[BUFFER_SIZE];
+        unsigned char value[BUFFER_SIZE];
         memset(value, 0, BUFFER_SIZE);
         memcpy(value, optval, optlen);
 
@@ -305,7 +302,7 @@ public:
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[LEVEL_STRING] = Utils::itoa(level);
         m[OPTION_NAME_STRING] = Utils::itoa(optname);
-        m[OPTION_VALUE_STRING] = value;
+        m[OPTION_VALUE_STRING] = (const char*) value;
         m[LENGTH_STRING] = Utils::itoa(optlen);
 
         string message = QueryStringParser::create(WIFU_SETSOCKOPT_NAME, m);

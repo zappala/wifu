@@ -13,7 +13,7 @@ void WifuEndBackEndLibrary::receive(string& message) {
     // TODO: this method is way too long (and will likely get bigger)
     // TODO: refactor this method to use objects as much as possible
 
-    //    cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
+//        cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
 
 
     map<string, string> m;
