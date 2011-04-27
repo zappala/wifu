@@ -18,6 +18,24 @@ void Utils::get_timespec_future_time(int seconds, long int nanoseconds, struct t
     }
 }
 
+/**
+ * Gets the current time in microseconds.
+ * This will wrap approximately every 1.193046471 hours (we will need to check for this when comparing).
+ * @return The current time
+ */
+u_int32_t Utils::get_current_time_microseconds_32() {
+    return get_current_time_microseconds_64();
+}
+
+u_int64_t Utils::get_current_time_microseconds_64() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    u_int64_t microseconds = tv.tv_sec;
+    microseconds *= 1000000;
+    microseconds += tv.tv_usec;
+    return microseconds;
+}
+
 string Utils::itoa(int i) {
     char buf[sizeof (i)*8 + 1];
     sprintf(buf, "%d", i);
@@ -31,15 +49,14 @@ vector<string> Utils::read_file(string& file) {
 
     try {
         infile.open(file.c_str());
-    }
-    catch(ifstream::failure e) {
+    }    catch (ifstream::failure e) {
         throw IOError();
     }
 
     if (!infile.is_open()) {
         throw IOError();
     }
-    
+
     while (!infile.eof()) {
         getline(infile, s);
 

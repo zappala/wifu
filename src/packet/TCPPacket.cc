@@ -46,10 +46,10 @@ void TCPPacket::set_tcp_ack_number(u_int32_t ack_num) {
 }
 
 int TCPPacket::get_tcp_header_length_bytes() {
-    return get_tcp_header_length_words() * 4;
+    return get_tcp_data_offset() * 4;
 }
 
-u_int16_t TCPPacket::get_tcp_header_length_words() {
+u_int16_t TCPPacket::get_tcp_data_offset() {
     return tcp_->doff;
 }
 

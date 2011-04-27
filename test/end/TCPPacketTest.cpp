@@ -108,7 +108,7 @@ namespace {
         ASSERT_EQ(2, p.get_tcp_ack_number());
         ASSERT_EQ(3, p.get_tcp_checksum());
         ASSERT_EQ(dest->get_port(), p.get_destination_port());
-        ASSERT_EQ(sizeof (struct tcphdr) / 4, p.get_tcp_header_length_words());
+        ASSERT_EQ(sizeof (struct tcphdr) / 4, p.get_tcp_data_offset());
         ASSERT_EQ(sizeof (struct tcphdr), p.get_tcp_header_length_bytes());
         ASSERT_EQ(1, p.is_tcp_fin());
         ASSERT_EQ(1, p.is_tcp_psh());
@@ -162,7 +162,7 @@ namespace {
 
     TEST(TCPPacketTest, TCPHeaderLengthTest) {
         TCPPacket p;
-        ASSERT_EQ(sizeof (struct tcphdr) / 4, p.get_tcp_header_length_words());
+        ASSERT_EQ(sizeof (struct tcphdr) / 4, p.get_tcp_data_offset());
     }
 
     TEST(TCPPacketTest, URG) {

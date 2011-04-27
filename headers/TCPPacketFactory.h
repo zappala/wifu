@@ -12,9 +12,7 @@
 #include "packet/TCPPacket.h"
 
 class TCPPacketFactory : public PacketFactory {
-    WiFuPacket* create() {
-        return new TCPPacket();
-    }
+    WiFuPacket* create();
 };
 
 #endif	/* _TCPPACKETFACTORY_H */

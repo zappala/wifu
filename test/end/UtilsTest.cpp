@@ -259,7 +259,7 @@ namespace {
 
         ASSERT_EQ(expected.size(), results.size());
 
-        for(int i = 0; i < results.size(); i++) {
+        for (int i = 0; i < results.size(); i++) {
             string exp = expected[i];
             string actual = results[i];
 
@@ -280,12 +280,20 @@ namespace {
 
         ASSERT_EQ(expected.size(), results.size());
 
-        for(int i = 0; i < expected.size(); i++) {
+        for (int i = 0; i < expected.size(); i++) {
             string exp = expected[i];
             string actual = results[i];
 
             ASSERT_EQ(exp, actual);
         }
+    }
+
+    TEST(UtilsTest, getTime64) {
+        u_int64_t time = Utils::get_current_time_microseconds_64();
+    }
+
+    TEST(UtilsTest, getTime32) {
+        u_int32_t time = Utils::get_current_time_microseconds_32();
     }
 }
 

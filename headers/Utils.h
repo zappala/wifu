@@ -15,6 +15,9 @@
 #include <vector>
 #include <fstream>
 #include <string.h>
+#include <sys/types.h>
+#include <iostream>
+#include <sys/time.h>
 
 #include "defines.h"
 
@@ -63,6 +66,11 @@ public:
      * @return A vector contaning all the tokens, in order
      */
     static vector<string> tokenize(string& line, string& delimiters);
+
+
+    static u_int32_t get_current_time_microseconds_32();
+
+    static u_int64_t get_current_time_microseconds_64();
 };
 
 #endif	/* _UTILS_H */
