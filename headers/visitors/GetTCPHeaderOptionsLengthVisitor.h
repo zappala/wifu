@@ -15,6 +15,7 @@ class GetTCPHeaderOptionsLengthVisitor : public Visitor {
 public:
     GetTCPHeaderOptionsLengthVisitor();
     u_int8_t get_padded_length();
+    u_int8_t get_num_padded_bytes();
     void visit(TCPHeaderOption* option);
 private:
     int length_bytes_;

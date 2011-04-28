@@ -4,6 +4,7 @@
 #include "gtest/gtest.h"
 #include "visitors/GetTCPHeaderOptionsLengthVisitor.h"
 #include "packet/TCPHeaderOption.h"
+#include "packet/TCPTimestampOption.h"
 
 using namespace std;
 
@@ -15,6 +16,10 @@ namespace {
         u_int8_t expected_words = 0;
         u_int8_t actual_words = visitor.get_padded_length();
         EXPECT_EQ(expected_words, actual_words);
+
+        u_int8_t expected_padding = 0;
+        u_int8_t actual_padding = visitor.get_num_padded_bytes();
+        EXPECT_EQ(expected_padding, actual_padding);
     }
 
     TEST(GetTCPHeaderOptionsLengthVisitorTest, TestOneByte) {
@@ -25,6 +30,10 @@ namespace {
         u_int8_t expected_words = 1;
         u_int8_t actual_words = visitor.get_padded_length();
         EXPECT_EQ(expected_words, actual_words);
+
+        u_int8_t expected_padding = 3;
+        u_int8_t actual_padding = visitor.get_num_padded_bytes();
+        EXPECT_EQ(expected_padding, actual_padding);
     }
 
     TEST(GetTCPHeaderOptionsLengthVisitorTest, TestTwoBytes) {
@@ -35,6 +44,10 @@ namespace {
         u_int8_t expected_words = 1;
         u_int8_t actual_words = visitor.get_padded_length();
         EXPECT_EQ(expected_words, actual_words);
+
+        u_int8_t expected_padding = 2;
+        u_int8_t actual_padding = visitor.get_num_padded_bytes();
+        EXPECT_EQ(expected_padding, actual_padding);
     }
 
     TEST(GetTCPHeaderOptionsLengthVisitorTest, TestThreeBytes) {
@@ -45,6 +58,10 @@ namespace {
         u_int8_t expected_words = 1;
         u_int8_t actual_words = visitor.get_padded_length();
         EXPECT_EQ(expected_words, actual_words);
+
+        u_int8_t expected_padding = 1;
+        u_int8_t actual_padding = visitor.get_num_padded_bytes();
+        EXPECT_EQ(expected_padding, actual_padding);
     }
 
     TEST(GetTCPHeaderOptionsLengthVisitorTest, TestFourBytes) {
@@ -55,6 +72,10 @@ namespace {
         u_int8_t expected_words = 1;
         u_int8_t actual_words = visitor.get_padded_length();
         EXPECT_EQ(expected_words, actual_words);
+
+        u_int8_t expected_padding = 0;
+        u_int8_t actual_padding = visitor.get_num_padded_bytes();
+        EXPECT_EQ(expected_padding, actual_padding);
     }
 
     TEST(GetTCPHeaderOptionsLengthVisitorTest, TestFiveBytes) {
@@ -65,6 +86,10 @@ namespace {
         u_int8_t expected_words = 2;
         u_int8_t actual_words = visitor.get_padded_length();
         EXPECT_EQ(expected_words, actual_words);
+
+        u_int8_t expected_padding = 3;
+        u_int8_t actual_padding = visitor.get_num_padded_bytes();
+        EXPECT_EQ(expected_padding, actual_padding);
     }
 
     TEST(GetTCPHeaderOptionsLengthVisitorTest, TestManyBytes) {
@@ -80,6 +105,10 @@ namespace {
 
             u_int8_t actual_words = visitor.get_padded_length();
             EXPECT_EQ(expected_words, actual_words);
+
+            u_int8_t expected_padding = (expected_words * 4) - i;
+            u_int8_t actual_padding = visitor.get_num_padded_bytes();
+            EXPECT_EQ(expected_padding, actual_padding) << "Expected: " << (int) expected_padding << " Actual: " << (int) actual_padding << endl;
         }
     }
 
@@ -96,6 +125,10 @@ namespace {
         u_int8_t expected_words = 2;
         u_int8_t actual_words = visitor.get_padded_length();
         EXPECT_EQ(expected_words, actual_words);
+
+        u_int8_t expected_padding = 2;
+        u_int8_t actual_padding = visitor.get_num_padded_bytes();
+        EXPECT_EQ(expected_padding, actual_padding);
     }
 
     TEST(GetTCPHeaderOptionsLengthVisitorTest, TestManyOptionsBytes2) {
@@ -109,6 +142,25 @@ namespace {
         u_int8_t expected_words = 4;
         u_int8_t actual_words = visitor.get_padded_length();
         EXPECT_EQ(expected_words, actual_words);
+
+        u_int8_t expected_padding = 2;
+        u_int8_t actual_padding = visitor.get_num_padded_bytes();
+        EXPECT_EQ(expected_padding, actual_padding);
+    }
+
+    TEST(GetTCPHeaderOptionsLengthVisitorTest, TestTCPTimestampOptionBytes) {
+        TCPHeaderOption* option = new TCPTimestampOption();
+
+        GetTCPHeaderOptionsLengthVisitor visitor;
+        visitor.visit(option);
+
+        u_int8_t expected_words = 3;
+        u_int8_t actual_words = visitor.get_padded_length();
+        EXPECT_EQ(expected_words, actual_words);
+
+        u_int8_t expected_padding = 2;
+        u_int8_t actual_padding = visitor.get_num_padded_bytes();
+        EXPECT_EQ(expected_padding, actual_padding);
     }
 
 }

@@ -277,8 +277,6 @@ namespace {
         actual = p.remove_tcp_header_option(expected->get_kind());
         EXPECT_EQ(0, actual);
     }
-
-
 }
 
 
