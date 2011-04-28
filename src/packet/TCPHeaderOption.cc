@@ -32,6 +32,7 @@ unsigned char* TCPHeaderOption::get_value() {
 
 void TCPHeaderOption::set_value(unsigned char* value, u_int8_t value_length) {
     assert(2 + value_length <= TCP_HEADER_OPTION_MAX_SIZE);
+    assert(2 + value_length == get_length());
     memcpy(get_value(), value, value_length);
 }
 

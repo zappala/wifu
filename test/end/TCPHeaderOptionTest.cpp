@@ -53,7 +53,7 @@ namespace {
 
     TEST(TCPHeaderOptionTest, GetSetValueTest) {
         u_int8_t kind = 1;
-        u_int8_t length = 2;
+        u_int8_t length = 19;
 
         TCPHeaderOption option(kind, length);
 
@@ -71,7 +71,7 @@ namespace {
 
     TEST(TCPHeaderOptionTest, GetSetDataPointerTest) {
         u_int8_t kind = 1;
-        u_int8_t length = 2;
+        u_int8_t length = 19;
 
         TCPHeaderOption option(kind, length);
 
