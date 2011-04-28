@@ -103,6 +103,45 @@ namespace {
 
     }
 
+    TEST(GetTCPHeaderOptionsDataVisitorTest, TestTimestamp) {
+
+        u_int32_t timestamp = 20;
+        u_int32_t echo_reply = 15;
+
+        TCPTimestampOption option;
+        option.set_timestamp(timestamp);
+        option.set_echo_reply(echo_reply);
+
+        unsigned char buffer[TCP_HEADER_OPTION_MAX_SIZE];
+        memset(buffer, 'x', TCP_HEADER_OPTION_MAX_SIZE);
+
+        GetTCPHeaderOptionsDataVisitor visitor(buffer);
+        visitor.visit(&option);
+        visitor.append_padding();
+
+        u_int8_t expected_words = 3;
+        u_int8_t expected_padding = 2;
+
+        struct wifu_tcp_timestamp ts;
+        ts.timestamp_value_ = timestamp;
+        ts.timestamp_echo_reply_ = echo_reply;
+
+        u_int8_t kind = option.get_kind();
+        u_int8_t length = option.get_length();
+
+        unsigned char expected_buffer[TCP_HEADER_OPTION_MAX_SIZE];
+        memset(expected_buffer, 'x', TCP_HEADER_OPTION_MAX_SIZE);
+        memcpy(expected_buffer, &kind, 1);
+        memcpy(expected_buffer + 1, &length, 1);
+        memcpy(expected_buffer + 2, &ts, sizeof(ts));
+        memset(expected_buffer + 2 + sizeof(ts), 0, expected_padding);
+
+        EXPECT_EQ(expected_words, visitor.get_padded_length());
+        EXPECT_EQ(expected_padding, visitor.get_num_padded_bytes());
+        EXPECT_TRUE(!memcmp(expected_buffer, buffer, TCP_HEADER_OPTION_MAX_SIZE));
+
+    }
+
 }
 
 #endif /*_TCPHEADEROPTIONDATAVISIORTEST*/
