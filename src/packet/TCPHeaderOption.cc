@@ -41,5 +41,5 @@ unsigned char* TCPHeaderOption::get_data() {
 
 void TCPHeaderOption::set_data(unsigned char* data, u_int8_t data_length) {
     assert(data_length <= TCP_HEADER_OPTION_MAX_SIZE);
-    memcpy(get_data(), data, data_length);
+    memcpy(data_, data, data_length);
 }
