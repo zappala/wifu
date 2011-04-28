@@ -1,23 +1,31 @@
 #include "packet/TCPHeaderOption.h"
 
 TCPHeaderOption::TCPHeaderOption(u_int8_t kind, u_int8_t length) {
-    memcpy(get_kind_pointer(), &kind, sizeof(u_int8_t));
-    memcpy(get_length_pointer(), &length, sizeof(u_int8_t));
+    set_kind(kind);
+    set_length(length);
 }
 
 TCPHeaderOption::~TCPHeaderOption() {
 
 }
 
-u_int8_t* TCPHeaderOption::get_kind_pointer() {
-    return (u_int8_t*) data_;
+u_int8_t TCPHeaderOption::get_kind() {
+    return *data_;
 }
 
-u_int8_t* TCPHeaderOption::get_length_pointer() {
-    return (u_int8_t*) (data_ + 1);
+void TCPHeaderOption::set_kind(u_int8_t kind) {
+    *data_ = kind;
 }
 
-unsigned char* TCPHeaderOption::get_value_pointer() {
+u_int8_t TCPHeaderOption::get_length() {
+    return *(data_ + 1);
+}
+
+void TCPHeaderOption::set_length(u_int8_t length) {
+    *(data_ + 1) = length;
+}
+
+unsigned char* TCPHeaderOption::get_value() {
     return data_ + 2;
 }
 

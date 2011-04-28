@@ -17,18 +17,17 @@ namespace {
         u_int8_t kind = 8;
         u_int8_t length = 10;
 
-        EXPECT_EQ(kind, *ts_option.get_kind_pointer());
-        EXPECT_EQ(length, *ts_option.get_length_pointer());
+        EXPECT_EQ(kind, ts_option.get_kind());
+        EXPECT_EQ(length, ts_option.get_length());
     }
 
     TEST(TCPTimestampOptionTest, GetTimestampPointer) {
         TCPTimestampOption ts_option;
         
         u_int32_t expected = 65;
-        u_int32_t* value = ts_option.get_timestamp_pointer();
-        *value = expected;
+        ts_option.set_timestamp(expected);
 
-        EXPECT_EQ(expected, *ts_option.get_timestamp_pointer());
+        EXPECT_EQ(expected, ts_option.get_timestamp());
         EXPECT_EQ(expected, ts_option.get_timestamp_struct_pointer()->timestamp_value_);
     }
 
@@ -36,10 +35,9 @@ namespace {
         TCPTimestampOption ts_option;
 
         u_int32_t expected = 65;
-        u_int32_t* value = ts_option.get_echo_pointer();
-        *value = expected;
+        ts_option.set_echo_reply(expected);
 
-        EXPECT_EQ(expected, *ts_option.get_echo_pointer());
+        EXPECT_EQ(expected, ts_option.get_echo_reply());
         EXPECT_EQ(expected, ts_option.get_timestamp_struct_pointer()->timestamp_echo_reply_);
     }
 }

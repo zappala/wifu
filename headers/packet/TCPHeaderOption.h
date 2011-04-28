@@ -18,15 +18,29 @@ class TCPHeaderOption : public gc {
 public:
     TCPHeaderOption(u_int8_t kind, u_int8_t length);
     ~TCPHeaderOption();
-    u_int8_t* get_kind_pointer();
-    u_int8_t* get_length_pointer();
-    unsigned char* get_value_pointer();
+    
+    
+    u_int8_t get_kind();
+
+    void set_kind(u_int8_t kind);
+
+    u_int8_t get_length();
+
+    void set_length(u_int8_t length);
+
+    /**
+     *
+     * @return A pointer to the value portion of the option (after the kind and length)
+     */
+    unsigned char* get_value();
+
+    /**
+     * 
+     * @return A pointer to the beginning of all the data
+     */
     unsigned char* get_data();
 
 private:
-    u_int8_t* kind_;
-    u_int8_t* length_;
-    unsigned char* value_;
     unsigned char data_[TCP_HEADER_OPTION_MAX_SIZE];
 };
 

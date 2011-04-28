@@ -21,18 +21,18 @@ public:
     TCPTimestampOption();
     ~TCPTimestampOption();
 
-    u_int32_t* get_timestamp_pointer();
-    u_int32_t* get_echo_pointer();
-    struct timestamp* get_timestamp_struct_pointer();
-    
-    void set_echo_value(u_int32_t echo);
+    u_int32_t get_timestamp();
+
     void set_timestamp(u_int32_t timestamp = Utils::get_current_time_microseconds_32());
-    
+
+    u_int32_t get_echo_reply();
+
+    void set_echo_reply(u_int32_t echo);
+
+    struct timestamp* get_timestamp_struct_pointer();
 
 private:
     struct timestamp* timestamp_;
-
-    u_int32_t get_current_time();
 };
 
 #endif	/* TCPTIMESTAMPOPTION_H */
