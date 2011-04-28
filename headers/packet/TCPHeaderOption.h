@@ -11,8 +11,11 @@
 #include "GarbageCollector.h"
 # include <sys/types.h>
 #include <string.h>
+#include <assert.h>
 
 #define TCP_HEADER_OPTION_MAX_SIZE 40
+
+// TODO: do we need to do anything with byte ordering in this or any derived classes?
 
 class TCPHeaderOption : public gc {
 public:
@@ -34,11 +37,15 @@ public:
      */
     unsigned char* get_value();
 
+    void set_value(unsigned char* value, u_int8_t value_length);
+
     /**
      * 
      * @return A pointer to the beginning of all the data
      */
     unsigned char* get_data();
+
+    void set_data(unsigned char* data, u_int8_t data_length);
 
 private:
     unsigned char data_[TCP_HEADER_OPTION_MAX_SIZE];
