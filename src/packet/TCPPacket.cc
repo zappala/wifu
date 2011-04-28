@@ -1,4 +1,5 @@
 #include "packet/TCPPacket.h"
+#include "exceptions/IllegalStateException.h"
 
 TCPPacket::TCPPacket() : WiFuPacket() {
     init();
@@ -25,6 +26,8 @@ int TCPPacket::get_data_length_bytes() {
 }
 
 void TCPPacket::set_data(unsigned char* data, int length) {
+    // TODO: add in the options
+    
     memcpy(get_data(), data, length);
     set_ip_tot_length(get_ip_header_length_bytes() + get_tcp_header_length_bytes() + length);
 }
@@ -178,6 +181,11 @@ string TCPPacket::to_s_format() {
 }
 
 void TCPPacket::insert_tcp_header_option(TCPHeaderOption* option) {
+    if(get_data_length_bytes() > 0) {
+        // Can not add options after the data has been set
+        throw IllegalStateException();
+    }
+    
     // TODO: should we remove the (same) option if it exists before inserting it?
     options_.push_back(option);
 }

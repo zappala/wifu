@@ -183,11 +183,12 @@ def build_wifu_frontend_test(bld):
 	test_frontend_files += bld.glob('preliminary/Timer.cc')
 	test_frontend_files += bld.glob('src/exceptions/*.cc')
 	test_frontend_files += bld.glob('src/packet/*.cc')
-	
+	test_frontend_files += bld.glob('src/visitors/*.cc')
+	test_frontend_files += bld.glob('src/observer/*.cc')
 
 	test_frontend = bld(features='cxx cprogram',
 		source=test_frontend_files,
-		includes='preliminary headers headers/exceptions headers/packet lib/gc/include lib/gtest/include',
+		includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp', 'gc', 'cord'],
 		uselib_local='wifu-end-api',

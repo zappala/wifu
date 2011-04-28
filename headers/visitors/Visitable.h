@@ -19,6 +19,12 @@
  */
 class Visitable {
 public:
+
+    /**
+     * Constructor
+     */
+    Visitable();
+
     /**
      * Does nothing special
      */

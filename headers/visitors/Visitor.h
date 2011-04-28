@@ -9,6 +9,8 @@
 #define	VISITOR_H
 
 #include "Socket.h"
+#include "packet/TCPHeaderOption.h"
+#include "exceptions/IllegalStateException.h"
 
 // need to forward declare all visitable objects
 class Socket;
@@ -19,6 +21,11 @@ class Socket;
 class Visitor {
 public:
     /**
+     * Constructor
+     */
+    Visitor();
+    
+    /**
      * Does nothing special
      */
     virtual ~Visitor();
@@ -27,7 +34,13 @@ public:
      * Enbables Sockets to be visited
      * @param s Socket to visit
      */
-    virtual void visit(Socket* s) = 0;
+    virtual void visit(Socket* s);
+
+    /**
+     * Enables TCPHeaderOptions to be visited
+     * @param option TCPHeaderOption to visit
+     */
+    virtual void visit(TCPHeaderOption* option);
 
     /**
      * Provides a way by which a Visitable class may stop early if it is no longer necessary to continue.
