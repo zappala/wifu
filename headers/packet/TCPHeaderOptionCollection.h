@@ -8,7 +8,7 @@
 #ifndef TCPHEADEROPTIONCOLLECTION_H
 #define	TCPHEADEROPTIONCOLLECTION_H
 
-#include <vector>
+#include <list>
 #include <sys/types.h>
 #include "GarbageCollector.h"
 #include "TCPHeaderOption.h"
@@ -32,7 +32,7 @@ public:
     
 
 private:
-    vector<TCPHeaderOption*> options_;
+    list<TCPHeaderOption*> options_;
 };
 
 #endif	/* TCPHEADEROPTIONCOLLECTION_H */

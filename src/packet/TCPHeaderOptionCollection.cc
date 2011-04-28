@@ -1,4 +1,6 @@
 #include "packet/TCPHeaderOptionCollection.h"
+#include "visitors/RemoveTCPHeaderOptionVisitor.h"
+#include "visitors/GetTCPHeaderOptionsLengthVisitor.h"
 
 TCPHeaderOptionCollection::TCPHeaderOptionCollection() : Visitable() {
 
@@ -13,34 +15,27 @@ void TCPHeaderOptionCollection::insert(TCPHeaderOption* option) {
 }
 
 TCPHeaderOption* TCPHeaderOptionCollection::remove(u_int8_t kind) {
-    TCPHeaderOption* ret_val = 0;
-    int i = 0;
-
-    for (; i < options_.size(); ++i) {
-        if (options_[i]->get_kind() == kind) {
-            ret_val = options_[i];
-            break;
-        }
-    }
-
+    FindTCPHeaderOptionVisitor visitor(kind);
+    accept(&visitor);
+    TCPHeaderOption* ret_val = visitor.get_option();
     if (ret_val) {
-        options_.erase(options_.begin() + i);
+        options_.remove(ret_val);
     }
-
     return ret_val;
 }
 
 bool TCPHeaderOptionCollection::contains(u_int8_t kind) {
-    for (int i = 0; i < options_.size(); ++i) {
-        if (options_[i]->get_kind() == kind) {
-            return true;
-        }
-    }
-    return false;
+    FindTCPHeaderOptionVisitor visitor(kind);
+    accept(&visitor);
+    TCPHeaderOption* ret_val = visitor.get_option();
+    return ret_val != 0;
 }
 
 u_int8_t TCPHeaderOptionCollection::get_padded_length() {
-    // Iterate over the options and return the number of words all options will take up
+    // Iterate over the options and return the number of 32-bid words all options will take up
+    GetTCPHeaderOptionsLengthVisitor v;
+    accept(&v);
+    return v.get_padded_length();
 }
 
 unsigned char* TCPHeaderOptionCollection::get_data() {
@@ -48,8 +43,9 @@ unsigned char* TCPHeaderOptionCollection::get_data() {
 }
 
 void TCPHeaderOptionCollection::accept(Visitor* v) {
-    for (int i = 0; i < options_.size(); ++i) {
-        v->visit(options_[i]);
+    list<TCPHeaderOption*>::iterator itr = options_.begin();
+    for (; itr != options_.end(); ++itr) {
+        v->visit(*itr);
         if(v->stop()) {
             break;
         }

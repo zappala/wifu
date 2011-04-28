@@ -187,23 +187,9 @@ void TCPPacket::insert_tcp_header_option(TCPHeaderOption* option) {
     }
     
     // TODO: should we remove the (same) option if it exists before inserting it?
-    options_.push_back(option);
+    options_.insert(option);
 }
 
 TCPHeaderOption* TCPPacket::remove_tcp_header_option(u_int8_t kind) {
-    TCPHeaderOption* ret_val = 0;
-    int i = 0;
-    
-    for (; i < options_.size(); ++i) {
-        if (options_[i]->get_kind() == kind) {
-            ret_val = options_[i];
-            break;
-        }
-    }
-
-    if (ret_val) {
-        options_.erase(options_.begin() + i);
-    }
-    
-    return ret_val;
+    return options_.remove(kind);
 }

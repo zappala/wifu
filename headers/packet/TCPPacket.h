@@ -8,7 +8,7 @@
 #ifndef _TCPPACKET_H
 #define	_TCPPACKET_H
 
-#include <vector>
+#include "TCPHeaderOptionCollection.h"
 #include "TCPHeaderOption.h"
 #include "packet/WiFuPacket.h"
 #include <netinet/tcp.h>
@@ -67,8 +67,7 @@ public:
 private:
     struct tcphdr* tcp_;
 
-    vector<TCPHeaderOption*> options_;
-
+    TCPHeaderOptionCollection options_;
 };
 
 #endif	/* _TCPPACKET_H */
