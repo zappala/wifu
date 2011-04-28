@@ -13,6 +13,7 @@
 #include "gtest/gtest.h"
 #include "packet/TCPPacket.h"
 #include "RandomNumberSet.h"
+#include "packet/TCPTimestampOption.h"
 
 using namespace std;
 
@@ -261,7 +262,10 @@ namespace {
     }
 
     // Options
-    
+    TEST(TCPPacketTest, AddRemoveTCPHeaderOptions) {
+        TCPPacket p;
+        TCPHeaderOption* option = new TCPTimestampOption();
+    }
 
 
 }

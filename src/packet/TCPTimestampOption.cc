@@ -1,7 +1,7 @@
 #include "packet/TCPTimestampOption.h"
 
 TCPTimestampOption::TCPTimestampOption() : TCPHeaderOption(8, 10) {
-    timestamp_ = (struct timestamp*) get_value();
+    timestamp_ = (struct wifu_tcp_timestamp*) get_value();
 }
 
 TCPTimestampOption::~TCPTimestampOption() {
@@ -16,7 +16,7 @@ u_int32_t TCPTimestampOption::get_echo_reply() {
     return timestamp_->timestamp_echo_reply_;
 }
 
-struct timestamp* TCPTimestampOption::get_timestamp_struct_pointer() {
+struct wifu_tcp_timestamp* TCPTimestampOption::get_wifu_tcp_timestamp() {
     return timestamp_;
 }
 

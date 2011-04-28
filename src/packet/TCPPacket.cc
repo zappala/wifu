@@ -26,7 +26,7 @@ int TCPPacket::get_data_length_bytes() {
 
 void TCPPacket::set_data(unsigned char* data, int length) {
     memcpy(get_data(), data, length);
-    set_ip_tot_length(get_ip_header_length_bytes() + sizeof (struct tcphdr) + length);
+    set_ip_tot_length(get_ip_header_length_bytes() + sizeof (struct tcphdr) +length);
 }
 
 u_int32_t TCPPacket::get_tcp_sequence_number() {
@@ -155,24 +155,43 @@ int TCPPacket::max_data_length() {
 string TCPPacket::to_s() {
     stringstream s;
     s << IPPacket::to_s() << endl
-      << "tcp "
-      << get_source_port() << " "
-      << get_destination_port() << " "
-      << get_tcp_sequence_number() << " "
-      << get_tcp_ack_number() << " "
-      << get_tcp_header_length_bytes() << " "
-      << is_tcp_urg() << " "
-      << is_tcp_ack() << " "
-      << is_tcp_psh() << " "
-      << is_tcp_rst() << " "
-      << is_tcp_syn() << " "
-      << is_tcp_fin();
+            << "tcp "
+            << get_source_port() << " "
+            << get_destination_port() << " "
+            << get_tcp_sequence_number() << " "
+            << get_tcp_ack_number() << " "
+            << get_tcp_header_length_bytes() << " "
+            << is_tcp_urg() << " "
+            << is_tcp_ack() << " "
+            << is_tcp_psh() << " "
+            << is_tcp_rst() << " "
+            << is_tcp_syn() << " "
+            << is_tcp_fin();
     return s.str();
 }
 
 string TCPPacket::to_s_format() {
     stringstream s;
     s << IPPacket::to_s_format() << endl
-      << "# tcp sport dport seq_num ack_num header_length URG ACK PSH RST SYN FIN";
+            << "# tcp sport dport seq_num ack_num header_length URG ACK PSH RST SYN FIN";
     return s.str();
+}
+
+void TCPPacket::insert_tcp_header_option(TCPHeaderOption* option) {
+    // TODO: should we remove the (same) option if it exists before inserting it?
+    options_.push_back(option);
+}
+
+TCPHeaderOption* TCPPacket::remove_tcp_header_option(u_int8_t kind) {
+    int i = 0;
+    TCPHeaderOption* ret_val = 0;
+    for(; i < options_.size(); ++i) {
+        if(options_[i]->get_kind() == kind) {
+            ret_val = options_[i];
+            break;
+        }
+    }
+
+    options_.erase(options_.begin() + i);
+    return ret_val;
 }

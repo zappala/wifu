@@ -28,12 +28,12 @@ namespace {
         ts_option.set_timestamp(expected);
 
         EXPECT_EQ(expected, ts_option.get_timestamp());
-        EXPECT_EQ(expected, ts_option.get_timestamp_struct_pointer()->timestamp_value_);
+        EXPECT_EQ(expected, ts_option.get_wifu_tcp_timestamp()->timestamp_value_);
 
         ts_option.set_timestamp();
         expected = Utils::get_current_time_microseconds_32();
         EXPECT_NEAR(expected, ts_option.get_timestamp(), 100);
-        EXPECT_NEAR(expected, ts_option.get_timestamp_struct_pointer()->timestamp_value_, 100);
+        EXPECT_NEAR(expected, ts_option.get_wifu_tcp_timestamp()->timestamp_value_, 100);
     }
 
     TEST(TCPTimestampOptionTest, GetSetEchoPointer) {
@@ -43,7 +43,7 @@ namespace {
         ts_option.set_echo_reply(expected);
 
         EXPECT_EQ(expected, ts_option.get_echo_reply());
-        EXPECT_EQ(expected, ts_option.get_timestamp_struct_pointer()->timestamp_echo_reply_);
+        EXPECT_EQ(expected, ts_option.get_wifu_tcp_timestamp()->timestamp_echo_reply_);
     }
 }
 

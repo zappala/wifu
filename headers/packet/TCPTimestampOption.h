@@ -11,7 +11,7 @@
 #include "TCPHeaderOption.h"
 #include "Utils.h"
 
-struct timestamp {
+struct wifu_tcp_timestamp {
     u_int32_t timestamp_value_;
     u_int32_t timestamp_echo_reply_;
 };
@@ -29,10 +29,10 @@ public:
 
     void set_echo_reply(u_int32_t echo);
 
-    struct timestamp* get_timestamp_struct_pointer();
+    struct wifu_tcp_timestamp* get_wifu_tcp_timestamp();
 
 private:
-    struct timestamp* timestamp_;
+    struct wifu_tcp_timestamp* timestamp_;
 };
 
 #endif	/* TCPTIMESTAMPOPTION_H */

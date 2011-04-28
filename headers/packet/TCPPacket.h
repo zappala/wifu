@@ -61,6 +61,9 @@ public:
     virtual string to_s();
     virtual string to_s_format();
 
+    void insert_tcp_header_option(TCPHeaderOption* option);
+    TCPHeaderOption* remove_tcp_header_option(u_int8_t kind);
+
 private:
     struct tcphdr* tcp_;
 
