@@ -264,7 +264,18 @@ namespace {
     // Options
     TEST(TCPPacketTest, AddRemoveTCPHeaderOptions) {
         TCPPacket p;
-        TCPHeaderOption* option = new TCPTimestampOption();
+        
+        TCPHeaderOption* expected = 0;
+        TCPHeaderOption* actual = p.remove_tcp_header_option(8);
+        EXPECT_EQ(expected, actual);
+
+        expected = new TCPTimestampOption();
+        p.insert_tcp_header_option(expected);
+        actual = p.remove_tcp_header_option(expected->get_kind());
+        EXPECT_EQ(expected, actual);
+
+        actual = p.remove_tcp_header_option(expected->get_kind());
+        EXPECT_EQ(0, actual);
     }
 
 

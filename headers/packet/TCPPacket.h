@@ -32,7 +32,7 @@ public:
     void set_tcp_ack_number(u_int32_t ack_num);
     int get_tcp_header_length_bytes();
     u_int16_t get_tcp_data_offset();
-    void set_tcp_header_length_words(u_int16_t length);
+    void set_tcp_data_offset(u_int16_t length);
     bool is_tcp_urg();
     void set_tcp_urg(bool urg);
     bool is_tcp_ack();

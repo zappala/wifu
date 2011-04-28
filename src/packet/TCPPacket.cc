@@ -17,16 +17,16 @@ TCPPacket::~TCPPacket() {
 }
 
 unsigned char* TCPPacket::get_data() {
-    return get_next_header() + sizeof (struct tcphdr);
+    return get_next_header() + get_tcp_header_length_bytes();
 }
 
 int TCPPacket::get_data_length_bytes() {
-    return get_ip_tot_length() - get_ip_header_length_bytes() - sizeof (struct tcphdr);
+    return get_ip_tot_length() - get_ip_header_length_bytes() - get_tcp_header_length_bytes();
 }
 
 void TCPPacket::set_data(unsigned char* data, int length) {
     memcpy(get_data(), data, length);
-    set_ip_tot_length(get_ip_header_length_bytes() + sizeof (struct tcphdr) +length);
+    set_ip_tot_length(get_ip_header_length_bytes() + get_tcp_header_length_bytes() + length);
 }
 
 u_int32_t TCPPacket::get_tcp_sequence_number() {
@@ -53,7 +53,7 @@ u_int16_t TCPPacket::get_tcp_data_offset() {
     return tcp_->doff;
 }
 
-void TCPPacket::set_tcp_header_length_words(u_int16_t length) {
+void TCPPacket::set_tcp_data_offset(u_int16_t length) {
     tcp_->doff = length;
 }
 
@@ -131,8 +131,8 @@ void TCPPacket::set_tcp_urgent_pointer(u_int16_t urg_ptr) {
 
 void TCPPacket::init() {
     tcp_ = (struct tcphdr*) get_next_header();
-    set_tcp_header_length_words(sizeof (struct tcphdr) / 4);
-    set_ip_tot_length(get_ip_header_length_bytes() + sizeof (struct tcphdr));
+    set_tcp_data_offset(sizeof (struct tcphdr) / 4);
+    set_ip_tot_length(get_ip_header_length_bytes() + get_tcp_header_length_bytes());
 }
 
 bool TCPPacket::is_naked_ack() {
@@ -183,15 +183,19 @@ void TCPPacket::insert_tcp_header_option(TCPHeaderOption* option) {
 }
 
 TCPHeaderOption* TCPPacket::remove_tcp_header_option(u_int8_t kind) {
-    int i = 0;
     TCPHeaderOption* ret_val = 0;
-    for(; i < options_.size(); ++i) {
-        if(options_[i]->get_kind() == kind) {
+    int i = 0;
+    
+    for (; i < options_.size(); ++i) {
+        if (options_[i]->get_kind() == kind) {
             ret_val = options_[i];
             break;
         }
     }
 
-    options_.erase(options_.begin() + i);
+    if (ret_val) {
+        options_.erase(options_.begin() + i);
+    }
+    
     return ret_val;
 }
