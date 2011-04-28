@@ -21,7 +21,7 @@ namespace {
         EXPECT_EQ(length, ts_option.get_length());
     }
 
-    TEST(TCPTimestampOptionTest, GetTimestampPointer) {
+    TEST(TCPTimestampOptionTest, GetSetTimestampPointer) {
         TCPTimestampOption ts_option;
         
         u_int32_t expected = 65;
@@ -29,9 +29,14 @@ namespace {
 
         EXPECT_EQ(expected, ts_option.get_timestamp());
         EXPECT_EQ(expected, ts_option.get_timestamp_struct_pointer()->timestamp_value_);
+
+        ts_option.set_timestamp();
+        expected = Utils::get_current_time_microseconds_32();
+        EXPECT_NEAR(expected, ts_option.get_timestamp(), 100);
+        EXPECT_NEAR(expected, ts_option.get_timestamp_struct_pointer()->timestamp_value_, 100);
     }
 
-    TEST(TCPTimestampOptionTest, GetEchoPointer) {
+    TEST(TCPTimestampOptionTest, GetSetEchoPointer) {
         TCPTimestampOption ts_option;
 
         u_int32_t expected = 65;
