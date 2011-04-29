@@ -19,6 +19,7 @@ void Closed::state_connect(Context* c, ConnectEvent* e) {
 
     unsigned char* data = (unsigned char*) "";
     TCPPacket* p = new TCPPacket();
+    p->insert_tcp_header_option(new TCPTimestampOption());
 
     int port = s->get_local_address_port()->get_port();
     string address = SourceGetter::instance().get_source_address(dest_string);

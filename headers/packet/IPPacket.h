@@ -34,6 +34,8 @@ public:
 
     virtual void set_data(unsigned char* data, int length);
 
+    virtual void pack();
+
     unsigned char* get_next_header();
 
     /**

@@ -32,6 +32,7 @@ void SlowStart::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     if (p->get_data_length_bytes() > 0) {
         // Send ACK
         TCPPacket* p = new TCPPacket();
+        p->insert_tcp_header_option(new TCPTimestampOption());
         p->set_ip_protocol(SIMPLE_TCP);
 
         AddressPort* destination = s->get_remote_address_port();
@@ -57,7 +58,7 @@ void SlowStart::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         // receive an ACK
         // send data
         TCPPacket* p = new TCPPacket();
-
+        p->insert_tcp_header_option(new TCPTimestampOption());
         string data = s->get_send_buffer().substr(0, p->max_data_length());
         s->get_send_buffer().erase(0, data.size());
 

@@ -25,6 +25,7 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
     NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
     WiFuPacket* p = event->get_packet();
     TCPPacket* tcp_packet = (TCPPacket*) p;
+    tcp_packet->pack();
 
     int delay = get_delay(tcp_packet);
 

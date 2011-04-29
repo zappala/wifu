@@ -1,6 +1,6 @@
 #include "packet/TCPTimestampOption.h"
 
-TCPTimestampOption::TCPTimestampOption() : TCPHeaderOption(8, 10) {
+TCPTimestampOption::TCPTimestampOption() : TCPHeaderOption(TCPOPT_TIMESTAMP, TCPOLEN_TIMESTAMP) {
     
 }
 

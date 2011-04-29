@@ -15,7 +15,7 @@ void* listener(void* arg) {
 
     int nfds, fd;
     struct epoll_event events[MAX_EVENTS];
-    
+
     while (1) {
         nfds = epoll_wait(epfd, events, MAX_EVENTS, -1);
 
@@ -46,45 +46,45 @@ void* listener(void* arg) {
 }
 
 RawSocketListener::RawSocketListener() : started_(false) {
-	sem_ = new Semaphore();
-	sem_->init(0);
-	epfd_ = epoll_create(1);
+    sem_ = new Semaphore();
+    sem_->init(0);
+    epfd_ = epoll_create(1);
 }
 
 void RawSocketListener::register_protocol(int protocol, PacketFactory* pf) {
-	if (started_) {
-		cout << "Cannot register anymore protocols" << endl;
-		// TODO: throw an exception
-		return;
-	}
+    if (started_) {
+        cout << "Cannot register anymore protocols" << endl;
+        // TODO: throw an exception
+        return;
+    }
 
-	int fd = socket(AF_INET, SOCK_RAW, protocol);
-	if (fd < 0) {
-		perror("RawSocketListener: Cannot create socket");
-		exit(EXIT_FAILURE);
-	}
+    int fd = socket(AF_INET, SOCK_RAW, protocol);
+    if (fd < 0) {
+        perror("RawSocketListener: Cannot create socket");
+        exit(EXIT_FAILURE);
+    }
 
-	static struct epoll_event event;
-	event.events = EPOLLIN;
-	event.data.fd = fd;
-	epoll_ctl(epfd_, EPOLL_CTL_ADD, fd, &event);
+    static struct epoll_event event;
+    event.events = EPOLLIN;
+    event.data.fd = fd;
+    epoll_ctl(epfd_, EPOLL_CTL_ADD, fd, &event);
 
-	factories_[fd] = pf;
+    factories_[fd] = pf;
 }
 
 void RawSocketListener::start(NetworkCallback* callback) {
-	started_ = true;
+    started_ = true;
 
-	struct listen_data data;
-	data.callback = callback;
-	data.epfd = epfd_;
-	data.sem = sem_;
-	data.factories = &factories_;
+    struct listen_data data;
+    data.callback = callback;
+    data.epfd = epfd_;
+    data.sem = sem_;
+    data.factories = &factories_;
 
-	if (pthread_create(&thread_, NULL, &listener, &data) != 0) {
-		perror("RawSocketListener: cannot create thread");
-		exit(EXIT_FAILURE);
-	}
+    if (pthread_create(&thread_, NULL, &listener, &data) != 0) {
+        perror("RawSocketListener: cannot create thread");
+        exit(EXIT_FAILURE);
+    }
 
-	sem_->wait();
+    sem_->wait();
 }

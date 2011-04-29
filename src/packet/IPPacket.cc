@@ -36,6 +36,10 @@ void IPPacket::set_data(unsigned char* data, int length) {
     set_ip_tot_length(get_ip_header_length_bytes() + length);
 }
 
+void IPPacket::pack() {
+
+}
+
 unsigned char* IPPacket::get_next_header() {
     return get_payload() + get_ip_header_length_bytes();
 }

@@ -30,6 +30,8 @@ public:
 
     virtual void set_data(unsigned char* data, int length);
 
+    virtual void pack();
+
     /**
      * Gets the source port of this packet
      */

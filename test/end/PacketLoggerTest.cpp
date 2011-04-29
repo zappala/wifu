@@ -25,6 +25,7 @@ using namespace std;
 namespace {
 
     TEST(PacketLogger, test) {
+        // TODO: we need to be able to log options now
         TCPPacket* packet1 = new TCPPacket(); //be sure to call 'new'
         packet1->set_ip_protocol(SIMPLE_TCP); //very important
         unsigned char data1[] = "hello"; //whatever data, could be blank ("") too I suppose

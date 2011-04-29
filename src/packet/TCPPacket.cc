@@ -27,19 +27,23 @@ int TCPPacket::get_data_length_bytes() {
 }
 
 void TCPPacket::set_data(unsigned char* data, int length) {
-    if(get_data_length_bytes() > 0) {
+    if (get_data_length_bytes() > 0) {
         // Can not set the data twice
         throw IllegalStateException();
     }
 
-    GetTCPHeaderOptionsDataVisitor visitor(get_data());
+    GetTCPHeaderOptionsLengthVisitor visitor;
     options_.accept(&visitor);
-    visitor.append_padding();
-
     set_tcp_data_offset(get_tcp_data_offset() + visitor.get_padded_length());
 
     memcpy(get_data(), data, length);
     set_ip_tot_length(get_ip_header_length_bytes() + get_tcp_header_length_bytes() + length);
+}
+
+void TCPPacket::pack() {
+    GetTCPHeaderOptionsDataVisitor visitor(get_options_pointer());
+    options_.accept(&visitor);
+    visitor.append_padding();
 }
 
 u_int32_t TCPPacket::get_tcp_sequence_number() {
@@ -191,11 +195,11 @@ string TCPPacket::to_s_format() {
 }
 
 void TCPPacket::insert_tcp_header_option(TCPHeaderOption* option) {
-    if(get_data_length_bytes() > 0) {
+    if (get_data_length_bytes() > 0) {
         // Can not add options after the data has been set
         throw IllegalStateException();
     }
-    
+
     // TODO: should we remove the (same) option if it exists before inserting it?
     options_.insert(option);
 }
@@ -205,17 +209,19 @@ TCPHeaderOption* TCPPacket::remove_tcp_header_option(u_int8_t kind) {
 }
 
 TCPHeaderOption* TCPPacket::get_option(u_int8_t kind) {
-     //TODO: parse options from payload if doff != sizeof(tcphdr) / 4 && options is empty
+    //TODO: parse options from payload if doff != sizeof(tcphdr) / 4 && options is empty
 
-
-    if(options_.empty() && get_tcp_data_offset() > sizeof(tcphdr) / 4) {
+    if (options_.empty() && get_tcp_data_offset() > sizeof (tcphdr) / 4) {
         // unparsed options
-        u_int8_t length = (get_tcp_data_offset() - (sizeof(tcphdr) / 4)) * 4;
-        options_.parse(get_payload() + sizeof(struct iphdr) + sizeof(struct tcphdr), length);
-
+        u_int8_t length = (get_tcp_data_offset() - (sizeof (tcphdr) / 4)) * 4;
+        options_.parse(get_options_pointer(), length);
     }
 
     FindTCPHeaderOptionVisitor finder(kind);
     options_.accept(&finder);
     return finder.get_option();
+}
+
+unsigned char* TCPPacket::get_options_pointer() {
+    return get_payload() + get_ip_header_length_bytes() + sizeof (struct tcphdr);
 }

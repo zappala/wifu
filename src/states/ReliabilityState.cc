@@ -119,6 +119,7 @@ void ReliabilityState::state_receive_packet(Context* c, NetworkReceivePacketEven
         }
 
         TCPPacket* p = new TCPPacket();
+        p->insert_tcp_header_option(new TCPTimestampOption());
         p->set_ip_protocol(SIMPLE_TCP);
 
         AddressPort* destination = s->get_remote_address_port();

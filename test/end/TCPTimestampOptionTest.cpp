@@ -6,6 +6,7 @@
 #include "gtest/gtest.h"
 #include "packet/TCPTimestampOption.h"
 #include <iostream>
+#include <netinet/tcp.h>
 
 using namespace std;
 
@@ -14,8 +15,8 @@ namespace {
     TEST(TCPTimestampOptionTest, Constructor) {
         TCPTimestampOption ts_option;
 
-        u_int8_t kind = 8;
-        u_int8_t length = 10;
+        u_int8_t kind = TCPOPT_TIMESTAMP;
+        u_int8_t length = TCPOLEN_TIMESTAMP;
 
         EXPECT_EQ(kind, ts_option.get_kind());
         EXPECT_EQ(length, ts_option.get_length());

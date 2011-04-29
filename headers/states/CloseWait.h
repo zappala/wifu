@@ -18,6 +18,7 @@
 #include "events/CloseEvent.h"
 
 #include "packet/TCPPacket.h"
+#include "packet/TCPTimestampOption.h"
 
 class CloseWait : public State {
 public:

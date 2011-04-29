@@ -27,6 +27,7 @@ void FinWait2::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         AddressPort* source = s->get_local_address_port();
 
         TCPPacket* response = new TCPPacket();
+        response->insert_tcp_header_option(new TCPTimestampOption());
         response->set_ip_protocol(SIMPLE_TCP);
         response->set_ip_destination_address_s(destination->get_address());
         response->set_ip_source_address_s(source->get_address());

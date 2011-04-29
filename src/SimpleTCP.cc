@@ -85,6 +85,10 @@ void SimpleTCP::icontext_send_packet(SendPacketEvent* e) {
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
+    TCPPacket* p = (TCPPacket*) e->get_packet();
+    TCPTimestampOption* option = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
+    option->set_timestamp();
+
     c->get_connection_manager()->icontext_send_packet(e);
     c->get_reliability()->icontext_send_packet(e);
     c->get_congestion_control()->icontext_send_packet(e);

@@ -10,6 +10,7 @@
 
 #include "TCPHeaderOptionCollection.h"
 #include "TCPHeaderOption.h"
+#include "visitors/GetTCPHeaderOptionsLengthVisitor.h"
 #include "packet/WiFuPacket.h"
 #include <netinet/tcp.h>
 
@@ -25,6 +26,8 @@ public:
     virtual int get_data_length_bytes();
 
     virtual void set_data(unsigned char* data, int length);
+
+    virtual void pack();
     
     u_int32_t get_tcp_sequence_number();
     void set_tcp_sequence_number(u_int32_t seq_num);
@@ -66,6 +69,9 @@ public:
     TCPHeaderOption* get_option(u_int8_t kind);
 
 private:
+
+    unsigned char* get_options_pointer();
+
     struct tcphdr* tcp_;
 
     TCPHeaderOptionCollection options_;

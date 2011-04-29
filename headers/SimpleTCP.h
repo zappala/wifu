@@ -21,6 +21,7 @@
 
 #include "CacheMap.h"
 #include "SimpleTCPCache.h"
+#include "packet/TCPTimestampOption.h"
 
 class SimpleTCP : public Protocol {
 private:

@@ -15,6 +15,8 @@
 #include "RandomNumberSet.h"
 #include "packet/TCPTimestampOption.h"
 
+#include <netinet/tcp.h>
+
 using namespace std;
 
 namespace {
@@ -57,8 +59,8 @@ namespace {
             tcp_header_->window = htons(7);
 
             options_ = (unsigned char*) buffer + (sizeof (struct iphdr) + sizeof (struct tcphdr));
-            u_int8_t kind = 8;
-            u_int8_t length = 10;
+            u_int8_t kind = TCPOPT_TIMESTAMP;
+            u_int8_t length = TCPOLEN_TIMESTAMP;
             struct wifu_tcp_timestamp ts;
             ts.timestamp_echo_reply_ = 4;
             ts.timestamp_value_ = 5;
@@ -126,10 +128,10 @@ namespace {
         // Add 12 for the number of bytes in the options
         ASSERT_EQ(sizeof (struct tcphdr) + 12, p.get_tcp_header_length_bytes());
         // Options
-        TCPTimestampOption* option = (TCPTimestampOption*) p.get_option(8);
+        TCPTimestampOption* option = (TCPTimestampOption*) p.get_option(TCPOPT_TIMESTAMP);
         ASSERT_TRUE(option != 0);
-        ASSERT_EQ(8, option->get_kind());
-        ASSERT_EQ(10, option->get_length());
+        ASSERT_EQ(TCPOPT_TIMESTAMP, option->get_kind());
+        ASSERT_EQ(TCPOLEN_TIMESTAMP, option->get_length());
         ASSERT_EQ(5, option->get_timestamp());
         ASSERT_EQ(4, option->get_echo_reply());
         // Option padding
@@ -278,7 +280,7 @@ namespace {
         TCPPacket p;
         
         TCPHeaderOption* expected = 0;
-        TCPHeaderOption* actual = p.remove_tcp_header_option(8);
+        TCPHeaderOption* actual = p.remove_tcp_header_option(TCPOPT_TIMESTAMP);
         EXPECT_EQ(expected, actual);
 
         expected = new TCPTimestampOption();
@@ -328,6 +330,7 @@ namespace {
 
         const char* data = "This is some cool data";
         p.set_data((unsigned char*)data, strlen(data));
+        p.pack();
 
         TCPPacketHelper helper;
         test_helper(p, helper);

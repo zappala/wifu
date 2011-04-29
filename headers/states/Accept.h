@@ -14,6 +14,7 @@
 #include "events/ConnectEvent.h"
 #include "events/CloseEvent.h"
 #include "states/Closed.h"
+#include "SocketCollection.h"
 
 using namespace std;
 
