@@ -9,6 +9,7 @@ void compare_traces(NetworkTrace& expected) {
 
 TCPPacket* get_base_tcp_packet() {
     TCPPacket* p = new TCPPacket();
+    p->insert_tcp_header_option(new TCPTimestampOption());
     p->set_ip_protocol(SIMPLE_TCP);
     p->set_ip_source_address_s("127.0.0.1");
     p->set_ip_destination_address_s("127.0.0.1");

@@ -52,6 +52,10 @@ public:
 
     void set_fin(NetworkReceivePacketEvent* e);
 
+    u_int32_t get_echo_reply();
+
+    void set_echo_reply(u_int32_t echo_reply);
+
 private:
     IContext* reliability_;
     IContext* cc_;
@@ -62,6 +66,8 @@ private:
     ReceiveEvent* saved_receive_event_;
     CloseEvent* close_event_;
     NetworkReceivePacketEvent* fin_;
+
+    u_int32_t echo_reply_;
 };
 
 #endif	/* CONTEXTCONTAINER_H */

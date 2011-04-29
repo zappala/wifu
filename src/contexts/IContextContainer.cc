@@ -1,6 +1,6 @@
 #include "contexts/IContextContainer.h"
 
-IContextContainer::IContextContainer() : saved_send_event_(0), saved_receive_event_(0), close_event_(0), fin_(0) {
+IContextContainer::IContextContainer() : saved_send_event_(0), saved_receive_event_(0), close_event_(0), fin_(0), echo_reply_(0) {
     reliability_ = new ReliabilityContext();
     cc_ = new CongestionControlContext();
     cm_ = new ConnectionManagerContext();
@@ -57,4 +57,12 @@ NetworkReceivePacketEvent* IContextContainer::get_fin() {
 
 void IContextContainer::set_fin(NetworkReceivePacketEvent* e) {
     fin_ = e;
+}
+
+u_int32_t IContextContainer::get_echo_reply() {
+    return echo_reply_;
+}
+
+void IContextContainer::set_echo_reply(u_int32_t echo_reply) {
+    echo_reply_ = echo_reply;
 }

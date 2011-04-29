@@ -58,10 +58,11 @@ void SimpleTCP::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     CongestionControlContext* ccc = (CongestionControlContext*) c->get_congestion_control();
 
     TCPPacket* packet = (TCPPacket*) e->get_packet();
-
-    //    cout << "SimpleTCP::receive_packet(): packet: " << packet << endl;
-    //    cout << packet->to_s_format() << endl;
-    //    cout << packet->to_s() << endl;
+    TCPTimestampOption* ts = (TCPTimestampOption*) packet->get_option(TCPOPT_TIMESTAMP);
+    if (ts) {
+        c->set_echo_reply(ts->get_timestamp());
+    }
+//    cout << "SimpleTCP::receive_packet(), TS: " << ts->to_s() << endl;
 
     if (packet->is_tcp_fin() && !s->get_receive_buffer().empty()) {
         c->set_fin(e);
@@ -86,8 +87,13 @@ void SimpleTCP::icontext_send_packet(SendPacketEvent* e) {
     IContextContainer* c = get_context(s);
 
     TCPPacket* p = (TCPPacket*) e->get_packet();
+    
     TCPTimestampOption* option = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
     option->set_timestamp();
+    if (c->get_echo_reply()) {
+        option->set_echo_reply(c->get_echo_reply());
+    }
+    //cout << "SimpleTCP::send_packet(), TS: " << option->to_s() << endl;
 
     c->get_connection_manager()->icontext_send_packet(e);
     c->get_reliability()->icontext_send_packet(e);
@@ -320,7 +326,7 @@ void SimpleTCP::icontext_delete_socket(DeleteSocketEvent* e) {
 }
 
 void SimpleTCP::icontext_set_socket_option(SetSocketOptionEvent* e) {
-//    cout << "SimpleTCP::icontext_set_socket_option()" << endl;
+    //    cout << "SimpleTCP::icontext_set_socket_option()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -330,7 +336,7 @@ void SimpleTCP::icontext_set_socket_option(SetSocketOptionEvent* e) {
 }
 
 void SimpleTCP::icontext_get_socket_option(GetSocketOptionEvent* e) {
-//    cout << "SimpleTCP::icontext_get_socket_option()" << endl;
+    //    cout << "SimpleTCP::icontext_get_socket_option()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 

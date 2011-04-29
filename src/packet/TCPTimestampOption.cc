@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "packet/TCPTimestampOption.h"
 
 TCPTimestampOption::TCPTimestampOption() : TCPHeaderOption(TCPOPT_TIMESTAMP, TCPOLEN_TIMESTAMP) {
@@ -26,4 +28,13 @@ void TCPTimestampOption::set_echo_reply(u_int32_t echo) {
 
 void TCPTimestampOption::set_timestamp(u_int32_t timestamp) {
     get_wifu_tcp_timestamp()->timestamp_value_ = timestamp;
+}
+
+string TCPTimestampOption::to_s() {
+    stringstream s;
+    s << "Timestamp: ";
+    s << get_timestamp();
+    s << " Echo-reply: ";
+    s << get_echo_reply();
+    return s.str();
 }

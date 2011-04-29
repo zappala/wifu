@@ -95,6 +95,7 @@ void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent*
     if (!ccc->get_num_outstanding() && s->get_send_buffer().size() > 0) {
 
         TCPPacket* p = new TCPPacket();
+        p->insert_tcp_header_option(new TCPTimestampOption());
 
         string data = s->get_send_buffer().substr(0, p->max_data_length());
         s->get_send_buffer().erase(0, data.size());

@@ -12,6 +12,7 @@
 #include "../headers/PacketLogReader.h"
 #include "../headers/packet/TCPPacket.h"
 #include "../headers/defines.h"
+#include "../headers/packet/TCPTimestampOption.h"
 
 void compare_traces(NetworkTrace& expected);
 
