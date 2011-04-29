@@ -103,6 +103,42 @@ namespace {
 
     }
 
+    TEST(GetTCPHeaderOptionsDataVisitorTest, TestMultipleOptions) {
+        u_int8_t kind = 1;
+        u_int8_t length = 5;
+        const char* value = "abc";
+        u_int8_t value_length = strlen(value);
+
+        unsigned char buffer[TCP_HEADER_OPTION_MAX_SIZE];
+        memset(buffer, 'x', TCP_HEADER_OPTION_MAX_SIZE);
+
+        TCPHeaderOption option(kind, length);
+        option.set_value((unsigned char*) value, value_length);
+
+        GetTCPHeaderOptionsDataVisitor visitor(buffer);
+        visitor.visit(&option);
+        visitor.visit(&option);
+        visitor.append_padding();
+
+        u_int8_t expected_words = 3;
+        u_int8_t expected_padding = 2;
+
+        unsigned char expected_buffer[TCP_HEADER_OPTION_MAX_SIZE];
+        memset(expected_buffer, 'x', TCP_HEADER_OPTION_MAX_SIZE);
+        memcpy(expected_buffer, &kind, 1);
+        memcpy(expected_buffer + 1, &length, 1);
+        memcpy(expected_buffer + 2, value, value_length);
+        memcpy(expected_buffer + 2 + value_length, &kind, 1);
+        memcpy(expected_buffer + 2 + value_length + 1, &length, 1);
+        memcpy(expected_buffer + 2 + value_length + 2, value, value_length);
+        memset(expected_buffer + 2 + value_length + 2 + value_length, 0, expected_padding);
+
+        EXPECT_EQ(expected_words, visitor.get_padded_length());
+        EXPECT_EQ(expected_padding, visitor.get_num_padded_bytes());
+        EXPECT_TRUE(!memcmp(expected_buffer, buffer, TCP_HEADER_OPTION_MAX_SIZE));
+
+    }
+
     TEST(GetTCPHeaderOptionsDataVisitorTest, TestTimestamp) {
 
         u_int32_t timestamp = 20;

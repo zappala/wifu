@@ -24,10 +24,6 @@ public:
     void insert(TCPHeaderOption* option);
     TCPHeaderOption* remove(u_int8_t kind);
     bool contains(u_int8_t kind);
-
-    u_int8_t get_padded_length();
-    unsigned char* get_data();
-
     void accept(Visitor* v);
     
 
