@@ -41,7 +41,7 @@ void TCPPacket::set_data(unsigned char* data, int length) {
 }
 
 void TCPPacket::pack() {
-    cout << "TCPPacket::pack()" << endl;
+//    cout << "TCPPacket::pack()" << endl;
     GetTCPHeaderOptionsDataVisitor visitor(get_options_pointer());
     options_.accept(&visitor);
     visitor.append_padding();
