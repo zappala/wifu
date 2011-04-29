@@ -1,6 +1,5 @@
 #include "packet/TCPHeaderOptionCollection.h"
-#include "visitors/RemoveTCPHeaderOptionVisitor.h"
-#include "visitors/GetTCPHeaderOptionsLengthVisitor.h"
+
 
 TCPHeaderOptionCollection::TCPHeaderOptionCollection() : Visitable() {
 

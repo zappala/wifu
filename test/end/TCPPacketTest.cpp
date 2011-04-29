@@ -43,11 +43,11 @@ namespace {
             tcp_header_->ack_seq = htonl(2);
             tcp_header_->check = 3;
             tcp_header_->dest = htons(dest_->get_port());
-            tcp_header_->doff = sizeof (struct tcphdr) / 4;
+            tcp_header_->doff = (sizeof (struct tcphdr) / 4) + 3;
             tcp_header_->fin = 1;
             tcp_header_->psh = 1;
-            tcp_header_->res1 = 1;
-            tcp_header_->res2 = 1;
+//            tcp_header_->res1 = 1;
+//            tcp_header_->res2 = 1;
             tcp_header_->rst = 1;
             tcp_header_->seq = htonl(4);
             tcp_header_->source = htons(source_->get_port());
@@ -56,10 +56,21 @@ namespace {
             tcp_header_->urg_ptr = htons(6);
             tcp_header_->window = htons(7);
 
-            unsigned char* payload = buffer + (sizeof (struct iphdr) + sizeof (struct tcphdr));
+            options_ = (unsigned char*) buffer + (sizeof (struct iphdr) + sizeof (struct tcphdr));
+            u_int8_t kind = 8;
+            u_int8_t length = 10;
+            struct wifu_tcp_timestamp ts;
+            ts.timestamp_echo_reply_ = 4;
+            ts.timestamp_value_ = 5;
+            memcpy(options_, &kind, 1);
+            memcpy(options_ + 1, &length, 1);
+            memcpy(options_ + 2, &ts, sizeof(ts));
+            memset(options_ + 2 + sizeof(ts), 0, 2);
+
+            unsigned char* payload = options_ + 12;
             memcpy(payload, data, strlen(data));
 
-            length_ = strlen(data) + sizeof (struct iphdr) + sizeof (struct tcphdr);
+            length_ = strlen(data) + sizeof (struct iphdr) + sizeof (struct tcphdr) + 12;
             header->tot_len = htons(length_);
         }
 
@@ -92,6 +103,7 @@ namespace {
         unsigned char buffer[1500];
         const char* data;
         struct tcphdr* tcp_header_;
+        unsigned char* options_;
         AddressPort* source_;
         AddressPort* dest_;
     };
@@ -101,7 +113,7 @@ namespace {
         // TODO: Nothing to test?
     }
 
-    void test_constructor(TCPPacket & p, TCPPacketHelper & helper) {
+    void test_helper(TCPPacket & p, TCPPacketHelper & helper) {
         AddressPort* source = helper.get_source();
         AddressPort* dest = helper.get_dest();
 
@@ -109,8 +121,20 @@ namespace {
         ASSERT_EQ(2, p.get_tcp_ack_number());
         ASSERT_EQ(3, p.get_tcp_checksum());
         ASSERT_EQ(dest->get_port(), p.get_destination_port());
-        ASSERT_EQ(sizeof (struct tcphdr) / 4, p.get_tcp_data_offset());
-        ASSERT_EQ(sizeof (struct tcphdr), p.get_tcp_header_length_bytes());
+        // Add 3 for number of 32 bit words in the options
+        ASSERT_EQ((sizeof (struct tcphdr) / 4) + 3, p.get_tcp_data_offset());
+        // Add 12 for the number of bytes in the options
+        ASSERT_EQ(sizeof (struct tcphdr) + 12, p.get_tcp_header_length_bytes());
+        // Options
+        TCPTimestampOption* option = (TCPTimestampOption*) p.get_option(8);
+        ASSERT_TRUE(option != 0);
+        ASSERT_EQ(10, option->get_length());
+        ASSERT_EQ(5, option->get_timestamp());
+        ASSERT_EQ(4, option->get_echo_reply());
+        // Option padding
+        ASSERT_EQ(0, *(option->get_data() + option->get_length()));
+        ASSERT_EQ(0, *(option->get_data() + option->get_length() + 1));
+
         ASSERT_EQ(1, p.is_tcp_fin());
         ASSERT_EQ(1, p.is_tcp_psh());
         ASSERT_EQ(1, p.is_tcp_rst());
@@ -124,19 +148,6 @@ namespace {
         ASSERT_TRUE((*source) == (*p.get_source_address_port()));
         ASSERT_TRUE((*dest) == (*p.get_dest_address_port()));
     }
-
-//    TEST(TCPPacketTest, BufferConstructor) {
-//        TCPPacketHelper helper;
-//        TCPPacket p(helper.get_buffer(), helper.length());
-//        test_constructor(p, helper);
-//    }
-//
-//    TEST(TCPPacketTest, CopyConstructor) {
-//        TCPPacketHelper helper;
-//        TCPPacket p(helper.get_buffer(), helper.length());
-//        TCPPacket c(p);
-//        test_constructor(c, helper);
-//    }
 
     TEST(TCPPacketTest, SequenceNumberTest) {
         RandomNumberSet<u_int32_t> random;
@@ -276,6 +287,51 @@ namespace {
 
         actual = p.remove_tcp_header_option(expected->get_kind());
         EXPECT_EQ(0, actual);
+    }
+
+    TEST(TCPPacketTest, AddTCPTimestampHeaderOption) {
+        u_int32_t timestamp = 5;
+        u_int32_t echo = 4;
+
+        TCPPacket p;
+
+        p.set_ip_checksum(1);
+        p.set_ip_destination_address_s("192.168.0.2");
+        p.set_ip_fragmentation_offset(3);
+        p.set_ip_identifier(4);
+        p.set_ip_header_length_words(5);
+        p.set_ip_protocol(6);
+        p.set_ip_source_address_s("192.168.0.1");
+        p.set_ip_tos(8);
+        p.set_ip_ttl(10);
+        p.set_ip_version(11);
+
+        p.set_tcp_ack(1);
+        p.set_tcp_ack_number(2);
+        p.set_tcp_checksum(3);
+        p.set_destination_port(5002);
+        p.set_tcp_fin(1);
+        p.set_tcp_psh(1);
+        p.set_tcp_rst(1);
+        p.set_tcp_sequence_number(4);
+        p.set_source_port(5001);
+        p.set_tcp_syn(1);
+        p.set_tcp_urg(1);
+        p.set_tcp_urgent_pointer(6);
+        p.set_tcp_receive_window_size(7);
+
+        TCPTimestampOption* option = new TCPTimestampOption();
+        option->set_echo_reply(echo);
+        option->set_timestamp(timestamp);
+        p.insert_tcp_header_option(option);
+
+        const char* data = "This is some cool data";
+        p.set_data((unsigned char*)data, strlen(data));
+
+        TCPPacketHelper helper;
+        test_helper(p, helper);
+
+        EXPECT_TRUE(!memcmp(helper.get_buffer(), p.get_payload(), sizeof(struct iphdr)));
     }
 }
 

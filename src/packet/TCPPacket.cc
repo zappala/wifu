@@ -1,5 +1,6 @@
 #include "packet/TCPPacket.h"
 #include "exceptions/IllegalStateException.h"
+#include "visitors/GetTCPHeaderOptionsDataVisitor.h"
 
 TCPPacket::TCPPacket() : WiFuPacket() {
     init();
@@ -26,8 +27,17 @@ int TCPPacket::get_data_length_bytes() {
 }
 
 void TCPPacket::set_data(unsigned char* data, int length) {
-    // TODO: add in the options
-    
+    if(get_data_length_bytes() > 0) {
+        // Can not set the data twice
+        throw IllegalStateException();
+    }
+
+    GetTCPHeaderOptionsDataVisitor visitor(get_data());
+    options_.accept(&visitor);
+    visitor.append_padding();
+
+    set_tcp_data_offset(get_tcp_data_offset() + visitor.get_padded_length());
+
     memcpy(get_data(), data, length);
     set_ip_tot_length(get_ip_header_length_bytes() + get_tcp_header_length_bytes() + length);
 }
@@ -192,4 +202,11 @@ void TCPPacket::insert_tcp_header_option(TCPHeaderOption* option) {
 
 TCPHeaderOption* TCPPacket::remove_tcp_header_option(u_int8_t kind) {
     return options_.remove(kind);
+}
+
+TCPHeaderOption* TCPPacket::get_option(u_int8_t kind) {
+    // TODO: parse options from payload if doff != sizeof(tcphdr) / 4 && options is empty
+    FindTCPHeaderOptionVisitor finder(kind);
+    options_.accept(&finder);
+    return finder.get_option();
 }

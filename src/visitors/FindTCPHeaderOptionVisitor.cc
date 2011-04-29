@@ -1,4 +1,4 @@
-#include "visitors/RemoveTCPHeaderOptionVisitor.h"
+#include "visitors/FindTCPHeaderOptionVisitor.h"
 
 FindTCPHeaderOptionVisitor::FindTCPHeaderOptionVisitor(u_int8_t kind) : Visitor(), kind_(kind), option_(0) {
 

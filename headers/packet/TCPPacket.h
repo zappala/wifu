@@ -63,6 +63,7 @@ public:
 
     void insert_tcp_header_option(TCPHeaderOption* option);
     TCPHeaderOption* remove_tcp_header_option(u_int8_t kind);
+    TCPHeaderOption* get_option(u_int8_t kind);
 
 private:
     struct tcphdr* tcp_;

@@ -13,6 +13,8 @@
 #include "GarbageCollector.h"
 #include "TCPHeaderOption.h"
 #include "visitors/Visitable.h"
+#include "visitors/FindTCPHeaderOptionVisitor.h"
+#include "visitors/GetTCPHeaderOptionsLengthVisitor.h"
 
 using namespace std;
 
