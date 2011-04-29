@@ -1,6 +1,7 @@
 #include "packet/TCPHeaderOption.h"
 
 TCPHeaderOption::TCPHeaderOption(u_int8_t kind, u_int8_t length) {
+    memset(get_data(), 0, TCP_HEADER_OPTION_MAX_SIZE);
     set_kind(kind);
     set_length(length);
 }

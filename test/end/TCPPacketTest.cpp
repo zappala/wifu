@@ -128,6 +128,7 @@ namespace {
         // Options
         TCPTimestampOption* option = (TCPTimestampOption*) p.get_option(8);
         ASSERT_TRUE(option != 0);
+        ASSERT_EQ(8, option->get_kind());
         ASSERT_EQ(10, option->get_length());
         ASSERT_EQ(5, option->get_timestamp());
         ASSERT_EQ(4, option->get_echo_reply());
@@ -331,7 +332,10 @@ namespace {
         TCPPacketHelper helper;
         test_helper(p, helper);
 
-        EXPECT_TRUE(!memcmp(helper.get_buffer(), p.get_payload(), sizeof(struct iphdr)));
+        // Copy payload to another packet to ensure we can read the options correctly
+        TCPPacket other;
+        memcpy(other.get_payload(), p.get_payload(), MTU);
+        test_helper(other, helper);
     }
 }
 

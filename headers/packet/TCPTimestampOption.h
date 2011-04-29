@@ -31,8 +31,6 @@ public:
 
     struct wifu_tcp_timestamp* get_wifu_tcp_timestamp();
 
-private:
-    struct wifu_tcp_timestamp* timestamp_;
 };
 
 #endif	/* TCPTIMESTAMPOPTION_H */

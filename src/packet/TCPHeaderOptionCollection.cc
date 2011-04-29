@@ -30,6 +30,38 @@ bool TCPHeaderOptionCollection::contains(u_int8_t kind) {
     return ret_val != 0;
 }
 
+bool TCPHeaderOptionCollection::empty() {
+    return options_.empty();
+}
+
+void TCPHeaderOptionCollection::parse(unsigned char* options, u_int8_t options_length) {
+    if(options_length <= 0) {
+        return;
+    }
+
+    // end of options
+    if(*options == 0) {
+        return;
+    }
+
+    // No operation
+    if(*options == 1) {
+        parse(options + 1, options_length - 1);
+        return;
+    }
+
+    // Create new option
+    u_int8_t kind = *options;
+    // TODO: ensure we support this kind of option?
+    // We could do something similar to the packet factory and register options and create the correct kind
+    u_int8_t length = *(options + 1);
+    TCPHeaderOption* option = new TCPHeaderOption(kind, length);    
+    option->set_data(options, length);
+    insert(option);
+
+    parse(options + length, options_length - length);   
+}
+
 void TCPHeaderOptionCollection::accept(Visitor* v) {
     list<TCPHeaderOption*>::iterator itr = options_.begin();
     for (; itr != options_.end(); ++itr) {

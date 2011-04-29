@@ -205,7 +205,16 @@ TCPHeaderOption* TCPPacket::remove_tcp_header_option(u_int8_t kind) {
 }
 
 TCPHeaderOption* TCPPacket::get_option(u_int8_t kind) {
-    // TODO: parse options from payload if doff != sizeof(tcphdr) / 4 && options is empty
+     //TODO: parse options from payload if doff != sizeof(tcphdr) / 4 && options is empty
+
+
+    if(options_.empty() && get_tcp_data_offset() > sizeof(tcphdr) / 4) {
+        // unparsed options
+        u_int8_t length = (get_tcp_data_offset() - (sizeof(tcphdr) / 4)) * 4;
+        options_.parse(get_payload() + sizeof(struct iphdr) + sizeof(struct tcphdr), length);
+
+    }
+
     FindTCPHeaderOptionVisitor finder(kind);
     options_.accept(&finder);
     return finder.get_option();
