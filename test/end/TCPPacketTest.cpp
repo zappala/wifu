@@ -332,7 +332,7 @@ namespace {
         TCPPacketHelper helper;
         test_helper(p, helper);
 
-        // Copy payload to another packet to ensure we can read the options correctly
+        // Copy payload to another packet to ensure we can read/parse the option correctly
         TCPPacket other;
         memcpy(other.get_payload(), p.get_payload(), MTU);
         test_helper(other, helper);

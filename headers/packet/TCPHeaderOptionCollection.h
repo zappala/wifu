@@ -28,7 +28,7 @@ public:
     bool contains(u_int8_t kind);
     void accept(Visitor* v);
     bool empty();
-    void parse(unsigned char* options, u_int8_t options_length);
+    void parse(unsigned char* options, u_int8_t options_length_bytes);
     
 
 private:

@@ -34,8 +34,8 @@ bool TCPHeaderOptionCollection::empty() {
     return options_.empty();
 }
 
-void TCPHeaderOptionCollection::parse(unsigned char* options, u_int8_t options_length) {
-    if(options_length <= 0) {
+void TCPHeaderOptionCollection::parse(unsigned char* options, u_int8_t options_length_bytes) {
+    if(options_length_bytes <= 0) {
         return;
     }
 
@@ -46,7 +46,7 @@ void TCPHeaderOptionCollection::parse(unsigned char* options, u_int8_t options_l
 
     // No operation
     if(*options == 1) {
-        parse(options + 1, options_length - 1);
+        parse(options + 1, options_length_bytes - 1);
         return;
     }
 
@@ -59,7 +59,7 @@ void TCPHeaderOptionCollection::parse(unsigned char* options, u_int8_t options_l
     option->set_data(options, length);
     insert(option);
 
-    parse(options + length, options_length - length);   
+    parse(options + length, options_length_bytes - length);
 }
 
 void TCPHeaderOptionCollection::accept(Visitor* v) {
