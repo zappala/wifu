@@ -26,14 +26,14 @@ int WiFuPacket::get_data_length_bytes() {
 
 void WiFuPacket::set_data(unsigned char* data, int length) {
     memcpy(get_data(), data, length);
-    set_ip_tot_length(get_ip_header_length_bytes() + sizeof (struct wifu_packet_header) + length);
+    set_ip_tot_length(get_ip_header_length_bytes() + sizeof (struct wifu_packet_header) +length);
 }
 
 void WiFuPacket::pack() {
-    
+
 }
 
-u_int16_t WiFuPacket::get_source_port() {
+u_int16_t WiFuPacket::get_source_port() const {
     return ntohs(ports_->sport);
 }
 
@@ -41,7 +41,7 @@ void WiFuPacket::set_source_port(u_int16_t port) {
     ports_->sport = htons(port);
 }
 
-u_int16_t WiFuPacket::get_destination_port() {
+u_int16_t WiFuPacket::get_destination_port() const {
     return ntohs(ports_->dport);
 }
 
@@ -74,18 +74,36 @@ int WiFuPacket::max_data_length() {
     return IPPacket::max_data_length() - sizeof (struct wifu_packet_header);
 }
 
-string WiFuPacket::to_s() {
+string WiFuPacket::to_s() const {
     stringstream s;
     s << IPPacket::to_s() << endl
-      << "wifu "
-      << (int) get_source_port() << " "
-      << (int) get_destination_port();
+            << "wifu "
+            << (int) get_source_port() << " "
+            << (int) get_destination_port();
     return s.str();
 }
 
-string WiFuPacket::to_s_format() {
+string WiFuPacket::to_s_format() const {
     stringstream s;
     s << IPPacket::to_s_format() << endl
-      << "# wifu source_port destination_port";
+            << "# wifu source_port destination_port";
     return s.str();
+}
+
+bool WiFuPacket::operator ==(IPPacket& other) const {
+    cout << "WiFuPacket::operator ==()" << endl;
+    if (!this->IPPacket::operator ==(other)) {
+        return false;
+    }
+
+    WiFuPacket* other_ptr = dynamic_cast<WiFuPacket*>(&other);
+
+    return other_ptr != NULL &&
+           ports_->dport == other_ptr->ports_->dport &&
+           ports_->sport == other_ptr->ports_->sport;
+}
+
+bool WiFuPacket::operator !=(IPPacket& other) const {
+    cout << "WiFuPacket::operator !=()" << endl;
+    return !(*this == other);
 }

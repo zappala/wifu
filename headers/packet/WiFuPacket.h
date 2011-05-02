@@ -35,7 +35,7 @@ public:
     /**
      * Gets the source port of this packet
      */
-    u_int16_t get_source_port();
+    u_int16_t get_source_port() const;
 
     /**
      * Sets the  source port of this packet
@@ -45,7 +45,7 @@ public:
     /**
      * Gets the destination port of this packet
      */
-    u_int16_t get_destination_port();
+    u_int16_t get_destination_port() const;
 
     /**
      * Sets the destination port of this packet
@@ -60,8 +60,11 @@ public:
 
     virtual int max_data_length();
 
-    virtual string to_s();
-    virtual string to_s_format();
+    virtual string to_s() const;
+    virtual string to_s_format() const;
+
+    virtual bool operator ==(IPPacket& other) const;
+    virtual bool operator !=(IPPacket& other) const;
 
 private:
     struct wifu_packet_header* ports_;

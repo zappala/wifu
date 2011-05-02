@@ -1,6 +1,5 @@
 #include "packet/TCPPacket.h"
 
-
 TCPPacket::TCPPacket() : WiFuPacket() {
     init();
 }
@@ -40,13 +39,13 @@ void TCPPacket::set_data(unsigned char* data, int length) {
 }
 
 void TCPPacket::pack() {
-//    cout << "TCPPacket::pack()" << endl;
+    //    cout << "TCPPacket::pack()" << endl;
     GetTCPHeaderOptionsDataVisitor visitor(get_options_pointer());
     options_.accept(&visitor);
     visitor.append_padding();
 }
 
-u_int32_t TCPPacket::get_tcp_sequence_number() {
+u_int32_t TCPPacket::get_tcp_sequence_number() const {
     return ntohl(tcp_->seq);
 }
 
@@ -54,7 +53,7 @@ void TCPPacket::set_tcp_sequence_number(u_int32_t seq_num) {
     tcp_->seq = htonl(seq_num);
 }
 
-u_int32_t TCPPacket::get_tcp_ack_number() {
+u_int32_t TCPPacket::get_tcp_ack_number() const {
     return ntohl(tcp_->ack_seq);
 }
 
@@ -62,11 +61,11 @@ void TCPPacket::set_tcp_ack_number(u_int32_t ack_num) {
     tcp_->ack_seq = htonl(ack_num);
 }
 
-int TCPPacket::get_tcp_header_length_bytes() {
+int TCPPacket::get_tcp_header_length_bytes() const {
     return get_tcp_data_offset() * 4;
 }
 
-u_int16_t TCPPacket::get_tcp_data_offset() {
+u_int16_t TCPPacket::get_tcp_data_offset() const {
     return tcp_->doff;
 }
 
@@ -74,7 +73,7 @@ void TCPPacket::set_tcp_data_offset(u_int16_t length) {
     tcp_->doff = length;
 }
 
-bool TCPPacket::is_tcp_urg() {
+bool TCPPacket::is_tcp_urg() const {
     return tcp_->urg;
 }
 
@@ -82,7 +81,7 @@ void TCPPacket::set_tcp_urg(bool urg) {
     tcp_->urg = urg;
 }
 
-bool TCPPacket::is_tcp_ack() {
+bool TCPPacket::is_tcp_ack() const {
     return tcp_->ack;
 }
 
@@ -90,7 +89,7 @@ void TCPPacket::set_tcp_ack(bool ack) {
     tcp_->ack = ack;
 }
 
-bool TCPPacket::is_tcp_psh() {
+bool TCPPacket::is_tcp_psh() const {
     return tcp_->psh;
 }
 
@@ -98,7 +97,7 @@ void TCPPacket::set_tcp_psh(bool psh) {
     tcp_->psh = psh;
 }
 
-bool TCPPacket::is_tcp_rst() {
+bool TCPPacket::is_tcp_rst() const {
     return tcp_->rst;
 }
 
@@ -106,7 +105,7 @@ void TCPPacket::set_tcp_rst(bool rst) {
     tcp_->rst = rst;
 }
 
-bool TCPPacket::is_tcp_syn() {
+bool TCPPacket::is_tcp_syn() const {
     return tcp_->syn;
 }
 
@@ -114,7 +113,7 @@ void TCPPacket::set_tcp_syn(bool syn) {
     tcp_->syn = syn;
 }
 
-bool TCPPacket::is_tcp_fin() {
+bool TCPPacket::is_tcp_fin() const {
     return tcp_->fin;
 }
 
@@ -122,7 +121,7 @@ void TCPPacket::set_tcp_fin(bool fin) {
     tcp_->fin = fin;
 }
 
-u_int16_t TCPPacket::get_tcp_receive_window_size() {
+u_int16_t TCPPacket::get_tcp_receive_window_size() const {
     return ntohs(tcp_->window);
 }
 
@@ -130,7 +129,7 @@ void TCPPacket::set_tcp_receive_window_size(u_int16_t window) {
     tcp_->window = htons(window);
 }
 
-u_int16_t TCPPacket::get_tcp_checksum() {
+u_int16_t TCPPacket::get_tcp_checksum() const {
     return tcp_->check;
 }
 
@@ -138,7 +137,7 @@ void TCPPacket::set_tcp_checksum(u_int16_t checksum) {
     tcp_->check = checksum;
 }
 
-u_int16_t TCPPacket::get_tcp_urgent_pointer() {
+u_int16_t TCPPacket::get_tcp_urgent_pointer() const {
     return ntohs(tcp_->urg_ptr);
 }
 
@@ -169,7 +168,7 @@ int TCPPacket::max_data_length() {
     return IPPacket::max_data_length() - get_tcp_header_length_bytes();
 }
 
-string TCPPacket::to_s() {
+string TCPPacket::to_s() const {
     stringstream s;
     s << IPPacket::to_s() << endl
             << "tcp "
@@ -187,11 +186,44 @@ string TCPPacket::to_s() {
     return s.str();
 }
 
-string TCPPacket::to_s_format() {
+string TCPPacket::to_s_format() const {
     stringstream s;
     s << IPPacket::to_s_format() << endl
             << "# tcp sport dport seq_num ack_num header_length URG ACK PSH RST SYN FIN";
     return s.str();
+}
+
+bool TCPPacket::operator ==(IPPacket& other) const {
+    cout << "TCPPacket::operator ==()" << endl;
+    if (!WiFuPacket::operator ==(other)) {
+        return false;
+    }
+
+    TCPPacket* other_ptr = dynamic_cast<TCPPacket*>(&other);
+
+    bool equal = tcp_->ack == other_ptr->tcp_->ack;
+    equal = equal && tcp_->ack_seq == other_ptr->tcp_->ack_seq;
+    equal = equal && tcp_->check == other_ptr->tcp_->check;
+    equal = equal && tcp_->dest == other_ptr->tcp_->dest;
+    equal = equal && tcp_->doff == other_ptr->tcp_->doff;
+    equal = equal && tcp_->fin == other_ptr->tcp_->fin;
+    equal = equal && tcp_->psh == other_ptr->tcp_->psh;
+    equal = equal && tcp_->res1 == other_ptr->tcp_->res1;
+    equal = equal && tcp_->res2 == other_ptr->tcp_->res2;
+    equal = equal && tcp_->rst == other_ptr->tcp_->rst;
+    equal = equal && tcp_->seq == other_ptr->tcp_->seq;
+    equal = equal && tcp_->source == other_ptr->tcp_->source;
+    equal = equal && tcp_->syn == other_ptr->tcp_->syn;
+    equal = equal && tcp_->urg == other_ptr->tcp_->urg;
+    equal = equal && tcp_->urg_ptr == other_ptr->tcp_->urg_ptr;
+    equal = equal && tcp_->window == other_ptr->tcp_->window;
+
+    return equal;
+}
+
+bool TCPPacket::operator !=(IPPacket& other) const {
+    cout << "TCPPacket::operator !=()" << endl;
+    return !(*this == other);
 }
 
 void TCPPacket::insert_tcp_header_option(TCPHeaderOption* option) {

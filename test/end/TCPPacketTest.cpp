@@ -48,8 +48,8 @@ namespace {
             tcp_header_->doff = (sizeof (struct tcphdr) / 4) + 3;
             tcp_header_->fin = 1;
             tcp_header_->psh = 1;
-//            tcp_header_->res1 = 1;
-//            tcp_header_->res2 = 1;
+            //            tcp_header_->res1 = 1;
+            //            tcp_header_->res2 = 1;
             tcp_header_->rst = 1;
             tcp_header_->seq = htonl(4);
             tcp_header_->source = htons(source_->get_port());
@@ -66,8 +66,8 @@ namespace {
             ts.timestamp_value_ = 5;
             memcpy(options_, &kind, 1);
             memcpy(options_ + 1, &length, 1);
-            memcpy(options_ + 2, &ts, sizeof(ts));
-            memset(options_ + 2 + sizeof(ts), 0, 2);
+            memcpy(options_ + 2, &ts, sizeof (ts));
+            memset(options_ + 2 + sizeof (ts), 0, 2);
 
             unsigned char* payload = options_ + 12;
             memcpy(payload, data, strlen(data));
@@ -276,9 +276,10 @@ namespace {
     }
 
     // Options
+
     TEST(TCPPacketTest, AddRemoveTCPHeaderOptions) {
         TCPPacket p;
-        
+
         TCPHeaderOption* expected = 0;
         TCPHeaderOption* actual = p.remove_tcp_header_option(TCPOPT_TIMESTAMP);
         EXPECT_EQ(expected, actual);
@@ -290,6 +291,12 @@ namespace {
 
         actual = p.remove_tcp_header_option(expected->get_kind());
         EXPECT_EQ(0, actual);
+
+        WiFuPacket* tcp = new TCPPacket();
+        cout << "pointer: " << tcp->to_s() << endl;
+
+        WiFuPacket& wp = *tcp;
+        cout << "reference: " << wp.to_s() << endl;
     }
 
     TEST(TCPPacketTest, AddTCPTimestampHeaderOption) {
@@ -329,7 +336,7 @@ namespace {
         p.insert_tcp_header_option(option);
 
         const char* data = "This is some cool data";
-        p.set_data((unsigned char*)data, strlen(data));
+        p.set_data((unsigned char*) data, strlen(data));
         p.pack();
 
         TCPPacketHelper helper;

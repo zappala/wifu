@@ -1,7 +1,7 @@
 #include "packet/IPPacket.h"
 
 IPPacket::IPPacket() : length_set_(false) {
-	init();
+    init();
 }
 
 //IPPacket::IPPacket(IPPacket& p) : length_set_(false) {
@@ -162,10 +162,10 @@ void IPPacket::set_ip_destination_address_s(string daddr) {
 void IPPacket::init() {
     ip_ = (struct iphdr*) payload_;
 
-    memset(ip_, 0, sizeof(iphdr));
+    memset(ip_, 0, sizeof (iphdr));
 
     set_ip_version(4);
-    set_ip_header_length_words(sizeof(struct iphdr) / 4);
+    set_ip_header_length_words(sizeof (struct iphdr) / 4);
     //tos
     set_ip_tot_length(get_ip_header_length_bytes());
     //id
@@ -189,12 +189,12 @@ int IPPacket::max_data_length() const {
 string IPPacket::to_s() const {
     stringstream s;
     s << "ip "
-      << get_ip_source_address_s() << " "
-      << get_ip_destination_address_s() << " "
-      << (int)get_ip_protocol() << " "
-      << get_ip_tot_length() << " "
-      << (int)get_ip_header_length_bytes() << " "
-      << (int)get_ip_ttl();
+            << get_ip_source_address_s() << " "
+            << get_ip_destination_address_s() << " "
+            << (int) get_ip_protocol() << " "
+            << get_ip_tot_length() << " "
+            << (int) get_ip_header_length_bytes() << " "
+            << (int) get_ip_ttl();
     return s.str();
 }
 
@@ -204,21 +204,16 @@ string IPPacket::to_s_format() const {
     return s.str();
 }
 
-bool IPPacket::operator ==(const IPPacket& other) const {
-	if (get_ip_tot_length() == other.get_ip_tot_length())
-	{
-		int biggest_tot_length = get_ip_tot_length() > other.get_ip_tot_length() ? get_ip_tot_length() : other.get_ip_tot_length();
-		if (memcmp(payload_, other.payload_, biggest_tot_length) == 0)
-			return true;
-	}
-
-	return false;
+bool IPPacket::operator ==(IPPacket& other) const {
+    cout << "IPPacket::operator ==()" << endl;
+    return !memcmp(payload_, other.payload_, sizeof (struct iphdr));
 }
 
-bool IPPacket::operator !=(const IPPacket& other) const {
-	return !(*this == other);
+bool IPPacket::operator !=(IPPacket& other) const {
+    cout << "IPPacket::operator !=()" << endl;
+    return !(*this == other);
 }
 
-ostream& operator <<(ostream& os, const IPPacket& packet) {
-	return os << packet.to_s_format() << endl << packet.to_s();
+ostream & operator <<(ostream& os, const IPPacket& packet) {
+    return os << packet.to_s_format() << endl << packet.to_s();
 }

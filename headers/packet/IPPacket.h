@@ -14,6 +14,7 @@
 #include "GarbageCollector.h"
 #include <sstream>
 #include <string.h>
+#include <iostream>
 
 using namespace std;
 
@@ -186,9 +187,9 @@ public:
      */
     virtual int max_data_length() const;
 
-    virtual bool operator ==(const IPPacket& other) const;
+    virtual bool operator ==(IPPacket& other) const;
 
-    virtual bool operator !=(const IPPacket& other) const;
+    virtual bool operator !=(IPPacket& other) const;
 
 private:
     unsigned char payload_[MTU];

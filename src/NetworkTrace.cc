@@ -76,14 +76,22 @@ int NetworkTrace::get_length() const {
 
 bool NetworkTrace::operator ==(const NetworkTrace& other) const {
     if (equal_size_traces(*this, other)) {
-        for (int index = 0; index < packet_list_.size(); ++index)
-            if (*packet_list_.at(index) != *other.packet_list_.at(index)) {
-                cout << "NetworkTrace::operator==(), returning false" << endl;
+        for (int index = 0; index < packet_list_.size(); ++index) {
+            cout << "NetworkTrace::operator==(), inside for loop" << endl;
+            WiFuPacket* a = packet_list_.at(index);
+            WiFuPacket* b = other.packet_list_.at(index);
+            WiFuPacket& aa = *a;
+            WiFuPacket& bb = *b;
+            cout << "A: " << aa.to_s() << endl;
+            cout << "B: " << bb.to_s() << endl;
+            if (aa.operator !=(bb)) {
                 return false;
             }
+        }
         return true;
-    } else
+    } else {
         return false;
+    }
 }
 
 bool NetworkTrace::equal_size_traces(const NetworkTrace& one, const NetworkTrace& two) const {

@@ -224,13 +224,7 @@ namespace {
         ASSERT_EQ(exp, p.max_data_length());
     }
 
-    TEST_F(IPPacketTest, equals) {
-        IPPacket packet1, packet2;
-        packet1.set_data(get_buffer(), length());
-        packet2.set_data(get_buffer(), length());
-
-        ASSERT_EQ(packet1, packet2);
-    }
+    
 }
 
 #endif	/* _IPPACKETTEST_H */
