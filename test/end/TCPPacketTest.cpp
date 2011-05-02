@@ -291,12 +291,6 @@ namespace {
 
         actual = p.remove_tcp_header_option(expected->get_kind());
         EXPECT_EQ(0, actual);
-
-        WiFuPacket* tcp = new TCPPacket();
-        cout << "pointer: " << tcp->to_s() << endl;
-
-        WiFuPacket& wp = *tcp;
-        cout << "reference: " << wp.to_s() << endl;
     }
 
     TEST(TCPPacketTest, AddTCPTimestampHeaderOption) {

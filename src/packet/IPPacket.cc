@@ -204,12 +204,12 @@ string IPPacket::to_s_format() const {
     return s.str();
 }
 
-bool IPPacket::operator ==(IPPacket& other) const {
+bool IPPacket::operator ==(const IPPacket& other) const {
     cout << "IPPacket::operator ==()" << endl;
     return !memcmp(payload_, other.payload_, sizeof (struct iphdr));
 }
 
-bool IPPacket::operator !=(IPPacket& other) const {
+bool IPPacket::operator !=(const IPPacket& other) const {
     cout << "IPPacket::operator !=()" << endl;
     return !(*this == other);
 }

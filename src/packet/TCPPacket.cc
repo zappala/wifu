@@ -193,15 +193,16 @@ string TCPPacket::to_s_format() const {
     return s.str();
 }
 
-bool TCPPacket::operator ==(IPPacket& other) const {
+bool TCPPacket::operator ==(const IPPacket& other) const {
     cout << "TCPPacket::operator ==()" << endl;
     if (!WiFuPacket::operator ==(other)) {
         return false;
     }
 
-    TCPPacket* other_ptr = dynamic_cast<TCPPacket*>(&other);
+    TCPPacket const* other_ptr = dynamic_cast<TCPPacket const*>(&other);
 
-    bool equal = tcp_->ack == other_ptr->tcp_->ack;
+    bool equal = other_ptr != NULL;
+    equal = equal && tcp_->ack == other_ptr->tcp_->ack;
     equal = equal && tcp_->ack_seq == other_ptr->tcp_->ack_seq;
     equal = equal && tcp_->check == other_ptr->tcp_->check;
     equal = equal && tcp_->dest == other_ptr->tcp_->dest;
@@ -221,7 +222,7 @@ bool TCPPacket::operator ==(IPPacket& other) const {
     return equal;
 }
 
-bool TCPPacket::operator !=(IPPacket& other) const {
+bool TCPPacket::operator !=(const IPPacket& other) const {
     cout << "TCPPacket::operator !=()" << endl;
     return !(*this == other);
 }

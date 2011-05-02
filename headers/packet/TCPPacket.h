@@ -66,8 +66,8 @@ public:
     virtual string to_s() const;
     virtual string to_s_format() const;
 
-    virtual bool operator ==(IPPacket& other) const;
-    virtual bool operator !=(IPPacket& other) const;
+    virtual bool operator ==(const IPPacket& other) const;
+    virtual bool operator !=(const IPPacket& other) const;
 
     void insert_tcp_header_option(TCPHeaderOption* option);
     TCPHeaderOption* remove_tcp_header_option(u_int8_t kind);

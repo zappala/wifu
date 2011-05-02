@@ -63,8 +63,8 @@ public:
     virtual string to_s() const;
     virtual string to_s_format() const;
 
-    virtual bool operator ==(IPPacket& other) const;
-    virtual bool operator !=(IPPacket& other) const;
+    virtual bool operator ==(const IPPacket& other) const;
+    virtual bool operator !=(const IPPacket& other) const;
 
 private:
     struct wifu_packet_header* ports_;
