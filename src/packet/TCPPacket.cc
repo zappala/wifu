@@ -1,6 +1,5 @@
 #include "packet/TCPPacket.h"
-#include "exceptions/IllegalStateException.h"
-#include "visitors/GetTCPHeaderOptionsDataVisitor.h"
+
 
 TCPPacket::TCPPacket() : WiFuPacket() {
     init();

@@ -11,6 +11,8 @@
 #include "TCPHeaderOptionCollection.h"
 #include "TCPHeaderOption.h"
 #include "visitors/GetTCPHeaderOptionsLengthVisitor.h"
+#include "exceptions/IllegalStateException.h"
+#include "visitors/GetTCPHeaderOptionsDataVisitor.h"
 #include "packet/WiFuPacket.h"
 #include <netinet/tcp.h>
 
