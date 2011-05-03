@@ -106,6 +106,7 @@ void setup_network_interface(string& type) {
 int main(int argc, char** argv) {
     GC_INIT();
 
+
     //only needs to be on if logging to file
     //pantheios_be_file_setFilePath(PantheiosString("wifu-end.log"), PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BEID_ALL);
 

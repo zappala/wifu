@@ -17,6 +17,7 @@
 void compare_traces(NetworkTrace& expected);
 
 TCPPacket* get_base_tcp_packet();
+TCPPacket* get_base_tcp_packet_ts();
 TCPPacket* get_syn();
 TCPPacket* get_synack();
 TCPPacket* get_ack();

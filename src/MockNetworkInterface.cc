@@ -70,10 +70,10 @@ void MockNetworkInterface::receive(WiFuPacket* p) {
     }
 
 //    cout << "Socket " << s << " received packet: " << endl;
-//    cout << "MockNetworkInterface::network_send() (mocking a receive)" << endl;
+    //cout << "MockNetworkInterface::network_send() (mocking a receive)" << endl;
     logger.log(p);
-//    cout << p->to_s_format() << endl;
-//    cout << p->to_s() << endl;
+    //cout << p->to_s_format() << endl;
+    //cout << p->to_s() << endl;
 
     Event* response = new NetworkReceivePacketEvent(s, p);
     Dispatcher::instance().enqueue(response);

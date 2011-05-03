@@ -1,6 +1,6 @@
 #include "packet/TCPPacket.h"
 
-TCPPacket::TCPPacket() : WiFuPacket() {
+TCPPacket::TCPPacket() : WiFuPacket(), data_set_(false) {
     init();
 }
 
@@ -25,17 +25,17 @@ int TCPPacket::get_data_length_bytes() {
 }
 
 void TCPPacket::set_data(unsigned char* data, int length) {
-    if (get_data_length_bytes() > 0) {
+    if (data_set_) {
         // Can not set the data twice
         throw IllegalStateException();
     }
-
-    GetTCPHeaderOptionsLengthVisitor visitor;
-    options_.accept(&visitor);
-    set_tcp_data_offset(get_tcp_data_offset() + visitor.get_padded_length());
-
+    
     memcpy(get_data(), data, length);
-    set_ip_tot_length(get_ip_header_length_bytes() + get_tcp_header_length_bytes() + length);
+    data_set_ = true;
+
+    u_int8_t tcp_len = get_tcp_header_length_bytes();
+    u_int8_t ip_len = get_ip_header_length_bytes();
+    set_ip_tot_length(ip_len + tcp_len + length);
 }
 
 void TCPPacket::pack() {
@@ -194,12 +194,12 @@ string TCPPacket::to_s_format() const {
 }
 
 bool TCPPacket::operator ==(const IPPacket& other) const {
-    cout << "TCPPacket::operator ==()" << endl;
+    //    cout << "TCPPacket::operator ==()" << endl;
     if (!WiFuPacket::operator ==(other)) {
         return false;
     }
 
-    TCPPacket const* other_ptr = dynamic_cast<TCPPacket const*>(&other);
+    TCPPacket const* other_ptr = dynamic_cast<TCPPacket const*> (&other);
 
     bool equal = other_ptr != NULL;
     equal = equal && tcp_->ack == other_ptr->tcp_->ack;
@@ -223,22 +223,27 @@ bool TCPPacket::operator ==(const IPPacket& other) const {
 }
 
 bool TCPPacket::operator !=(const IPPacket& other) const {
-    cout << "TCPPacket::operator !=()" << endl;
+    //    cout << "TCPPacket::operator !=()" << endl;
     return !(*this == other);
 }
 
 void TCPPacket::insert_tcp_header_option(TCPHeaderOption* option) {
-    if (get_data_length_bytes() > 0) {
-        // Can not add options after the data has been set
-        throw IllegalStateException();
-    }
-
     // TODO: should we remove the (same) option if it exists before inserting it?
     options_.insert(option);
+
+    GetTCPHeaderOptionsLengthVisitor visitor;
+    options_.accept(&visitor);
+    set_tcp_data_offset(get_tcp_data_offset() + visitor.get_padded_length());
 }
 
 TCPHeaderOption* TCPPacket::remove_tcp_header_option(u_int8_t kind) {
-    return options_.remove(kind);
+    TCPHeaderOption* option = options_.remove(kind);
+
+    GetTCPHeaderOptionsLengthVisitor visitor;
+    options_.accept(&visitor);
+    set_tcp_data_offset(get_tcp_data_offset() + visitor.get_padded_length());
+    
+    return option;
 }
 
 TCPHeaderOption* TCPPacket::get_option(u_int8_t kind) {

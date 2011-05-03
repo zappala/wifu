@@ -79,7 +79,7 @@ bool NetworkTrace::operator ==(const NetworkTrace& other) const {
         for (int index = 0; index < packet_list_.size(); ++index) {
             WiFuPacket& a = *packet_list_.at(index);
             WiFuPacket& b = *other.packet_list_.at(index);
-            if (a.operator !=(b)) {
+            if (a != b) {
                 return false;
             }
         }

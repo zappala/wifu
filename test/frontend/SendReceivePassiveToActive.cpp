@@ -101,6 +101,7 @@ void send_receive_test(string message) {
     usleep(50000);
 
     // Create client
+//    cout << "About to create socket." << endl;
 
     timer.start();
     client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
@@ -195,19 +196,20 @@ void drop_ack_send_data_passive_to_active() {
 
 
     TCPPacket* data_packet = get_base_tcp_packet();
-    data_packet->set_data((unsigned char*) data.c_str(), data.size());
     data_packet->set_tcp_sequence_number(2);
     data_packet->set_tcp_ack_number(3);
     data_packet->set_tcp_ack(true);
     data_packet->set_destination_port(1000);
     data_packet->set_source_port(5002);
+    data_packet->insert_tcp_header_option(new TCPTimestampOption());
+    data_packet->set_data((unsigned char*) data.c_str(), data.size());
 
     // send
     expected.add_packet(data_packet);
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet();
+    TCPPacket* ack = get_base_tcp_packet_ts();
     ack->set_tcp_sequence_number(3);
     ack->set_tcp_ack_number(3);
     ack->set_source_port(1000);
@@ -249,12 +251,13 @@ void drop_first_data_packet_passive_to_active() {
 
 
     TCPPacket* data_packet = get_base_tcp_packet();
-    data_packet->set_data((unsigned char*) data.c_str(), data.size());
     data_packet->set_tcp_sequence_number(2);
     data_packet->set_tcp_ack_number(3);
-    data_packet->set_source_port(5002);
-    data_packet->set_destination_port(1000);
     data_packet->set_tcp_ack(true);
+    data_packet->set_destination_port(1000);
+    data_packet->set_source_port(5002);
+    data_packet->insert_tcp_header_option(new TCPTimestampOption());
+    data_packet->set_data((unsigned char*) data.c_str(), data.size());
 
     // send (drop)
     expected.add_packet(data_packet);
@@ -263,7 +266,7 @@ void drop_first_data_packet_passive_to_active() {
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet();
+    TCPPacket* ack = get_base_tcp_packet_ts();
     ack->set_tcp_sequence_number(3);
     ack->set_tcp_ack_number(3);
     ack->set_source_port(1000);
@@ -305,19 +308,20 @@ void drop_first_data_ack_packet_passive_to_active() {
 
 
     TCPPacket* data_packet = get_base_tcp_packet();
-    data_packet->set_data((unsigned char*) data.c_str(), data.size());
     data_packet->set_tcp_sequence_number(2);
     data_packet->set_tcp_ack_number(3);
-    data_packet->set_source_port(5002);
-    data_packet->set_destination_port(1000);
     data_packet->set_tcp_ack(true);
+    data_packet->set_destination_port(1000);
+    data_packet->set_source_port(5002);
+    data_packet->insert_tcp_header_option(new TCPTimestampOption());
+    data_packet->set_data((unsigned char*) data.c_str(), data.size());
 
     // send
     expected.add_packet(data_packet);
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet();
+    TCPPacket* ack = get_base_tcp_packet_ts();
     ack->set_tcp_sequence_number(3);
     ack->set_tcp_ack_number(3);
     ack->set_source_port(1000);

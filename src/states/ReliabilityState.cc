@@ -81,7 +81,7 @@ void ReliabilityState::state_timer_fired(Context* c, TimerFiredEvent* e) {
 }
 
 void ReliabilityState::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
-    //    cout << "ReliabilityState::receive_packet()" << endl;
+        //cout << "ReliabilityState::receive_packet()" << endl;
     ReliabilityContext* rc = (ReliabilityContext*) c;
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();

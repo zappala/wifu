@@ -50,7 +50,7 @@ void SimpleTCP::icontext_listen(ListenEvent* e) {
 }
 
 void SimpleTCP::icontext_receive_packet(NetworkReceivePacketEvent* e) {
-    //    cout << "SimpleTCP::receive_packet()" << endl;
+//        cout << "SimpleTCP::receive_packet()" << endl;
     Socket* s = e->get_socket();
     IContextContainer* c = get_context(s);
 
@@ -66,7 +66,7 @@ void SimpleTCP::icontext_receive_packet(NetworkReceivePacketEvent* e) {
 
     if (packet->is_tcp_fin() && !s->get_receive_buffer().empty()) {
         c->set_fin(e);
-        //        cout << "SimpleTCP::receive_packet(), FIN && receive buffer is not empty(), returning" << endl;
+//                cout << "SimpleTCP::receive_packet(), FIN && receive buffer is not empty(), returning" << endl;
         return;
     }
 
@@ -75,7 +75,7 @@ void SimpleTCP::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     c->get_congestion_control()->icontext_receive_packet(e);
 
     if (close_event && s->get_send_buffer().empty() && ccc->get_num_outstanding() == 0) {
-        //        cout << "SimpleTCP::receive_packet(), sending out close event" << endl;
+//                cout << "SimpleTCP::receive_packet(), sending out close event" << endl;
         c->get_connection_manager()->icontext_close(close_event);
         c->set_saved_close_event(0);
     }
@@ -89,11 +89,12 @@ void SimpleTCP::icontext_send_packet(SendPacketEvent* e) {
     TCPPacket* p = (TCPPacket*) e->get_packet();
     
     TCPTimestampOption* option = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
+    assert(option);
     option->set_timestamp();
     if (c->get_echo_reply()) {
         option->set_echo_reply(c->get_echo_reply());
     }
-    //cout << "SimpleTCP::send_packet(), TS: " << option->to_s() << endl;
+//    cout << "SimpleTCP::send_packet(), TS: " << option->to_s() << endl;
 
     c->get_connection_manager()->icontext_send_packet(e);
     c->get_reliability()->icontext_send_packet(e);

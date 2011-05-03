@@ -80,6 +80,7 @@ private:
     struct tcphdr* tcp_;
 
     TCPHeaderOptionCollection options_;
+    bool data_set_;
 };
 
 #endif	/* _TCPPACKET_H */

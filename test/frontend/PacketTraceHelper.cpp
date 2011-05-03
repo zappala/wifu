@@ -9,16 +9,21 @@ void compare_traces(NetworkTrace& expected) {
 
 TCPPacket* get_base_tcp_packet() {
     TCPPacket* p = new TCPPacket();
-    p->insert_tcp_header_option(new TCPTimestampOption());
     p->set_ip_protocol(SIMPLE_TCP);
     p->set_ip_source_address_s("127.0.0.1");
     p->set_ip_destination_address_s("127.0.0.1");
+    return p;
+}
+
+TCPPacket* get_base_tcp_packet_ts() {
+    TCPPacket* p = get_base_tcp_packet();
+    p->insert_tcp_header_option(new TCPTimestampOption());
     p->set_data((unsigned char*)"", 0);
     return p;
 }
 
 TCPPacket* get_syn() {
-    TCPPacket* syn = get_base_tcp_packet();
+    TCPPacket* syn = get_base_tcp_packet_ts();
     syn->set_destination_port(5002);
     syn->set_source_port(1000);
     syn->set_tcp_sequence_number(1);
@@ -28,7 +33,7 @@ TCPPacket* get_syn() {
 }
 
 TCPPacket* get_synack() {
-    TCPPacket* synack = get_base_tcp_packet();
+    TCPPacket* synack = get_base_tcp_packet_ts();
     synack->set_destination_port(1000);
     synack->set_source_port(5002);
     synack->set_tcp_sequence_number(1);
@@ -39,7 +44,7 @@ TCPPacket* get_synack() {
 }
 
 TCPPacket* get_ack() {
-    TCPPacket* ack = get_base_tcp_packet();
+    TCPPacket* ack = get_base_tcp_packet_ts();
     ack->set_destination_port(5002);
     ack->set_source_port(1000);
     ack->set_tcp_sequence_number(2);
