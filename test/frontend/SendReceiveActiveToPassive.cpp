@@ -27,8 +27,6 @@ void* active_to_passive_thread(void* args) {
     struct var* v = (struct var*) args;
     AddressPort* to_bind = v->to_bind_;
     Semaphore* sem = v->sem_;
-    Semaphore* flag = v->flag_;
-    Semaphore* done = v->done_;
 
     string expected = v->expected_string;
 
@@ -48,15 +46,11 @@ void* active_to_passive_thread(void* args) {
         ADD_FAILURE() << "Problem in Accept";
     }
 
-    flag->post();
-
     AddressPort ap(&addr);
     string address("127.0.0.1");
     string res = ap.get_address();
     EXPECT_EQ(address, res);
     //    cout << "Connected to: " << ap.to_s() << endl;
-
-    
 
     // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
@@ -79,7 +73,7 @@ void* active_to_passive_thread(void* args) {
     }
     EXPECT_EQ(expected, all_received);
     //    cout << "Received: " << all_received << endl;
-    done->post();
+    sem->post();
 }
 
 /**
@@ -96,11 +90,7 @@ void active_to_passive_test(string message) {
     int result;
 
     v.sem_ = new Semaphore();
-    v.flag_ = new Semaphore();
-    v.done_ = new Semaphore();
     v.sem_->init(0);
-    v.flag_->init(0);
-    v.done_->init(0);
     v.to_bind_ = new AddressPort("127.0.0.1", 5002);
 
     //Specify the number of bytes to send here.
@@ -114,7 +104,7 @@ void active_to_passive_test(string message) {
     v.sem_->wait();
 
     // Make sure that the thread is in the accept state
-    
+    usleep(50000);
 
     // Create client
 
@@ -124,7 +114,6 @@ void active_to_passive_test(string message) {
     timer.stop();
     ASSERT_EQ(0, result);
 
-    v.flag_->wait();
     //    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
     int size = 50000;
@@ -147,7 +136,7 @@ void active_to_passive_test(string message) {
     struct timespec ts;
     // wait max of 30 mins
     Utils::get_timespec_future_time(60 * 30, 0, &ts);
-    v.done_->timed_wait(&ts);
+    v.sem_->timed_wait(&ts);
 }
 
 TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive1) {
