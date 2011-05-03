@@ -133,7 +133,7 @@ void close_send_receive_test(string message) {
     EXPECT_EQ(expected, all_received);
     wifu_close(client);
 //    cout << "IntegrationTest::send_receive_test(), received the following: " << all_received << endl;
-    sleep(15);
+    sleep(5);
 }
 void close_passive_to_active_drop_none() {
     // <editor-fold defaultstate="collapsed" desc="setup">
