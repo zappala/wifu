@@ -28,6 +28,8 @@ void* active_to_passive_thread_with_close(void* args) {
     struct var* v = (struct var*) args;
     AddressPort* to_bind = v->to_bind_;
     Semaphore* sem = v->sem_;
+    Semaphore* flag = v->flag_;
+    Semaphore* done = v->done_;
 
     string expected = v->expected_string;
 
@@ -37,6 +39,7 @@ void* active_to_passive_thread_with_close(void* args) {
     EXPECT_EQ(0, result);
     result = wifu_listen(server, 5);
     EXPECT_EQ(0, result);
+
     sem->post();
 
     struct sockaddr_in addr;
@@ -46,6 +49,10 @@ void* active_to_passive_thread_with_close(void* args) {
         // TODO: we need to check errors and make sure they happen when they should
         ADD_FAILURE() << "Problem in Accept";
     }
+
+    flag->post();
+
+    
 
     AddressPort ap(&addr);
     string address("127.0.0.1");
@@ -74,6 +81,7 @@ void* active_to_passive_thread_with_close(void* args) {
     wifu_close(connection);
     wifu_close(server);
     EXPECT_EQ(expected, all_received);
+    done->post();
 //    cout << "Received: " << all_received << endl;
 }
 
@@ -91,29 +99,34 @@ void active_to_passive_test_with_close(string message) {
     int result;
 
     v.sem_ = new Semaphore();
+    v.flag_ = new Semaphore();
+    v.done_ = new Semaphore();
     v.sem_->init(0);
+    v.flag_->init(0);
+    v.done_->init(0);
     v.to_bind_ = new AddressPort("127.0.0.1", 5002);
 
     //Specify the number of bytes to send here.
     v.expected_string = message;
 
 
+
     if (pthread_create(&(t), NULL, &active_to_passive_thread_with_close, &(v)) != 0) {
         FAIL() << "Error creating new thread in IntegrationTest.h";
     }
 
+    // ensure all variables are copied
     v.sem_->wait();
-
-    // Make sure that the thread is in the accept state
-    usleep(50000);
+    
 
     // Create client
-
     timer.start();
     client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
     result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     timer.stop();
     ASSERT_EQ(0, result);
+
+    v.flag_->wait();
 
 //    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
@@ -136,7 +149,7 @@ void active_to_passive_test_with_close(string message) {
 //    cout << "Sent: " << message << endl;
 
     wifu_close(client);
-    sleep(15);
+    v.done_->wait();
 }
 
 TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassiveWithClose0) {

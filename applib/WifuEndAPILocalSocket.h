@@ -106,7 +106,7 @@ public:
      * @see SocketData
      */
     void receive(string& message) {
-        //        cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
+//                cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
@@ -121,13 +121,14 @@ public:
         SocketData* data = sockets.get(socket);
         if (!data && !response_[NAME_STRING].compare(WIFU_CLOSE_NAME)) {
             // We already closed
-            cout << "WifuEndAPILocalSocket::receive(), Already closed" << message << endl;
+//            cout << "WifuEndAPILocalSocket::receive(), Already closed" << message << endl;
             return;
         }
 
         if (!data) {
             cout << "Socket: " << socket << " is deleted" << endl;
             cout << "Message: " << message << endl;
+            //TODO: is this really an error?
             assert(data);
         }
 
@@ -589,8 +590,9 @@ public:
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
+//        cout << "wifu_close(), waiting.  FD: " << fd << endl;
         data->get_semaphore()->wait();
-
+//        cout << "wifu_close(), returning.  FD: " << fd << endl;
         int return_value = data->get_return_value();
 
         sockets.delete_at(fd);

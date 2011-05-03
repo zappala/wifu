@@ -27,6 +27,8 @@ void* close_active_to_passive_thread(void* args) {
     struct var* v = (struct var*) args;
     AddressPort* to_bind = v->to_bind_;
     Semaphore* sem = v->sem_;
+    Semaphore* flag = v->flag_;
+    Semaphore* done = v->done_;
 
     string expected = v->expected_string;
 
@@ -45,6 +47,8 @@ void* close_active_to_passive_thread(void* args) {
         // TODO: we need to check errors and make sure they happen when they should
         ADD_FAILURE() << "Problem in Accept";
     }
+
+    flag->post();
 
     AddressPort ap(&addr);
     string address("127.0.0.1");
@@ -77,6 +81,7 @@ void* close_active_to_passive_thread(void* args) {
     wifu_close(connection);
     wifu_close(server);
     EXPECT_EQ(expected, all_received);
+    done->post();
     //    cout << "Received: " << all_received << endl;
 }
 
@@ -94,7 +99,11 @@ void close_active_to_passive_test(string message) {
     int result;
 
     v.sem_ = new Semaphore();
+    v.flag_ = new Semaphore();
+    v.done_ = new Semaphore();
     v.sem_->init(0);
+    v.flag_->init(0);
+    v.done_->init(0);
     v.to_bind_ = new AddressPort("127.0.0.1", 5002);
 
     //Specify the number of bytes to send here.
@@ -107,9 +116,6 @@ void close_active_to_passive_test(string message) {
 
     v.sem_->wait();
 
-    // Make sure that the thread is in the accept state
-    usleep(50000);
-
     // Create client
 
     timer.start();
@@ -117,6 +123,8 @@ void close_active_to_passive_test(string message) {
     result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     timer.stop();
     ASSERT_EQ(0, result);
+
+    v.flag_->wait();
 
 //        cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
@@ -140,8 +148,8 @@ void close_active_to_passive_test(string message) {
 
     // TODO: test send/receive on the socket to ensure we aren't allowed to do anythin after close
 
+    v.done_->wait();
     sleep(2);
-
 }
 
 void close_active_to_passive_drop_none() {

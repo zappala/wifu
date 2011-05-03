@@ -19,6 +19,8 @@ using namespace std;
 
 struct var {
     Semaphore* sem_;
+    Semaphore* flag_;
+    Semaphore* done_;
     AddressPort* to_bind_;
     string expected_string;
 };
