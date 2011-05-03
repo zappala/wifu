@@ -48,7 +48,7 @@ void* close_active_to_passive_thread(void* args) {
         ADD_FAILURE() << "Problem in Accept";
     }
 
-    flag->post();
+//    flag->post();
 
     AddressPort ap(&addr);
     string address("127.0.0.1");
@@ -81,7 +81,7 @@ void* close_active_to_passive_thread(void* args) {
     wifu_close(connection);
     wifu_close(server);
     EXPECT_EQ(expected, all_received);
-    done->post();
+//    done->post();
     //    cout << "Received: " << all_received << endl;
 }
 
@@ -124,7 +124,7 @@ void close_active_to_passive_test(string message) {
     timer.stop();
     ASSERT_EQ(0, result);
 
-    v.flag_->wait();
+    //v.flag_->wait();
 
 //        cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
@@ -148,7 +148,7 @@ void close_active_to_passive_test(string message) {
 
     // TODO: test send/receive on the socket to ensure we aren't allowed to do anythin after close
 
-    v.done_->wait();
+    //v.done_->wait();
     sleep(2);
 }
 
