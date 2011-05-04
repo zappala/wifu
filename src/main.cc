@@ -53,6 +53,7 @@
 //protocols
 #include "ProtocolManager.h"
 #include "SimpleTCP.h"
+#include "TCPTahoe.h"
 #include "TCPPacketFactory.h"
 
 //other
@@ -86,9 +87,63 @@ void register_signals() {
     signal(SIGTERM, main_signal_manager);
 }
 
+void register_simple_tcp() {
+    ProtocolManager::instance().support(SIMPLE_TCP);
+
+    dispatcher.map_event(type_name(SocketEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(BindEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ListenEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ConnectEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(AcceptEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(SendPacketEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(TimerFiredEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ResendPacketEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ReceiveEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(SendEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(SendBufferNotFullEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(CloseEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(DeleteSocketEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(SetSocketOptionEvent), &SimpleTCP::instance());
+    dispatcher.map_event(type_name(GetSocketOptionEvent), &SimpleTCP::instance());
+}
+
+void register_tcp_tahoe() {
+    ProtocolManager::instance().support(TCP_TAHOE);
+
+    dispatcher.map_event(type_name(SocketEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(BindEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(ListenEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(ConnectEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(AcceptEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(SendPacketEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(TimerFiredEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(ResendPacketEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(ReceiveEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(SendEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(CloseEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(DeleteSocketEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCPTahoe::instance());
+    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPTahoe::instance());
+}
+
 void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
-    ProtocolManager::instance().support(SIMPLE_TCP);
+    register_simple_tcp();
+    register_tcp_tahoe();
+
 }
 
 void setup_network_interface(string& type) {
@@ -133,9 +188,8 @@ int main(int argc, char** argv) {
     }
 
     setup_network_interface(network_type);
-
     register_signals();
-    register_protocols();
+
 
     // Start Dispatcher
     dispatcher.start_processing();
@@ -152,31 +206,9 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(TimerFiredEvent), network_interface);
     dispatcher.map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
     dispatcher.map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
-
-    dispatcher.map_event(type_name(SocketEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(BindEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ListenEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ConnectEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(AcceptEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(SendPacketEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(TimerFiredEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ResendPacketEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ReceiveEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(SendEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(SendBufferNotFullEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(CloseEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(DeleteSocketEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(SetSocketOptionEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(GetSocketOptionEvent), &SimpleTCP::instance());
-
-
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
+
+    register_protocols();
 
     // Wait indefinitely
     MainSemaphore::instance().init(0);

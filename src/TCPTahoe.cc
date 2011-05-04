@@ -14,7 +14,7 @@ TCPTahoe& TCPTahoe::instance() {
 }
 
 void TCPTahoe::icontext_socket(SocketEvent* e) {
-
+    cout << "TCPTahoe::icontext_socket()" << endl;
 }
 
 void TCPTahoe::icontext_bind(BindEvent* e) {
