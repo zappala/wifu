@@ -1,7 +1,7 @@
 #include "contexts/CongestionControlContext.h"
 
 CongestionControlContext::CongestionControlContext() : Context() {
-    set_state(new SlowStart());
+    set_state(new SimpleTCPCongestionControl());
 }
 
 CongestionControlContext::~CongestionControlContext() {

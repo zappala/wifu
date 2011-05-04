@@ -1,13 +1,13 @@
-#include "states/SlowStart.h"
+#include "states/SimpleTCPCongestionControl.h"
 
-SlowStart::SlowStart() : State() {
+SimpleTCPCongestionControl::SimpleTCPCongestionControl() : State() {
 }
 
-SlowStart::~SlowStart() {
+SimpleTCPCongestionControl::~SimpleTCPCongestionControl() {
 
 }
 
-void SlowStart::state_send_packet(Context* c, SendPacketEvent* e) {
+void SimpleTCPCongestionControl::state_send_packet(Context* c, SendPacketEvent* e) {
     CongestionControlContext* ccc = (CongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
@@ -18,7 +18,7 @@ void SlowStart::state_send_packet(Context* c, SendPacketEvent* e) {
     }
 }
 
-void SlowStart::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void SimpleTCPCongestionControl::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 //    cout << "SlowStart::receive_packet()" << endl;
     CongestionControlContext* ccc = (CongestionControlContext*) c;
     Socket* s = e->get_socket();
@@ -81,7 +81,7 @@ void SlowStart::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     }
 }
 
-void SlowStart::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e) {
+void SimpleTCPCongestionControl::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e) {
     //    cout << "SlowStart::state_send_buffer_not_empty()" << endl;
     CongestionControlContext* ccc = (CongestionControlContext*) c;
     Socket* s = e->get_socket();

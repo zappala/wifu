@@ -28,10 +28,10 @@
 
 using namespace std;
 
-class SlowStart : public State {
+class SimpleTCPCongestionControl : public State {
 public:
-    SlowStart();
-    virtual ~SlowStart();
+    SimpleTCPCongestionControl();
+    virtual ~SimpleTCPCongestionControl();
 
     void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
     void state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e);
