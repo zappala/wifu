@@ -23,10 +23,10 @@
 
 using namespace std;
 
-class CongestionControlContext : public Context {
+class SimpleTCPCongestionControlContext : public Context {
 public:
-    CongestionControlContext();
-    virtual ~CongestionControlContext();
+    SimpleTCPCongestionControlContext();
+    virtual ~SimpleTCPCongestionControlContext();
 
     int get_num_outstanding();
     void set_num_outstanding(int outstanding);

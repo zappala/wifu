@@ -1,15 +1,15 @@
-#include "states/ReliabilityState.h"
+#include "states/SimpleTCPReliability.h"
 
-ReliabilityState::ReliabilityState() {
+SimpleTCPReliability::SimpleTCPReliability() {
 }
 
-ReliabilityState::~ReliabilityState() {
+SimpleTCPReliability::~SimpleTCPReliability() {
 }
 
-void ReliabilityState::state_send_packet(Context* c, SendPacketEvent* e) {
+void SimpleTCPReliability::state_send_packet(Context* c, SendPacketEvent* e) {
     //    cout << "ReliabilityState::send_packet()" << endl;
 
-    ReliabilityContext* rc = (ReliabilityContext*) c;
+    SimpleTCPReliabilityContext* rc = (SimpleTCPReliabilityContext*) c;
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
@@ -47,9 +47,9 @@ void ReliabilityState::state_send_packet(Context* c, SendPacketEvent* e) {
     }
 }
 
-void ReliabilityState::state_timer_fired(Context* c, TimerFiredEvent* e) {
+void SimpleTCPReliability::state_timer_fired(Context* c, TimerFiredEvent* e) {
     //    cout << "ReliabilityState::timer_fired()" << endl;
-    ReliabilityContext* rc = (ReliabilityContext*) c;
+    SimpleTCPReliabilityContext* rc = (SimpleTCPReliabilityContext*) c;
 
     if (rc->get_timeout_event() != e->get_timeout_event()) {
         //        cout << "ReliabilityState::timer_fired(), not my timeout" << endl;
@@ -80,9 +80,9 @@ void ReliabilityState::state_timer_fired(Context* c, TimerFiredEvent* e) {
     }
 }
 
-void ReliabilityState::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void SimpleTCPReliability::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
         //cout << "ReliabilityState::receive_packet()" << endl;
-    ReliabilityContext* rc = (ReliabilityContext*) c;
+    SimpleTCPReliabilityContext* rc = (SimpleTCPReliabilityContext*) c;
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
     SimpleTCPCache* cache = (SimpleTCPCache*) CacheMap::instance().get(s);

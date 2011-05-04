@@ -11,7 +11,7 @@
 #include <string>
 
 #include "contexts/Context.h"
-#include "contexts/ReliabilityContext.h"
+#include "contexts/SimpleTCPReliabilityContext.h"
 
 #include "AddressPort.h"
 #include "Socket.h"
@@ -32,10 +32,10 @@
 
 using namespace std;
 
-class ReliabilityState : public State {
+class SimpleTCPReliability : public State {
 public:
-    ReliabilityState();
-    virtual ~ReliabilityState();
+    SimpleTCPReliability();
+    virtual ~SimpleTCPReliability();
 
     void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
     void state_send_packet(Context* c, SendPacketEvent* e);

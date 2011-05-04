@@ -8,7 +8,7 @@ SimpleTCPCongestionControl::~SimpleTCPCongestionControl() {
 }
 
 void SimpleTCPCongestionControl::state_send_packet(Context* c, SendPacketEvent* e) {
-    CongestionControlContext* ccc = (CongestionControlContext*) c;
+    SimpleTCPCongestionControlContext* ccc = (SimpleTCPCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
     ccc->set_last_sent_sequence_number(p->get_tcp_sequence_number());
@@ -20,7 +20,7 @@ void SimpleTCPCongestionControl::state_send_packet(Context* c, SendPacketEvent* 
 
 void SimpleTCPCongestionControl::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 //    cout << "SlowStart::receive_packet()" << endl;
-    CongestionControlContext* ccc = (CongestionControlContext*) c;
+    SimpleTCPCongestionControlContext* ccc = (SimpleTCPCongestionControlContext*) c;
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
 //    cout << "SlowStart::receive_packet(), A" << endl;
@@ -83,7 +83,7 @@ void SimpleTCPCongestionControl::state_receive_packet(Context* c, NetworkReceive
 
 void SimpleTCPCongestionControl::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e) {
     //    cout << "SlowStart::state_send_buffer_not_empty()" << endl;
-    CongestionControlContext* ccc = (CongestionControlContext*) c;
+    SimpleTCPCongestionControlContext* ccc = (SimpleTCPCongestionControlContext*) c;
     Socket* s = e->get_socket();
 
     if (!ccc->get_num_outstanding() && s->get_send_buffer().size() > 0) {

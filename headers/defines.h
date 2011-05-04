@@ -65,6 +65,7 @@
 
 // must fit in 8 bits
 #define SIMPLE_TCP 206
+#define TCP_TAHOE 207
 
 #define MTU 1500
 #define MAX_TTL 65

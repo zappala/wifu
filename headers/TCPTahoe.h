@@ -1,51 +1,25 @@
 /* 
- * File:   SimpleTCP.h
+ * File:   TCPTahoe.h
  * Author: rbuck
  *
- * Created on December 27, 2010, 3:13 PM
+ * Created on May 4, 2011, 2:44 PM
  */
 
-#ifndef SIMPLETCP_H
-#define	SIMPLETCP_H
+#ifndef TCPTAHOE_H
+#define	TCPTAHOE_H
 
 #include "Protocol.h"
-#include "defines.h"
-
 #include "contexts/IContext.h"
-#include "contexts/SimpleTCPIContextContainer.h"
-#include "contexts/SimpleTCPReliabilityContext.h"
-#include "events/ReceiveEvent.h"
-#include "events/ReceiveBufferNotEmptyEvent.h"
-#include "events/SendBufferNotEmptyEvent.h"
-#include "events/SendBufferNotFullEvent.h"
 
-#include "CacheMap.h"
-#include "SimpleTCPCache.h"
-#include "packet/TCPTimestampOption.h"
-
-class SimpleTCP : public Protocol {
+class TCPTahoe : public Protocol {
 private:
-    SimpleTCP();
-
-    void save_socket(Socket* s, SimpleTCPIContextContainer* icc = new SimpleTCPIContextContainer());
-
-    SimpleTCPIContextContainer* get_context(Socket* s);
-
-    void send_network_packet(Socket* s, WiFuPacket* p);
-
-    tr1::unordered_map<Socket*, SimpleTCPIContextContainer*> map_;
-    tr1::unordered_map<Socket*, SimpleTCPIContextContainer*>::iterator itr_;
-
-    bool is_room_in_send_buffer(SendEvent* e);
-    void save_in_buffer_and_send_events(SendEvent* e);
-    void create_and_dispatch_received_data(ReceiveEvent* e);
-
-    
+    TCPTahoe();
 
 public:
-    static SimpleTCP& instance();
+    static TCPTahoe& instance();
+    virtual ~TCPTahoe();
 
-    virtual ~SimpleTCP();
+    // IContext methods
 
     void icontext_socket(SocketEvent* e);
 
@@ -94,5 +68,5 @@ public:
     void icontext_get_socket_option(GetSocketOptionEvent* e);
 };
 
-#endif	/* SIMPLETCP_H */
+#endif	/* TCPTAHOE_H */
 

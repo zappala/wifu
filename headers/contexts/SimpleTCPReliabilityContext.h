@@ -9,7 +9,7 @@
 #define	RELIABILITYCONTEXT_H
 
 #include "Context.h"
-#include "states/ReliabilityState.h"
+#include "states/SimpleTCPReliability.h"
 #include "AddressPort.h"
 #include "Socket.h"
 #include "events/ConnectEvent.h"
@@ -19,10 +19,10 @@
 #include "events/TimerFiredEvent.h"
 #include "events/TimeoutEvent.h"
 
-class ReliabilityContext : public Context {
+class SimpleTCPReliabilityContext : public Context {
 public:
-    ReliabilityContext();
-    virtual ~ReliabilityContext();
+    SimpleTCPReliabilityContext();
+    virtual ~SimpleTCPReliabilityContext();
 
     void set_seq_number(u_int32_t value);
     u_int32_t get_seq_number();

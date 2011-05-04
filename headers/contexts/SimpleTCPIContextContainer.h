@@ -10,8 +10,8 @@
 
 #include "IContext.h"
 #include "GarbageCollector.h"
-#include "ReliabilityContext.h"
-#include "CongestionControlContext.h"
+#include "SimpleTCPReliabilityContext.h"
+#include "SimpleTCPCongestionControlContext.h"
 #include "ConnectionManagerContext.h"
 #include "RateLimiterContext.h"
 
@@ -22,11 +22,11 @@
 
 using namespace std;
 
-class IContextContainer : public gc {
+class SimpleTCPIContextContainer : public gc {
 public:
-    IContextContainer();
+    SimpleTCPIContextContainer();
 
-    IContextContainer(IContextContainer const& other);
+    SimpleTCPIContextContainer(SimpleTCPIContextContainer const& other);
 
     IContext* get_congestion_control();
 
