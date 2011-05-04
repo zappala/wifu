@@ -103,7 +103,7 @@ public:
      */
     virtual void enqueue(T object, bool signal = false) {
         if (should_enqueue(object)) {
-        	queue_->enqueue(object, signal);
+            queue_->enqueue(object, signal);
         }
     }
 

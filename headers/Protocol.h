@@ -105,6 +105,8 @@ public:
 
     virtual void send_network_packet(Socket* s, WiFuPacket* p);
 
+    virtual bool should_enqueue(Event* event);
+
 private:
 
     int protocol_;

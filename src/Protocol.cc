@@ -399,3 +399,7 @@ void Protocol::send_network_packet(Socket* s, WiFuPacket* p) {
     NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
     Dispatcher::instance().enqueue(e);
 }
+
+bool Protocol::should_enqueue(Event* event) {
+    return event->get_socket()->get_protocol() == protocol_;
+}

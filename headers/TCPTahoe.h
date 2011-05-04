@@ -10,10 +10,13 @@
 
 #include "Protocol.h"
 #include "contexts/IContext.h"
+#include "contexts/TCPTahoeIContextContainer.h"
 
 class TCPTahoe : public Protocol {
 private:
     TCPTahoe();
+
+    tr1::unordered_map<Socket*, TCPTahoeIContextContainer*> map_;
 
 public:
     static TCPTahoe& instance();
