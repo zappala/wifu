@@ -346,16 +346,7 @@ void SimpleTCP::icontext_get_socket_option(GetSocketOptionEvent* e) {
     c->get_congestion_control()->icontext_get_socket_option(e);
 }
 
-void SimpleTCP::send_network_packet(Socket* s, WiFuPacket* p) {
-    //    cout << "SimpleTCP::send_network_packet()" << endl;
-    //    cout << "SimpleTCP::send_network_packet(): Packet: " << endl;
-    //
-    //    cout << p->to_s_format() << endl;
-    //    cout << p->to_s() << endl;
 
-    NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
-    Dispatcher::instance().enqueue(e);
-}
 
 bool SimpleTCP::is_room_in_send_buffer(SendEvent* e) {
     Socket* s = e->get_socket();

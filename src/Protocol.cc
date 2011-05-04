@@ -141,6 +141,10 @@ void Protocol::imodule_library_receive(Event* e) {
 
     Socket* s = event->get_socket();
 
+    if (!sockets_.contains(s)) {
+        return;
+    }
+
     if (!icontext_can_receive(s)) {
         // TODO: respond with error
         return;
@@ -153,8 +157,14 @@ void Protocol::imodule_library_receive(Event* e) {
 void Protocol::imodule_library_send(Event* e) {
     //    cout << "Protocol::library_send()" << endl;
     SendEvent* event = (SendEvent*) e;
+    Socket* socket = event->get_socket();
 
-    if (!icontext_can_send(e->get_socket())) {
+    if (!sockets_.contains(socket)) {
+        return;
+    }
+
+
+    if (!icontext_can_send(socket)) {
         // TODO: respond with error
         return;
     }
@@ -233,6 +243,10 @@ void Protocol::imodule_connection_initiated(Event* e) {
     ConnectionInitiatedEvent* event = (ConnectionInitiatedEvent*) e;
     Socket* listening_socket = event->get_socket();
     Socket* new_socket = event->get_new_socket();
+
+    if (new_socket->get_protocol() != protocol_) {
+        return;
+    }
 
     sockets_.insert(new_socket);
 
@@ -316,7 +330,7 @@ void Protocol::imodule_delete_socket(Event* e) {
     Socket* socket = event->get_socket();
 
     if (!sockets_.contains(socket)) {
-        assert(false);
+        
         return;
     }
     icontext_delete_socket(event);
@@ -337,13 +351,11 @@ void Protocol::imodule_delete_socket(Event* e) {
 }
 
 void Protocol::imodule_library_set_socket_option(Event* e) {
-//    cout << "Protocol::imodule_library_set_socket_option()" << endl;
+    //    cout << "Protocol::imodule_library_set_socket_option()" << endl;
     SetSocketOptionEvent* event = (SetSocketOptionEvent*) e;
     Socket* socket = event->get_socket();
 
     if (!sockets_.contains(socket)) {
-        // TODO: return error
-        assert(false);
         return;
     }
 
@@ -358,19 +370,17 @@ void Protocol::imodule_library_set_socket_option(Event* e) {
 }
 
 void Protocol::imodule_library_get_socket_option(Event* e) {
-//    cout << "Protocol::imodule_library_get_socket_option()" << endl;
+    //    cout << "Protocol::imodule_library_get_socket_option()" << endl;
     GetSocketOptionEvent* event = (GetSocketOptionEvent*) e;
     Socket* socket = event->get_socket();
-    
+
     if (!sockets_.contains(socket)) {
-        // TODO: return error
-        assert(false);
         return;
     }
 
     pair<string, socklen_t> value = socket->get_socket_options().get(event->get_level_name_pair());
 
-    if(value.first.empty()) {
+    if (value.first.empty()) {
         // Indicates no option found
         // TODO: error?
     }
@@ -383,4 +393,9 @@ void Protocol::imodule_library_get_socket_option(Event* e) {
     dispatch(response);
 
     icontext_get_socket_option(event);
+}
+
+void Protocol::send_network_packet(Socket* s, WiFuPacket* p) {
+    NetworkSendPacketEvent* e = new NetworkSendPacketEvent(s, p);
+    Dispatcher::instance().enqueue(e);
 }

@@ -25,6 +25,7 @@
 #include "events/CloseEvent.h"
 #include "events/GetSocketOptionEvent.h"
 #include "events/SetSocketOptionEvent.h"
+#include "events/NetworkSendPacketEvent.h"
 
 #include "HashSet.h"
 #include "Socket.h"
@@ -102,7 +103,7 @@ public:
 
     virtual void imodule_library_get_socket_option(Event* e);
 
-    
+    virtual void send_network_packet(Socket* s, WiFuPacket* p);
 
 private:
 

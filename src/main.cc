@@ -89,6 +89,7 @@ void register_signals() {
 
 void register_simple_tcp() {
     ProtocolManager::instance().support(SIMPLE_TCP);
+    NetworkInterfaceFactory::instance().create().register_protocol(SIMPLE_TCP, new TCPPacketFactory());
 
     dispatcher.map_event(type_name(SocketEvent), &SimpleTCP::instance());
     dispatcher.map_event(type_name(BindEvent), &SimpleTCP::instance());
@@ -115,6 +116,7 @@ void register_simple_tcp() {
 
 void register_tcp_tahoe() {
     ProtocolManager::instance().support(TCP_TAHOE);
+    NetworkInterfaceFactory::instance().create().register_protocol(TCP_TAHOE, new TCPPacketFactory());
 
     dispatcher.map_event(type_name(SocketEvent), &TCPTahoe::instance());
     dispatcher.map_event(type_name(BindEvent), &TCPTahoe::instance());
@@ -198,17 +200,15 @@ int main(int argc, char** argv) {
     WifuEndBackEndLibrary::instance();
 
     // Load Modules
-    INetworkInterface* network_interface = &(NetworkInterfaceFactory::instance().create());
-    network_interface->register_protocol(SIMPLE_TCP, new TCPPacketFactory());
-    network_interface->start();
-
-    dispatcher.map_event(type_name(NetworkSendPacketEvent), network_interface);
-    dispatcher.map_event(type_name(TimerFiredEvent), network_interface);
+    dispatcher.map_event(type_name(NetworkSendPacketEvent), &NetworkInterfaceFactory::instance().create());
+    dispatcher.map_event(type_name(TimerFiredEvent), &NetworkInterfaceFactory::instance().create());
     dispatcher.map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
     dispatcher.map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
 
     register_protocols();
+    
+    NetworkInterfaceFactory::instance().create().start();
 
     // Wait indefinitely
     MainSemaphore::instance().init(0);

@@ -31,8 +31,6 @@ private:
 
     SimpleTCPIContextContainer* get_context(Socket* s);
 
-    void send_network_packet(Socket* s, WiFuPacket* p);
-
     tr1::unordered_map<Socket*, SimpleTCPIContextContainer*> map_;
     tr1::unordered_map<Socket*, SimpleTCPIContextContainer*>::iterator itr_;
 

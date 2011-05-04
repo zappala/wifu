@@ -30,7 +30,7 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
 }
 
 void TCPTahoe::icontext_send_packet(SendPacketEvent* e) {
-
+    send_network_packet(e->get_socket(), e->get_packet());
 }
 
 void TCPTahoe::icontext_connect(ConnectEvent* e) {
