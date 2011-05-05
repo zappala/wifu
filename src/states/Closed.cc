@@ -30,7 +30,6 @@ void Closed::state_connect(Context* c, ConnectEvent* e) {
     s->set_local_address_port(source);
     s->set_remote_address_port(destination);
 
-    p->set_ip_protocol(SIMPLE_TCP);
     p->set_ip_destination_address_s(destination->get_address());
     p->set_ip_source_address_s(source->get_address());
 

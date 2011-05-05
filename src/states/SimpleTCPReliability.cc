@@ -120,7 +120,6 @@ void SimpleTCPReliability::state_receive_packet(Context* c, NetworkReceivePacket
 
         TCPPacket* p = new TCPPacket();
         p->insert_tcp_header_option(new TCPTimestampOption());
-        p->set_ip_protocol(SIMPLE_TCP);
 
         AddressPort* destination = s->get_remote_address_port();
         AddressPort* source = s->get_local_address_port();

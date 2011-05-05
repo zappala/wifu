@@ -34,7 +34,6 @@ void FinWait1::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
 
         TCPPacket* response = new TCPPacket();
         response->insert_tcp_header_option(new TCPTimestampOption());
-        response->set_ip_protocol(SIMPLE_TCP);
         response->set_ip_destination_address_s(destination->get_address());
         response->set_ip_source_address_s(source->get_address());
 

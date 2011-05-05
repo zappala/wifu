@@ -191,6 +191,8 @@ void Protocol::imodule_send(Event* e) {
         return;
     }
 
+    event->get_packet()->set_ip_protocol(protocol_);
+
     // TODO: Error check
     icontext_send_packet(event);
 }

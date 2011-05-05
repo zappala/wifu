@@ -36,7 +36,6 @@ void SimpleTCPCongestionControl::state_receive_packet(Context* c, NetworkReceive
         // Send ACK
         TCPPacket* p = new TCPPacket();
         p->insert_tcp_header_option(new TCPTimestampOption());
-        p->set_ip_protocol(SIMPLE_TCP);
 
         AddressPort* destination = s->get_remote_address_port();
         AddressPort* source = s->get_local_address_port();
@@ -64,8 +63,6 @@ void SimpleTCPCongestionControl::state_receive_packet(Context* c, NetworkReceive
 
         AddressPort* destination = s->get_remote_address_port();
         AddressPort* source = s->get_local_address_port();
-
-        p->set_ip_protocol(SIMPLE_TCP);
 
         p->set_ip_destination_address_s(destination->get_address());
         p->set_destination_port(destination->get_port());
@@ -96,8 +93,6 @@ void SimpleTCPCongestionControl::state_send_buffer_not_empty(Context* c, SendBuf
 
         AddressPort* destination = s->get_remote_address_port();
         AddressPort* source = s->get_local_address_port();
-
-        p->set_ip_protocol(SIMPLE_TCP);
 
         p->set_ip_destination_address_s(destination->get_address());
         p->set_destination_port(destination->get_port());
