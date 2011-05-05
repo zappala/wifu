@@ -59,13 +59,15 @@ void Closed::state_listen(Context* c, ListenEvent* e) {
 }
 
 void Closed::state_new_connection_established(Context* c, ConnectionEstablishedEvent* e) {
+//    cout << "Closed::state_new_connection_established()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(ESTABLISHED);
     c->set_state(new Established());
 }
 
 void Closed::state_new_connection_initiated(Context* c, ConnectionInitiatedEvent* e) {
+//    cout << "Closed::state_new_connection_initiated()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(PASSIVE_OPEN);
-    c->set_state(new Accept());
+    c->set_state(new Listen());
 }

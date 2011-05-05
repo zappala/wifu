@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
     char buffer[size];
 
 
-    while ((connection = wifu_accept(server, (struct sockaddr*) &addr, &length))) {
+    while ((connection = wifu_accept(server, (struct sockaddr*) &addr, &length)) > 0) {
         cout << "Connection Established" << endl;
 
         int count = 0;
@@ -43,9 +43,9 @@ int main(int argc, char** argv) {
             }
             cout << "Message# " << count++ << ": " << buffer << endl;
         }
-        break;
+        wifu_close(connection);
     }
-    wifu_close(connection);
+    
     wifu_close(server);
 
     sleep(1);
