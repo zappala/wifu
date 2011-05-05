@@ -194,14 +194,45 @@ def build_wifu_frontend_test(bld):
 		uselib_local='wifu-end-api',
 		target='wifu-frontend-test')
 
+def build_simple_tcp_sender(bld):
+	files = bld.glob('preliminary/SimpleTCPSender.cc')
+	files += bld.glob('applib/*.cc')
+	files += bld.glob('src/AddressPort.cc')
+
+	sender = bld(features='cxx cprogram',
+		source=files,
+		includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+		libpath = '../lib/gc',
+		staticlib = ['gccpp', 'gc', 'cord'],
+		uselib_local='wifu-end-api',
+		target='simple-tcp-sender')
+
+def build_simple_tcp_receiver(bld):
+	files = bld.glob('preliminary/SimpleTCPReceiver.cc')
+	files += bld.glob('applib/*.cc')
+	files += bld.glob('src/AddressPort.cc')
+
+	receiver = bld(features='cxx cprogram',
+		source=files,
+		includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+		libpath = '../lib/gc',
+		staticlib = ['gccpp', 'gc', 'cord'],
+		uselib_local='wifu-end-api',
+		target='simple-tcp-receiver')
+
+
 def build(bld):
 #	build_blaster(bld)
 #	build_sink(bld)
 
 	build_staticlib(bld)
 	build_wifu(bld)
+
 	build_wifu_end_test(bld)
 	build_wifu_frontend_test(bld)
+	
+	build_simple_tcp_sender(bld)
+	build_simple_tcp_receiver(bld)
 
 #	bld.add_post_fun(post)
 

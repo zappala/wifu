@@ -8,6 +8,9 @@
 #ifndef WIFU_SOCKET_H
 #define	WIFU_SOCKET_H
 
+#include <stdlib.h>
+#include <sys/socket.h>
+
 /* Create a new socket of type TYPE in domain DOMAIN, using
    protocol PROTOCOL.  If PROTOCOL is zero, one is chosen automatically.
    Returns a file descriptor for the new socket, or -1 for errors.  */

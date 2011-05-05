@@ -12,6 +12,9 @@
 
 #include <sstream>
 #include <assert.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <stdlib.h>
 
 #include "QueryStringParser.h"
 #include "LocalSocketFullDuplex.h"
