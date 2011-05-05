@@ -139,6 +139,6 @@ TEST_F(BackEndTest, sendReceiveTestActiveToPassiveWithCloseMultiple5000) {
     active_to_passive_test_with_close_multiple(random_string(5000));
 }
 
-TEST_F(BackEndTest, sendReceiveTestActiveToPassiveWithCloseMultiple50000) {
-    active_to_passive_test_with_close_multiple(random_string(50000));
+TEST_F(BackEndTest, sendReceiveTestActiveToPassiveWithCloseMultiple10000) {
+    active_to_passive_test_with_close_multiple(random_string(10000));
 }

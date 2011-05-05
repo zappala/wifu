@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 
     string message = "";
     while (message.compare("stop")) {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             message = "This is a message\n";
             wifu_send(client, message.c_str(), message.size(), 0);
         }

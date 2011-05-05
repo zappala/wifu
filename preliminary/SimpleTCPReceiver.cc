@@ -31,7 +31,8 @@ int main(int argc, char** argv) {
 
 
     while ((connection = wifu_accept(server, (struct sockaddr*) &addr, &length)) > 0) {
-        cout << "Connection Established" << endl;
+        AddressPort remote(&addr);
+        cout << "Connection Established to: " << remote.to_s() << endl;
 
         int count = 0;
         while (true) {
