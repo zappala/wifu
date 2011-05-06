@@ -1,4 +1,4 @@
-#include "SimpleTCP.h"
+#include "protocol/SimpleTCP.h"
 
 SimpleTCP::SimpleTCP() : Protocol(SIMPLE_TCP) {
 }
@@ -123,7 +123,7 @@ void SimpleTCP::icontext_new_connection_established(ConnectionEstablishedEvent* 
 
 }
 
-void SimpleTCP::icontext_new_conneciton_initiated(ConnectionInitiatedEvent* e) {
+void SimpleTCP::icontext_new_connection_initiated(ConnectionInitiatedEvent* e) {
     //    cout << "SimpleTCP::new_conneciton_initiated()" << endl;
 
     // Get out pointers
@@ -147,9 +147,9 @@ void SimpleTCP::icontext_new_conneciton_initiated(ConnectionInitiatedEvent* e) {
 
     // Tell the listening socket's (new) context that a new connection is occuring
     // (This is basically a hack so the new context can move back to the appropriate state.)
-    new_cc->get_connection_manager()->icontext_new_conneciton_initiated(e);
-    new_cc->get_reliability()->icontext_new_conneciton_initiated(e);
-    new_cc->get_congestion_control()->icontext_new_conneciton_initiated(e);
+    new_cc->get_connection_manager()->icontext_new_connection_initiated(e);
+    new_cc->get_reliability()->icontext_new_connection_initiated(e);
+    new_cc->get_congestion_control()->icontext_new_connection_initiated(e);
 }
 
 void SimpleTCP::icontext_close(CloseEvent* e) {

@@ -48,7 +48,7 @@ void Context::icontext_new_connection_established(ConnectionEstablishedEvent* e)
     get_state()->state_new_connection_established(this, e);
 }
 
-void Context::icontext_new_conneciton_initiated(ConnectionInitiatedEvent* e) {
+void Context::icontext_new_connection_initiated(ConnectionInitiatedEvent* e) {
     get_state()->state_new_connection_initiated(this, e);
 }
 

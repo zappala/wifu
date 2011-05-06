@@ -8,6 +8,8 @@
 #ifndef TCPTAHOEICONTEXTCONTAINER_H
 #define	TCPTAHOEICONTEXTCONTAINER_H
 
+#include "contexts/TCPTahoeCongestionControlContext.h"
+#include "contexts/TCPTahoeReliabilityContext.h"
 #include "contexts/ConnectionManagerContext.h"
 
 class TCPTahoeIContextContainer : public gc {
@@ -16,9 +18,13 @@ public:
     ~TCPTahoeIContextContainer();
 
     IContext* get_connection_manager();
+    IContext* get_congestion_control();
+    IContext* get_reliability();
 
 private:
-    IContext* cm_;
+    IContext* connection_manager_;
+    IContext* congestion_control_;
+    IContext* reliability_;
 };
 
 #endif	/* TCPTAHOEICONTEXTCONTAINER_H */

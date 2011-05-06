@@ -146,10 +146,11 @@ def build_wifu(bld):
 	src_files += bld.glob('src/packet/*.cc')
 	src_files += bld.glob('src/exceptions/*.cc')
 	src_files += bld.glob('src/visitors/*.cc')
+	src_files += bld.glob('src/protocol/*.cc')
 
 	exe = bld(features='cxx cprogram',
         source=src_files,
-        includes='headers lib/gc/include lib/pantheios/include lib/stlsoft/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors',
+        includes='headers lib/gc/include lib/pantheios/include lib/stlsoft/include headers/protocol headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors',
         uselib='PTHREAD RT',
 		libpath = ['../lib/gc'],
 		staticlib = ['gccpp','gc','cord'],
@@ -167,12 +168,13 @@ def build_wifu_end_test(bld):
 	project_files += bld.glob('src/packet/*.cc')
 	project_files += bld.glob('src/exceptions/*.cc')
 	project_files += bld.glob('src/visitors/*.cc')
+	project_files += bld.glob('src/protocol/*.cc')
 	
 	filesToUse = test_files + project_files
 
 	test_end = bld(features='cxx cprogram',
         source=filesToUse,
-        includes='preliminary headers lib/gc/include lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers',
+        includes='preliminary headers lib/gc/include lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/protocol headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers',
         uselib='PTHREAD RT',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp','gc','cord'],
@@ -185,10 +187,13 @@ def build_wifu_frontend_test(bld):
 	test_frontend_files += bld.glob('src/packet/*.cc')
 	test_frontend_files += bld.glob('src/visitors/*.cc')
 	test_frontend_files += bld.glob('src/observer/*.cc')
+	
+	
+	
 
 	test_frontend = bld(features='cxx cprogram',
 		source=test_frontend_files,
-		includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+		includes='preliminary headers headers/contexts headers/events headers/protocol headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp', 'gc', 'cord'],
 		uselib_local='wifu-end-api',
@@ -201,7 +206,7 @@ def build_simple_tcp_sender(bld):
 
 	sender = bld(features='cxx cprogram',
 		source=files,
-		includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+		includes='preliminary headers headers/exceptions headers/protocol headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
 		libpath = '../lib/gc',
 		staticlib = ['gccpp', 'gc', 'cord'],
 		uselib_local='wifu-end-api',

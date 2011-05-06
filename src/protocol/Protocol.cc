@@ -1,4 +1,4 @@
-#include "Protocol.h"
+#include "protocol/Protocol.h"
 
 Protocol::Protocol(int protocol) : Module(), protocol_(protocol) {
 
@@ -254,7 +254,7 @@ void Protocol::imodule_connection_initiated(Event* e) {
 
     // TODO: Error Check: socket(s)
 
-    icontext_new_conneciton_initiated(event);
+    icontext_new_connection_initiated(event);
 }
 
 void Protocol::imodule_timer_fired(Event* e) {

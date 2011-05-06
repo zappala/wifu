@@ -47,7 +47,7 @@ public:
 
     virtual void icontext_new_connection_established(ConnectionEstablishedEvent* e);
 
-    virtual void icontext_new_conneciton_initiated(ConnectionInitiatedEvent* e);
+    virtual void icontext_new_connection_initiated(ConnectionInitiatedEvent* e);
 
     virtual void icontext_close(CloseEvent* e);
 

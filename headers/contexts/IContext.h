@@ -47,7 +47,7 @@ public:
     virtual void icontext_connect(ConnectEvent* e) = 0;
     virtual void icontext_accept(AcceptEvent* e) = 0;
     virtual void icontext_new_connection_established(ConnectionEstablishedEvent* e) = 0;
-    virtual void icontext_new_conneciton_initiated(ConnectionInitiatedEvent* e) = 0;
+    virtual void icontext_new_connection_initiated(ConnectionInitiatedEvent* e) = 0;
     virtual void icontext_close(CloseEvent*) = 0;
 
     virtual bool icontext_can_send(Socket*) = 0;

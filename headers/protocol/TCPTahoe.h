@@ -12,6 +12,7 @@
 #include "contexts/IContext.h"
 #include "contexts/TCPTahoeIContextContainer.h"
 
+
 class TCPTahoe : public Protocol {
 private:
     TCPTahoe();
@@ -40,7 +41,7 @@ public:
 
     void icontext_new_connection_established(ConnectionEstablishedEvent* e);
 
-    void icontext_new_conneciton_initiated(ConnectionInitiatedEvent* e);
+    void icontext_new_connection_initiated(ConnectionInitiatedEvent* e);
 
     void icontext_close(CloseEvent* e);
 

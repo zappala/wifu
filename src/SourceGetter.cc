@@ -20,7 +20,7 @@ string SourceGetter::get_source_address(string& dest_address) {
 
     cache_itr_ = cache_.find(dest_address);
     if (cache_itr_ != cache_.end()) {
-        return (*cache_itr_).second;
+        return cache_itr_->second;
     }
 
     AddressPort dest(dest_address, 0);
