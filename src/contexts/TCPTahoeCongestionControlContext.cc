@@ -1,7 +1,8 @@
 #include "contexts/TCPTahoeCongestionControlContext.h"
 
-TCPTahoeCongestionControlContext::TCPTahoeCongestionControlContext() {
 
+TCPTahoeCongestionControlContext::TCPTahoeCongestionControlContext() {
+    set_state(new SlowStart());
 }
 
 TCPTahoeCongestionControlContext::~TCPTahoeCongestionControlContext() {

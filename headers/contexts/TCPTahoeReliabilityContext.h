@@ -9,6 +9,7 @@
 #define	TCPTAHOERELIABILITYCONTEXT_H
 
 #include "Context.h"
+#include "states/TCPTahoeReliabilityState.h"
 
 class TCPTahoeReliabilityContext : public Context {
 public:

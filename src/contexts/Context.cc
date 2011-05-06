@@ -21,6 +21,7 @@ void Context::set_state(State* s) {
 }
 
 State* Context::get_state() {
+    assert(current_);
     return current_;
 }
 
