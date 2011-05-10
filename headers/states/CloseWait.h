@@ -28,6 +28,7 @@ public:
     virtual void state_exit(Context* c);
 
     virtual void state_close(Context* c, CloseEvent* e);
+    virtual bool state_can_send(Context* c, Socket* s);
 };
 
 #endif	/* CLOSEWAIT_H */

@@ -46,3 +46,7 @@ void CloseWait::state_close(Context* c, CloseEvent* e) {
     cmc->set_state(new LastAck());
     return;
 }
+
+bool CloseWait::state_can_send(Context* c, Socket* s) {
+    return true;
+}
