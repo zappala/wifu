@@ -9,6 +9,7 @@
 #define	_INCLUDES_H
 
 #include <typeinfo>
+#include <string>
 
 #define type_name(X) typeid(X).name()
 #define SIG_ENQUEUE_EVENT 50
@@ -74,7 +75,12 @@
 #define MAX_BUFFER_SIZE 87380 // http://linux.die.net/man/7/tcp
 //#define MAX_BUFFER_SIZE 2
 
+#define SYN_BYTE std::string(1, 22)
+#define FIN_BYTE std::string(1, 23)
+
 typedef const char * event_name;
+
+
 
 #endif	/* _INCLUDES_H */
 
