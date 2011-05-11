@@ -15,7 +15,7 @@
 
 class TCPTahoe : public Protocol {
 private:
-    TCPTahoe();
+    TCPTahoe(int protocol = TCP_TAHOE);
 
     tr1::unordered_map<Socket*, TCPTahoeIContextContainer*> map_;
 

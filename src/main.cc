@@ -52,8 +52,8 @@
 
 //protocols
 #include "ProtocolManager.h"
-#include "SimpleTCP.h"
-#include "TCPTahoe.h"
+#include "protocol/SimpleTCP.h"
+#include "protocol/TCPTahoe.h"
 #include "TCPPacketFactory.h"
 
 //other

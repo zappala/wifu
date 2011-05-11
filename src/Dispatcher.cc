@@ -6,7 +6,7 @@ Dispatcher& Dispatcher::instance() {
 }
 
 Dispatcher::~Dispatcher() {
-	reset();
+    reset();
 }
 
 void Dispatcher::map_event(event_name name, QueueProcessor<Event*>* q) {
@@ -41,26 +41,24 @@ void Dispatcher::process(Event* e) {
     //assuming should_enqueue is called in QueueProcessor::enqueue(..) and did its job, this variable should never be NULL
     vector<QueueProcessor<Event*>*>* queue_processors = map_[type_name(*e)];
 
-	for (int i = 0; i < queue_processors->size(); i++) {
-		//cout << "Processing: " << type_name(*e) << endl;
-		queue_processors->at(i)->enqueue(e);
-	}
+    for (int i = 0; i < queue_processors->size(); i++) {
+        //cout << "Processing: " << type_name(*e) << endl;
+        queue_processors->at(i)->enqueue(e);
+    }
 
     mutex_.post();
 }
 
 bool Dispatcher::should_enqueue(Event* event) {
-	mutex_.wait();
-	vector<QueueProcessor<Event*>*>* queue_processors = map_[type_name(*event)];
-	mutex_.post();
+    mutex_.wait();
+    vector<QueueProcessor<Event*>*>* queue_processors = map_[type_name(*event)];
+    mutex_.post();
 
-	if (queue_processors == NULL)
-	{
-//		log_WARNING(" is not mapped to a QueueProcessor");
-		return false;
-	}
-	else
-		return true;
+    if (queue_processors == NULL) {
+        //		log_WARNING(" is not mapped to a QueueProcessor");
+        return false;
+    } else
+        return true;
 }
 
 Dispatcher::Dispatcher() : QueueProcessor<Event*>() {

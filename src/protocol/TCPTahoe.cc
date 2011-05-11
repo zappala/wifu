@@ -1,6 +1,6 @@
 #include "protocol/TCPTahoe.h"
 
-TCPTahoe::TCPTahoe() : Protocol(TCP_TAHOE) {
+TCPTahoe::TCPTahoe(int protocol) : Protocol(protocol) {
 
 }
 
