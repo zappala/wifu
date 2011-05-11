@@ -180,6 +180,7 @@ void SimpleTCP::icontext_timer_fired_event(TimerFiredEvent* e) {
     c->get_connection_manager()->icontext_timer_fired_event(e);
     c->get_reliability()->icontext_timer_fired_event(e);
     c->get_congestion_control()->icontext_timer_fired_event(e);
+    c->get_rate_limiter()->icontext_timer_fired_event(e);
 }
 
 void SimpleTCP::icontext_resend_packet(ResendPacketEvent* e) {
