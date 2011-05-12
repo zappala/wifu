@@ -193,4 +193,25 @@ namespace {
         right = left + 5;
         ASSERT_FALSE(between_equal_right(left, num, right));
     }
+
+    TEST(Math, lessThan) {
+        for (int i = 0; i < 100; i++) {
+            ASSERT_TRUE(less_than(i, 100));
+        }
+
+        ASSERT_FALSE(less_than(5, 4));
+        ASSERT_FALSE(less_than(4, 4));
+
+        // check circular space
+        u_int32_t lhs = UINT_MAX - 2;
+        u_int32_t rhs = lhs + 2;
+        ASSERT_TRUE(less_than(lhs, rhs));
+
+        ASSERT_TRUE(less_than(0, UINT_MAX / 2));
+        ASSERT_TRUE(less_than(UINT_MAX, UINT_MAX / 2));
+        ASSERT_FALSE(less_than(UINT_MAX - 1, UINT_MAX / 2));
+        ASSERT_FALSE(less_than(0, UINT_MAX / 2 + 1));
+
+
+    }
 }

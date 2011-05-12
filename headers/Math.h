@@ -54,6 +54,19 @@ bool between_equal_left(u_int32_t left, u_int32_t number, u_int32_t right);
  */
 bool between(u_int32_t left, u_int32_t number, u_int32_t right);
 
+/**
+ * Returns lhs < rhs.
+ * This fuction handles curcular space by determining if the two numbers are within half of the sequence space.
+ *
+ * For example: lhs = 0 and rhs = UINT_MAX / 2 == true, but
+ *              lsh = 0 and rhs = UINT+MAX / 2 + 1 == false
+ *
+ * @param lhs LHS of the equation
+ * @param rhs RHS of the equation
+ * @return True if lhs < rhs, false otherwise
+ */
+bool less_than(u_int32_t lhs, u_int32_t rhs);
+
 
 #endif	/* MATH_H */
 
