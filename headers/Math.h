@@ -57,9 +57,10 @@ bool between(u_int32_t left, u_int32_t number, u_int32_t right);
 /**
  * Returns lhs < rhs.
  * This fuction handles curcular space by determining if the two numbers are within half of the sequence space.
+ * This should be sufficent since the receive window is only 16 bits long
  *
  * For example: lhs = 0 and rhs = UINT_MAX / 2 == true, but
- *              lsh = 0 and rhs = UINT+MAX / 2 + 1 == false
+ *              lsh = 0 and rhs = UINT_MAX / 2 + 1 == false
  *
  * @param lhs LHS of the equation
  * @param rhs RHS of the equation
