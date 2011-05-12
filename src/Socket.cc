@@ -5,14 +5,14 @@ Socket::Socket(int domain,
         int protocol,
         AddressPort* local,
         AddressPort* remote) :
-Observable(),
-socket_(SocketManager::instance().get()),
-domain_(domain),
-type_(type),
-protocol_(protocol),
-local_(local),
-remote_(remote),
-is_passive_(false) {
+    Observable(),
+    socket_(SocketManager::instance().get()),
+    domain_(domain),
+    type_(type),
+    protocol_(protocol),
+    local_(local),
+    remote_(remote),
+    is_passive_(false) {
 
 }
 

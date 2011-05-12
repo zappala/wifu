@@ -57,6 +57,25 @@ namespace {
 
         delete q;
     }
+
+    TEST(QueueTest, top) {
+        Queue<int> q;
+        int expected = 5;
+        q.enqueue(expected);
+
+        int actual = q.top();
+
+        ASSERT_EQ(expected, actual);
+        ASSERT_FALSE(q.isEmpty());
+        ASSERT_EQ(1, q.size());
+
+        actual = 0;
+        actual = q.dequeue();
+
+        ASSERT_EQ(expected, actual);
+        ASSERT_TRUE(q.isEmpty());
+        ASSERT_EQ(0, q.size());
+    }
 }
 
 #endif	/* _QUEUETEST_H */

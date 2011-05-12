@@ -75,6 +75,13 @@ public:
         counter_.post();
     }
 
+    const T& top() {
+        sem_.wait();
+        const T& val = q_.front();
+        sem_.post();
+        return val;
+    }
+
     /**
      * @return The number of elements in this Queue.
      */

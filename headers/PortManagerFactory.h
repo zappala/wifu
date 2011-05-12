@@ -8,26 +8,18 @@
 #ifndef PORTMANAGERFACTORY_H
 #define	PORTMANAGERFACTORY_H
 
+#include "IPortManager.h"
 #include "IPortManagerCreator.h"
+
 
 class PortManagerFactory {
 public:
-    static PortManagerFactory& instance() {
-        static PortManagerFactory instance_;
-        return instance_;
-    }
-
-    void set_creator(IPortManagerCreator* creator) {
-        creator_ = creator;
-    }
-
-    IPortManager& create() {
-        return creator_->create();
-    }
-
+    static PortManagerFactory& instance();
+    void set_creator(IPortManagerCreator* creator);
+    IPortManager& create();
 private:
 
-    PortManagerFactory() {}
+    PortManagerFactory();
     IPortManagerCreator* creator_;
 };
 

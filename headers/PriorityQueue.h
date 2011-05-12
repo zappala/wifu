@@ -76,6 +76,16 @@ public:
     }
 
     /**
+     * @see IQueue::top()
+     */
+    const T& top() {
+        sem_.wait();
+        const T& val = q_.top();
+        sem_.post();
+        return val;
+    }
+
+    /**
      * @return The number of elements in this PriorityQueue.
      */
     int size() {

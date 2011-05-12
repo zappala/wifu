@@ -44,6 +44,14 @@ public:
     virtual void enqueue(T obj, bool signal = false) = 0;
 
     /**
+     * Gets a reference to the top element in the queue.
+     * Queue size is unaffected by this call.
+     * 
+     * @return A reference to the top element in the queue.
+     */
+    virtual const T& top() = 0;
+
+    /**
      * @return The number of elements in this IQueue.
      */
     virtual int size() = 0;

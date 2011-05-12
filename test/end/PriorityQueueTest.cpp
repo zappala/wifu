@@ -32,7 +32,7 @@ namespace {
         ASSERT_TRUE(priorityQueue.size() == 0);
         ASSERT_TRUE(priorityQueue.isEmpty() == true);
 
-        Socket* s = new Socket(0,1,2);
+        Socket* s = new Socket(0, 1, 2);
         TimeoutEvent event1(s, 5, 0);
         TimeoutEvent event2(s, 10, 0);
 
@@ -50,7 +50,7 @@ namespace {
     }
 
     void* enqueuer(void* priorityQueue) {
-        Socket* s = new Socket(0,1,2);
+        Socket* s = new Socket(0, 1, 2);
         TimeoutEvent* event1 = new TimeoutEvent(s, 5, 0);
         PriorityQueue<Event*, EventComparator>* pQueue =
                 (PriorityQueue<Event*, EventComparator>*) priorityQueue;
@@ -73,7 +73,7 @@ namespace {
         ASSERT_TRUE(priorityQueue.isEmpty() == true);
         ASSERT_TRUE(signalRaised == true);
 
-        Socket* s = new Socket(0,1,2);
+        Socket* s = new Socket(0, 1, 2);
         TimeoutEvent event1(s, 0, 0);
         TimeoutEvent event2(s, 5, 0);
         TimeoutEvent event3(s, 10, 100);
@@ -130,7 +130,7 @@ namespace {
         ASSERT_TRUE(priorityQueue.size() == 0);
         ASSERT_TRUE(priorityQueue.isEmpty() == true);
 
-        Socket* s = new Socket(0,1,2);
+        Socket* s = new Socket(0, 1, 2);
         TimeoutEvent event1(s, 0, 0);
         TimeoutEvent event2(s, 5, 0);
         TimeoutEvent event3(s, 10, 100);
@@ -146,7 +146,50 @@ namespace {
 
         priorityQueue.clear();
         ASSERT_TRUE(priorityQueue.size() == 0);
-		ASSERT_TRUE(priorityQueue.isEmpty() == true);
+        ASSERT_TRUE(priorityQueue.isEmpty() == true);
+    }
+
+    class IntComparator {
+    public:
+
+        bool operator()(int& t1, int& t2) {
+            return t1 > t2;
+        }
+
+    };
+
+    TEST(PriorityQueueTest, top) {
+        PriorityQueue<int, IntComparator> q;
+        int expected = 5;
+        q.enqueue(6);
+        q.enqueue(expected);
+
+        int actual = q.top();
+
+        ASSERT_EQ(expected, actual);
+        ASSERT_FALSE(q.isEmpty());
+        ASSERT_EQ(2, q.size());
+
+        actual = 0;
+        actual = q.dequeue();
+
+        ASSERT_EQ(expected, actual);
+        ASSERT_FALSE(q.isEmpty());
+        ASSERT_EQ(1, q.size());
+
+        actual = q.top();
+        expected = 6;
+
+        ASSERT_EQ(expected, actual);
+        ASSERT_FALSE(q.isEmpty());
+        ASSERT_EQ(1, q.size());
+
+        actual = 0;
+        actual = q.dequeue();
+
+        ASSERT_EQ(expected, actual);
+        ASSERT_TRUE(q.isEmpty());
+        ASSERT_EQ(0, q.size());
     }
 
 }
