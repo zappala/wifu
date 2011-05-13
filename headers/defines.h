@@ -9,6 +9,7 @@
 #define	_INCLUDES_H
 
 #include <typeinfo>
+#include <limits.h>
 #include <string>
 
 #define type_name(X) typeid(X).name()
@@ -74,6 +75,9 @@
 // TODO: switch these lines so we can have a bigger/smaller send/receive buffer sizes.
 #define MAX_BUFFER_SIZE 87380 // http://linux.die.net/man/7/tcp
 //#define MAX_BUFFER_SIZE 2
+
+// TODO: if we want it any bigger we need to employ the window scale option
+#define MAX_TCP_RECEIVE_WINDOW_SIZE USHRT_MAX
 
 #define SYN_BYTE std::string(1, 22)
 #define FIN_BYTE std::string(1, 23)
