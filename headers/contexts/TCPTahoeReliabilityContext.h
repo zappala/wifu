@@ -8,6 +8,8 @@
 #ifndef TCPTAHOERELIABILITYCONTEXT_H
 #define	TCPTAHOERELIABILITYCONTEXT_H
 
+#include <sys/types.h>
+
 #include "Context.h"
 #include "states/TCPTahoeReliabilityState.h"
 
@@ -18,25 +20,39 @@ public:
     TCPTahoeReliabilityContext();
     virtual ~TCPTahoeReliabilityContext();
 
-    TimeoutEvent* get_timer();
-    void set_timer(TimeoutEvent* e);
+    u_int32_t get_snd_una();
+    void set_snd_una(u_int32_t snd_una);
 
-    long int get_rtt();
-    void set_rtt(long int rtt);
+    u_int32_t get_snd_nxt();
+    void set_snd_nxt(u_int32_t snd_nxt);
 
-    long int get_rto();
-    void set_rto(long int rto);
+    u_int32_t get_rcv_nxt();
+    void set_rcv_nxt(u_int32_t rcv_nxt);
 
-    long int get_srtt();
-    void set_srtt(long int srtt);
+    u_int16_t get_rcv_wnd();
+    void set_rcv_wnd(u_int16_t rcv_wnd);
+
+    TimeoutEvent* get_timeout_event();
+    void set_timeout_event(TimeoutEvent* e);
+
+    int get_rto();
+    void set_rto(int rto);
     
 private:
-    TimeoutEvent* timer_;
+    u_int32_t snd_una_;
+    u_int32_t snd_nxt_;
 
-    // all these are in nanoseconds
-    long int rto_;
-    long int rtt_;
-    long int srtt_;
+    u_int32_t rcv_nxt_;
+    u_int16_t rcv_wnd_;
+
+    TimeoutEvent* timer_;
+    /**
+     * Time in seconds for the next timeout
+     */
+    int rto_;
+
+
+
 };
 
 #endif	/* TCPTAHOERELIABILITYCONTEXT_H */

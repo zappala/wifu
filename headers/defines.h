@@ -73,7 +73,8 @@
 #define MAX_TTL 65
 
 // TODO: switch these lines so we can have a bigger/smaller send/receive buffer sizes.
-#define MAX_BUFFER_SIZE 87380 // http://linux.die.net/man/7/tcp
+// http://linux.die.net/man/7/tcp
+#define MAX_BUFFER_SIZE 87380 
 //#define MAX_BUFFER_SIZE 2
 
 // TODO: if we want it any bigger we need to employ the window scale option

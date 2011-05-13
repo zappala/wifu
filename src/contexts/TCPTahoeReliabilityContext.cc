@@ -1,7 +1,6 @@
 #include "contexts/TCPTahoeReliabilityContext.h"
 
-// TOOD: this is overflowing
-TCPTahoeReliabilityContext::TCPTahoeReliabilityContext() : timer_(0), rtt_(0), srtt_(0), rto_(3 * NANOSECONDS_IN_SECONDS) {
+TCPTahoeReliabilityContext::TCPTahoeReliabilityContext() : snd_nxt_(0), snd_una_(0), rcv_nxt_(0), rcv_wnd_(MAX_TCP_RECEIVE_WINDOW_SIZE), timer_(0) {
     set_state(new TCPTahoeReliabilityState());
 }
 
@@ -9,34 +8,50 @@ TCPTahoeReliabilityContext::~TCPTahoeReliabilityContext() {
 
 }
 
-TimeoutEvent* TCPTahoeReliabilityContext::get_timer() {
+u_int32_t TCPTahoeReliabilityContext::get_snd_una() {
+    return snd_una_;
+}
+
+void TCPTahoeReliabilityContext::set_snd_una(u_int32_t snd_una) {
+    snd_una_ = snd_una;
+}
+
+u_int32_t TCPTahoeReliabilityContext::get_snd_nxt() {
+    return snd_nxt_;
+}
+
+void TCPTahoeReliabilityContext::set_snd_nxt(u_int32_t snd_nxt) {
+    snd_nxt_ = snd_nxt;
+}
+
+u_int32_t TCPTahoeReliabilityContext::get_rcv_nxt() {
+    return rcv_nxt_;
+}
+
+void TCPTahoeReliabilityContext::set_rcv_nxt(u_int32_t rcv_nxt) {
+    rcv_nxt_ = rcv_nxt;
+}
+
+u_int16_t TCPTahoeReliabilityContext::get_rcv_wnd() {
+    return rcv_wnd_;
+}
+
+void TCPTahoeReliabilityContext::set_rcv_wnd(u_int16_t rcv_wnd) {
+    rcv_wnd_ = rcv_wnd;
+}
+
+TimeoutEvent* TCPTahoeReliabilityContext::get_timeout_event() {
     return timer_;
 }
 
-void TCPTahoeReliabilityContext::set_timer(TimeoutEvent* e) {
+void TCPTahoeReliabilityContext::set_timeout_event(TimeoutEvent* e) {
     timer_ = e;
 }
 
-long int TCPTahoeReliabilityContext::get_rtt() {
-    return rtt_;
-}
-
-void TCPTahoeReliabilityContext::set_rtt(long int rtt) {
-    rtt_ = rtt;
-}
-
-long int TCPTahoeReliabilityContext::get_rto() {
+int TCPTahoeReliabilityContext::get_rto() {
     return rto_;
 }
 
-void TCPTahoeReliabilityContext::set_rto(long int rto) {
+void TCPTahoeReliabilityContext::set_rto(int rto) {
     rto_ = rto;
-}
-
-long int TCPTahoeReliabilityContext::get_srtt() {
-    return srtt_;
-}
-
-void TCPTahoeReliabilityContext::set_srtt(long int srtt) {
-    srtt_ = srtt;
 }

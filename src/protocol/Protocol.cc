@@ -165,7 +165,7 @@ void Protocol::imodule_library_send(Event* e) {
 
 
     if (!icontext_can_send(socket)) {
-        // TODO: respond with error
+        // TODO: respond with error ?
         return;
     }
 

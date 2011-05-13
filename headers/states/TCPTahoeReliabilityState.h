@@ -13,8 +13,16 @@
 #include "events/TimerFiredEvent.h"
 #include "events/SendPacketEvent.h"
 #include "events/NetworkReceivePacketEvent.h"
+#include "events/CancelTimerEvent.h"
+#include "events/ResendPacketEvent.h"
+#include "events/CancelTimerEvent.h"
 
 #include "contexts/TCPTahoeReliabilityContext.h"
+
+#include "packet/TCPPacket.h"
+#include "packet/TCPTimestampOption.h"
+
+#include "Math.h"
 
 class TCPTahoeReliabilityState : public State {
 public:
@@ -22,8 +30,17 @@ public:
     virtual ~TCPTahoeReliabilityState();
 
     virtual void state_send_packet(Context* c, SendPacketEvent* e);
-    virtual void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
     virtual void state_timer_fired(Context* c, TimerFiredEvent* e);
+    virtual void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
+    virtual void state_receive_buffer_not_empty(Context* c, ReceiveBufferNotEmptyEvent* e);
+    virtual void state_receive(Context* c, ReceiveEvent* e);
+
+private:
+    void start_timer(Context* c, Socket* s);
+    void reset_timer(Context* c, Socket* s);
+    void cancel_timer(Context* c, Socket* s);
+
+    
 };
 
 #endif	/* TCPTAHOERELIABILITYSTATE_H */
