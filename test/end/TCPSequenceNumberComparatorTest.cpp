@@ -5,15 +5,10 @@
 #include "packet/TCPSequenceNumberComparator.h"
 #include "PriorityQueue.h"
 #include "../headers/RandomStringGenerator.h"
-
+#include "../headers/HelperFunctions.h"
 using namespace std;
 
-TCPPacket* get_packet(u_int32_t sequence_number, string& data) {
-    TCPPacket* p = new TCPPacket();
-    p->set_tcp_sequence_number(sequence_number);
-    p->set_data((unsigned char*) data.data(), data.size());
-    return p;
-}
+
 
 namespace {
 
@@ -22,7 +17,7 @@ namespace {
 
         string data = "This is the data";
         for (int i = 0; i < 1000; i++) {
-            q.enqueue(get_packet(rand(), data));
+            q.enqueue(HelperFunctions::get_tcp_packet_with_data(rand(), data));
         }
 
         u_int32_t current = 0;
@@ -40,7 +35,7 @@ namespace {
 
         for (int i = 0; i < 1000; i++) {
             string data = RandomStringGenerator::get_data(rand() % 100);
-            q.enqueue(get_packet(100, data));
+            q.enqueue(HelperFunctions::get_tcp_packet_with_data(100, data));
         }
 
         u_int32_t current = 0;
@@ -58,7 +53,7 @@ namespace {
         for (int i = 0; i < 100; i++) {
             string data = RandomStringGenerator::get_data(rand() % 10);
             u_int32_t seq = rand() % 10;
-            q.enqueue(get_packet(seq, data));
+            q.enqueue(HelperFunctions::get_tcp_packet_with_data(seq, data));
         }
 
         u_int32_t current_seq = 0;

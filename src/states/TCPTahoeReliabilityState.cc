@@ -95,23 +95,36 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
         }
     }
 
-    if(p->is_tcp_syn() || p->is_tcp_fin()) {
+    if (p->is_tcp_syn() || p->is_tcp_fin()) {
         rc->set_rcv_nxt(p->get_tcp_sequence_number() + 1);
-    }
-    else if(p->get_data_length_bytes() > 0) {
+    } else if (p->get_data_length_bytes() > 0) {
         // save data
 
-        
+
 
     }
 }
 
 void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, ReceiveBufferNotEmptyEvent* e) {
-
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+    Socket* s = e->get_socket();
+    
+    if(rc->get_receive_event() && !s->get_receive_buffer().empty()) {
+        create_and_dispatch_received_data(c, rc->get_receive_event());
+        rc->set_receive_event(0);
+    }
 }
 
 void TCPTahoeReliabilityState::state_receive(Context* c, ReceiveEvent* e) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+    Socket* s = e->get_socket();
 
+    if (!s->get_receive_buffer().empty()) {
+        create_and_dispatch_received_data(c, e);
+    } else {
+        assert(!rc->get_receive_event());
+        rc->set_receive_event(e);
+    }
 }
 
 void TCPTahoeReliabilityState::create_and_dispatch_ack(Socket* s) {
@@ -160,7 +173,7 @@ void TCPTahoeReliabilityState::cancel_timer(Context* c, Socket* s) {
 
 void TCPTahoeReliabilityState::resend_data(Context* c, Socket* s) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
-    
+
     TCPPacket* p = new TCPPacket();
     p->insert_tcp_header_option(new TCPTimestampOption());
 
@@ -208,4 +221,26 @@ void TCPTahoeReliabilityState::resend_data(Context* c, Socket* s) {
 
     ResendPacketEvent* event = new ResendPacketEvent(s, p);
     Dispatcher::instance().enqueue(event);
+}
+
+void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, ReceiveEvent* e) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+    Socket* s = e->get_socket();
+    int buffer_size = e->get_receive_buffer_size();
+
+    string data = s->get_receive_buffer().substr(0, buffer_size);
+    int length = data.size();
+    s->get_receive_buffer().erase(0, length);
+
+    rc->set_rcv_wnd(rc->get_rcv_wnd() + length);
+
+    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+    response->put(BUFFER_STRING, data);
+    response->put(ADDRESS_STRING, s->get_remote_address_port()->get_address());
+    response->put(PORT_STRING, Utils::itoa(s->get_remote_address_port()->get_port()));
+    response->put(RETURN_VALUE_STRING, Utils::itoa(data.size()));
+    response->put(ERRNO, Utils::itoa(0));
+
+    Dispatcher::instance().enqueue(response);
+    Dispatcher::instance().enqueue(new ReceiveBufferNotFullEvent(s));
 }

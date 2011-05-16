@@ -16,6 +16,7 @@
 #include "events/CancelTimerEvent.h"
 #include "events/ResendPacketEvent.h"
 #include "events/CancelTimerEvent.h"
+#include "events/ResponseEvent.h"
 
 #include "contexts/TCPTahoeReliabilityContext.h"
 
@@ -43,6 +44,7 @@ private:
     void cancel_timer(Context* c, Socket* s);
 
     void resend_data(Context* c, Socket* s);
+    void create_and_dispatch_received_data(Context* c, ReceiveEvent* e);
 
     
 };

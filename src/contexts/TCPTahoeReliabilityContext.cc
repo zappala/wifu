@@ -1,6 +1,6 @@
 #include "contexts/TCPTahoeReliabilityContext.h"
 
-TCPTahoeReliabilityContext::TCPTahoeReliabilityContext() : snd_nxt_(0), snd_una_(0), rcv_nxt_(0), rcv_wnd_(MAX_TCP_RECEIVE_WINDOW_SIZE), timer_(0), duplicate_ack_number_(0), duplicates_(0) {
+TCPTahoeReliabilityContext::TCPTahoeReliabilityContext() : snd_nxt_(0), snd_una_(0), rcv_nxt_(0), rcv_wnd_(MAX_TCP_RECEIVE_WINDOW_SIZE), timer_(0), duplicate_ack_number_(0), duplicates_(0), receive_event_(0) {
     set_state(new TCPTahoeReliabilityState());
 }
 
@@ -74,4 +74,12 @@ void TCPTahoeReliabilityContext::set_duplicates(int duplicates) {
 
 vector<TCPPacket*>& TCPTahoeReliabilityContext::get_packet_buffer() {
     return packet_buffer_;
+}
+
+ReceiveEvent* TCPTahoeReliabilityContext::get_receive_event() {
+    return receive_event_;
+}
+
+void TCPTahoeReliabilityContext::set_receive_event(ReceiveEvent* e) {
+    receive_event_ = e;
 }

@@ -48,6 +48,9 @@ public:
     void set_duplicates(int duplicates);
 
     vector<TCPPacket*>& get_packet_buffer();
+
+    ReceiveEvent* get_receive_event();
+    void set_receive_event(ReceiveEvent* e);
     
 private:
     u_int32_t snd_una_;
@@ -57,6 +60,7 @@ private:
     u_int16_t rcv_wnd_;
 
     TimeoutEvent* timer_;
+    ReceiveEvent* receive_event_;
     /**
      * Time in seconds for the next timeout
      */
