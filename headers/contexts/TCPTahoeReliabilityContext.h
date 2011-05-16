@@ -47,7 +47,7 @@ public:
     int get_duplicates();
     void set_duplicates(int duplicates);
 
-    PriorityQueue<TCPPacket*, TCPSequenceNumberComparator>* get_packet_buffer();
+    vector<TCPPacket*>& get_packet_buffer();
     
 private:
     u_int32_t snd_una_;
@@ -65,7 +65,7 @@ private:
     u_int32_t duplicate_ack_number_;
     int duplicates_;
 
-    PriorityQueue<TCPPacket*, TCPSequenceNumberComparator> packet_buffer_;
+    vector<TCPPacket*> packet_buffer_;
 };
 
 #endif	/* TCPTAHOERELIABILITYCONTEXT_H */

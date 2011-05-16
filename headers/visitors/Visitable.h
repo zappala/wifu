@@ -8,6 +8,7 @@
 #ifndef VISITABLE_H
 #define	VISITABLE_H
 
+#include "GarbageCollector.h"
 #include "Visitor.h"
 
 /**
@@ -17,7 +18,7 @@
  * may be visited.
  *
  */
-class Visitable {
+class Visitable : public gc {
 public:
 
     /**

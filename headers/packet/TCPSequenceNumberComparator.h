@@ -13,7 +13,8 @@
 
 /**
  * When used with a PriorityQueue, this class will ensure that the TCPPacket pointers
- * are prioritized based on ascending sequence number
+ * are prioritized based on ascending sequence number.
+ * If sequence numbers are equal, we sort on length of data (ascending)
  */
 class TCPSequenceNumberComparator {
     public:

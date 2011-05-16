@@ -72,6 +72,6 @@ void TCPTahoeReliabilityContext::set_duplicates(int duplicates) {
     duplicates_ = duplicates;
 }
 
-PriorityQueue<TCPPacket*, TCPSequenceNumberComparator>* TCPTahoeReliabilityContext::get_packet_buffer() {
-    return &packet_buffer_;
+vector<TCPPacket*>& TCPTahoeReliabilityContext::get_packet_buffer() {
+    return packet_buffer_;
 }

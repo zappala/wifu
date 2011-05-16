@@ -10,7 +10,6 @@
 
 #include <list>
 #include <sys/types.h>
-#include "GarbageCollector.h"
 #include "TCPHeaderOption.h"
 #include "visitors/Visitable.h"
 #include "visitors/FindTCPHeaderOptionVisitor.h"
@@ -18,7 +17,7 @@
 
 using namespace std;
 
-class TCPHeaderOptionCollection : public gc, public Visitable {
+class TCPHeaderOptionCollection : public Visitable {
 public:
     TCPHeaderOptionCollection();
     virtual ~TCPHeaderOptionCollection();

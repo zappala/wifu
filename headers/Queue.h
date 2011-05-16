@@ -111,6 +111,7 @@ public:
         sem_.post();
     }
 
+
 private:
     /**
      * Protective Semaphore; this semaphore makes this class thread safe.
