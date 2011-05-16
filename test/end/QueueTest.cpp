@@ -40,20 +40,20 @@ namespace {
 
         ASSERT_TRUE(!signaled);
         ASSERT_EQ(1, q->size());
-        ASSERT_TRUE(!q->isEmpty());
+        ASSERT_TRUE(!q->is_empty());
         ASSERT_EQ(value, q->dequeue());
         ASSERT_EQ(0, q->size());
-        ASSERT_TRUE(q->isEmpty());
+        ASSERT_TRUE(q->is_empty());
 
         signaled = false;
         q->enqueue(value, true);
 
         ASSERT_TRUE(signaled);
         ASSERT_EQ(1, q->size());
-        ASSERT_TRUE(!q->isEmpty());
+        ASSERT_TRUE(!q->is_empty());
         ASSERT_EQ(value, q->dequeue());
         ASSERT_EQ(0, q->size());
-        ASSERT_TRUE(q->isEmpty());
+        ASSERT_TRUE(q->is_empty());
 
         delete q;
     }
@@ -66,14 +66,14 @@ namespace {
         int actual = q.top();
 
         ASSERT_EQ(expected, actual);
-        ASSERT_FALSE(q.isEmpty());
+        ASSERT_FALSE(q.is_empty());
         ASSERT_EQ(1, q.size());
 
         actual = 0;
         actual = q.dequeue();
 
         ASSERT_EQ(expected, actual);
-        ASSERT_TRUE(q.isEmpty());
+        ASSERT_TRUE(q.is_empty());
         ASSERT_EQ(0, q.size());
     }
 }

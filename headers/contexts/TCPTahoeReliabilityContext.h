@@ -14,6 +14,9 @@
 #include "states/TCPTahoeReliabilityState.h"
 
 #include "events/TimeoutEvent.h"
+#include "packet/TCPSequenceNumberComparator.h"
+#include "PriorityQueue.h"
+
 
 class TCPTahoeReliabilityContext : public Context {
 public:
@@ -37,6 +40,14 @@ public:
 
     int get_rto();
     void set_rto(int rto);
+
+    u_int32_t get_duplicate_ack_number();
+    void set_duplicate_ack_number(u_int32_t num);
+
+    int get_duplicates();
+    void set_duplicates(int duplicates);
+
+    PriorityQueue<TCPPacket*, TCPSequenceNumberComparator>* get_packet_buffer();
     
 private:
     u_int32_t snd_una_;
@@ -51,8 +62,10 @@ private:
      */
     int rto_;
 
+    u_int32_t duplicate_ack_number_;
+    int duplicates_;
 
-
+    PriorityQueue<TCPPacket*, TCPSequenceNumberComparator> packet_buffer_;
 };
 
 #endif	/* TCPTAHOERELIABILITYCONTEXT_H */

@@ -59,7 +59,7 @@ public:
     /**
      * @return True if there are no elements in the queue, false otherwise.
      */
-    virtual bool isEmpty() = 0;
+    virtual bool is_empty() = 0;
 
     /**
      * Empties this IQueue

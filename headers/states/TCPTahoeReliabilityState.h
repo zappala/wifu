@@ -35,10 +35,14 @@ public:
     virtual void state_receive_buffer_not_empty(Context* c, ReceiveBufferNotEmptyEvent* e);
     virtual void state_receive(Context* c, ReceiveEvent* e);
 
+    void create_and_dispatch_ack(Socket* s);
+
 private:
     void start_timer(Context* c, Socket* s);
     void reset_timer(Context* c, Socket* s);
     void cancel_timer(Context* c, Socket* s);
+
+    void resend_data(Context* c, Socket* s);
 
     
 };

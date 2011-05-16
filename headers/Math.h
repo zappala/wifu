@@ -69,6 +69,16 @@ bool between(u_int32_t left, u_int32_t number, u_int32_t right);
  */
 bool less_than(u_int32_t lhs, u_int32_t rhs);
 
+/**
+ * Returns lhs <= rhs
+ * This function uses less_than()
+ * @see less_than()
+ * @param lhs LHS of the inequality
+ * @param rhs RHS of the inequality
+ * @return True of lhs <= rhs, false otherwise
+ */
+bool less_than_or_equal(u_int32_t lhs, u_int32_t rhs);
+
 
 #endif	/* MATH_H */
 

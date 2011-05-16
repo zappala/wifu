@@ -95,7 +95,7 @@ public:
     /**
      * @return True if there are no elements in this Queue, false otherwise.
      */
-    bool isEmpty() {
+    bool is_empty() {
         // protection is done in size()
         return size() == 0;
     }

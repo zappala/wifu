@@ -98,7 +98,7 @@ public:
     /**
      * @return True if there are no elements in this PriorityQueue, false otherwise.
      */
-    bool isEmpty() {
+    bool is_empty() {
         // protection is done in size()
         return size() == 0;
     }

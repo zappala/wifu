@@ -30,7 +30,7 @@ namespace {
     TEST(PriorityQueueTest, enqueue) {
         PriorityQueue<Event*, EventComparator> priorityQueue;
         ASSERT_TRUE(priorityQueue.size() == 0);
-        ASSERT_TRUE(priorityQueue.isEmpty() == true);
+        ASSERT_TRUE(priorityQueue.is_empty() == true);
 
         Socket* s = new Socket(0, 1, 2);
         TimeoutEvent event1(s, 5, 0);
@@ -43,7 +43,7 @@ namespace {
 
         priorityQueue.enqueue(&event2);
         ASSERT_TRUE(priorityQueue.size() == 2);
-        ASSERT_TRUE(priorityQueue.isEmpty() == false);
+        ASSERT_TRUE(priorityQueue.is_empty() == false);
 
         priorityQueue.enqueue(&event1);
         ASSERT_TRUE(priorityQueue.size() == 3);
@@ -63,14 +63,14 @@ namespace {
         pthread_t enqueueThread;
         PriorityQueue<Event*, EventComparator> priorityQueue;
         ASSERT_TRUE(priorityQueue.size() == 0);
-        ASSERT_TRUE(priorityQueue.isEmpty() == true);
+        ASSERT_TRUE(priorityQueue.is_empty() == true);
 
         signal(SIG_ENQUEUE_EVENT, enqueueHandler);
         if (pthread_create(&enqueueThread, NULL, &enqueuer, &priorityQueue) != 0)
             FAIL();
         priorityQueue.dequeue();
         ASSERT_TRUE(priorityQueue.size() == 0);
-        ASSERT_TRUE(priorityQueue.isEmpty() == true);
+        ASSERT_TRUE(priorityQueue.is_empty() == true);
         ASSERT_TRUE(signalRaised == true);
 
         Socket* s = new Socket(0, 1, 2);
@@ -85,42 +85,42 @@ namespace {
         priorityQueue.enqueue(&event1);
         priorityQueue.enqueue(&event4);
         ASSERT_TRUE(priorityQueue.size() == 5);
-        ASSERT_TRUE(priorityQueue.isEmpty() == false);
+        ASSERT_TRUE(priorityQueue.is_empty() == false);
 
         ASSERT_TRUE(priorityQueue.dequeue() == &event1);
         ASSERT_TRUE(priorityQueue.size() == 4);
-        ASSERT_TRUE(priorityQueue.isEmpty() == false);
+        ASSERT_TRUE(priorityQueue.is_empty() == false);
 
         ASSERT_TRUE(priorityQueue.dequeue() == &event2);
         ASSERT_TRUE(priorityQueue.size() == 3);
-        ASSERT_TRUE(priorityQueue.isEmpty() == false);
+        ASSERT_TRUE(priorityQueue.is_empty() == false);
 
         ASSERT_TRUE(priorityQueue.dequeue() == &event3);
         ASSERT_TRUE(priorityQueue.size() == 2);
-        ASSERT_TRUE(priorityQueue.isEmpty() == false);
+        ASSERT_TRUE(priorityQueue.is_empty() == false);
 
         priorityQueue.enqueue(&event2);
         ASSERT_TRUE(priorityQueue.size() == 3);
-        ASSERT_TRUE(priorityQueue.isEmpty() == false);
+        ASSERT_TRUE(priorityQueue.is_empty() == false);
 
         ASSERT_TRUE(priorityQueue.dequeue() == &event2);
         ASSERT_TRUE(priorityQueue.size() == 2);
-        ASSERT_TRUE(priorityQueue.isEmpty() == false);
+        ASSERT_TRUE(priorityQueue.is_empty() == false);
 
         ASSERT_TRUE(priorityQueue.dequeue() == &event4);
         ASSERT_TRUE(priorityQueue.size() == 1);
-        ASSERT_TRUE(priorityQueue.isEmpty() == false);
+        ASSERT_TRUE(priorityQueue.is_empty() == false);
 
         ASSERT_TRUE(priorityQueue.dequeue() == &event4);
         ASSERT_TRUE(priorityQueue.size() == 0);
-        ASSERT_TRUE(priorityQueue.isEmpty() == true);
+        ASSERT_TRUE(priorityQueue.is_empty() == true);
 
         pthread_cancel(enqueueThread);
         if (pthread_create(&enqueueThread, NULL, &enqueuer, &priorityQueue) != 0)
             FAIL();
         priorityQueue.dequeue();
         ASSERT_TRUE(priorityQueue.size() == 0);
-        ASSERT_TRUE(priorityQueue.isEmpty() == true);
+        ASSERT_TRUE(priorityQueue.is_empty() == true);
         ASSERT_TRUE(signalRaised == true);
         pthread_cancel(enqueueThread);
     }
@@ -128,7 +128,7 @@ namespace {
     TEST(PriorityQueueTest, clear) {
         PriorityQueue<Event*, EventComparator> priorityQueue;
         ASSERT_TRUE(priorityQueue.size() == 0);
-        ASSERT_TRUE(priorityQueue.isEmpty() == true);
+        ASSERT_TRUE(priorityQueue.is_empty() == true);
 
         Socket* s = new Socket(0, 1, 2);
         TimeoutEvent event1(s, 0, 0);
@@ -142,11 +142,11 @@ namespace {
         priorityQueue.enqueue(&event1);
         priorityQueue.enqueue(&event4);
         ASSERT_TRUE(priorityQueue.size() == 5);
-        ASSERT_TRUE(priorityQueue.isEmpty() == false);
+        ASSERT_TRUE(priorityQueue.is_empty() == false);
 
         priorityQueue.clear();
         ASSERT_TRUE(priorityQueue.size() == 0);
-        ASSERT_TRUE(priorityQueue.isEmpty() == true);
+        ASSERT_TRUE(priorityQueue.is_empty() == true);
     }
 
     class IntComparator {
@@ -167,28 +167,28 @@ namespace {
         int actual = q.top();
 
         ASSERT_EQ(expected, actual);
-        ASSERT_FALSE(q.isEmpty());
+        ASSERT_FALSE(q.is_empty());
         ASSERT_EQ(2, q.size());
 
         actual = 0;
         actual = q.dequeue();
 
         ASSERT_EQ(expected, actual);
-        ASSERT_FALSE(q.isEmpty());
+        ASSERT_FALSE(q.is_empty());
         ASSERT_EQ(1, q.size());
 
         actual = q.top();
         expected = 6;
 
         ASSERT_EQ(expected, actual);
-        ASSERT_FALSE(q.isEmpty());
+        ASSERT_FALSE(q.is_empty());
         ASSERT_EQ(1, q.size());
 
         actual = 0;
         actual = q.dequeue();
 
         ASSERT_EQ(expected, actual);
-        ASSERT_TRUE(q.isEmpty());
+        ASSERT_TRUE(q.is_empty());
         ASSERT_EQ(0, q.size());
     }
 
