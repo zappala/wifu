@@ -8,24 +8,27 @@
 #ifndef TCPPACKETBUFFER_H
 #define	TCPPACKETBUFFER_H
 
+#include <map>
 #include "packet/TCPPacket.h"
 #include "GarbageCollector.h"
+#include "packet/TCPSequenceNumberComparator.h"
+#include "Math.h"
+
+typedef map<TCPPacket*, char, TCPSequenceNumberComparator> packet_buffer;
 
 class TCPPacketBuffer : public gc {
 public:
     TCPPacketBuffer();
     virtual ~TCPPacketBuffer();
-    
+
     int insert(TCPPacket* p);
     string get_continuous_data(u_int32_t sequence_number);
 
 private:
     /**
-     * Using a list allows us to use iterators which remain correct through modifications
-     * http://www.cplusplus.com/reference/stl/list/insert/
+     * We will only use the key (we basically use it as a tree)
      */
-    list<TCPPacket*> buffer_;
-
+    packet_buffer buffer_;
 };
 
 #endif	/* TCPPACKETBUFFER_H */

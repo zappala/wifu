@@ -25,7 +25,7 @@ class TCPSequenceNumberComparator {
      * @see less_than()
      * @return True if less_than(p2, p1)
      */
-    bool operator()(TCPPacket*& p1, TCPPacket*& p2);
+    bool operator()(TCPPacket* const& p1, TCPPacket* const& p2);
 };
 
 #endif	/* TCPSEQUENCENUMBERCOMPARATOR_H */
