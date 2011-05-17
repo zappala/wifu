@@ -9,7 +9,6 @@ TCPPacketBuffer::~TCPPacketBuffer() {
 }
 
 int TCPPacketBuffer::insert(TCPPacket* p) {
-
     pair < packet_buffer::iterator, bool> ret = buffer_.insert(make_pair(p, 0));
 
     int inserted_data_length = p->get_data_length_bytes();
@@ -18,8 +17,6 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
 
     if (!ret.second) {
         // the sequence number is already in the buffer
-        // keep the one with the bigger payload
-        // return if the payload's are equal
         TCPPacket* in_map = ret.first->first;
 
         if(in_map->get_data_length_bytes() < p->get_data_length_bytes()) {
@@ -35,9 +32,6 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
             return 0;
         }
     }
-    
-    
-    
 
     list<packet_buffer::iterator> to_remove;
 
@@ -48,13 +42,10 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
     while (itr != buffer_.end()) {
         TCPPacket* cur = itr->first;
 
-
-
         // check to see if we do not overlap
         if (less_than(inserted_sequence_number + inserted_data_length - 1, cur->get_tcp_sequence_number())) {
             break;
         }
-
         // we overlap
         // there are a few cases here
         // 1. we only overlap the very next packet, but not all of it
@@ -77,6 +68,7 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
 
     // we remove duplicate packets to make life easier on getting data out
     // we could probably make this a range, but this is likely easier to read
+    // existing iterators are not invalidated by erasing other iterators
     while (!to_remove.empty()) {
         buffer_.erase(to_remove.front());
         to_remove.pop_front();
