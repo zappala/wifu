@@ -4,6 +4,8 @@
 #include "gtest/gtest.h"
 #include "../headers/HelperFunctions.h"
 #include "../headers/RandomStringGenerator.h"
+#include <bitset>
+
 using namespace std;
 
 namespace {
@@ -383,13 +385,45 @@ namespace {
     TEST(TCPPacketBufferTest, random) {
         TCPPacketBuffer buffer;
 
+        bitset<10> bits;
+        bits.set();
+        int total = bits.size();
+        int max_data_length = 10;
+
         // start at sequence #0
         // The index in the string is equal to the sequence number
+        string expected = RandomStringGenerator::get_data(total);
 
-        string expected = RandomStringGenerator::get_data(10000);
+        srand(2000);
+        while(bits.any()) {
+            int sequence_number = rand() % total;
+            
+            int length = rand() % (max_data_length + 1);
+
+            if(sequence_number + length > expected.size()) {
+                length = expected.size() - sequence_number;
+            }
+            
+            if(length == 0) {
+                continue;
+            }
+            string s = expected.substr(sequence_number, length);
+
+            TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(sequence_number, s);
+            int count = buffer.insert(p);
+            
+            if(count < 0) {
+                cout << "BAD seq num: " << p->get_tcp_sequence_number() << endl;
+                cout << "BAD data length: " << p->get_data_length_bytes() << endl;
+            }
+            EXPECT_LE(0, count);
 
 
+            for(int i = sequence_number; i < sequence_number + length; ++i) {
+                bits.set(i, false);
+            }
+        }
 
-
+        EXPECT_EQ(expected, buffer.get_continuous_data(0));
     }
 }

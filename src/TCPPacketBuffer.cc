@@ -9,6 +9,22 @@ TCPPacketBuffer::~TCPPacketBuffer() {
 }
 
 int TCPPacketBuffer::insert(TCPPacket* p) {
+
+    cout << "TCPPacketBuffer::insert(), Inserting seq num : " << p->get_tcp_sequence_number() << endl;
+    cout << "TCPPacketBuffer::insert(), Inserting data len: " << p->get_data_length_bytes() << endl;
+
+    if(!buffer_.empty()) {
+        cout << cout << "TCPPacketBuffer::insert(), existing packets" << endl;
+        for(packet_buffer::iterator i = buffer_.begin(); i != buffer_.end(); i++) {
+            cout << "TCPPacketBuffer::insert(), existing seq num : " << i->first->get_tcp_sequence_number() << endl;
+            cout << "TCPPacketBuffer::insert(), existing data len: " << i->first->get_data_length_bytes() << endl;
+        }
+    }
+
+
+
+
+
     pair < packet_buffer::iterator, bool> ret = buffer_.insert(make_pair(p, 0));
 
     int inserted_data_length = p->get_data_length_bytes();
@@ -23,7 +39,7 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
             // the one in the map is smaller
             num_bytes_inserted -= in_map->get_data_length_bytes();
             buffer_.erase(ret.first);
-            buffer_.insert(make_pair(p, 0));
+            ret = buffer_.insert(make_pair(p, 0));
         }
         else {
             // p is smaller than the one in the map OR
@@ -32,7 +48,6 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
             return 0;
         }
     }
-
     list<packet_buffer::iterator> to_remove;
 
     // The iterator returned from the insert() call should point to the packet we just inserted
@@ -104,7 +119,6 @@ string TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number) {
         else {
             break;
         }
-
         sequence_number += num_appended;
         ++itr;
     }
