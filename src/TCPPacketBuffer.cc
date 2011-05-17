@@ -11,13 +11,33 @@ TCPPacketBuffer::~TCPPacketBuffer() {
 int TCPPacketBuffer::insert(TCPPacket* p) {
 
     pair < packet_buffer::iterator, bool> ret = buffer_.insert(make_pair(p, 0));
-    
-    // asserts that the packet inserted was unique (according the the comparator)
-    assert(ret.second);
 
     int inserted_data_length = p->get_data_length_bytes();
     int num_bytes_inserted = inserted_data_length;
     u_int32_t inserted_sequence_number = p->get_tcp_sequence_number();
+
+    if (!ret.second) {
+        // the sequence number is already in the buffer
+        // keep the one with the bigger payload
+        // return if the payload's are equal
+        TCPPacket* in_map = ret.first->first;
+
+        if(in_map->get_data_length_bytes() < p->get_data_length_bytes()) {
+            // the one in the map is smaller
+            num_bytes_inserted -= in_map->get_data_length_bytes();
+            buffer_.erase(ret.first);
+            buffer_.insert(make_pair(p, 0));
+        }
+        else {
+            // p is smaller than the one in the map OR
+            // they are equal in length
+            // either way we can safely discard p
+            return 0;
+        }
+    }
+    
+    
+    
 
     list<packet_buffer::iterator> to_remove;
 
@@ -27,6 +47,8 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
     itr++;
     while (itr != buffer_.end()) {
         TCPPacket* cur = itr->first;
+
+
 
         // check to see if we do not overlap
         if (less_than(inserted_sequence_number + inserted_data_length - 1, cur->get_tcp_sequence_number())) {
@@ -45,8 +67,7 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
                 cur->get_tcp_sequence_number() + cur->get_data_length_bytes())) {
             num_bytes_inserted -= inserted_sequence_number + inserted_data_length - cur->get_tcp_sequence_number();
             break;
-        }
-        // 2. we overlap the very next packet equally or more
+        }// 2. we overlap the very next packet equally or more
         else {
             num_bytes_inserted -= cur->get_data_length_bytes();
             to_remove.push_back(itr);
@@ -77,19 +98,17 @@ string TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number) {
         int num_appended = 0;
 
         // equal
-        if(sequence_number == p->get_tcp_sequence_number()) {
+        if (sequence_number == p->get_tcp_sequence_number()) {
             return_val.append((const char*) p->get_data(), p->get_data_length_bytes());
             num_appended = p->get_data_length_bytes();
-        }
-        // overlap
-        else if(less_than(p->get_tcp_sequence_number(), sequence_number)) {
+        }// overlap
+        else if (less_than(p->get_tcp_sequence_number(), sequence_number)) {
             int difference = sequence_number - p->get_tcp_sequence_number();
             int count = p->get_data_length_bytes() - difference;
             unsigned char* data = p->get_data() + difference;
             return_val.append((const char*) data, count);
             num_appended = count;
-        }
-        // gap
+        }// gap
         else {
             break;
         }
