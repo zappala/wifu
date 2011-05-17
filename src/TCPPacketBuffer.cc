@@ -9,22 +9,15 @@ TCPPacketBuffer::~TCPPacketBuffer() {
 }
 
 int TCPPacketBuffer::insert(TCPPacket* p) {
+
     pair < packet_buffer::iterator, bool> ret = buffer_.insert(make_pair(p, 0));
     
-    cout << "Buffered packets: " << endl;
-    for(packet_buffer::iterator itr = buffer_.begin(); itr != buffer_.end(); ++itr) {
-        cout << "Packet Sequence Number: " << itr->first->get_tcp_sequence_number() << endl;
-    }
-
     // asserts that the packet inserted was unique (according the the comparator)
     assert(ret.second);
 
     int inserted_data_length = p->get_data_length_bytes();
-    cout << "Inserted data length: " << inserted_data_length << endl;
     int num_bytes_inserted = inserted_data_length;
-    cout << "num bytes inserted: " << num_bytes_inserted << endl;
     u_int32_t inserted_sequence_number = p->get_tcp_sequence_number();
-    cout << "inserted sequence number: " << inserted_sequence_number << endl;
 
     list<packet_buffer::iterator> to_remove;
 
@@ -34,11 +27,9 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
     itr++;
     while (itr != buffer_.end()) {
         TCPPacket* cur = itr->first;
-        cout << "Current's seq num: " << cur->get_tcp_sequence_number() << endl;
 
         // check to see if we do not overlap
         if (less_than(inserted_sequence_number + inserted_data_length - 1, cur->get_tcp_sequence_number())) {
-            cout << "A" << endl;
             break;
         }
 
@@ -52,13 +43,11 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
         // 1. we only overlap the very next packet, but not all of it
         if (less_than(inserted_sequence_number + inserted_data_length,
                 cur->get_tcp_sequence_number() + cur->get_data_length_bytes())) {
-                cout << "B" << endl;
             num_bytes_inserted -= inserted_sequence_number + inserted_data_length - cur->get_tcp_sequence_number();
             break;
         }
         // 2. we overlap the very next packet equally or more
         else {
-            cout << "C" << endl;
             num_bytes_inserted -= cur->get_data_length_bytes();
             to_remove.push_back(itr);
         }
@@ -72,7 +61,6 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
         to_remove.pop_front();
     }
 
-    cout << "Returning: " << num_bytes_inserted << endl;
     return num_bytes_inserted;
 }
 
@@ -112,5 +100,4 @@ string TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number) {
 
     buffer_.erase(buffer_.begin(), itr);
     return return_val;
-
 }
