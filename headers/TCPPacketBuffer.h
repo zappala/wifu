@@ -23,6 +23,7 @@ public:
 
     int insert(TCPPacket* p);
     string get_continuous_data(u_int32_t sequence_number);
+    int size();
 
 private:
     /**

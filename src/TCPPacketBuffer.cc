@@ -9,110 +9,30 @@ TCPPacketBuffer::~TCPPacketBuffer() {
 }
 
 int TCPPacketBuffer::insert(TCPPacket* p) {
-
-    cout << "TCPPacketBuffer::insert(), Inserting seq num : " << p->get_tcp_sequence_number() << endl;
-    cout << "TCPPacketBuffer::insert(), Inserting data len: " << p->get_data_length_bytes() << endl;
-
-//    if(!buffer_.empty()) {
-//        cout << cout << "TCPPacketBuffer::insert(), existing packets" << endl;
-//        for(packet_buffer::iterator i = buffer_.begin(); i != buffer_.end(); i++) {
-//            cout << "TCPPacketBuffer::insert(), existing seq num : " << i->first->get_tcp_sequence_number() << endl;
-//            cout << "TCPPacketBuffer::insert(), existing data len: " << i->first->get_data_length_bytes() << endl;
-//        }
-//    }
-
+    cout << "TCPPacketBuffer::insert()" << endl;
+    int before_size = size();
+    cout << "Before size:" << before_size << endl;
     pair < packet_buffer::iterator, bool> ret = buffer_.insert(make_pair(p, 0));
 
-    int inserted_data_length = p->get_data_length_bytes();
-    int num_bytes_inserted = inserted_data_length;
-    u_int32_t inserted_sequence_number = p->get_tcp_sequence_number();
-
-    if (!ret.second) {
-        // the sequence number is already in the buffer
+    if(!ret.second) {
         TCPPacket* in_map = ret.first->first;
-
+        // keep the bigger of the two equal sequence numbered packets in the buffer
         if(in_map->get_data_length_bytes() < p->get_data_length_bytes()) {
-            // the one in the map is smaller
-            num_bytes_inserted -= in_map->get_data_length_bytes();
             buffer_.erase(ret.first);
-            ret = buffer_.insert(make_pair(p, 0));
-        }
-        else {
-            // p is smaller than the one in the map OR
-            // they are equal in length
-            // either way we can safely discard p
-            return 0;
+            ret = buffer_.insert(make_pair(p,0));
         }
     }
 
-    packet_buffer::iterator itr = ret.first;
-
-    // check to see if the previous packet contains any data that overlaps p
-    if(itr != buffer_.begin()) {
-        cout << "We are not at the beginning: " << p->get_tcp_sequence_number() << endl;
-        --itr;
-        TCPPacket* cur = itr->first;
-        int overlap = cur->get_tcp_sequence_number() + cur->get_data_length_bytes() - p->get_tcp_sequence_number();
-
-        if(overlap >= p->get_data_length_bytes()) {
-            buffer_.erase(++itr);
-            return 0;
-        }
-        if(overlap > 0) {
-            num_bytes_inserted -= overlap;
-        }
-        ++itr;
+    int after_size = size();
+    cout << "After size: " << after_size << endl;
+    int total_inserted = after_size - before_size;
+    assert(total_inserted >= 0);
+    if(total_inserted == 0 && ret.second) {
+        buffer_.erase(ret.first);
     }
 
+    return total_inserted;
 
-    list<packet_buffer::iterator> to_remove;
-
-    // The iterator returned from the insert() call should point to the packet we just inserted
-    // In order to figure out the number of bytes we should return, advance to the next packet (if any)
-    ++itr;
-    while (itr != buffer_.end()) {
-        TCPPacket* cur = itr->first;
-
-        cout << "Current seq number: " << cur->get_tcp_sequence_number() << endl;
-        cout << "While loop, num bytes inserted: " << num_bytes_inserted << endl;
-
-
-        // check to see if we do not overlap
-        if (less_than(inserted_sequence_number + inserted_data_length - 1, cur->get_tcp_sequence_number())) {
-            cout << "A" << endl;
-            break;
-        }
-        // we overlap
-        // there are a few cases here
-        // 1. we only overlap the very next packet, but not all of it
-        // 2. we overlap the very next packet equally or more
-        // 3. we overlap the very next packet and subsequent packets (taken care of with the loop)
-        // 4. we overlap the very next packet, and possibly subsequent packets, but there is a gap after the next packet (taken care of with the loop)
-
-        // 1. we only overlap the very next packet, but not all of it
-        if (less_than(inserted_sequence_number + inserted_data_length,
-                cur->get_tcp_sequence_number() + cur->get_data_length_bytes())) {
-            num_bytes_inserted -= inserted_sequence_number + inserted_data_length - cur->get_tcp_sequence_number();
-            cout << "B" << endl;
-            break;
-        }// 2. we overlap the very next packet equally or more
-        else {
-            cout << "C" << endl;
-            num_bytes_inserted -= cur->get_data_length_bytes();
-            to_remove.push_back(itr);
-        }
-        ++itr;
-    }
-
-    // we remove duplicate packets to make life easier on getting data out
-    // we could probably make this a range, but this is likely easier to read
-    // existing iterators are not invalidated by erasing other iterators
-    while (!to_remove.empty()) {
-        buffer_.erase(to_remove.front());
-        to_remove.pop_front();
-    }
-
-    return num_bytes_inserted < 0 ? 0 : num_bytes_inserted;
 }
 
 string TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number) {
@@ -157,4 +77,54 @@ string TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number) {
 
     buffer_.erase(buffer_.begin(), itr);
     return return_val;
+}
+
+int TCPPacketBuffer::size() {
+
+    cout << "TCPPacketBuffer::size()" << endl;
+
+    if(buffer_.empty()) {
+        return 0;
+    }
+
+    int return_value = 0;
+    
+    packet_buffer::iterator itr = buffer_.begin();
+
+    u_int32_t sequence_number = itr->first->get_tcp_sequence_number();
+
+    while (itr != buffer_.end()) {
+        int count = 0;
+        TCPPacket* p = itr->first;
+
+        cout << "Looking for sequence number: " << sequence_number << endl;
+        cout << "Packet Sequence Number: " << p->get_tcp_sequence_number() << endl;
+        cout << "Data Length    : " << p->get_data_length_bytes() << endl;
+
+        // equal
+        if (sequence_number == p->get_tcp_sequence_number()) {
+            count += p->get_data_length_bytes();
+            cout << "A" << endl;
+        }// overlap
+        else if (between(p->get_tcp_sequence_number(), sequence_number, p->get_tcp_sequence_number() + p->get_data_length_bytes())) {
+            int difference = sequence_number - p->get_tcp_sequence_number();
+            int length = p->get_data_length_bytes() - difference;
+            count += length;
+            cout << "B" << endl;
+        } // packet data has already been appended
+        else if (less_than(p->get_tcp_sequence_number(), sequence_number)) {
+            // do nothing
+            cout << "C" << endl;
+
+        }// gap
+        else {
+            cout << "D" << endl;
+            count += p->get_data_length_bytes();
+            sequence_number = p->get_tcp_sequence_number();
+        }
+        sequence_number += count;
+        return_value += count;
+        ++itr;
+    }
+    return return_value;
 }

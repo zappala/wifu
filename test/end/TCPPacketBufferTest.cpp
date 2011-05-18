@@ -20,10 +20,10 @@ namespace {
         int actual = buffer.insert(p);
         int expected = data.size();
 
-        EXPECT_EQ(expected, actual);
-        EXPECT_EQ(data, buffer.get_continuous_data(sequence_number));
+        ASSERT_EQ(expected, actual);
+        ASSERT_EQ(data, buffer.get_continuous_data(sequence_number));
         data = "";
-        EXPECT_EQ(data, buffer.get_continuous_data(sequence_number));
+        ASSERT_EQ(data, buffer.get_continuous_data(sequence_number));
     }
 
     TEST(TCPPacketBufferTest, twoBackToBack) {
@@ -37,18 +37,18 @@ namespace {
 
         int actual = buffer.insert(p1);
         int expected = data.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p2);
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         string expected_data = data;
         expected_data.append(data);
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(sequence_number));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(sequence_number));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(sequence_number));
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(sequence_number + expected));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(sequence_number));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(sequence_number + expected));
     }
 
     TEST(TCPPacketBufferTest, gap1) {
@@ -69,29 +69,29 @@ namespace {
 
         int actual = buffer.insert(p1);
         int expected = data.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p2);
         expected = data2.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         string expected_data = data;
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
 
         actual = buffer.insert(p3);
         expected = 5;
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         expected_data = "This is more data";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size() + expected_data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size() + expected_data.size()));
     }
 
     TEST(TCPPacketBufferTest, gap2) {
@@ -112,29 +112,29 @@ namespace {
 
         int actual = buffer.insert(p1);
         int expected = data.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p2);
         expected = data2.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         string expected_data = data;
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
 
         actual = buffer.insert(p3);
         expected = 5;
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         expected_data = "This is more data";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size() + expected_data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size() + expected_data.size()));
     }
 
     TEST(TCPPacketBufferTest, gap3) {
@@ -155,28 +155,28 @@ namespace {
 
         int actual = buffer.insert(p1);
         int expected = data.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p2);
         expected = data2.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         string expected_data = data;
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
 
         actual = buffer.insert(p3);
         expected = 25;
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         expected_data = data3;
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size()));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size() + expected_data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + data.size() + expected_data.size()));
     }
 
     TEST(TCPPacketBufferTest, gap4) {
@@ -197,32 +197,32 @@ namespace {
 
         int actual = buffer.insert(p1);
         int expected = data.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p2);
         expected = data2.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p3);
         expected = 25;
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         string expected_data = data.append(data3);
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + expected_data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + expected_data.size()));
     }
 
     TEST(TCPPacketBufferTest, gap5) {
         TCPPacketBuffer buffer;
         //                     10        20        30        40        50
-        //             123456789012345678901234567890123456789012345678901234
+        //             1234567890123456789012345678901234567890123456789012345
         string data = "This is the data. ";
-        string data2 = "is more data";
-        string data3 = "I ever";
-        string data4 = "This is more data than I ever wanted.";
+        string data2 =                       "is more data";
+        string data3 =                                         "I ever";
+        string data4 =                  "This is more data than I ever wanted.";
 
         u_int32_t data_seq_num = 1;
         u_int32_t data2_seq_num = 24;
@@ -236,26 +236,26 @@ namespace {
 
         int actual = buffer.insert(p1);
         int expected = data.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p2);
         expected = data2.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p3);
         expected = data3.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p4);
         expected = data4.size() - data2.size() - data3.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         string expected_data = data.append(data4);
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + expected_data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + expected_data.size()));
     }
 
     TEST(TCPPacketBufferTest, gap6) {
@@ -263,9 +263,9 @@ namespace {
         //                     10        20        30        40        50
         //             123456789012345678901234567890123456789012345678901234
         string data = "This is the data. ";
-        string data2 = "is more data";
-        string data3 = "I ever wanted.";
-        string data4 = "This is more data than I ever wa";
+        string data2 =                       "is more data";
+        string data3 =                                         "I ever wanted.";
+        string data4 =                  "This is more data than I ever wa";
 
         u_int32_t data_seq_num = 1;
         u_int32_t data2_seq_num = 24;
@@ -279,26 +279,26 @@ namespace {
 
         int actual = buffer.insert(p1);
         int expected = data.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p2);
         expected = data2.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p3);
         expected = data3.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p4);
         expected = data4.size() - data2.size() - 9;
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         string expected_data = data.append(data4).append("nted.");
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + expected_data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + expected_data.size()));
     }
 
     TEST(TCPPacketBufferTest, equalSequenceNumberEqualLength) {
@@ -313,18 +313,18 @@ namespace {
 
         int actual = buffer.insert(p1);
         int expected = data.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p1);
         expected = 0;
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         string expected_data = data;
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + expected_data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + expected_data.size()));
     }
 
     TEST(TCPPacketBufferTest, equalSequenceNumberSmallerLength) {
@@ -341,18 +341,18 @@ namespace {
 
         int actual = buffer.insert(p1);
         int expected = data.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p2);
         expected = 0;
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         string expected_data = data;
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + expected_data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + expected_data.size()));
     }
 
     TEST(TCPPacketBufferTest, equalSequenceNumberLargerLength) {
@@ -369,29 +369,30 @@ namespace {
 
         int actual = buffer.insert(p1);
         int expected = data.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         actual = buffer.insert(p2);
         expected = data2.size() - data.size();
-        EXPECT_EQ(expected, actual);
+        ASSERT_EQ(expected, actual);
 
         string expected_data = data2;
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
 
         expected_data = "";
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
-        EXPECT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + expected_data.size()));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num));
+        ASSERT_EQ(expected_data, buffer.get_continuous_data(data_seq_num + expected_data.size()));
     }
 
     TEST(TCPPacketBufferTest, random) {
 
-        //for (int i = 10; i < INT_MAX; i++) {
+        for (int i = 10; i < INT_MAX; i++) {
+            cout << "SEED: " << i << endl;
             TCPPacketBuffer buffer;
 
             bitset < 10 > bits;
             bits.set();
             int total = bits.size();
-            int max_data_length = total;
+            int max_data_length = 10;
 
 
             // start at sequence #0
@@ -400,7 +401,7 @@ namespace {
             int total_inserted = 0;
 
 
-            srand(14);
+            srand(i);
             while (bits.any()) {
                 int sequence_number = rand() % total;
 
@@ -420,7 +421,7 @@ namespace {
                 int count = buffer.insert(p);
                 cout << "Inserted seq num: " << p->get_tcp_sequence_number() << endl;
                 cout << "Returned data length: " << count << endl;
-                EXPECT_LE(0, count);
+                ASSERT_LE(0, count);
                 total_inserted += count;
 
 
@@ -428,10 +429,11 @@ namespace {
                     bits.set(i, false);
                 }
             }
-            //cout << i << endl;
-            ASSERT_EQ(expected.length(), total_inserted);
+            
             ASSERT_EQ(expected, buffer.get_continuous_data(0));
+            ASSERT_EQ(expected.length(), total_inserted);
+            
 
-        //}
+        }
     }
 }
