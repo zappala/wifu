@@ -4,6 +4,7 @@
 #include "gtest/gtest.h"
 #include "../headers/HelperFunctions.h"
 #include "../headers/RandomStringGenerator.h"
+#include "events/TimeoutEvent.h"
 #include <bitset>
 
 using namespace std;
@@ -330,7 +331,7 @@ namespace {
         TCPPacketBuffer buffer;
         //                      10        20        30        40        50
         //              123456789012345678901234567890123456789012345678901234
-        string data =  "This is the data. ";
+        string data = "This is the data. ";
         string data2 = "This is the";
 
         u_int32_t data_seq_num = 1;
@@ -358,7 +359,7 @@ namespace {
         TCPPacketBuffer buffer;
         //                      10        20        30        40        50
         //              123456789012345678901234567890123456789012345678901234
-        string data =  "This is the";
+        string data = "This is the";
         string data2 = "This is the data.";
 
         u_int32_t data_seq_num = 1;
@@ -383,47 +384,54 @@ namespace {
     }
 
     TEST(TCPPacketBufferTest, random) {
-        TCPPacketBuffer buffer;
 
-        bitset<10000> bits;
-        bits.set();
-        int total = bits.size();
-        int max_data_length = 100;
+        //for (int i = 10; i < INT_MAX; i++) {
+            TCPPacketBuffer buffer;
 
-        // start at sequence #0
-        // The index in the string is equal to the sequence number
-        string expected = RandomStringGenerator::get_data(total);
+            bitset < 10 > bits;
+            bits.set();
+            int total = bits.size();
+            int max_data_length = total;
 
-        //srand(4000);
-        while(bits.any()) {
-            int sequence_number = rand() % total;
-            
-            int length = rand() % (max_data_length + 1);
 
-            if(sequence_number + length > expected.size()) {
-                length = expected.size() - sequence_number;
+            // start at sequence #0
+            // The index in the string is equal to the sequence number
+            string expected = RandomStringGenerator::get_data(total);
+            int total_inserted = 0;
+
+
+            srand(14);
+            while (bits.any()) {
+                int sequence_number = rand() % total;
+
+                int length = rand() % (max_data_length + 1);
+
+                if (sequence_number + length > expected.size()) {
+                    length = expected.size() - sequence_number;
+                }
+
+                if (length == 0) {
+                    continue;
+                }
+                string s = expected.substr(sequence_number, length);
+
+
+                TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(sequence_number, s);
+                int count = buffer.insert(p);
+                cout << "Inserted seq num: " << p->get_tcp_sequence_number() << endl;
+                cout << "Returned data length: " << count << endl;
+                EXPECT_LE(0, count);
+                total_inserted += count;
+
+
+                for (int i = sequence_number; i < sequence_number + length; ++i) {
+                    bits.set(i, false);
+                }
             }
-            
-            if(length == 0) {
-                continue;
-            }
-            string s = expected.substr(sequence_number, length);
+            //cout << i << endl;
+            ASSERT_EQ(expected.length(), total_inserted);
+            ASSERT_EQ(expected, buffer.get_continuous_data(0));
 
-            TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(sequence_number, s);
-            int count = buffer.insert(p);
-            
-            if(count < 0) {
-                cout << "BAD seq num: " << p->get_tcp_sequence_number() << endl;
-                cout << "BAD data length: " << p->get_data_length_bytes() << endl;
-            }
-            EXPECT_LE(0, count);
-
-
-            for(int i = sequence_number; i < sequence_number + length; ++i) {
-                bits.set(i, false);
-            }
-        }
-
-        EXPECT_EQ(expected, buffer.get_continuous_data(0));
+        //}
     }
 }
