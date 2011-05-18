@@ -220,9 +220,9 @@ namespace {
         //                     10        20        30        40        50
         //             1234567890123456789012345678901234567890123456789012345
         string data = "This is the data. ";
-        string data2 =                       "is more data";
-        string data3 =                                         "I ever";
-        string data4 =                  "This is more data than I ever wanted.";
+        string data2 = "is more data";
+        string data3 = "I ever";
+        string data4 = "This is more data than I ever wanted.";
 
         u_int32_t data_seq_num = 1;
         u_int32_t data2_seq_num = 24;
@@ -263,9 +263,9 @@ namespace {
         //                     10        20        30        40        50
         //             123456789012345678901234567890123456789012345678901234
         string data = "This is the data. ";
-        string data2 =                       "is more data";
-        string data3 =                                         "I ever wanted.";
-        string data4 =                  "This is more data than I ever wa";
+        string data2 = "is more data";
+        string data3 = "I ever wanted.";
+        string data4 = "This is more data than I ever wa";
 
         u_int32_t data_seq_num = 1;
         u_int32_t data2_seq_num = 24;
@@ -385,55 +385,45 @@ namespace {
 
     TEST(TCPPacketBufferTest, random) {
 
-        for (int i = 10; i < INT_MAX; i++) {
-            cout << "SEED: " << i << endl;
-            TCPPacketBuffer buffer;
+        TCPPacketBuffer buffer;
 
-            bitset < 10 > bits;
-            bits.set();
-            int total = bits.size();
-            int max_data_length = 10;
+        bitset < 100000 > bits;
+        bits.set();
+        int total = bits.size();
+        int max_data_length = 1000;
 
 
-            // start at sequence #0
-            // The index in the string is equal to the sequence number
-            string expected = RandomStringGenerator::get_data(total);
-            int total_inserted = 0;
+        // start at sequence #0
+        // The index in the string is equal to the sequence number
+        string expected = RandomStringGenerator::get_data(total);
+        int total_inserted = 0;
 
 
-            srand(i);
-            while (bits.any()) {
-                int sequence_number = rand() % total;
+        while (bits.any()) {
+            int sequence_number = rand() % total;
 
-                int length = rand() % (max_data_length + 1);
+            int length = rand() % (max_data_length + 1);
 
-                if (sequence_number + length > expected.size()) {
-                    length = expected.size() - sequence_number;
-                }
-
-                if (length == 0) {
-                    continue;
-                }
-                string s = expected.substr(sequence_number, length);
-
-
-                TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(sequence_number, s);
-                int count = buffer.insert(p);
-                cout << "Inserted seq num: " << p->get_tcp_sequence_number() << endl;
-                cout << "Returned data length: " << count << endl;
-                ASSERT_LE(0, count);
-                total_inserted += count;
-
-
-                for (int i = sequence_number; i < sequence_number + length; ++i) {
-                    bits.set(i, false);
-                }
+            if (sequence_number + length > expected.size()) {
+                length = expected.size() - sequence_number;
             }
-            
-            ASSERT_EQ(expected, buffer.get_continuous_data(0));
-            ASSERT_EQ(expected.length(), total_inserted);
-            
 
+            if (length == 0) {
+                continue;
+            }
+            string s = expected.substr(sequence_number, length);
+
+            TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(sequence_number, s);
+            int count = buffer.insert(p);
+            ASSERT_LE(0, count);
+            total_inserted += count;
+
+            for (int i = sequence_number; i < sequence_number + length; ++i) {
+                bits.set(i, false);
+            }
         }
+
+        ASSERT_EQ(expected, buffer.get_continuous_data(0));
+        ASSERT_EQ(expected.length(), total_inserted);
     }
 }
