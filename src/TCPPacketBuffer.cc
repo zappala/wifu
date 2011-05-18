@@ -9,22 +9,6 @@ TCPPacketBuffer::~TCPPacketBuffer() {
 }
 
 int TCPPacketBuffer::insert(TCPPacket* p) {
-
-    cout << "TCPPacketBuffer::insert(), Inserting seq num : " << p->get_tcp_sequence_number() << endl;
-    cout << "TCPPacketBuffer::insert(), Inserting data len: " << p->get_data_length_bytes() << endl;
-
-    if(!buffer_.empty()) {
-        cout << cout << "TCPPacketBuffer::insert(), existing packets" << endl;
-        for(packet_buffer::iterator i = buffer_.begin(); i != buffer_.end(); i++) {
-            cout << "TCPPacketBuffer::insert(), existing seq num : " << i->first->get_tcp_sequence_number() << endl;
-            cout << "TCPPacketBuffer::insert(), existing data len: " << i->first->get_data_length_bytes() << endl;
-        }
-    }
-
-
-
-
-
     pair < packet_buffer::iterator, bool> ret = buffer_.insert(make_pair(p, 0));
 
     int inserted_data_length = p->get_data_length_bytes();
@@ -89,7 +73,7 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
         to_remove.pop_front();
     }
 
-    return num_bytes_inserted;
+    return num_bytes_inserted < 0 ? 0 : num_bytes_inserted;
 }
 
 string TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number) {
@@ -102,24 +86,25 @@ string TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number) {
 
     while (itr != buffer_.end()) {
         TCPPacket* p = itr->first;
-        int num_appended = 0;
 
         // equal
         if (sequence_number == p->get_tcp_sequence_number()) {
             return_val.append((const char*) p->get_data(), p->get_data_length_bytes());
-            num_appended = p->get_data_length_bytes();
+            sequence_number += p->get_data_length_bytes();
         }// overlap
-        else if (less_than(p->get_tcp_sequence_number(), sequence_number)) {
+        else if (between(p->get_tcp_sequence_number(), sequence_number, p->get_tcp_sequence_number() + p->get_data_length_bytes())) {
             int difference = sequence_number - p->get_tcp_sequence_number();
             int count = p->get_data_length_bytes() - difference;
             unsigned char* data = p->get_data() + difference;
             return_val.append((const char*) data, count);
-            num_appended = count;
+            sequence_number += count;
+        } // packet data has already been appended
+        else if (less_than(p->get_tcp_sequence_number(), sequence_number)) {
+            // do nothing
         }// gap
         else {
             break;
         }
-        sequence_number += num_appended;
         ++itr;
     }
 

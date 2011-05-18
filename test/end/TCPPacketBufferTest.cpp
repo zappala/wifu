@@ -385,16 +385,16 @@ namespace {
     TEST(TCPPacketBufferTest, random) {
         TCPPacketBuffer buffer;
 
-        bitset<10> bits;
+        bitset<10000> bits;
         bits.set();
         int total = bits.size();
-        int max_data_length = 10;
+        int max_data_length = 100;
 
         // start at sequence #0
         // The index in the string is equal to the sequence number
         string expected = RandomStringGenerator::get_data(total);
 
-        srand(2000);
+        //srand(4000);
         while(bits.any()) {
             int sequence_number = rand() % total;
             
