@@ -182,14 +182,15 @@ string TCPPacket::to_s() const {
             << is_tcp_psh() << " "
             << is_tcp_rst() << " "
             << is_tcp_syn() << " "
-            << is_tcp_fin();
+            << is_tcp_fin() << " "
+            << get_tcp_receive_window_size();
     return s.str();
 }
 
 string TCPPacket::to_s_format() const {
     stringstream s;
     s << IPPacket::to_s_format() << endl
-            << "# tcp sport dport seq_num ack_num header_length URG ACK PSH RST SYN FIN";
+      << "# tcp sport dport seq_num ack_num header_length URG ACK PSH RST SYN FIN rcv_wnd";
     return s.str();
 }
 

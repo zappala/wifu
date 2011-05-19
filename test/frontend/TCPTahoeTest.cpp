@@ -96,22 +96,29 @@ void tcp_tahoe_drop_none() {
     tcp_tahoe_connect_test();
     NetworkTrace expected;
 
-    // send
-    expected.add_packet(get_syn(TCP_TAHOE));
-    // receive
-    expected.add_packet(get_syn(TCP_TAHOE));
-
+    TCPPacket* syn = get_syn(TCP_TAHOE);
+    syn->set_tcp_receive_window_size(UINT_MAX);
 
     // send
-    expected.add_packet(get_synack(TCP_TAHOE));
+    expected.add_packet(syn);
     // receive
-    expected.add_packet(get_synack(TCP_TAHOE));
+    expected.add_packet(syn);
 
 
+    TCPPacket* synack = get_synack(TCP_TAHOE);
+    synack->set_tcp_receive_window_size(UINT_MAX);
     // send
-    expected.add_packet(get_ack(TCP_TAHOE));
+    expected.add_packet(synack);
     // receive
-    expected.add_packet(get_ack(TCP_TAHOE));
+    expected.add_packet(synack);
+
+
+    TCPPacket* ack = get_ack(TCP_TAHOE);
+    ack->set_tcp_receive_window_size(UINT_MAX);
+    // send
+    expected.add_packet(ack);
+    // receive
+    expected.add_packet(ack);
 
     compare_traces(expected);
 }
