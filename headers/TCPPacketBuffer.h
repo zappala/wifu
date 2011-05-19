@@ -22,7 +22,7 @@ public:
     virtual ~TCPPacketBuffer();
 
     int insert(TCPPacket* p);
-    string get_continuous_data(u_int32_t sequence_number);
+    void get_continuous_data(u_int32_t sequence_number, string& buffer);
     int size();
 
 private:

@@ -34,16 +34,13 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
     return total_inserted;
 }
 
-string TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number) {
+void TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number, string& buffer) {
 
     packet_buffer::iterator itr = buffer_.begin();
-    string return_val = "";
 
     if (buffer_.empty() || itr->first->get_tcp_sequence_number() != sequence_number) {
-        return return_val;
+        return;
     }
-
-    
 
     while (itr != buffer_.end()) {
         TCPPacket* p = itr->first;
@@ -52,20 +49,18 @@ string TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number) {
 
         // equal
         if (sequence_number == p->get_tcp_sequence_number()) {
-            return_val.append((const char*) p->get_data(), p->get_data_length_bytes());
+            buffer.append((const char*) p->get_data(), p->get_data_length_bytes());
             num_appended = p->get_data_length_bytes();
         }// overlap
         else if (between(p->get_tcp_sequence_number(), sequence_number, p->get_tcp_sequence_number() + p->get_data_length_bytes())) {
             int difference = sequence_number - p->get_tcp_sequence_number();
             int count = p->get_data_length_bytes() - difference;
             unsigned char* data = p->get_data() + difference;
-            return_val.append((const char*) data, count);
+            buffer.append((const char*) data, count);
             num_appended = count;
         } // packet data has already been appended
         else if (less_than(p->get_tcp_sequence_number(), sequence_number)) {
             // do nothing
-            
-
         }// gap
         else {
             break;
@@ -76,7 +71,7 @@ string TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number) {
 
     buffer_.erase(buffer_.begin(), itr);
     mark_dirty();
-    return return_val;
+    return;
 }
 
 int TCPPacketBuffer::size() {
