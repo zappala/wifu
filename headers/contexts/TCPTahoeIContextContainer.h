@@ -13,6 +13,8 @@
 #include "contexts/ConnectionManagerContext.h"
 
 #include "events/SendEvent.h"
+#include "events/CloseEvent.h"
+#include "events/NetworkReceivePacketEvent.h"
 
 class TCPTahoeIContextContainer : public gc {
 public:
@@ -29,6 +31,9 @@ public:
     CloseEvent* get_saved_close_event();
     void set_saved_close_event(CloseEvent* e);
 
+    NetworkReceivePacketEvent* get_saved_fin();
+    void set_saved_fin(NetworkReceivePacketEvent* e);
+
 private:
     IContext* connection_manager_;
     IContext* congestion_control_;
@@ -36,6 +41,7 @@ private:
 
     SendEvent* saved_send_event_;
     CloseEvent* saved_close_event_;
+    NetworkReceivePacketEvent* fin_;
 };
 
 #endif	/* TCPTAHOEICONTEXTCONTAINER_H */

@@ -46,10 +46,58 @@ void TCPTahoe::icontext_listen(ListenEvent* e) {
 void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
+    TCPPacket* p = (TCPPacket*) e->get_packet();
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c->get_reliability();
 
-    c->get_reliability()->icontext_receive_packet(e);
+    // validate any ack number
+    if (p->is_tcp_ack() && !is_valid_ack_number(rc, p)) {
+        rc->icontext_receive_packet(e);
+        return;
+    }
+
+    // validate sequence number
+    // This is on page 69 of RFC 793
+    // We add on the case where no context exists for us to check (RCV.NXT == 0)
+    if (!is_valid_sequence_number(rc, p)) {
+        // <editor-fold defaultstate="collapsed" desc="Dispatch ACK">
+        TCPPacket* response = new TCPPacket();
+        response->insert_tcp_header_option(new TCPTimestampOption());
+
+        AddressPort* destination = s->get_remote_address_port();
+        AddressPort* source = s->get_local_address_port();
+
+        response->set_ip_destination_address_s(destination->get_address());
+        response->set_ip_source_address_s(source->get_address());
+
+        response->set_destination_port(destination->get_port());
+        response->set_source_port(source->get_port());
+
+        response->set_data((unsigned char*) "", 0);
+
+        SendPacketEvent* event = new SendPacketEvent(s, response);
+        dispatch(event);
+        return;
+        // </editor-fold>
+    }
+
+    if (p->is_tcp_fin() && rc->get_rcv_wnd() < MAX_TCP_RECEIVE_WINDOW_SIZE) {
+        c->set_saved_fin(e);
+        return;
+    }
+
+    rc->icontext_receive_packet(e);
     c->get_connection_manager()->icontext_receive_packet(e);
-    c->get_congestion_control()->icontext_receive_packet(e);
+
+    if (c->get_connection_manager()->icontext_can_send(s) &&
+            between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt())) {
+
+        c->get_congestion_control()->icontext_receive_packet(e);
+    }
+
+    if (c->get_saved_close_event() && s->get_send_buffer().empty()) {
+        c->get_connection_manager()->icontext_close(c->get_saved_close_event());
+        c->set_saved_close_event(0);
+    }
 }
 
 void TCPTahoe::icontext_send_packet(SendPacketEvent* e) {
@@ -100,8 +148,6 @@ void TCPTahoe::icontext_new_connection_initiated(ConnectionInitiatedEvent* e) {
     TCPTahoeIContextContainer* new_cc = new TCPTahoeIContextContainer();
     map_[listening_socket] = new_cc;
 
-    // TODO: Move cache over?
-
     new_cc->get_reliability()->icontext_new_connection_initiated(e);
     new_cc->get_connection_manager()->icontext_new_connection_initiated(e);
     new_cc->get_congestion_control()->icontext_new_connection_initiated(e);
@@ -111,10 +157,9 @@ void TCPTahoe::icontext_close(CloseEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    if(s->get_send_buffer().empty()) {
+    if (s->get_send_buffer().empty()) {
         c->get_connection_manager()->icontext_close(e);
-    }
-    else {
+    } else {
         c->set_saved_close_event(e);
     }
 
@@ -154,18 +199,18 @@ void TCPTahoe::icontext_send(SendEvent* e) {
         c->set_saved_send_event(e);
     }
 
-    //    c->get_reliability()->icontext_send(e);
-    //    c->get_connection_manager()->icontext_send(e);
-    //    c->get_congestion_control()->icontext_send(e);
+    c->get_reliability()->icontext_send(e);
+    c->get_connection_manager()->icontext_send(e);
+    c->get_congestion_control()->icontext_send(e);
 }
 
 void TCPTahoe::icontext_receive(ReceiveEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-//    c->get_reliability()->icontext_receive(e);
-//    c->get_connection_manager()->icontext_receive(e);
-//    c->get_congestion_control()->icontext_receive(e);
+    c->get_reliability()->icontext_receive(e);
+    c->get_connection_manager()->icontext_receive(e);
+    c->get_congestion_control()->icontext_receive(e);
 }
 
 void TCPTahoe::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e) {
@@ -180,6 +225,11 @@ void TCPTahoe::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e) 
 void TCPTahoe::icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c->get_reliability();
+
+    if (c->get_saved_fin() && rc->get_rcv_wnd() < MAX_TCP_RECEIVE_WINDOW_SIZE) {
+        dispatch(c->get_saved_fin());
+    }
 
     c->get_reliability()->icontext_receive_buffer_not_full(e);
     c->get_connection_manager()->icontext_receive_buffer_not_full(e);
@@ -205,9 +255,9 @@ void TCPTahoe::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
         save_in_buffer_and_send_events(saved_send_event);
     }
 
-    //    c->get_reliability()->icontext_send_buffer_not_full(e);
-    //    c->get_connection_manager()->icontext_send_buffer_not_full(e);
-    //    c->get_congestion_control()->icontext_send_buffer_not_full(e);
+    c->get_reliability()->icontext_send_buffer_not_full(e);
+    c->get_connection_manager()->icontext_send_buffer_not_full(e);
+    c->get_congestion_control()->icontext_send_buffer_not_full(e);
 }
 
 bool TCPTahoe::icontext_can_send(Socket* s) {
@@ -287,4 +337,43 @@ void TCPTahoe::create_and_dispatch_received_data(ReceiveEvent* e) {
 
     dispatch(response);
     dispatch(new ReceiveBufferNotFullEvent(s));
+}
+
+bool TCPTahoe::is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacket* p) {
+
+    // This is the check to ensure we still continue if there is no context yet
+    // It is not part of the RFC
+    // TODO: this may need to change to something else as we may wrap around
+    // I actually cannot remember why this needs to be here -- RB
+    if (rc->get_rcv_nxt() == 0) {
+        return true;
+    }
+
+
+    // These checks are in reverse order that they are on page 69
+    // because I always seemed to get to the last one in tests
+    if (p->get_data_length_bytes() > 0 && rc->get_rcv_wnd() > 0) {
+        return between_equal_left(rc->get_rcv_nxt(), p->get_tcp_sequence_number(), rc->get_rcv_nxt() + rc->get_rcv_wnd()) ||
+                between_equal_left(rc->get_rcv_nxt(), p->get_tcp_sequence_number() + p->get_data_length_bytes() - 1, rc->get_rcv_nxt() + rc->get_rcv_wnd());
+    }
+
+    if (p->get_data_length_bytes() > 0 && rc->get_rcv_wnd() == 0) {
+        return false;
+    }
+
+    if (p->get_data_length_bytes() == 0 && rc->get_rcv_wnd() > 0) {
+        return between_equal_left(rc->get_rcv_nxt(), p->get_tcp_sequence_number(), rc->get_rcv_nxt() + rc->get_rcv_wnd());
+    }
+
+    if (p->get_data_length_bytes() == 0 && rc->get_rcv_wnd() == 0) {
+        return p->get_tcp_sequence_number() == rc->get_rcv_nxt();
+    }
+
+
+
+    return false;
+}
+
+bool TCPTahoe::is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p) {
+    return between_equal(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt());
 }

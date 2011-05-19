@@ -72,8 +72,8 @@ void TCPTahoeReliabilityContext::set_duplicates(int duplicates) {
     duplicates_ = duplicates;
 }
 
-vector<TCPPacket*>& TCPTahoeReliabilityContext::get_packet_buffer() {
-    return packet_buffer_;
+TCPPacketBuffer& TCPTahoeReliabilityContext::get_receive_window() {
+    return receive_window_;
 }
 
 ReceiveEvent* TCPTahoeReliabilityContext::get_receive_event() {

@@ -99,17 +99,30 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
         rc->set_rcv_nxt(p->get_tcp_sequence_number() + 1);
     } else if (p->get_data_length_bytes() > 0) {
         // save data
+        int num_inserted = rc->get_receive_window().insert(p);
+        rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
 
+        string& receive_buffer = s->get_receive_buffer();
+        u_int32_t before_rcv_buffer_size = receive_buffer.size();
 
+        rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
+        u_int32_t amount_put_in_receive_buffer = receive_buffer.size() - before_rcv_buffer_size;
+        assert(amount_put_in_receive_buffer >= 0);
 
+        if (amount_put_in_receive_buffer > 0) {
+            rc->set_rcv_nxt(rc->get_rcv_nxt() + amount_put_in_receive_buffer);
+            Dispatcher::instance().enqueue(new ReceiveBufferNotEmptyEvent(s));
+        }
+
+        create_and_dispatch_ack(s);
     }
 }
 
 void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, ReceiveBufferNotEmptyEvent* e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
-    
-    if(rc->get_receive_event() && !s->get_receive_buffer().empty()) {
+
+    if (rc->get_receive_event() && !s->get_receive_buffer().empty()) {
         create_and_dispatch_received_data(c, rc->get_receive_event());
         rc->set_receive_event(0);
     }

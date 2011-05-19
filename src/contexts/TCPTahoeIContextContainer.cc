@@ -1,6 +1,6 @@
 #include "contexts/TCPTahoeIContextContainer.h"
 
-TCPTahoeIContextContainer::TCPTahoeIContextContainer() : saved_send_event_(0), saved_close_event_(0) {
+TCPTahoeIContextContainer::TCPTahoeIContextContainer() : saved_send_event_(0), saved_close_event_(0), fin_(0) {
     connection_manager_ = new ConnectionManagerContext();
     congestion_control_ = new TCPTahoeCongestionControlContext();
     reliability_ = new TCPTahoeReliabilityContext();
@@ -36,4 +36,12 @@ CloseEvent* TCPTahoeIContextContainer::get_saved_close_event() {
 
 void TCPTahoeIContextContainer::set_saved_close_event(CloseEvent* e) {
     saved_close_event_ = e;
+}
+
+NetworkReceivePacketEvent* TCPTahoeIContextContainer::get_saved_fin() {
+    return fin_;
+}
+
+void TCPTahoeIContextContainer::set_saved_fin(NetworkReceivePacketEvent* e) {
+    fin_ = e;
 }
