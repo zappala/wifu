@@ -72,6 +72,8 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
+    cout << "TCPTahoeReliabilityState::state_receive_packet()" << endl;
+
     // TODO: we will (for now) blindly update the echo reply here (is this okay?)
     // we can reach this point without validating either the ack or seq number
     TCPTimestampOption* ts = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
@@ -79,7 +81,8 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
         rc->set_echo_reply(ts->get_timestamp());
     }
 
-    if (p->is_tcp_ack() && between_equal_right(rc->get_snd_una(), p->get_tcp_sequence_number(), rc->get_snd_nxt())) {
+    if (p->is_tcp_ack() && between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt())) {
+        cout << "TCPTahoeReliabilityState::state_receive_packet(), ACK'ing data" << endl;
         u_int32_t num_acked = p->get_tcp_ack_number() - rc->get_snd_una();
         rc->set_snd_una(p->get_tcp_ack_number());
         s->get_send_buffer().erase(0, num_acked);
@@ -90,6 +93,7 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
         if (rc->get_snd_nxt() == rc->get_snd_una()) {
             // no outstanding data
             cancel_timer(c, s);
+            cout << "TCPTahoeReliabilityState::state_receive_packet(), timer canceled" << endl;
         } else if (num_acked > 0) {
             // we did ack some data
             reset_timer(c, s);
@@ -178,7 +182,7 @@ void TCPTahoeReliabilityState::create_and_dispatch_ack(Socket* s) {
 
 void TCPTahoeReliabilityState::start_timer(Context* c, Socket* s) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
-
+    cout << "TCPTahoeReliabilityState::start_timer() on socket: " << s << endl;
     // only start the timer if it is not already running
     if (!rc->get_timeout_event()) {
         double seconds;
@@ -190,11 +194,13 @@ void TCPTahoeReliabilityState::start_timer(Context* c, Socket* s) {
 }
 
 void TCPTahoeReliabilityState::reset_timer(Context* c, Socket* s) {
+    cout << "TCPTahoeReliabilityState::reset_timer() on socket: " << s << endl;
     cancel_timer(c, s);
     start_timer(c, s);
 }
 
 void TCPTahoeReliabilityState::cancel_timer(Context* c, Socket* s) {
+    cout << "TCPTahoeReliabilityState::cancel_timer() on socket: " << s << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
 
     assert(rc->get_timeout_event());
@@ -249,6 +255,15 @@ void TCPTahoeReliabilityState::resend_data(Context* c, Socket* s) {
 
     if (p->get_tcp_ack_number()) {
         p->set_tcp_ack(true);
+    }
+
+    p->set_tcp_receive_window_size(rc->get_rcv_wnd());
+
+    TCPTimestampOption* option = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
+    assert(option);
+    option->set_timestamp();
+    if (rc->get_echo_reply()) {
+        option->set_echo_reply(rc->get_echo_reply());
     }
 
     ResendPacketEvent* event = new ResendPacketEvent(s, p);

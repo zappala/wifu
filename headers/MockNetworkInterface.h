@@ -17,7 +17,6 @@
 #include "OptionParser.h"
 #include "exceptions/IllegalStateException.h"
 #include "exceptions/IOError.h"
-
 #include "PacketLogger.h"
 
 #define logger PacketLogger::instance()

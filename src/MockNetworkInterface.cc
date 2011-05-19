@@ -1,5 +1,5 @@
 #include "MockNetworkInterface.h"
-#include "PacketLogger.h"
+
 
 #define logger PacketLogger::instance()
 
@@ -32,7 +32,7 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
     cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
     assert(p);
     cout << p->to_s_format() << endl;
-    cout << p->to_s() << endl;
+    cout << p->to_s() << endl << endl;
     logger.log(p);
     // drop the packet
     //    cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
