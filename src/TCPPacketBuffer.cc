@@ -1,7 +1,7 @@
 #include "TCPPacketBuffer.h"
 
 TCPPacketBuffer::TCPPacketBuffer() {
-
+    mark_dirty();
 }
 
 TCPPacketBuffer::~TCPPacketBuffer() {
@@ -10,7 +10,9 @@ TCPPacketBuffer::~TCPPacketBuffer() {
 
 int TCPPacketBuffer::insert(TCPPacket* p) {
     int before_size = size();
+
     pair < packet_buffer::iterator, bool> ret = buffer_.insert(make_pair(p, 0));
+    mark_dirty();
 
     bool can_erase = ret.second;
     if(!ret.second) {
@@ -19,6 +21,7 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
         if(in_map->get_data_length_bytes() < p->get_data_length_bytes()) {
             buffer_.erase(ret.first);
             ret = buffer_.insert(make_pair(p,0));
+            mark_dirty();
         }
     }
 
@@ -32,6 +35,7 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
 }
 
 string TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number) {
+
     packet_buffer::iterator itr = buffer_.begin();
     string return_val = "";
 
@@ -68,16 +72,22 @@ string TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number) {
     }
 
     buffer_.erase(buffer_.begin(), itr);
+    mark_dirty();
     return return_val;
 }
 
 int TCPPacketBuffer::size() {
-    if(buffer_.empty()) {
-        return 0;
+
+    if(size_ >= 0) {
+        return size_;
     }
 
-    int return_value = 0;
-    
+    size_ = 0;
+
+    if(buffer_.empty()) {
+        return size_;
+    }
+
     packet_buffer::iterator itr = buffer_.begin();
 
     u_int32_t sequence_number = itr->first->get_tcp_sequence_number();
@@ -103,8 +113,13 @@ int TCPPacketBuffer::size() {
             sequence_number = p->get_tcp_sequence_number();
         }
         sequence_number += count;
-        return_value += count;
+        size_ += count;
         ++itr;
     }
-    return return_value;
+    
+    return size_;
+}
+
+void TCPPacketBuffer::mark_dirty() {
+    size_ = -1;
 }

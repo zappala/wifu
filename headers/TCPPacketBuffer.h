@@ -26,10 +26,15 @@ public:
     int size();
 
 private:
+
+    void mark_dirty();
+
     /**
      * We will only use the key (we basically use it as a tree)
      */
     packet_buffer buffer_;
+
+    int size_;
 };
 
 #endif	/* TCPPACKETBUFFER_H */
