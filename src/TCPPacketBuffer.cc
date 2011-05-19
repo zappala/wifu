@@ -21,7 +21,6 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
         if(in_map->get_data_length_bytes() < p->get_data_length_bytes()) {
             buffer_.erase(ret.first);
             ret = buffer_.insert(make_pair(p,0));
-            mark_dirty();
         }
     }
 
@@ -75,7 +74,6 @@ void TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number, string& buf
 }
 
 int TCPPacketBuffer::size() {
-
     if(size_ >= 0) {
         return size_;
     }
@@ -89,7 +87,6 @@ int TCPPacketBuffer::size() {
     packet_buffer::iterator itr = buffer_.begin();
 
     u_int32_t sequence_number = itr->first->get_tcp_sequence_number();
-//    list<packet_buffer::iterator> can_erase;
     
     while (itr != buffer_.end()) {
         int count = 0;
@@ -106,7 +103,6 @@ int TCPPacketBuffer::size() {
         } // packet has already been accounted for
         else if (less_than(p->get_tcp_sequence_number(), sequence_number)) {
             // do nothing
-//            can_erase.push_back(itr);
         }// gap
         else {
             count += p->get_data_length_bytes();
@@ -116,11 +112,6 @@ int TCPPacketBuffer::size() {
         size_ += count;
         ++itr;
     }
-
-//    while(!can_erase.empty()) {
-//        buffer_.erase(can_erase.back());
-//        can_erase.pop_back();
-//    }
 
     return size_;
 }
