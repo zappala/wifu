@@ -423,7 +423,7 @@ namespace {
             }
         }
 
-//        ASSERT_EQ(expected, buffer.get_continuous_data(0));
-//        ASSERT_EQ(expected.length(), total_inserted);
+        ASSERT_EQ(expected, buffer.get_continuous_data(0));
+        ASSERT_EQ(expected.length(), total_inserted);
     }
 }
