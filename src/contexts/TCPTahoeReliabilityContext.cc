@@ -1,6 +1,6 @@
 #include "contexts/TCPTahoeReliabilityContext.h"
 
-TCPTahoeReliabilityContext::TCPTahoeReliabilityContext() : snd_nxt_(0), snd_una_(0), rcv_nxt_(0), rcv_wnd_(MAX_TCP_RECEIVE_WINDOW_SIZE), timer_(0), duplicate_ack_number_(0), duplicates_(0), receive_event_(0) {
+TCPTahoeReliabilityContext::TCPTahoeReliabilityContext() : snd_nxt_(0), snd_una_(0), rcv_nxt_(0), rcv_wnd_(MAX_TCP_RECEIVE_WINDOW_SIZE), timer_(0), duplicate_ack_number_(0), duplicates_(0), receive_event_(0), rto_(INITIAL_RTO), srtt_(-1.0), rttvar_(-1.0) {
     set_state(new TCPTahoeReliabilityState());
 }
 
@@ -48,11 +48,11 @@ void TCPTahoeReliabilityContext::set_timeout_event(TimeoutEvent* e) {
     timer_ = e;
 }
 
-int TCPTahoeReliabilityContext::get_rto() {
+double TCPTahoeReliabilityContext::get_rto() {
     return rto_;
 }
 
-void TCPTahoeReliabilityContext::set_rto(int rto) {
+void TCPTahoeReliabilityContext::set_rto(double rto) {
     rto_ = rto;
 }
 
@@ -82,4 +82,28 @@ ReceiveEvent* TCPTahoeReliabilityContext::get_receive_event() {
 
 void TCPTahoeReliabilityContext::set_receive_event(ReceiveEvent* e) {
     receive_event_ = e;
+}
+
+u_int32_t TCPTahoeReliabilityContext::get_echo_reply() {
+    return echo_reply_;
+}
+
+void TCPTahoeReliabilityContext::set_echo_reply(u_int32_t echo_reply) {
+    echo_reply_ = echo_reply;
+}
+
+double TCPTahoeReliabilityContext::get_srtt() {
+    return srtt_;
+}
+
+void TCPTahoeReliabilityContext::set_srtt(double srtt) {
+    srtt_ = srtt;
+}
+
+double TCPTahoeReliabilityContext::get_rttvar() {
+    return rttvar_;
+}
+
+void TCPTahoeReliabilityContext::set_rttvar(double rttvar) {
+    rttvar_ = rttvar;
 }

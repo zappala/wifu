@@ -20,14 +20,6 @@ Socket::~Socket() {
     SocketManager::instance().remove(socket_);
     PortManagerFactory::instance().create().remove(local_->get_port());
     PortManagerFactory::instance().create().remove(remote_->get_port());
-
-    if (local_) {
-        delete local_;
-    }
-
-    if (remote_) {
-        delete remote_;
-    }
 }
 
 int Socket::get_socket_id() const {

@@ -34,6 +34,8 @@ public:
     NetworkReceivePacketEvent* get_saved_fin();
     void set_saved_fin(NetworkReceivePacketEvent* e);
 
+    
+
 private:
     IContext* connection_manager_;
     IContext* congestion_control_;

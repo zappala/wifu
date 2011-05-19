@@ -99,21 +99,21 @@ void drop_none() {
     NetworkTrace expected;
 
     // send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
     compare_traces(expected);
 }
@@ -128,23 +128,23 @@ void drop_syn() {
     NetworkTrace expected;
 
     // Send and drop
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // resend
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
     compare_traces(expected);
 }
@@ -161,27 +161,27 @@ void drop_synack12_delay_synack12() {
     NetworkTrace expected;
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send (drop)
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // resend
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // recieve
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // resend
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
     compare_traces(expected);
 }
@@ -196,28 +196,28 @@ void drop_synack12_delay_syn10() {
     NetworkTrace expected;
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send (drop)
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // resend (delayed)
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // resend
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     compare_traces(expected);
 }
@@ -232,27 +232,27 @@ void drop_ack() {
     NetworkTrace expected;
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
     // resend
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
 
     compare_traces(expected);

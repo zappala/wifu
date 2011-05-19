@@ -16,11 +16,11 @@
 
 void compare_traces(NetworkTrace& expected);
 
-TCPPacket* get_base_tcp_packet();
-TCPPacket* get_base_tcp_packet_ts();
-TCPPacket* get_syn();
-TCPPacket* get_synack();
-TCPPacket* get_ack();
+TCPPacket* get_base_tcp_packet(int protocol);
+TCPPacket* get_base_tcp_packet_ts(int protocol);
+TCPPacket* get_syn(int protocol);
+TCPPacket* get_synack(int protocol);
+TCPPacket* get_ack(int protocol);
 
 #endif	/* PACKETTRACEHELPER_H */
 

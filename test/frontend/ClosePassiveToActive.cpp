@@ -145,23 +145,23 @@ void close_passive_to_active_drop_none() {
     // Connect
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
     // Data
 
-    TCPPacket* data_packet = get_base_tcp_packet();
+    TCPPacket* data_packet = get_base_tcp_packet(SIMPLE_TCP);
     data_packet->set_destination_port(1000);
     data_packet->set_source_port(5002);
     data_packet->set_tcp_ack(true);
@@ -175,7 +175,7 @@ void close_passive_to_active_drop_none() {
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet_ts();
+    TCPPacket* ack = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack->set_tcp_sequence_number(3);
     ack->set_tcp_ack_number(3);
     ack->set_source_port(1000);
@@ -189,7 +189,7 @@ void close_passive_to_active_drop_none() {
 
     // Close
     // Passive to Active
-    TCPPacket* fin1 = get_base_tcp_packet_ts();
+    TCPPacket* fin1 = get_base_tcp_packet_ts(SIMPLE_TCP);
     fin1->set_tcp_sequence_number(3);
     fin1->set_tcp_ack_number(4);
     fin1->set_source_port(5002);
@@ -202,7 +202,7 @@ void close_passive_to_active_drop_none() {
     // receive
     expected.add_packet(fin1);
 
-    TCPPacket* ack1 = get_base_tcp_packet_ts();
+    TCPPacket* ack1 = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack1->set_tcp_sequence_number(4);
     ack1->set_tcp_ack_number(4);
     ack1->set_source_port(1000);
@@ -216,7 +216,7 @@ void close_passive_to_active_drop_none() {
 
     // Close
     // Active to Passive
-    TCPPacket* fin2 = get_base_tcp_packet_ts();
+    TCPPacket* fin2 = get_base_tcp_packet_ts(SIMPLE_TCP);
     fin2->set_tcp_sequence_number(5);
     fin2->set_tcp_ack_number(4);
     fin2->set_source_port(1000);
@@ -230,7 +230,7 @@ void close_passive_to_active_drop_none() {
     expected.add_packet(fin2);
 
 
-    TCPPacket* ack2 = get_base_tcp_packet_ts();
+    TCPPacket* ack2 = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack2->set_tcp_sequence_number(4);
     ack2->set_tcp_ack_number(6);
     ack2->set_source_port(5002);
@@ -259,23 +259,23 @@ void close_passive_to_active_drop_first_fin() {
     // Connect
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
     // Data
 
-    TCPPacket* data_packet = get_base_tcp_packet();
+    TCPPacket* data_packet = get_base_tcp_packet(SIMPLE_TCP);
     data_packet->set_destination_port(1000);
     data_packet->set_source_port(5002);
     data_packet->set_tcp_ack(true);
@@ -289,7 +289,7 @@ void close_passive_to_active_drop_first_fin() {
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet_ts();
+    TCPPacket* ack = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack->set_tcp_sequence_number(3);
     ack->set_tcp_ack_number(3);
     ack->set_source_port(1000);
@@ -303,7 +303,7 @@ void close_passive_to_active_drop_first_fin() {
 
     // Close
     // Passive to Active
-    TCPPacket* fin1 = get_base_tcp_packet_ts();
+    TCPPacket* fin1 = get_base_tcp_packet_ts(SIMPLE_TCP);
     fin1->set_tcp_sequence_number(3);
     fin1->set_tcp_ack_number(4);
     fin1->set_source_port(5002);
@@ -318,7 +318,7 @@ void close_passive_to_active_drop_first_fin() {
     // receive
     expected.add_packet(fin1);
 
-    TCPPacket* ack1 = get_base_tcp_packet_ts();
+    TCPPacket* ack1 = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack1->set_tcp_sequence_number(4);
     ack1->set_tcp_ack_number(4);
     ack1->set_source_port(1000);
@@ -332,7 +332,7 @@ void close_passive_to_active_drop_first_fin() {
 
     // Close
     // Active to Passive
-    TCPPacket* fin2 = get_base_tcp_packet_ts();
+    TCPPacket* fin2 = get_base_tcp_packet_ts(SIMPLE_TCP);
     fin2->set_tcp_sequence_number(5);
     fin2->set_tcp_ack_number(4);
     fin2->set_source_port(1000);
@@ -346,7 +346,7 @@ void close_passive_to_active_drop_first_fin() {
     expected.add_packet(fin2);
 
 
-    TCPPacket* ack2 = get_base_tcp_packet_ts();
+    TCPPacket* ack2 = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack2->set_tcp_sequence_number(4);
     ack2->set_tcp_ack_number(6);
     ack2->set_source_port(5002);
@@ -375,23 +375,23 @@ void close_passive_to_active_drop_first_ack() {
     // Connect
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
     // Data
 
-    TCPPacket* data_packet = get_base_tcp_packet();
+    TCPPacket* data_packet = get_base_tcp_packet(SIMPLE_TCP);
     data_packet->set_destination_port(1000);
     data_packet->set_source_port(5002);
     data_packet->set_tcp_ack(true);
@@ -405,7 +405,7 @@ void close_passive_to_active_drop_first_ack() {
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet_ts();
+    TCPPacket* ack = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack->set_tcp_sequence_number(3);
     ack->set_tcp_ack_number(3);
     ack->set_source_port(1000);
@@ -419,7 +419,7 @@ void close_passive_to_active_drop_first_ack() {
 
     // Close
     // Passive to Active
-    TCPPacket* fin1 = get_base_tcp_packet_ts();
+    TCPPacket* fin1 = get_base_tcp_packet_ts(SIMPLE_TCP);
     fin1->set_tcp_sequence_number(3);
     fin1->set_tcp_ack_number(4);
     fin1->set_source_port(5002);
@@ -432,7 +432,7 @@ void close_passive_to_active_drop_first_ack() {
     // receive
     expected.add_packet(fin1);
 
-    TCPPacket* ack1 = get_base_tcp_packet_ts();
+    TCPPacket* ack1 = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack1->set_tcp_sequence_number(4);
     ack1->set_tcp_ack_number(4);
     ack1->set_source_port(1000);
@@ -444,7 +444,7 @@ void close_passive_to_active_drop_first_ack() {
 
     // Close
     // Active to Passive
-    TCPPacket* fin2 = get_base_tcp_packet_ts();
+    TCPPacket* fin2 = get_base_tcp_packet_ts(SIMPLE_TCP);
     fin2->set_tcp_sequence_number(5);
     fin2->set_tcp_ack_number(4);
     fin2->set_source_port(1000);
@@ -458,7 +458,7 @@ void close_passive_to_active_drop_first_ack() {
     expected.add_packet(fin2);
 
 
-    TCPPacket* ack2 = get_base_tcp_packet_ts();
+    TCPPacket* ack2 = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack2->set_tcp_sequence_number(4);
     ack2->set_tcp_ack_number(6);
     ack2->set_source_port(5002);
@@ -487,23 +487,23 @@ void close_passive_to_active_drop_second_fin() {
     // Connect
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
     // Data
 
-    TCPPacket* data_packet = get_base_tcp_packet();
+    TCPPacket* data_packet = get_base_tcp_packet(SIMPLE_TCP);
     data_packet->set_destination_port(1000);
     data_packet->set_source_port(5002);
     data_packet->set_tcp_ack(true);
@@ -517,7 +517,7 @@ void close_passive_to_active_drop_second_fin() {
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet_ts();
+    TCPPacket* ack = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack->set_tcp_sequence_number(3);
     ack->set_tcp_ack_number(3);
     ack->set_source_port(1000);
@@ -531,7 +531,7 @@ void close_passive_to_active_drop_second_fin() {
 
     // Close
     // Passive to Active
-    TCPPacket* fin1 = get_base_tcp_packet_ts();
+    TCPPacket* fin1 = get_base_tcp_packet_ts(SIMPLE_TCP);
     fin1->set_tcp_sequence_number(3);
     fin1->set_tcp_ack_number(4);
     fin1->set_source_port(5002);
@@ -544,7 +544,7 @@ void close_passive_to_active_drop_second_fin() {
     // receive
     expected.add_packet(fin1);
 
-    TCPPacket* ack1 = get_base_tcp_packet_ts();
+    TCPPacket* ack1 = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack1->set_tcp_sequence_number(4);
     ack1->set_tcp_ack_number(4);
     ack1->set_source_port(1000);
@@ -558,7 +558,7 @@ void close_passive_to_active_drop_second_fin() {
 
     // Close
     // Active to Passive
-    TCPPacket* fin2 = get_base_tcp_packet_ts();
+    TCPPacket* fin2 = get_base_tcp_packet_ts(SIMPLE_TCP);
     fin2->set_tcp_sequence_number(5);
     fin2->set_tcp_ack_number(4);
     fin2->set_source_port(1000);
@@ -574,7 +574,7 @@ void close_passive_to_active_drop_second_fin() {
     expected.add_packet(fin2);
 
 
-    TCPPacket* ack2 = get_base_tcp_packet_ts();
+    TCPPacket* ack2 = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack2->set_tcp_sequence_number(4);
     ack2->set_tcp_ack_number(6);
     ack2->set_source_port(5002);
@@ -603,23 +603,23 @@ void close_passive_to_active_drop_second_ack() {
     // Connect
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
     // Data
 
-    TCPPacket* data_packet = get_base_tcp_packet();
+    TCPPacket* data_packet = get_base_tcp_packet(SIMPLE_TCP);
     data_packet->set_destination_port(1000);
     data_packet->set_source_port(5002);
     data_packet->set_tcp_ack(true);
@@ -633,7 +633,7 @@ void close_passive_to_active_drop_second_ack() {
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet_ts();
+    TCPPacket* ack = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack->set_tcp_sequence_number(3);
     ack->set_tcp_ack_number(3);
     ack->set_source_port(1000);
@@ -647,7 +647,7 @@ void close_passive_to_active_drop_second_ack() {
 
     // Close
     // Passive to Active
-    TCPPacket* fin1 = get_base_tcp_packet_ts();
+    TCPPacket* fin1 = get_base_tcp_packet_ts(SIMPLE_TCP);
     fin1->set_tcp_sequence_number(3);
     fin1->set_tcp_ack_number(4);
     fin1->set_source_port(5002);
@@ -660,7 +660,7 @@ void close_passive_to_active_drop_second_ack() {
     // receive
     expected.add_packet(fin1);
 
-    TCPPacket* ack1 = get_base_tcp_packet_ts();
+    TCPPacket* ack1 = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack1->set_tcp_sequence_number(4);
     ack1->set_tcp_ack_number(4);
     ack1->set_source_port(1000);
@@ -674,7 +674,7 @@ void close_passive_to_active_drop_second_ack() {
 
     // Close
     // Active to Passive
-    TCPPacket* fin2 = get_base_tcp_packet_ts();
+    TCPPacket* fin2 = get_base_tcp_packet_ts(SIMPLE_TCP);
     fin2->set_tcp_sequence_number(5);
     fin2->set_tcp_ack_number(4);
     fin2->set_source_port(1000);
@@ -688,7 +688,7 @@ void close_passive_to_active_drop_second_ack() {
     expected.add_packet(fin2);
 
 
-    TCPPacket* ack2 = get_base_tcp_packet_ts();
+    TCPPacket* ack2 = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack2->set_tcp_sequence_number(4);
     ack2->set_tcp_ack_number(6);
     ack2->set_source_port(5002);
@@ -725,23 +725,23 @@ void close_passive_to_active_drop_first_ack_and_second_fin() {
     // Connect
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
     // Data
 
-    TCPPacket* data_packet = get_base_tcp_packet();
+    TCPPacket* data_packet = get_base_tcp_packet(SIMPLE_TCP);
     data_packet->set_destination_port(1000);
     data_packet->set_source_port(5002);
     data_packet->set_tcp_ack(true);
@@ -754,7 +754,7 @@ void close_passive_to_active_drop_first_ack_and_second_fin() {
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet_ts();
+    TCPPacket* ack = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack->set_tcp_sequence_number(3);
     ack->set_tcp_ack_number(3);
     ack->set_source_port(1000);
@@ -768,7 +768,7 @@ void close_passive_to_active_drop_first_ack_and_second_fin() {
 
     // Close
     // Passive to Active
-    TCPPacket* fin1 = get_base_tcp_packet_ts();
+    TCPPacket* fin1 = get_base_tcp_packet_ts(SIMPLE_TCP);
     fin1->set_tcp_sequence_number(3);
     fin1->set_tcp_ack_number(4);
     fin1->set_source_port(5002);
@@ -781,7 +781,7 @@ void close_passive_to_active_drop_first_ack_and_second_fin() {
     // receive
     expected.add_packet(fin1);
 
-    TCPPacket* ack1 = get_base_tcp_packet_ts();
+    TCPPacket* ack1 = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack1->set_tcp_sequence_number(4);
     ack1->set_tcp_ack_number(4);
     ack1->set_source_port(1000);
@@ -793,7 +793,7 @@ void close_passive_to_active_drop_first_ack_and_second_fin() {
 
     // Close
     // Active to Passive
-    TCPPacket* fin2 = get_base_tcp_packet_ts();
+    TCPPacket* fin2 = get_base_tcp_packet_ts(SIMPLE_TCP);
     fin2->set_tcp_sequence_number(5);
     fin2->set_tcp_ack_number(4);
     fin2->set_source_port(1000);
@@ -814,7 +814,7 @@ void close_passive_to_active_drop_first_ack_and_second_fin() {
     // receive
     expected.add_packet(fin2);
 
-    TCPPacket* ack2 = get_base_tcp_packet_ts();
+    TCPPacket* ack2 = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack2->set_tcp_sequence_number(4);
     ack2->set_tcp_ack_number(6);
     ack2->set_source_port(5002);

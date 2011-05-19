@@ -44,6 +44,13 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, SendPacketEvent* e)
     }
 
     p->set_tcp_receive_window_size(rc->get_rcv_wnd());
+
+    TCPTimestampOption* option = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
+    assert(option);
+    option->set_timestamp();
+    if (rc->get_echo_reply()) {
+        option->set_echo_reply(rc->get_echo_reply());
+    }
 }
 
 void TCPTahoeReliabilityState::state_timer_fired(Context* c, TimerFiredEvent* e) {
@@ -65,10 +72,20 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
+    // TODO: we will (for now) blindly update the echo reply here (is this okay?)
+    // we can reach this point without validating either the ack or seq number
+    TCPTimestampOption* ts = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
+    if (ts) {
+        rc->set_echo_reply(ts->get_timestamp());
+    }
+
     if (p->is_tcp_ack() && between_equal_right(rc->get_snd_una(), p->get_tcp_sequence_number(), rc->get_snd_nxt())) {
         u_int32_t num_acked = p->get_tcp_ack_number() - rc->get_snd_una();
         rc->set_snd_una(p->get_tcp_ack_number());
         s->get_send_buffer().erase(0, num_acked);
+
+        // TODO: is this the correct place to update the RTO?
+        update_rto(c, ts);
 
         if (rc->get_snd_nxt() == rc->get_snd_una()) {
             // no outstanding data
@@ -164,7 +181,9 @@ void TCPTahoeReliabilityState::start_timer(Context* c, Socket* s) {
 
     // only start the timer if it is not already running
     if (!rc->get_timeout_event()) {
-        TimeoutEvent* timer = new TimeoutEvent(s, rc->get_rto(), 0);
+        double seconds;
+        long int nanoseconds = modf(rc->get_rto(), &seconds) * NANOSECONDS_IN_SECONDS;
+        TimeoutEvent* timer = new TimeoutEvent(s, seconds, nanoseconds);
         rc->set_timeout_event(timer);
         Dispatcher::instance().enqueue(timer);
     }
@@ -256,4 +275,23 @@ void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, Rec
 
     Dispatcher::instance().enqueue(response);
     Dispatcher::instance().enqueue(new ReceiveBufferNotFullEvent(s));
+}
+
+void TCPTahoeReliabilityState::update_rto(Context* c, TCPTimestampOption* ts) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+
+    double rtt = Utils::get_current_time_microseconds_32() - ts->get_echo_reply();
+    rtt /= MICROSECONDS_IN_SECONDS;
+
+    // From here all arithmetic is done in seconds
+    // first RTT calculation
+    if (rc->get_srtt() < 0) {
+        rc->set_srtt(rtt);
+        rc->set_rttvar(rtt / 2);
+    } else {
+        rc->set_rttvar(((1 - BETA) * rc->get_rttvar()) + (BETA * abs(rc->get_srtt() - rtt)));
+        rc->set_srtt(((1 - ALPHA) * rc->get_srtt()) + (ALPHA * rtt));
+    }
+
+    rc->set_rto(max(MIN_RTO, rc->get_srtt() + max(G, K * rc->get_rttvar())));
 }

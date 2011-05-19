@@ -29,7 +29,7 @@ void* tcp_tahoe_test_thread(void* args) {
     Semaphore* sem = v->sem_;
 
     // Create server
-    int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+    int server = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
     int result = wifu_bind(server, (const struct sockaddr *) to_bind->get_network_struct_ptr(), sizeof (struct sockaddr_in));
     EXPECT_EQ(0, result);
     result = wifu_listen(server, 5);
@@ -48,7 +48,7 @@ void* tcp_tahoe_test_thread(void* args) {
     string address("127.0.0.1");
     string res = ap.get_address();
     EXPECT_EQ(address, res);
-    //    cout << "Connected to: " << ap.to_s() << endl;
+        cout << "Connected to: " << ap.to_s() << endl;
 
 }
 
@@ -79,12 +79,12 @@ void tcp_tahoe_connect_test() {
     // Create client
 
     timer.start();
-    client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+    client = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
     result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     timer.stop();
     ASSERT_EQ(0, result);
 
-    //    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
+        cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
     sleep(5);
 }
 
@@ -97,21 +97,21 @@ void tcp_tahoe_drop_none() {
     NetworkTrace expected;
 
     // send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(TCP_TAHOE));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(TCP_TAHOE));
 
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(TCP_TAHOE));
 
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(TCP_TAHOE));
 
     compare_traces(expected);
 }

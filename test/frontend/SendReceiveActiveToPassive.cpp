@@ -174,19 +174,19 @@ void drop_ack_send_data() {
     NetworkTrace expected;
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
-    TCPPacket* data_packet = get_base_tcp_packet();
+    TCPPacket* data_packet = get_base_tcp_packet(SIMPLE_TCP);
     data_packet->set_tcp_sequence_number(3);
     data_packet->set_tcp_ack_number(2);
     data_packet->set_destination_port(5002);
@@ -200,7 +200,7 @@ void drop_ack_send_data() {
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet_ts();
+    TCPPacket* ack = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack->set_tcp_sequence_number(2);
     ack->set_tcp_ack_number(4);
     ack->set_source_port(5002);
@@ -228,19 +228,19 @@ void drop_ack_and_data() {
     NetworkTrace expected;
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
-    TCPPacket* data_packet = get_base_tcp_packet();
+    TCPPacket* data_packet = get_base_tcp_packet(SIMPLE_TCP);
     data_packet->set_tcp_sequence_number(3);
     data_packet->set_tcp_ack_number(2);
     data_packet->set_destination_port(5002);
@@ -254,16 +254,16 @@ void drop_ack_and_data() {
 
 
     // resend
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive (it gets ignored)
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // resend
     expected.add_packet(data_packet);
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet_ts();
+    TCPPacket* ack = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack->set_tcp_sequence_number(2);
     ack->set_tcp_ack_number(4);
     ack->set_source_port(5002);
@@ -290,22 +290,22 @@ void drop_first_data_packet() {
     NetworkTrace expected;
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
 
-    TCPPacket* data_packet = get_base_tcp_packet();
+    TCPPacket* data_packet = get_base_tcp_packet(SIMPLE_TCP);
     data_packet->set_tcp_sequence_number(3);
     data_packet->set_tcp_ack_number(2);
     data_packet->set_destination_port(5002);
@@ -321,7 +321,7 @@ void drop_first_data_packet() {
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet_ts();
+    TCPPacket* ack = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack->set_tcp_sequence_number(2);
     ack->set_tcp_ack_number(4);
     ack->set_source_port(5002);
@@ -348,23 +348,23 @@ void drop_first_data_ack() {
     NetworkTrace expected;
 
     // Send
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_syn());
+    expected.add_packet(get_syn(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_synack());
+    expected.add_packet(get_synack(SIMPLE_TCP));
 
     // send
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
     // receive
-    expected.add_packet(get_ack());
+    expected.add_packet(get_ack(SIMPLE_TCP));
 
     // connected
 
-    TCPPacket* data_packet = get_base_tcp_packet();
+    TCPPacket* data_packet = get_base_tcp_packet(SIMPLE_TCP);
     data_packet->set_tcp_sequence_number(3);
     data_packet->set_tcp_ack_number(2);
     data_packet->set_destination_port(5002);
@@ -378,7 +378,7 @@ void drop_first_data_ack() {
     // receive
     expected.add_packet(data_packet);
 
-    TCPPacket* ack = get_base_tcp_packet_ts();
+    TCPPacket* ack = get_base_tcp_packet_ts(SIMPLE_TCP);
     ack->set_tcp_sequence_number(2);
     ack->set_tcp_ack_number(4);
     ack->set_source_port(5002);

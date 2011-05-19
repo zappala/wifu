@@ -17,6 +17,7 @@
 #include "packet/TCPSequenceNumberComparator.h"
 #include "PriorityQueue.h"
 #include "TCPPacketBuffer.h"
+#include "defines.h"
 
 
 class TCPTahoeReliabilityContext : public Context {
@@ -39,8 +40,8 @@ public:
     TimeoutEvent* get_timeout_event();
     void set_timeout_event(TimeoutEvent* e);
 
-    int get_rto();
-    void set_rto(int rto);
+    double get_rto();
+    void set_rto(double rto);
 
     u_int32_t get_duplicate_ack_number();
     void set_duplicate_ack_number(u_int32_t num);
@@ -52,6 +53,15 @@ public:
 
     ReceiveEvent* get_receive_event();
     void set_receive_event(ReceiveEvent* e);
+
+    u_int32_t get_echo_reply();
+    void set_echo_reply(u_int32_t);
+
+    double get_srtt();
+    void set_srtt(double srtt);
+
+    double get_rttvar();
+    void set_rttvar(double rttvar);
     
 private:
     u_int32_t snd_una_;
@@ -65,12 +75,20 @@ private:
     /**
      * Time in seconds for the next timeout
      */
-    int rto_;
+    double rto_;
 
     u_int32_t duplicate_ack_number_;
     int duplicates_;
 
     TCPPacketBuffer receive_window_;
+
+    // Timer variables
+    // in microseconds
+    u_int32_t echo_reply_;
+
+    // in seconds
+    double srtt_;
+    double rttvar_;
 
 };
 

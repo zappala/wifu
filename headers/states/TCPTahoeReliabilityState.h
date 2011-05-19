@@ -43,6 +43,8 @@ private:
     void reset_timer(Context* c, Socket* s);
     void cancel_timer(Context* c, Socket* s);
 
+    void update_rto(Context* c, TCPTimestampOption* ts);
+
     void resend_data(Context* c, Socket* s);
     void create_and_dispatch_received_data(Context* c, ReceiveEvent* e);
 

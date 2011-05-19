@@ -16,6 +16,7 @@
 #define SIG_ENQUEUE_EVENT 50
 #define SIG_CANCEL_EVENT 51
 #define NANOSECONDS_IN_SECONDS 1000000000
+#define MICROSECONDS_IN_SECONDS 1000000
 #define PAYLOAD_SIZE 1500
 #define TWO_MSL 10 // seconds
 #define BUFFER_SIZE PAYLOAD_SIZE * 2
@@ -76,6 +77,19 @@
 // http://linux.die.net/man/7/tcp
 #define MAX_BUFFER_SIZE 87380 
 //#define MAX_BUFFER_SIZE 2
+
+// Clock defines
+// RTO values are in seconds
+#define INITIAL_RTO 3.0
+#define MIN_RTO 1.0
+
+// RFC 2988
+#define ALPHA 0.125
+#define BETA 0.25
+// arbitrarily choosing a 1 ms granual timer
+#define G 0.001
+#define K 4
+
 
 // TODO: if we want it any bigger we need to employ the window scale option
 #define MAX_TCP_RECEIVE_WINDOW_SIZE USHRT_MAX

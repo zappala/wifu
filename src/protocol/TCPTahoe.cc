@@ -14,7 +14,7 @@ TCPTahoe& TCPTahoe::instance() {
 }
 
 void TCPTahoe::icontext_socket(SocketEvent* e) {
-    cout << "TCPTahoe::icontext_socket()" << endl;
+//    cout << "TCPTahoe::icontext_socket()" << endl;
     Socket* s = e->get_socket();
     map_[s] = new TCPTahoeIContextContainer();
 
@@ -103,12 +103,13 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
 void TCPTahoe::icontext_send_packet(SendPacketEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
+    TCPPacket* p = (TCPPacket*) e->get_packet();
 
     c->get_reliability()->icontext_send_packet(e);
     c->get_connection_manager()->icontext_send_packet(e);
     c->get_congestion_control()->icontext_send_packet(e);
-
-    send_network_packet(e->get_socket(), e->get_packet());
+   
+    send_network_packet(e->get_socket(), p);
 }
 
 void TCPTahoe::icontext_connect(ConnectEvent* e) {
