@@ -92,19 +92,6 @@ TEST_F(BackEndTest, TCPTahoeConnectTest) {
     tcp_tahoe_connect_test();
 }
 
-TEST_F(BackEndTest, TCPTahoeSocketTest) {
-
-    for (int i = 0; i < 100; i++) {
-        // Check valid
-        int socket = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
-        ASSERT_TRUE(socket >= 0);
-
-        // Check invalid (i != TCP_TAHOE)
-        socket = wifu_socket(AF_INET, SOCK_STREAM, i);
-        ASSERT_TRUE(socket == -1);
-    }
-}
-
 void tcp_tahoe_drop_none() {
     tcp_tahoe_connect_test();
     NetworkTrace expected;
@@ -329,6 +316,7 @@ void tcp_tahoe_drop_final_ack() {
 TEST_F(BackEndMockTestDrop22, TCPTahoeMockConnectTest) {
     tcp_tahoe_drop_final_ack();
 }
+
 
 
 
