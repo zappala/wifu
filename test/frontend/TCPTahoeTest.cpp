@@ -273,8 +273,62 @@ void tcp_tahoe_drop_12_delay_10() {
 }
 
 TEST_F(BackEndMockTestDrop12Delay10, TCPTahoeMockConnectTest) {
-    // need to test with delays
     tcp_tahoe_drop_12_delay_10();
 }
+
+void tcp_tahoe_drop_12() {
+    tcp_tahoe_connect_test();
+}
+
+TEST_F(BackEndMockTestDrop12, TCPTahoeMockConnectTest) {
+    // cannot reliably predict which timers will fire when.
+    // this is simply to ensure that we get connected
+    // without sending a lot of packets
+    tcp_tahoe_drop_12();
+}
+
+void tcp_tahoe_drop_final_ack() {
+    tcp_tahoe_connect_test();
+    NetworkTrace expected;
+
+    TCPPacket* syn = get_syn(TCP_TAHOE);
+    syn->set_tcp_receive_window_size(USHRT_MAX);
+
+    // send
+    expected.add_packet(syn);
+    // receive
+    expected.add_packet(syn);
+
+
+    TCPPacket* synack = get_synack(TCP_TAHOE);
+    synack->set_tcp_receive_window_size(USHRT_MAX);
+    // send
+    expected.add_packet(synack);
+    // receive
+    expected.add_packet(synack);
+
+
+    TCPPacket* ack = get_ack(TCP_TAHOE);
+    ack->set_tcp_receive_window_size(USHRT_MAX);
+    // send (drop)
+    expected.add_packet(ack);
+
+    // resend
+    expected.add_packet(synack);
+    // receive
+    expected.add_packet(synack);
+
+    // send
+    expected.add_packet(ack);
+    // receive
+    expected.add_packet(ack);
+
+    compare_traces(expected);
+}
+
+TEST_F(BackEndMockTestDrop22, TCPTahoeMockConnectTest) {
+    tcp_tahoe_drop_final_ack();
+}
+
 
 
