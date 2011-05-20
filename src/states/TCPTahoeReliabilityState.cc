@@ -19,11 +19,13 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, SendPacketEvent* e)
         u_int32_t iss = 1;
         p->set_tcp_sequence_number(iss);
         rc->set_snd_una(iss);
+        cout << "Setting snd_nxt to iss + 1" << endl;
         rc->set_snd_nxt(iss + 1);
         rc->set_initialized();
     } else {
         p->set_tcp_sequence_number(rc->get_snd_nxt());
-        u_int32_t len = rc->get_snd_nxt() + p->is_tcp_fin() ? 1 : p->get_data_length_bytes();
+        cout << "Setting snd_nxt to snd_nxt + 1 (if FIN) or incoming data length: " << p->get_data_length_bytes() << endl;
+        u_int32_t len = rc->get_snd_nxt() + (p->is_tcp_fin() ? 1 : p->get_data_length_bytes());
         rc->set_snd_nxt(len);
     }
 
@@ -74,7 +76,9 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    cout << "TCPTahoeReliabilityState::state_receive_packet()" << endl;
+    cout << endl << "TCPTahoeReliabilityState::state_receive_packet() on socket: " << s << endl;
+    cout << p->to_s_format() << endl;
+    cout << p->to_s() << endl;
 
     // TODO: we will (for now) blindly update the echo reply here (is this okay?)
     // we can reach this point without validating either the ack or seq number
@@ -243,6 +247,7 @@ void TCPTahoeReliabilityState::resend_data(Context* c, Socket* s) {
     }
 
     if (control_bit) {
+        cout << "Control bit set, setting snd_nxt to snd.una + 1" << endl;
         rc->set_snd_nxt(rc->get_snd_una() + 1);
         p->set_data((unsigned char*) "", 0);
     } else {
@@ -250,6 +255,7 @@ void TCPTahoeReliabilityState::resend_data(Context* c, Socket* s) {
         if (!data.compare(data.size() - 1, 1, FIN_BYTE.c_str())) {
             data.erase(data.size() - 1, 1);
         }
+        cout << "No control bit found, setting snd_nxt to snd.una + data.size" << rc->get_snd_nxt() << " + " << data.size() << endl;
         rc->set_snd_nxt(rc->get_snd_una() + data.size());
         p->set_data((unsigned char*) data.data(), data.size());
     }

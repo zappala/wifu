@@ -219,4 +219,62 @@ TEST_F(BackEndMockTestDrop12Delay12, TCPTahoeMockConnectTest) {
     tcp_tahoe_drop_12_delay_12();
 }
 
+void tcp_tahoe_drop_12_delay_10() {
+    tcp_tahoe_connect_test();
+    NetworkTrace expected;
+
+    TCPPacket* syn = get_syn(TCP_TAHOE);
+    syn->set_tcp_receive_window_size(USHRT_MAX);
+
+    // send
+    expected.add_packet(syn);
+    // receive
+    expected.add_packet(syn);
+
+    TCPPacket* synack = get_synack(TCP_TAHOE);
+    synack->set_tcp_receive_window_size(USHRT_MAX);
+    // send (drop)
+    expected.add_packet(synack);
+
+    // resend (delayed)
+    expected.add_packet(syn);
+
+
+    // resend
+    expected.add_packet(synack);
+    // receive
+    expected.add_packet(synack);
+
+    TCPPacket* ack = get_ack(TCP_TAHOE);
+    ack->set_tcp_receive_window_size(USHRT_MAX);
+    // send
+    expected.add_packet(ack);
+    // receive
+    expected.add_packet(ack);
+
+    // receive (delayed)
+    expected.add_packet(syn);
+
+    // This is an update ack because the delayed SYN is completely out of order
+    TCPPacket* ack_update = get_base_tcp_packet_ts(TCP_TAHOE);
+    ack_update->set_source_port(5002);
+    ack_update->set_destination_port(1000);
+    ack_update->set_tcp_receive_window_size(USHRT_MAX);
+    ack_update->set_tcp_sequence_number(2);
+    ack_update->set_tcp_ack_number(2);
+    ack_update->set_tcp_ack(true);
+
+    // send
+    expected.add_packet(ack_update);
+    // update
+    expected.add_packet(ack_update);
+
+    compare_traces(expected);
+}
+
+TEST_F(BackEndMockTestDrop12Delay10, TCPTahoeMockConnectTest) {
+    // need to test with delays
+    tcp_tahoe_drop_12_delay_10();
+}
+
 

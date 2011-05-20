@@ -29,6 +29,7 @@ u_int32_t TCPTahoeReliabilityContext::get_snd_nxt() {
 }
 
 void TCPTahoeReliabilityContext::set_snd_nxt(u_int32_t snd_nxt) {
+    cout << "Setting snd_nxt to: " << snd_nxt << endl;
     snd_nxt_ = snd_nxt;
 }
 
