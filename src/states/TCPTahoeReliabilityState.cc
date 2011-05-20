@@ -14,12 +14,13 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, SendPacketEvent* e)
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
     // Sequence numbers
-    if (rc->get_snd_una() == 0) {
+    if (!rc->is_initialized()) {
         // SYN
         u_int32_t iss = 1;
         p->set_tcp_sequence_number(iss);
         rc->set_snd_una(iss);
         rc->set_snd_nxt(iss + 1);
+        rc->set_initialized();
     } else {
         p->set_tcp_sequence_number(rc->get_snd_nxt());
         u_int32_t len = rc->get_snd_nxt() + p->is_tcp_fin() ? 1 : p->get_data_length_bytes();
@@ -54,6 +55,7 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, SendPacketEvent* e)
 }
 
 void TCPTahoeReliabilityState::state_timer_fired(Context* c, TimerFiredEvent* e) {
+    cout << "TCPTahoeReliabilityState::state_timer_fired() on socket: " << e->get_socket() << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
 
@@ -80,6 +82,8 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
     if (ts) {
         rc->set_echo_reply(ts->get_timestamp());
     }
+
+    cout << "Received packet TS: " << ts->to_s() << endl;
 
     if (p->is_tcp_ack() && between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt())) {
         cout << "TCPTahoeReliabilityState::state_receive_packet(), ACK'ing data" << endl;
@@ -298,6 +302,8 @@ void TCPTahoeReliabilityState::update_rto(Context* c, TCPTimestampOption* ts) {
     double rtt = Utils::get_current_time_microseconds_32() - ts->get_echo_reply();
     rtt /= MICROSECONDS_IN_SECONDS;
 
+    cout << "RTT: " << rtt << endl;
+
     // From here all arithmetic is done in seconds
     // first RTT calculation
     if (rc->get_srtt() < 0) {
@@ -308,5 +314,8 @@ void TCPTahoeReliabilityState::update_rto(Context* c, TCPTimestampOption* ts) {
         rc->set_srtt(((1 - ALPHA) * rc->get_srtt()) + (ALPHA * rtt));
     }
 
+
     rc->set_rto(max(MIN_RTO, rc->get_srtt() + max(G, K * rc->get_rttvar())));
+
+    cout << "Updated RTO: " << rc->get_rto() << endl;
 }

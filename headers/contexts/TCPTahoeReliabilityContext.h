@@ -25,6 +25,9 @@ public:
     TCPTahoeReliabilityContext();
     virtual ~TCPTahoeReliabilityContext();
 
+    bool is_initialized();
+    void set_initialized();
+
     u_int32_t get_snd_una();
     void set_snd_una(u_int32_t snd_una);
 
@@ -64,6 +67,9 @@ public:
     void set_rttvar(double rttvar);
     
 private:
+
+    bool initialized_;
+
     u_int32_t snd_una_;
     u_int32_t snd_nxt_;
 

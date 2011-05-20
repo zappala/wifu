@@ -1,11 +1,19 @@
 #include "contexts/TCPTahoeReliabilityContext.h"
 
-TCPTahoeReliabilityContext::TCPTahoeReliabilityContext() : snd_nxt_(0), snd_una_(0), rcv_nxt_(0), rcv_wnd_(MAX_TCP_RECEIVE_WINDOW_SIZE), timer_(0), duplicate_ack_number_(0), duplicates_(0), receive_event_(0), rto_(INITIAL_RTO), srtt_(-1.0), rttvar_(-1.0) {
+TCPTahoeReliabilityContext::TCPTahoeReliabilityContext() : initialized_(false), snd_nxt_(0), snd_una_(0), rcv_nxt_(0), rcv_wnd_(MAX_TCP_RECEIVE_WINDOW_SIZE), timer_(0), duplicate_ack_number_(0), duplicates_(0), receive_event_(0), rto_(INITIAL_RTO), srtt_(-1.0), rttvar_(-1.0) {
     set_state(new TCPTahoeReliabilityState());
 }
 
 TCPTahoeReliabilityContext::~TCPTahoeReliabilityContext() {
 
+}
+
+bool TCPTahoeReliabilityContext::is_initialized() {
+    return initialized_;
+}
+
+void TCPTahoeReliabilityContext::set_initialized() {
+    initialized_ = true;
 }
 
 u_int32_t TCPTahoeReliabilityContext::get_snd_una() {

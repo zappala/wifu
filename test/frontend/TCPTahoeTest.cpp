@@ -48,7 +48,7 @@ void* tcp_tahoe_test_thread(void* args) {
     string address("127.0.0.1");
     string res = ap.get_address();
     EXPECT_EQ(address, res);
-        cout << "Connected to: " << ap.to_s() << endl;
+    cout << "Connected to: " << ap.to_s() << endl;
 
 }
 
@@ -84,43 +84,12 @@ void tcp_tahoe_connect_test() {
     timer.stop();
     ASSERT_EQ(0, result);
 
-        cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
+    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
     sleep(5);
 }
 
 TEST_F(BackEndTest, TCPTahoeConnectTest) {
     tcp_tahoe_connect_test();
-}
-
-void tcp_tahoe_drop_none() {
-    tcp_tahoe_connect_test();
-    NetworkTrace expected;
-
-    TCPPacket* syn = get_syn(TCP_TAHOE);
-    syn->set_tcp_receive_window_size(UINT_MAX);
-
-    // send
-    expected.add_packet(syn);
-    // receive
-    expected.add_packet(syn);
-
-
-    TCPPacket* synack = get_synack(TCP_TAHOE);
-    synack->set_tcp_receive_window_size(UINT_MAX);
-    // send
-    expected.add_packet(synack);
-    // receive
-    expected.add_packet(synack);
-
-
-    TCPPacket* ack = get_ack(TCP_TAHOE);
-    ack->set_tcp_receive_window_size(UINT_MAX);
-    // send
-    expected.add_packet(ack);
-    // receive
-    expected.add_packet(ack);
-
-    compare_traces(expected);
 }
 
 TEST_F(BackEndTest, TCPTahoeSocketTest) {
@@ -136,8 +105,118 @@ TEST_F(BackEndTest, TCPTahoeSocketTest) {
     }
 }
 
+void tcp_tahoe_drop_none() {
+    tcp_tahoe_connect_test();
+    NetworkTrace expected;
+
+    TCPPacket* syn = get_syn(TCP_TAHOE);
+    syn->set_tcp_receive_window_size(USHRT_MAX);
+
+    // send
+    expected.add_packet(syn);
+    // receive
+    expected.add_packet(syn);
+
+
+    TCPPacket* synack = get_synack(TCP_TAHOE);
+    synack->set_tcp_receive_window_size(USHRT_MAX);
+    // send
+    expected.add_packet(synack);
+    // receive
+    expected.add_packet(synack);
+
+
+    TCPPacket* ack = get_ack(TCP_TAHOE);
+    ack->set_tcp_receive_window_size(USHRT_MAX);
+    // send
+    expected.add_packet(ack);
+    // receive
+    expected.add_packet(ack);
+
+    compare_traces(expected);
+}
+
 TEST_F(BackEndMockTestDropNone, TCPTahoeMockConnectTest) {
     tcp_tahoe_drop_none();
+}
+
+void tcp_tahoe_drop_syn() {
+    tcp_tahoe_connect_test();
+    NetworkTrace expected;
+
+    TCPPacket* syn = get_syn(TCP_TAHOE);
+    syn->set_tcp_receive_window_size(USHRT_MAX);
+
+    // send
+    expected.add_packet(syn);
+    // resend
+    expected.add_packet(syn);
+    // receive
+    expected.add_packet(syn);
+
+
+    TCPPacket* synack = get_synack(TCP_TAHOE);
+    synack->set_tcp_receive_window_size(USHRT_MAX);
+    // send
+    expected.add_packet(synack);
+    // receive
+    expected.add_packet(synack);
+
+
+    TCPPacket* ack = get_ack(TCP_TAHOE);
+    ack->set_tcp_receive_window_size(USHRT_MAX);
+    // send
+    expected.add_packet(ack);
+    // receive
+    expected.add_packet(ack);
+
+    compare_traces(expected);
+}
+
+TEST_F(BackEndMockTestDrop10, TCPTahoeMockConnectTest) {
+    tcp_tahoe_drop_syn();
+}
+
+void tcp_tahoe_drop_12_delay_12() {
+    tcp_tahoe_connect_test();
+    NetworkTrace expected;
+
+    TCPPacket* syn = get_syn(TCP_TAHOE);
+    syn->set_tcp_receive_window_size(USHRT_MAX);
+
+    // send
+    expected.add_packet(syn);
+    // receive
+    expected.add_packet(syn);
+
+    TCPPacket* synack = get_synack(TCP_TAHOE);
+    synack->set_tcp_receive_window_size(USHRT_MAX);
+    // send (drop)
+    expected.add_packet(synack);
+
+    // resend
+    expected.add_packet(syn);
+    // receive
+    expected.add_packet(syn);
+
+    // resend
+    expected.add_packet(synack);
+    // receive
+    expected.add_packet(synack);
+
+    TCPPacket* ack = get_ack(TCP_TAHOE);
+    ack->set_tcp_receive_window_size(USHRT_MAX);
+    // send
+    expected.add_packet(ack);
+    // receive
+    expected.add_packet(ack);
+
+    compare_traces(expected);
+}
+
+TEST_F(BackEndMockTestDrop12Delay12, TCPTahoeMockConnectTest) {
+    // need to test with delays
+    tcp_tahoe_drop_12_delay_12();
 }
 
 
