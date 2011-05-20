@@ -14,7 +14,7 @@ TCPTahoe& TCPTahoe::instance() {
 }
 
 void TCPTahoe::icontext_socket(SocketEvent* e) {
-//    cout << "TCPTahoe::icontext_socket()" << endl;
+    //    cout << "TCPTahoe::icontext_socket()" << endl;
     Socket* s = e->get_socket();
     map_[s] = new TCPTahoeIContextContainer();
 
@@ -59,25 +59,27 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     // This is on page 69 of RFC 793
     // We add on the case where no context exists for us to check (RCV.NXT == 0)
     if (!is_valid_sequence_number(rc, p)) {
-        // <editor-fold defaultstate="collapsed" desc="Dispatch ACK">
-        TCPPacket* response = new TCPPacket();
-        response->insert_tcp_header_option(new TCPTimestampOption());
+        if (icontext_can_receive(s)) {
+            // <editor-fold defaultstate="collapsed" desc="Dispatch ACK">
+            TCPPacket* response = new TCPPacket();
+            response->insert_tcp_header_option(new TCPTimestampOption());
 
-        AddressPort* destination = s->get_remote_address_port();
-        AddressPort* source = s->get_local_address_port();
+            AddressPort* destination = s->get_remote_address_port();
+            AddressPort* source = s->get_local_address_port();
 
-        response->set_ip_destination_address_s(destination->get_address());
-        response->set_ip_source_address_s(source->get_address());
+            response->set_ip_destination_address_s(destination->get_address());
+            response->set_ip_source_address_s(source->get_address());
 
-        response->set_destination_port(destination->get_port());
-        response->set_source_port(source->get_port());
+            response->set_destination_port(destination->get_port());
+            response->set_source_port(source->get_port());
 
-        response->set_data((unsigned char*) "", 0);
+            response->set_data((unsigned char*) "", 0);
 
-        SendPacketEvent* event = new SendPacketEvent(s, response);
-        dispatch(event);
+            SendPacketEvent* event = new SendPacketEvent(s, response);
+            dispatch(event);
+            // </editor-fold>
+        }
         return;
-        // </editor-fold>
     }
 
     if (p->is_tcp_fin() && rc->get_rcv_wnd() < MAX_TCP_RECEIVE_WINDOW_SIZE) {
@@ -108,7 +110,7 @@ void TCPTahoe::icontext_send_packet(SendPacketEvent* e) {
     c->get_reliability()->icontext_send_packet(e);
     c->get_connection_manager()->icontext_send_packet(e);
     c->get_congestion_control()->icontext_send_packet(e);
-   
+
     send_network_packet(e->get_socket(), p);
 }
 
