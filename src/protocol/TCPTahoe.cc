@@ -60,6 +60,7 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     // This is on page 69 of RFC 793
     // We add on the case where no context exists for us to check (RCV.NXT == 0)
     if (!is_valid_sequence_number(rc, p)) {
+        // TODO: is this the correct check?
         if (icontext_can_receive(s)) {
             cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
             // <editor-fold defaultstate="collapsed" desc="Dispatch ACK">
