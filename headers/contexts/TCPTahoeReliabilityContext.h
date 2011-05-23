@@ -10,7 +10,7 @@
 
 #include <sys/types.h>
 
-#include "Context.h"
+#include "WindowContext.h"
 #include "states/TCPTahoeReliabilityState.h"
 
 #include "events/TimeoutEvent.h"
@@ -20,19 +20,13 @@
 #include "defines.h"
 
 
-class TCPTahoeReliabilityContext : public Context {
+class TCPTahoeReliabilityContext : public WindowContext {
 public:
-    TCPTahoeReliabilityContext();
+    TCPTahoeReliabilityContext(u_int32_t iss);
     virtual ~TCPTahoeReliabilityContext();
 
     bool is_initialized();
     void set_initialized();
-
-    u_int32_t get_snd_una();
-    void set_snd_una(u_int32_t snd_una);
-
-    u_int32_t get_snd_nxt();
-    void set_snd_nxt(u_int32_t snd_nxt);
 
     u_int32_t get_rcv_nxt();
     void set_rcv_nxt(u_int32_t rcv_nxt);

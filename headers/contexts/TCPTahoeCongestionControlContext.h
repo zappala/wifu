@@ -9,7 +9,10 @@
 #define	TCPTAHOECONGESTIONCONTROLCONTEXT_H
 
 #include "Context.h"
-#include "states/SlowStart.h"
+//#include "states/SlowStart.h"
+
+// TODO: replace this with an actual state machine
+#include "states/DummyCongestionController.h"
 
 class TCPTahoeCongestionControlContext : public Context {
 public:

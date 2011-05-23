@@ -1,6 +1,6 @@
 #include "contexts/TCPTahoeReliabilityContext.h"
 
-TCPTahoeReliabilityContext::TCPTahoeReliabilityContext() : initialized_(false), snd_nxt_(0), snd_una_(0), rcv_nxt_(0), rcv_wnd_(MAX_TCP_RECEIVE_WINDOW_SIZE), timer_(0), duplicate_ack_number_(0), duplicates_(0), receive_event_(0), rto_(INITIAL_RTO), srtt_(-1.0), rttvar_(-1.0) {
+TCPTahoeReliabilityContext::TCPTahoeReliabilityContext(u_int32_t iss) : WindowContext(iss), initialized_(false), rcv_nxt_(0), rcv_wnd_(MAX_TCP_RECEIVE_WINDOW_SIZE), timer_(0), duplicate_ack_number_(0), duplicates_(0), receive_event_(0), rto_(INITIAL_RTO), srtt_(-1.0), rttvar_(-1.0) {
     set_state(new TCPTahoeReliabilityState());
 }
 
@@ -14,23 +14,6 @@ bool TCPTahoeReliabilityContext::is_initialized() {
 
 void TCPTahoeReliabilityContext::set_initialized() {
     initialized_ = true;
-}
-
-u_int32_t TCPTahoeReliabilityContext::get_snd_una() {
-    return snd_una_;
-}
-
-void TCPTahoeReliabilityContext::set_snd_una(u_int32_t snd_una) {
-    snd_una_ = snd_una;
-}
-
-u_int32_t TCPTahoeReliabilityContext::get_snd_nxt() {
-    return snd_nxt_;
-}
-
-void TCPTahoeReliabilityContext::set_snd_nxt(u_int32_t snd_nxt) {
-    cout << "Setting snd_nxt to: " << snd_nxt << endl;
-    snd_nxt_ = snd_nxt;
 }
 
 u_int32_t TCPTahoeReliabilityContext::get_rcv_nxt() {
