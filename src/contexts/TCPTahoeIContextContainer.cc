@@ -3,7 +3,7 @@
 TCPTahoeIContextContainer::TCPTahoeIContextContainer() : saved_send_event_(0), saved_close_event_(0), fin_(0) {
     u_int32_t iss = 1;
     connection_manager_ = new ConnectionManagerContext();
-    congestion_control_ = new TCPTahoeCongestionControlContext();
+    congestion_control_ = new TCPTahoeCongestionControlContext(iss);
     reliability_ = new TCPTahoeReliabilityContext(iss);
 }
 

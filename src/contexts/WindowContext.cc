@@ -43,3 +43,7 @@ void WindowContext::set_snd_una(u_int32_t snd_una) {
     snd_una_ = snd_una;
 }
 
+u_int32_t WindowContext::get_num_outstanding() const {
+    return get_snd_nxt() - get_snd_una();
+}
+

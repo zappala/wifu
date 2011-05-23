@@ -2,7 +2,7 @@
 
 
 
-TCPTahoeCongestionControlContext::TCPTahoeCongestionControlContext() {
+TCPTahoeCongestionControlContext::TCPTahoeCongestionControlContext(u_int32_t iss) : WindowContext(iss) {
     set_state(new DummyCongestionController());
 }
 
