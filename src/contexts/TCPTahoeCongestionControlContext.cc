@@ -8,11 +8,11 @@ TCPTahoeCongestionControlContext::~TCPTahoeCongestionControlContext() {
 
 }
 
-u_int32_t TCPTahoeCongestionControlContext::get_snd_wnd() const {
+u_int16_t TCPTahoeCongestionControlContext::get_snd_wnd() const {
     return snd_wnd_;
 }
 
-void TCPTahoeCongestionControlContext::set_snd_wnd(u_int32_t snd_wnd) {
+void TCPTahoeCongestionControlContext::set_snd_wnd(u_int16_t snd_wnd) {
     snd_wnd_ = snd_wnd;
 }
 

@@ -57,11 +57,24 @@ void DummyCongestionController::state_receive_packet(Context* c, NetworkReceiveP
 
     if (p->is_tcp_ack() && between_equal_right(ccc->get_snd_una(), p->get_tcp_ack_number(), ccc->get_snd_nxt())) {
         ccc->set_snd_una(p->get_tcp_ack_number());
+
+        // update send window (RFC p. 72)
+        if(less_than(ccc->get_snd_wnd1(), p->get_tcp_sequence_number()) || 
+            (ccc->get_snd_wnd1() == p->get_tcp_sequence_number() &&
+            less_than_or_equal(ccc->get_snd_wnd2(), p->get_tcp_ack_number()))) {
+
+            ccc->set_snd_wnd(p->get_tcp_receive_window_size());
+            ccc->set_snd_wnd1(p->get_tcp_sequence_number());
+            ccc->set_snd_wnd2(p->get_tcp_ack_number());
+//            cout << "Send window updated on socket: " << e->get_socket() << endl;
+        }
     }
 
     cout << "DummyCongestionController::state_recieve_packet()" << endl;
     cout << "SND.NXT: " << ccc->get_snd_nxt() << endl;
     cout << "SND.UNA: " << ccc->get_snd_una() << endl;
+
+    
 
     send_packets(c, e);
 }
