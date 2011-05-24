@@ -24,11 +24,15 @@ void DummyCongestionController::state_send_packet(Context* c, SendPacketEvent* e
 
     if (p->is_tcp_syn()) {
         ccc->set_snd_una(ccc->get_iss());
-        ccc->set_snd_nxt(ccc->get_snd_nxt() + 1);
+        ccc->set_snd_nxt(ccc->get_iss() + 1);
     } else if (p->is_tcp_fin()) {
         ccc->set_snd_nxt(ccc->get_snd_nxt() + 1);
     }
     // we will set snd.nxt for data when we originally send data
+
+    cout << "DummyCongestionController::state_send_packet()" << endl;
+    cout << "SND.NXT: " << ccc->get_snd_nxt() << endl;
+    cout << "SND.UNA: " << ccc->get_snd_una() << endl;
 
 }
 
@@ -36,7 +40,13 @@ void DummyCongestionController::state_resend_packet(Context* c, ResendPacketEven
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    ccc->set_snd_nxt(ccc->get_snd_una() + p->get_data_length_bytes());
+    u_int32_t length = (p->is_tcp_syn() || p->is_tcp_syn()) ? 1 : p->get_data_length_bytes();
+
+    ccc->set_snd_nxt(ccc->get_snd_una() + length);
+
+    cout << "DummyCongestionController::state_resend_packet()" << endl;
+    cout << "SND.NXT: " << ccc->get_snd_nxt() << endl;
+    cout << "SND.UNA: " << ccc->get_snd_una() << endl;
 
     // TODO: resize the window?
 }
@@ -48,6 +58,10 @@ void DummyCongestionController::state_receive_packet(Context* c, NetworkReceiveP
     if (p->is_tcp_ack() && between_equal_right(ccc->get_snd_una(), p->get_tcp_ack_number(), ccc->get_snd_nxt())) {
         ccc->set_snd_una(p->get_tcp_ack_number());
     }
+
+    cout << "DummyCongestionController::state_recieve_packet()" << endl;
+    cout << "SND.NXT: " << ccc->get_snd_nxt() << endl;
+    cout << "SND.UNA: " << ccc->get_snd_una() << endl;
 
     send_packets(c, e);
 }

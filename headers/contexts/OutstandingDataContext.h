@@ -1,21 +1,21 @@
 /* 
- * File:   WindowContext.h
+ * File:   OutstandingDataContext.h
  * Author: rbuck
  *
  * Created on May 23, 2011, 3:57 PM
  */
 
-#ifndef WINDOWCONTEXT_H
-#define	WINDOWCONTEXT_H
+#ifndef OutstandingDataContext_H
+#define	OutstandingDataContext_H
 
 #include "Context.h"
 #include <sys/types.h>
 
-class WindowContext : public Context {
+class OutstandingDataContext : public Context {
 public:
-    WindowContext(u_int32_t iss);
-    WindowContext(const WindowContext& orig);
-    virtual ~WindowContext();
+    OutstandingDataContext(u_int32_t iss);
+    OutstandingDataContext(const OutstandingDataContext& orig);
+    virtual ~OutstandingDataContext();
     
     u_int32_t get_iss() const;
     void set_iss(u_int32_t iss);
@@ -34,5 +34,5 @@ private:
     u_int32_t snd_una_;
 };
 
-#endif	/* WINDOWCONTEXT_H */
+#endif	/* OutstandingDataContext_H */
 

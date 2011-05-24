@@ -51,7 +51,7 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
 
     // validate any ack number
     if (p->is_tcp_ack() && !is_valid_ack_number(rc, p)) {
-        cout << "INVALID ACK NUMBER" << endl;
+//        cout << "INVALID ACK NUMBER" << endl;
         rc->icontext_receive_packet(e);
         return;
     }
@@ -62,7 +62,7 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     if (!is_valid_sequence_number(rc, p)) {
         // TODO: is this the correct check?
         if (icontext_can_receive(s)) {
-            cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
+//            cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
             // <editor-fold defaultstate="collapsed" desc="Dispatch ACK">
             TCPPacket* response = new TCPPacket();
             response->insert_tcp_header_option(new TCPTimestampOption());
@@ -92,12 +92,8 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
 
     rc->icontext_receive_packet(e);
     c->get_connection_manager()->icontext_receive_packet(e);
+    c->get_congestion_control()->icontext_receive_packet(e);
 
-    if (c->get_connection_manager()->icontext_can_send(s) &&
-            between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt())) {
-
-        c->get_congestion_control()->icontext_receive_packet(e);
-    }
 
     if (c->get_saved_close_event() && s->get_send_buffer().empty()) {
         c->get_connection_manager()->icontext_close(c->get_saved_close_event());
@@ -381,6 +377,6 @@ bool TCPTahoe::is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacke
 }
 
 bool TCPTahoe::is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p) {
-    cout << "TCPTahoe::is_valid_ack_number(), checking: " << rc->get_snd_una() << " <= " << p->get_tcp_ack_number() << " <= " << rc->get_snd_nxt() << endl;
+//    cout << "TCPTahoe::is_valid_ack_number(), checking: " << rc->get_snd_una() << " <= " << p->get_tcp_ack_number() << " <= " << rc->get_snd_nxt() << endl;
     return between_equal(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt());
 }

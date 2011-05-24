@@ -10,7 +10,7 @@
 
 #include <sys/types.h>
 
-#include "WindowContext.h"
+#include "OutstandingDataContext.h"
 #include "states/TCPTahoeReliabilityState.h"
 
 #include "events/TimeoutEvent.h"
@@ -20,7 +20,7 @@
 #include "defines.h"
 
 
-class TCPTahoeReliabilityContext : public WindowContext {
+class TCPTahoeReliabilityContext : public OutstandingDataContext {
 public:
     TCPTahoeReliabilityContext(u_int32_t iss);
     virtual ~TCPTahoeReliabilityContext();
