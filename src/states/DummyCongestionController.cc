@@ -40,7 +40,7 @@ void DummyCongestionController::state_resend_packet(Context* c, ResendPacketEven
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    u_int32_t length = (p->is_tcp_syn() || p->is_tcp_syn()) ? 1 : p->get_data_length_bytes();
+    u_int32_t length = (p->is_tcp_syn() || p->is_tcp_fin()) ? 1 : p->get_data_length_bytes();
 
     ccc->set_snd_nxt(ccc->get_snd_una() + length);
 
