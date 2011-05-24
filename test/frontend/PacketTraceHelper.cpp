@@ -1,10 +1,33 @@
 #include "../headers/PacketTraceHelper.h"
 
 void compare_traces(NetworkTrace& expected) {
+    list<NetworkTrace*> l;
+    l.push_front(&expected);
+    compare_traces(l);
+}
+
+void compare_traces(list<NetworkTrace*>& expected) {
+
+
     PacketLogReader reader(LOG_FILENAME);
     NetworkTrace* actual = reader.get_trace();
 
-    ASSERT_EQ(expected, *actual) << expected.get_packet_trace(*actual);
+    bool equal = false;
+
+    NetworkTrace* current = 0;
+    while(!expected.empty()) {
+        current = expected.front();
+        expected.pop_front();
+
+        equal = *current == *actual;
+        if(equal) {
+            break;
+        }
+        
+    }
+
+
+    ASSERT_TRUE(equal) << current->get_packet_trace(*actual);
 }
 
 TCPPacket* get_base_tcp_packet(int protocol) {

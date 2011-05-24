@@ -49,7 +49,7 @@ void* tcp_tahoe_close_send_receive_thread(void* args) {
     string address("127.0.0.1");
     string res = ap.get_address();
     EXPECT_EQ(address, res);
-//    cout << "Connected to: " << ap.to_s() << endl;
+    //    cout << "Connected to: " << ap.to_s() << endl;
 
     // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
@@ -67,7 +67,7 @@ void* tcp_tahoe_close_send_receive_thread(void* args) {
     }
 
     EXPECT_EQ(message.length(), num_sent);
-//    cout << "SendReceivePassiveToActive, sent message: " << message << endl;
+    cout << "SendReceivePassiveToActive, sent message: " << message << endl;
     wifu_close(connection);
 }
 
@@ -109,7 +109,7 @@ void tcp_tahoe_close_send_receive_test(string message) {
     timer.stop();
     EXPECT_EQ(0, result);
 
-//    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
+    //    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
     int size = 1500;
     char buffer[size];
@@ -117,11 +117,11 @@ void tcp_tahoe_close_send_receive_test(string message) {
     string expected = v.expected_string;
     string all_received = "";
 
-    while(true) {
+    while (true) {
 
         int return_value = wifu_recv(client, &buffer, 1, 0);
 
-        if(return_value == 0) {
+        if (return_value == 0) {
             break;
         }
 
@@ -132,92 +132,133 @@ void tcp_tahoe_close_send_receive_test(string message) {
 
     EXPECT_EQ(expected, all_received);
     wifu_close(client);
-//    cout << "IntegrationTest::send_receive_test(), received the following: " << all_received << endl;
+    cout << "IntegrationTest::send_receive_test(), received the following: " << all_received << endl;
     sleep(10);
 }
+
 void tcp_tahoe_close_passive_to_active_drop_none() {
     // <editor-fold defaultstate="collapsed" desc="setup">
     string data = random_string(1);
     tcp_tahoe_close_send_receive_test(data);
 
     NetworkTrace expected;
+    NetworkTrace alternate;
 
     // Connect
 
     // Send
-    expected.add_packet(get_syn(TCP_TAHOE));
+    TCPPacket* syn = get_syn(TCP_TAHOE);
+    syn->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
+    expected.add_packet(syn);
+    alternate.add_packet(syn);
     // receive
-    expected.add_packet(get_syn(TCP_TAHOE));
+    expected.add_packet(syn);
+    alternate.add_packet(syn);
 
     // send
-    expected.add_packet(get_synack(TCP_TAHOE));
+    TCPPacket* synack = get_synack(TCP_TAHOE);
+    synack->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
+    expected.add_packet(synack);
+    alternate.add_packet(synack);
     // receive
-    expected.add_packet(get_synack(TCP_TAHOE));
-
-    // send
-    expected.add_packet(get_ack(TCP_TAHOE));
-    // receive
-    expected.add_packet(get_ack(TCP_TAHOE));
-
-    // Data
-
-    TCPPacket* data_packet = get_base_tcp_packet(TCP_TAHOE);
-    data_packet->set_destination_port(1000);
-    data_packet->set_source_port(5002);
-    data_packet->set_tcp_ack(true);
-    data_packet->set_tcp_sequence_number(2);
-    data_packet->set_tcp_ack_number(3);
-    data_packet->insert_tcp_header_option(new TCPTimestampOption());
-    data_packet->set_data((unsigned char*) data.c_str(), data.size());
-
-    // send
-    expected.add_packet(data_packet);
-    // receive
-    expected.add_packet(data_packet);
+    expected.add_packet(synack);
+    alternate.add_packet(synack);
 
     TCPPacket* ack = get_base_tcp_packet_ts(TCP_TAHOE);
-    ack->set_tcp_sequence_number(3);
-    ack->set_tcp_ack_number(3);
+    ack->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
+    ack->set_tcp_sequence_number(2);
+    ack->set_tcp_ack_number(2);
     ack->set_source_port(1000);
     ack->set_destination_port(5002);
     ack->set_tcp_ack(true);
 
     // send
     expected.add_packet(ack);
+    alternate.add_packet(ack);
     // receive
-    expected.add_packet(ack); // </editor-fold>
+    expected.add_packet(ack);
+    alternate.add_packet(ack);
+
+    // Data
+
+    TCPPacket* data_packet = get_base_tcp_packet(TCP_TAHOE);
+    data_packet->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
+    data_packet->set_destination_port(1000);
+    data_packet->set_source_port(5002);
+    data_packet->set_tcp_ack(true);
+    data_packet->set_tcp_sequence_number(2);
+    data_packet->set_tcp_ack_number(2);
+    data_packet->insert_tcp_header_option(new TCPTimestampOption());
+    data_packet->set_data((unsigned char*) data.c_str(), data.size());
+
+    // send
+    expected.add_packet(data_packet);
+    alternate.add_packet(data_packet);
+    // receive
+    expected.add_packet(data_packet);
+    alternate.add_packet(data_packet);
+    
+    // </editor-fold>
 
     // Close
     // Passive to Active
     TCPPacket* fin1 = get_base_tcp_packet_ts(TCP_TAHOE);
+    fin1->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
     fin1->set_tcp_sequence_number(3);
-    fin1->set_tcp_ack_number(4);
+    fin1->set_tcp_ack_number(2);
     fin1->set_source_port(5002);
     fin1->set_destination_port(1000);
     fin1->set_tcp_fin(true);
     fin1->set_tcp_ack(true);
 
+    
+
+    TCPPacket* ack_for_data = get_base_tcp_packet_ts(TCP_TAHOE);
+    ack_for_data->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
+    ack_for_data->set_tcp_sequence_number(2);
+    ack_for_data->set_tcp_ack_number(3);
+    ack_for_data->set_source_port(1000);
+    ack_for_data->set_destination_port(5002);
+    ack_for_data->set_tcp_ack(true);
+
+
     // send
     expected.add_packet(fin1);
     // receive
     expected.add_packet(fin1);
 
-    TCPPacket* ack1 = get_base_tcp_packet_ts(TCP_TAHOE);
-    ack1->set_tcp_sequence_number(4);
-    ack1->set_tcp_ack_number(4);
-    ack1->set_source_port(1000);
-    ack1->set_destination_port(5002);
-    ack1->set_tcp_ack(true);
 
     // send
-    expected.add_packet(ack1);
+    expected.add_packet(ack_for_data);
     // receive
-    expected.add_packet(ack1);
+    expected.add_packet(ack_for_data);
+
+    alternate.add_packet(ack_for_data);
+    alternate.add_packet(ack_for_data);
+    alternate.add_packet(fin1);
+    alternate.add_packet(fin1);
+
+
+    TCPPacket* ack_for_fin = get_base_tcp_packet_ts(TCP_TAHOE);
+    ack_for_fin->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
+    ack_for_fin->set_tcp_sequence_number(2);
+    ack_for_fin->set_tcp_ack_number(4);
+    ack_for_fin->set_source_port(1000);
+    ack_for_fin->set_destination_port(5002);
+    ack_for_fin->set_tcp_ack(true);
+
+    // send
+    expected.add_packet(ack_for_fin);
+    alternate.add_packet(ack_for_fin);
+    // receive
+    expected.add_packet(ack_for_fin);
+    alternate.add_packet(ack_for_fin);
 
     // Close
     // Active to Passive
     TCPPacket* fin2 = get_base_tcp_packet_ts(TCP_TAHOE);
-    fin2->set_tcp_sequence_number(5);
+    fin2->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
+    fin2->set_tcp_sequence_number(2);
     fin2->set_tcp_ack_number(4);
     fin2->set_source_port(1000);
     fin2->set_destination_port(5002);
@@ -226,23 +267,32 @@ void tcp_tahoe_close_passive_to_active_drop_none() {
 
     // send
     expected.add_packet(fin2);
+    alternate.add_packet(fin2);
     // receive
     expected.add_packet(fin2);
+    alternate.add_packet(fin2);
 
 
     TCPPacket* ack2 = get_base_tcp_packet_ts(TCP_TAHOE);
+    ack2->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
     ack2->set_tcp_sequence_number(4);
-    ack2->set_tcp_ack_number(6);
+    ack2->set_tcp_ack_number(3);
     ack2->set_source_port(5002);
     ack2->set_destination_port(1000);
     ack2->set_tcp_ack(true);
 
     // send
     expected.add_packet(ack2);
+    alternate.add_packet(ack2);
     // receive
     expected.add_packet(ack2);
+    alternate.add_packet(ack2);
 
-    compare_traces(expected);
+
+    list<NetworkTrace*> l;
+    l.push_back(&expected);
+    l.push_back(&alternate);
+    compare_traces(l);
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeCloseTestPassiveToActive) {

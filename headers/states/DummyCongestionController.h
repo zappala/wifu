@@ -15,6 +15,9 @@
 #include "events/NetworkReceivePacketEvent.h"
 #include "Math.h"
 
+#include "packet/TCPPacket.h"
+#include "packet/TCPTimestampOption.h"
+
 class DummyCongestionController : public State {
 public:
     DummyCongestionController();
