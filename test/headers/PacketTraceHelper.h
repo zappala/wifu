@@ -14,13 +14,7 @@
 #include "../headers/defines.h"
 #include "../headers/packet/TCPTimestampOption.h"
 
-#include <list>
-
-// compares expected with the actual
 void compare_traces(NetworkTrace& expected);
-
-// compares all traces inside expected against actual, if any are equal the test passes
-void compare_traces(list<NetworkTrace*>& expected);
 
 TCPPacket* get_base_tcp_packet(int protocol);
 TCPPacket* get_base_tcp_packet_ts(int protocol);

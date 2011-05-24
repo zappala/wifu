@@ -142,27 +142,21 @@ void tcp_tahoe_close_passive_to_active_drop_none() {
     tcp_tahoe_close_send_receive_test(data);
 
     NetworkTrace expected;
-    NetworkTrace alternate;
-
     // Connect
 
     // Send
     TCPPacket* syn = get_syn(TCP_TAHOE);
     syn->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
     expected.add_packet(syn);
-    alternate.add_packet(syn);
     // receive
     expected.add_packet(syn);
-    alternate.add_packet(syn);
 
     // send
     TCPPacket* synack = get_synack(TCP_TAHOE);
     synack->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
     expected.add_packet(synack);
-    alternate.add_packet(synack);
     // receive
     expected.add_packet(synack);
-    alternate.add_packet(synack);
 
     TCPPacket* ack = get_base_tcp_packet_ts(TCP_TAHOE);
     ack->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
@@ -174,10 +168,8 @@ void tcp_tahoe_close_passive_to_active_drop_none() {
 
     // send
     expected.add_packet(ack);
-    alternate.add_packet(ack);
     // receive
     expected.add_packet(ack);
-    alternate.add_packet(ack);
 
     // Data
 
@@ -193,11 +185,9 @@ void tcp_tahoe_close_passive_to_active_drop_none() {
 
     // send
     expected.add_packet(data_packet);
-    alternate.add_packet(data_packet);
     // receive
     expected.add_packet(data_packet);
-    alternate.add_packet(data_packet);
-    
+
     // </editor-fold>
 
     // Close
@@ -211,7 +201,7 @@ void tcp_tahoe_close_passive_to_active_drop_none() {
     fin1->set_tcp_fin(true);
     fin1->set_tcp_ack(true);
 
-    
+
 
     TCPPacket* ack_for_data = get_base_tcp_packet_ts(TCP_TAHOE);
     ack_for_data->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
@@ -223,20 +213,14 @@ void tcp_tahoe_close_passive_to_active_drop_none() {
 
 
     // send
-    expected.add_packet(fin1);
+    expected.add_packet(ack_for_data);
     // receive
-    expected.add_packet(fin1);
-
+    expected.add_packet(ack_for_data);
 
     // send
-    expected.add_packet(ack_for_data);
+    expected.add_packet(fin1);
     // receive
-    expected.add_packet(ack_for_data);
-
-    alternate.add_packet(ack_for_data);
-    alternate.add_packet(ack_for_data);
-    alternate.add_packet(fin1);
-    alternate.add_packet(fin1);
+    expected.add_packet(fin1);
 
 
     TCPPacket* ack_for_fin = get_base_tcp_packet_ts(TCP_TAHOE);
@@ -249,10 +233,8 @@ void tcp_tahoe_close_passive_to_active_drop_none() {
 
     // send
     expected.add_packet(ack_for_fin);
-    alternate.add_packet(ack_for_fin);
     // receive
     expected.add_packet(ack_for_fin);
-    alternate.add_packet(ack_for_fin);
 
     // Close
     // Active to Passive
@@ -267,10 +249,8 @@ void tcp_tahoe_close_passive_to_active_drop_none() {
 
     // send
     expected.add_packet(fin2);
-    alternate.add_packet(fin2);
     // receive
     expected.add_packet(fin2);
-    alternate.add_packet(fin2);
 
 
     TCPPacket* ack2 = get_base_tcp_packet_ts(TCP_TAHOE);
@@ -283,16 +263,10 @@ void tcp_tahoe_close_passive_to_active_drop_none() {
 
     // send
     expected.add_packet(ack2);
-    alternate.add_packet(ack2);
     // receive
     expected.add_packet(ack2);
-    alternate.add_packet(ack2);
 
-
-    list<NetworkTrace*> l;
-    l.push_back(&expected);
-    l.push_back(&alternate);
-    compare_traces(l);
+    compare_traces(expected);
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeCloseTestPassiveToActive) {

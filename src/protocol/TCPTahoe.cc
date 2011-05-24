@@ -95,10 +95,10 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     c->get_congestion_control()->icontext_receive_packet(e);
 
 
-//    if (c->get_saved_close_event() && s->get_send_buffer().empty()) {
-//        c->get_connection_manager()->icontext_close(c->get_saved_close_event());
-//        c->set_saved_close_event(0);
-//    }
+    if (c->get_saved_close_event() && s->get_send_buffer().empty()) {
+        c->get_connection_manager()->icontext_close(c->get_saved_close_event());
+        c->set_saved_close_event(0);
+    }
 }
 
 void TCPTahoe::icontext_send_packet(SendPacketEvent* e) {
@@ -159,13 +159,12 @@ void TCPTahoe::icontext_close(CloseEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_connection_manager()->icontext_close(e);
-
-//    if (s->get_send_buffer().empty()) {
-//        c->get_connection_manager()->icontext_close(e);
-//    } else {
-//        c->set_saved_close_event(e);
-//    }
+    
+    if (s->get_send_buffer().empty()) {
+        c->get_connection_manager()->icontext_close(e);
+    } else {
+        c->set_saved_close_event(e);
+    }
 
     ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
     response->put(RETURN_VALUE_STRING, Utils::itoa(0));
