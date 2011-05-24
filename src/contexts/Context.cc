@@ -25,6 +25,10 @@ State* Context::get_state() {
     return current_;
 }
 
+string Context::get_state_name() {
+    return type_name(*get_state());
+}
+
 void Context::icontext_socket(SocketEvent* e) {
     get_state()->state_socket(this, e);
 }

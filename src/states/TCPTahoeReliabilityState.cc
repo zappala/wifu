@@ -263,7 +263,7 @@ void TCPTahoeReliabilityState::resend_data(Context* c, Socket* s) {
     }
 
     if (control_bit) {
-        //        cout << "Control bit set, setting snd_nxt to snd.una + 1" << endl;
+                cout << "Control bit set, setting snd_nxt to snd.una + 1" << endl;
         rc->set_snd_nxt(rc->get_snd_una() + 1);
         p->set_data((unsigned char*) "", 0);
     } else {
@@ -271,7 +271,7 @@ void TCPTahoeReliabilityState::resend_data(Context* c, Socket* s) {
         if (!data.compare(data.size() - 1, 1, FIN_BYTE.c_str())) {
             data.erase(data.size() - 1, 1);
         }
-        //        cout << "No control bit found, setting snd_nxt to snd.una + data.size" << rc->get_snd_nxt() << " + " << data.size() << endl;
+                cout << "No control bit found, setting snd_nxt to snd.una + data.size" << rc->get_snd_nxt() << " + " << data.size() << endl;
         rc->set_snd_nxt(rc->get_snd_una() + data.size());
         p->set_data((unsigned char*) data.data(), data.size());
     }

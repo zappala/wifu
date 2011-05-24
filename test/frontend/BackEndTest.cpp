@@ -95,6 +95,10 @@ string BackEndMockTestDrop24::get_mock_file() {
     return "drop_2_4.conf";
 }
 
+string BackEndMockTestDropSecond24::get_mock_file() {
+    return "drop_second_2_4.conf";
+}
+
 string BackEndMockTestDrop32::get_mock_file() {
     return "drop_3_2.conf";
 }

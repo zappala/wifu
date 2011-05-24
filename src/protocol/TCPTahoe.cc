@@ -1,7 +1,13 @@
 #include "protocol/TCPTahoe.h"
 
 TCPTahoe::TCPTahoe(int protocol) : Protocol(protocol) {
-
+    states_we_can_send_ack_.insert(type_name(Established));
+    states_we_can_send_ack_.insert(type_name(FinWait1));
+    states_we_can_send_ack_.insert(type_name(FinWait2));
+    states_we_can_send_ack_.insert(type_name(CloseWait));
+    states_we_can_send_ack_.insert(type_name(Closing));
+    states_we_can_send_ack_.insert(type_name(LastAck));
+    states_we_can_send_ack_.insert(type_name(TimeWait));
 }
 
 TCPTahoe::~TCPTahoe() {
@@ -44,14 +50,18 @@ void TCPTahoe::icontext_listen(ListenEvent* e) {
 }
 
 void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
+    cout << "TCPTahoe::icontext_receive_packet(): " << endl;
+
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
     TCPPacket* p = (TCPPacket*) e->get_packet();
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c->get_reliability();
+    ConnectionManagerContext* cmc = (ConnectionManagerContext*) c->get_connection_manager();
+    cout << p->to_s() << endl;
 
     // validate any ack number
     if (p->is_tcp_ack() && !is_valid_ack_number(rc, p)) {
-//        cout << "INVALID ACK NUMBER" << endl;
+        cout << "INVALID ACK NUMBER" << endl;
         rc->icontext_receive_packet(e);
         return;
     }
@@ -61,8 +71,10 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     // We add on the case where no context exists for us to check (RCV.NXT == 0)
     if (!is_valid_sequence_number(rc, p)) {
         // TODO: is this the correct check?
-        if (icontext_can_receive(s)) {
-//            cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
+        cout << "INVALID SEQUENCE NUMBER" << endl;
+        cout << "Current state: " << cmc->get_state_name() << endl;
+        if (states_we_can_send_ack_.contains(cmc->get_state_name())) {
+            cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
             // <editor-fold defaultstate="collapsed" desc="Dispatch ACK">
             TCPPacket* response = new TCPPacket();
             response->insert_tcp_header_option(new TCPTimestampOption());
@@ -91,12 +103,12 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     }
 
     rc->icontext_receive_packet(e);
-    c->get_connection_manager()->icontext_receive_packet(e);
+    cmc->icontext_receive_packet(e);
     c->get_congestion_control()->icontext_receive_packet(e);
 
 
     if (c->get_saved_close_event() && s->get_send_buffer().empty()) {
-        c->get_connection_manager()->icontext_close(c->get_saved_close_event());
+        cmc->icontext_close(c->get_saved_close_event());
         c->set_saved_close_event(0);
     }
 }
@@ -109,6 +121,9 @@ void TCPTahoe::icontext_send_packet(SendPacketEvent* e) {
     c->get_reliability()->icontext_send_packet(e);
     c->get_connection_manager()->icontext_send_packet(e);
     c->get_congestion_control()->icontext_send_packet(e);
+
+    cout << "TCPTahoe::icontext_send_packet(): " << endl;
+    cout << p->to_s() << endl;
 
     send_network_packet(e->get_socket(), p);
 }
@@ -159,7 +174,7 @@ void TCPTahoe::icontext_close(CloseEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    
+
     if (s->get_send_buffer().empty()) {
         c->get_connection_manager()->icontext_close(e);
     } else {
@@ -349,6 +364,7 @@ bool TCPTahoe::is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacke
     // TODO: this may need to change to something else as we may wrap around
     // I actually cannot remember why this needs to be here -- RB
     if (rc->get_rcv_nxt() == 0) {
+        cout << "A" << endl;
         return true;
     }
 
@@ -356,28 +372,35 @@ bool TCPTahoe::is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacke
     // These checks are in reverse order that they are on page 69
     // because I always seemed to get to the last one in tests
     if (p->get_data_length_bytes() > 0 && rc->get_rcv_wnd() > 0) {
+        cout << "B" << endl;
         return between_equal_left(rc->get_rcv_nxt(), p->get_tcp_sequence_number(), rc->get_rcv_nxt() + rc->get_rcv_wnd()) ||
                 between_equal_left(rc->get_rcv_nxt(), p->get_tcp_sequence_number() + p->get_data_length_bytes() - 1, rc->get_rcv_nxt() + rc->get_rcv_wnd());
     }
 
     if (p->get_data_length_bytes() > 0 && rc->get_rcv_wnd() == 0) {
+        cout << "C" << endl;
         return false;
     }
 
     if (p->get_data_length_bytes() == 0 && rc->get_rcv_wnd() > 0) {
+        cout << "D" << endl;
+        cout << "RCV.NXT: " << rc->get_rcv_nxt() << endl;
+        cout << "SEG.SEQ: " << p->get_tcp_sequence_number() << endl;
+        cout << "RCV.NXT + RCV.WND: " << rc->get_rcv_nxt() + rc->get_rcv_wnd() << endl;
         return between_equal_left(rc->get_rcv_nxt(), p->get_tcp_sequence_number(), rc->get_rcv_nxt() + rc->get_rcv_wnd());
     }
 
     if (p->get_data_length_bytes() == 0 && rc->get_rcv_wnd() == 0) {
+        cout << "E" << endl;
         return p->get_tcp_sequence_number() == rc->get_rcv_nxt();
     }
 
-
+    cout << "F" << endl;
 
     return false;
 }
 
 bool TCPTahoe::is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p) {
-//    cout << "TCPTahoe::is_valid_ack_number(), checking: " << rc->get_snd_una() << " <= " << p->get_tcp_ack_number() << " <= " << rc->get_snd_nxt() << endl;
+    //    cout << "TCPTahoe::is_valid_ack_number(), checking: " << rc->get_snd_una() << " <= " << p->get_tcp_ack_number() << " <= " << rc->get_snd_nxt() << endl;
     return between_equal(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt());
 }

@@ -12,12 +12,15 @@
 #include "contexts/IContext.h"
 #include "contexts/TCPTahoeIContextContainer.h"
 #include "Math.h"
+#include "HashSet.h"
 
 class TCPTahoe : public Protocol {
 private:
     TCPTahoe(int protocol = TCP_TAHOE);
 
     tr1::unordered_map<Socket*, TCPTahoeIContextContainer*> map_;
+
+    HashSet<string> states_we_can_send_ack_;
 
     bool is_room_in_send_buffer(SendEvent* e);
     void save_in_buffer_and_send_events(SendEvent* e);

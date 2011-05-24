@@ -34,6 +34,8 @@ public:
 
     virtual State* get_state();
 
+    virtual string get_state_name();
+
     // From IContext
     virtual void icontext_socket(SocketEvent* e);
 

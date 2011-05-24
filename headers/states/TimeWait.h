@@ -9,12 +9,17 @@
 #define	TIMEWAIT_H
 
 #include "State.h"
+#include "Closed.h"
+
 #include "contexts/Context.h"
+#include "contexts/ConnectionManagerContext.h"
+
 #include "events/TimerFiredEvent.h"
 #include "events/TimeoutEvent.h"
-#include "contexts/ConnectionManagerContext.h"
+#include "events/NetworkReceivePacketEvent.h"
+#include "events/CancelTimerEvent.h"
 #include "events/DeleteSocketEvent.h"
-#include "states/Closed.h"
+
 #include "defines.h"
 
 class TimeWait : public State {
@@ -25,8 +30,14 @@ public:
     virtual void state_exit(Context* c);
 
     virtual void state_timer_fired(Context* c, TimerFiredEvent* e);
+    virtual void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
 
 private:
+    void start_timer(Context* c);
+    void stop_timer(Context* c);
+    void restart_timer(Context* c);
+
+    
     TimeoutEvent* timeout_event_;
 };
 

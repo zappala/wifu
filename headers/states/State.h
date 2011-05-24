@@ -87,7 +87,6 @@ public:
     virtual void state_set_socket_option(Context*, SetSocketOptionEvent*);
 
     virtual void state_get_socket_option(Context*, GetSocketOptionEvent*);
-
 };
 
 #endif /* STATE_H_ */
