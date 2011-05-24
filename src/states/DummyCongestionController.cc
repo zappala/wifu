@@ -30,9 +30,9 @@ void DummyCongestionController::state_send_packet(Context* c, SendPacketEvent* e
     }
     // we will set snd.nxt for data when we originally send data
 
-    cout << "DummyCongestionController::state_send_packet()" << endl;
-    cout << "SND.NXT: " << ccc->get_snd_nxt() << endl;
-    cout << "SND.UNA: " << ccc->get_snd_una() << endl;
+//    cout << "DummyCongestionController::state_send_packet()" << endl;
+//    cout << "SND.NXT: " << ccc->get_snd_nxt() << endl;
+//    cout << "SND.UNA: " << ccc->get_snd_una() << endl;
 
 }
 
@@ -44,9 +44,9 @@ void DummyCongestionController::state_resend_packet(Context* c, ResendPacketEven
 
     ccc->set_snd_nxt(ccc->get_snd_una() + length);
 
-    cout << "DummyCongestionController::state_resend_packet()" << endl;
-    cout << "SND.NXT: " << ccc->get_snd_nxt() << endl;
-    cout << "SND.UNA: " << ccc->get_snd_una() << endl;
+//    cout << "DummyCongestionController::state_resend_packet()" << endl;
+//    cout << "SND.NXT: " << ccc->get_snd_nxt() << endl;
+//    cout << "SND.UNA: " << ccc->get_snd_una() << endl;
 
     // TODO: resize the window?
 }
@@ -70,9 +70,9 @@ void DummyCongestionController::state_receive_packet(Context* c, NetworkReceiveP
         }
     }
 
-    cout << "DummyCongestionController::state_recieve_packet()" << endl;
-    cout << "SND.NXT: " << ccc->get_snd_nxt() << endl;
-    cout << "SND.UNA: " << ccc->get_snd_una() << endl;
+//    cout << "DummyCongestionController::state_recieve_packet()" << endl;
+//    cout << "SND.NXT: " << ccc->get_snd_nxt() << endl;
+//    cout << "SND.UNA: " << ccc->get_snd_una() << endl;
 
 
 

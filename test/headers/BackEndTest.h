@@ -103,6 +103,11 @@ public:
     string get_mock_file();
 };
 
+class BackEndMockTestDrop24Drop24 : public BackEndMockTest {
+public:
+    string get_mock_file();
+};
+
 class BackEndMockTestDrop32 : public BackEndMockTest {
 public:
     string get_mock_file();
