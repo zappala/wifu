@@ -46,7 +46,7 @@ void DummyCongestionController::state_receive_packet(Context* c, NetworkReceiveP
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
     if (p->is_tcp_ack() && between_equal_right(ccc->get_snd_una(), p->get_tcp_ack_number(), ccc->get_snd_nxt())) {
-        ccc->set_snd_una(ccc->get_snd_una() + p->get_data_length_bytes());
+        ccc->set_snd_una(p->get_tcp_ack_number());
     }
 
     send_packets(c, e);
@@ -61,6 +61,6 @@ void DummyCongestionController::send_packets(Context* c, Event* e) {
     
     Socket* s = e->get_socket();
     
-    ccc->set_snd_nxt(ccc->get_snd_nxt() + p->get_data_length_bytes());
+    
 }
 
