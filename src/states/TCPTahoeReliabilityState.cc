@@ -85,7 +85,7 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    //    cout << endl << "TCPTahoeReliabilityState::state_receive_packet() on socket: " << s << endl;
+        cout << "TCPTahoeReliabilityState::state_receive_packet() on socket: " << s << endl;
     //    cout << p->to_s_format() << endl;
     //    cout << p->to_s() << endl;
 

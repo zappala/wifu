@@ -50,7 +50,7 @@ void TCPTahoe::icontext_listen(ListenEvent* e) {
 }
 
 void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
-//    cout << "TCPTahoe::icontext_receive_packet(): " << endl;
+    cout << "TCPTahoe::icontext_receive_packet(): " << endl;
 
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
@@ -102,6 +102,7 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
         return;
     }
 
+    cout << "CMS State: " << cmc->get_state_name() << endl;
     rc->icontext_receive_packet(e);
     cmc->icontext_receive_packet(e);
     c->get_congestion_control()->icontext_receive_packet(e);

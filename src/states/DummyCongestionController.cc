@@ -52,6 +52,7 @@ void DummyCongestionController::state_resend_packet(Context* c, ResendPacketEven
 }
 
 void DummyCongestionController::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+    cout << "DummyCongestionContrller::state_receive_packet()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 

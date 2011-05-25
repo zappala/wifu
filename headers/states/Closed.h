@@ -31,6 +31,7 @@ public:
     virtual void state_listen(Context* c, ListenEvent* e);
     virtual void state_new_connection_established(Context* c, ConnectionEstablishedEvent* e);
     virtual void state_new_connection_initiated(Context* c, ConnectionInitiatedEvent* e);
+    virtual void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
 
 };
 

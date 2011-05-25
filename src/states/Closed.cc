@@ -71,3 +71,7 @@ void Closed::state_new_connection_initiated(Context* c, ConnectionInitiatedEvent
     cmc->set_connection_type(PASSIVE_OPEN);
     c->set_state(new Listen());
 }
+
+void Closed::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+    cout << "Closed::state_receive_packet()" << endl;
+}
