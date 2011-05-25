@@ -97,10 +97,12 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
         return;
     }
 
+    // TODO: do we really want to hang on to the FIN packet?
+    // We must ensure that we will get everything out of the receive buffer
+    // before the FIN sender times out and resends the FIN
+    // I guess we could simply cache it again if we are not ready to close???
+    // See my notes on May 25, 2011 -RB
     if (p->is_tcp_fin() && rc->get_rcv_wnd() < MAX_TCP_RECEIVE_WINDOW_SIZE) {
-        cout << "Receive window not big enough" << endl;
-        cout << "Receive window size: " << rc->get_receive_window().size() << endl;
-        cout << "Recevie buffer size: " << s->get_receive_buffer().size() << endl;
         c->set_saved_fin(e);
         return;
     }
@@ -250,12 +252,7 @@ void TCPTahoe::icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e) {
     TCPTahoeIContextContainer* c = map_.find(s)->second;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c->get_reliability();
 
-    cout << "Receive window size: " << rc->get_receive_window().size() << endl;
-    cout << "Recevie buffer size: " << s->get_receive_buffer().size() << endl;
-
     if (c->get_saved_fin() && rc->get_rcv_wnd() == MAX_TCP_RECEIVE_WINDOW_SIZE) {
-        cout << "TCPTahoe::icontext_receive_buffer_not_full(), sending out fin" << endl;
-
         dispatch(c->get_saved_fin());
     }
 
