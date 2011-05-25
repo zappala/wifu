@@ -92,19 +92,18 @@ void DummyCongestionController::send_packets(Context* c, Event* e) {
     // Represents the first byte in the send buffer which has "never" been sent before.
     // We actually may have sent data already but if SND.UNA changes due to a drop we will treat it as if we never sent it.
     int index = ccc->get_num_outstanding();
-    // number of bytes never sent
-    int size = send_buffer.size() - index;
+    int num_unsent = send_buffer.size() - index;
 
-    while (size > 0 && ccc->get_num_outstanding() < ccc->get_snd_wnd()) {
+    while (num_unsent > 0 && ccc->get_num_outstanding() < ccc->get_snd_wnd()) {
 
         TCPPacket* p = new TCPPacket();
         p->insert_tcp_header_option(new TCPTimestampOption());
 
-        u_int32_t data_length = min(min((int) ccc->get_snd_wnd(), size), (int) p->max_data_length());
+        u_int32_t data_length = min(min((int) ccc->get_snd_wnd(), num_unsent), (int) p->max_data_length());
 
         const char* data = (send_buffer.data() + index);
 
-        size -= data_length;
+        num_unsent -= data_length;
         index += data_length;
         ccc->set_snd_nxt(ccc->get_snd_nxt() + data_length);
 

@@ -73,6 +73,12 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
         // TODO: is this the correct check?
         cout << "INVALID SEQUENCE NUMBER" << endl;
         //        cout << "Current state: " << cmc->get_state_name() << endl;
+
+        // See my notes for May 25, 2011 for why this must be - RB
+        if(!strcmp(cmc->get_state_name().c_str(), type_name(TimeWait))) {
+            cmc->icontext_receive_packet(e);
+        }
+        else
         if (states_we_can_send_ack_.contains(cmc->get_state_name())) {
             cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
             // <editor-fold defaultstate="collapsed" desc="Dispatch ACK">

@@ -1,6 +1,5 @@
 #include "states/TimeWait.h"
 
-
 TimeWait::TimeWait() : timeout_event_(0) {
 
 }
@@ -33,32 +32,32 @@ void TimeWait::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     //    The only thing that can arrive in this state is a
     //    retransmission of the remote FIN. Acknowledge it, and restart
     //    the 2 MSL timeout.
-//    cout << "TimeWait::state_receive_packet()" << endl;
+    cout << "TimeWait::state_receive_packet()" << endl;
 
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
-    assert(p->is_tcp_fin());
 
-    unsigned char* data = (unsigned char*) "";
-    AddressPort* destination = s->get_remote_address_port();
-    AddressPort* source = s->get_local_address_port();
+    if (p->is_tcp_fin()) {
 
-    TCPPacket* response = new TCPPacket();
-    response->insert_tcp_header_option(new TCPTimestampOption());
-    response->set_ip_destination_address_s(destination->get_address());
-    response->set_ip_source_address_s(source->get_address());
+        unsigned char* data = (unsigned char*) "";
+        AddressPort* destination = s->get_remote_address_port();
+        AddressPort* source = s->get_local_address_port();
 
-    response->set_destination_port(destination->get_port());
-    response->set_source_port(source->get_port());
+        TCPPacket* response = new TCPPacket();
+        response->insert_tcp_header_option(new TCPTimestampOption());
+        response->set_ip_destination_address_s(destination->get_address());
+        response->set_ip_source_address_s(source->get_address());
 
-    response->set_data(data, 0);
+        response->set_destination_port(destination->get_port());
+        response->set_source_port(source->get_port());
 
-    SendPacketEvent* event = new SendPacketEvent(s, response);
-    // TODO: do we really need to send here?
-    // See my notes for Tues. May 24, 2011 - RB
-//    Dispatcher::instance().enqueue(event);
+        response->set_data(data, 0);
 
-    restart_timer(c);
+        SendPacketEvent* event = new SendPacketEvent(s, response);
+        Dispatcher::instance().enqueue(event);
+
+        restart_timer(c);
+    }
 }
 
 void TimeWait::start_timer(Context* c) {
