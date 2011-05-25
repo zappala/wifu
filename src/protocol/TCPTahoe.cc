@@ -57,7 +57,7 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     TCPPacket* p = (TCPPacket*) e->get_packet();
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c->get_reliability();
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c->get_connection_manager();
-//    cout << p->to_s() << endl;
+    //    cout << p->to_s() << endl;
 
     // validate any ack number
     if (p->is_tcp_ack() && !is_valid_ack_number(rc, p)) {
@@ -72,7 +72,7 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     if (!is_valid_sequence_number(rc, p)) {
         // TODO: is this the correct check?
         cout << "INVALID SEQUENCE NUMBER" << endl;
-//        cout << "Current state: " << cmc->get_state_name() << endl;
+        //        cout << "Current state: " << cmc->get_state_name() << endl;
         if (states_we_can_send_ack_.contains(cmc->get_state_name())) {
             cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
             // <editor-fold defaultstate="collapsed" desc="Dispatch ACK">
@@ -98,6 +98,9 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     }
 
     if (p->is_tcp_fin() && rc->get_rcv_wnd() < MAX_TCP_RECEIVE_WINDOW_SIZE) {
+        cout << "Receive window not big enough" << endl;
+        cout << "Receive window size: " << rc->get_receive_window().size() << endl;
+        cout << "Recevie buffer size: " << s->get_receive_buffer().size() << endl;
         c->set_saved_fin(e);
         return;
     }
@@ -123,8 +126,8 @@ void TCPTahoe::icontext_send_packet(SendPacketEvent* e) {
     c->get_connection_manager()->icontext_send_packet(e);
     c->get_congestion_control()->icontext_send_packet(e);
 
-//    cout << "TCPTahoe::icontext_send_packet(): " << endl;
-//    cout << p->to_s() << endl;
+    //    cout << "TCPTahoe::icontext_send_packet(): " << endl;
+    //    cout << p->to_s() << endl;
 
     send_network_packet(e->get_socket(), p);
 }
@@ -242,11 +245,17 @@ void TCPTahoe::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e) 
 }
 
 void TCPTahoe::icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e) {
+    cout << "TCPTahoe::icontext_receive_buffer_not_full()" << endl;
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c->get_reliability();
 
-    if (c->get_saved_fin() && rc->get_rcv_wnd() < MAX_TCP_RECEIVE_WINDOW_SIZE) {
+    cout << "Receive window size: " << rc->get_receive_window().size() << endl;
+    cout << "Recevie buffer size: " << s->get_receive_buffer().size() << endl;
+
+    if (c->get_saved_fin() && rc->get_rcv_wnd() == MAX_TCP_RECEIVE_WINDOW_SIZE) {
+        cout << "TCPTahoe::icontext_receive_buffer_not_full(), sending out fin" << endl;
+
         dispatch(c->get_saved_fin());
     }
 

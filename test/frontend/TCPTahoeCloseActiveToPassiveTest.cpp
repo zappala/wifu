@@ -49,8 +49,6 @@ void* tahoe_close_active_to_passive_thread(void* args) {
         ADD_FAILURE() << "Problem in Accept";
     }
 
-    flag->post();
-
     AddressPort ap(&addr);
     string address("127.0.0.1");
     string res = ap.get_address();
@@ -61,6 +59,8 @@ void* tahoe_close_active_to_passive_thread(void* args) {
     char buffer[size];
     memset(buffer, 0, size);
     string all_received = "";
+
+    flag->post();
 
     while (true) {
         int return_value = wifu_recv(connection, &buffer, 1, 0);

@@ -61,7 +61,7 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, SendPacketEvent* e)
 }
 
 void TCPTahoeReliabilityState::state_timer_fired(Context* c, TimerFiredEvent* e) {
-    //    cout << "TCPTahoeReliabilityState::state_timer_fired() on socket: " << e->get_socket() << endl;
+        cout << "TCPTahoeReliabilityState::state_timer_fired() on socket: " << e->get_socket() << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
 
