@@ -61,7 +61,7 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
 
     // validate any ack number
     if (p->is_tcp_ack() && !is_valid_ack_number(rc, p)) {
-//        cout << "INVALID ACK NUMBER" << endl;
+        cout << "INVALID ACK NUMBER" << endl;
         rc->icontext_receive_packet(e);
         return;
     }
@@ -71,10 +71,10 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     // We add on the case where no context exists for us to check (RCV.NXT == 0)
     if (!is_valid_sequence_number(rc, p)) {
         // TODO: is this the correct check?
-//        cout << "INVALID SEQUENCE NUMBER" << endl;
+        cout << "INVALID SEQUENCE NUMBER" << endl;
 //        cout << "Current state: " << cmc->get_state_name() << endl;
         if (states_we_can_send_ack_.contains(cmc->get_state_name())) {
-//            cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
+            cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
             // <editor-fold defaultstate="collapsed" desc="Dispatch ACK">
             TCPPacket* response = new TCPPacket();
             response->insert_tcp_header_option(new TCPTimestampOption());

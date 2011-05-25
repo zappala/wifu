@@ -946,9 +946,16 @@ void tcp_tahoe_close_passive_to_active_drop_first_ack_and_second_fin() {
     expected.add_packet(fin1);
 
     // resend
-    expected.add_packet(ack_for_fin);
+    // increase the sequence number by 1 because we must advance over the FIN we sent (and was dropped)
+    // TODO: is this the correct expectation?
+    // See my notes for Wed. May 25, 2011 - RB
+    TCPPacket* ack_for_fin_copy = new TCPPacket();
+    memcpy(ack_for_fin_copy->get_payload(), ack_for_fin->get_payload(), ack_for_fin->get_ip_tot_length());
+    ack_for_fin_copy->set_tcp_sequence_number(3);
+
+    expected.add_packet(ack_for_fin_copy);
     // receive
-    expected.add_packet(ack_for_fin);
+    expected.add_packet(ack_for_fin_copy);
 
     // resend
     expected.add_packet(fin2);
