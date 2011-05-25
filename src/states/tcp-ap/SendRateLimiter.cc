@@ -66,10 +66,10 @@ void SendRateLimiter::state_timer_fired(Context* c, TimerFiredEvent* e)
     //if data to send, dispatch the NetworkSendPacketEvent
     if(!queue_->isEmpty())
     {
-        cout << "SendRateLimiter::timer_fired: sending queued data: " << endl;
+        //cout << "SendRateLimiter::timer_fired: sending queued data: " << endl;
         //send packet
         WiFuPacket* packet = queue_->dequeue();
-        cout << "SendRateLimiter::timer_fired: data to send: " << packet << endl;
+        //cout << "SendRateLimiter::timer_fired: data to send: " << packet << endl;
         NetworkSendPacketEvent* netSendEvent = new NetworkSendPacketEvent(e->get_socket(), packet);
         Dispatcher::instance().enqueue(netSendEvent);
         setTimer(e->get_socket());
