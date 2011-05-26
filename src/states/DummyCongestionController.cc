@@ -52,7 +52,7 @@ void DummyCongestionController::state_resend_packet(Context* c, ResendPacketEven
 }
 
 void DummyCongestionController::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
-    cout << "DummyCongestionContrller::state_receive_packet()" << endl;
+//    cout << "DummyCongestionContrller::state_receive_packet()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
@@ -100,6 +100,9 @@ void DummyCongestionController::send_packets(Context* c, Event* e) {
         p->insert_tcp_header_option(new TCPTimestampOption());
 
         u_int32_t data_length = min(min((int) ccc->get_snd_wnd(), num_unsent), (int) p->max_data_length());
+        assert(data_length > 0);
+        assert(send_buffer.size() > 0);
+        
 
         const char* data = (send_buffer.data() + index);
 

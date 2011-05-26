@@ -32,7 +32,7 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
     cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
     assert(p);
     cout << p->to_s_format() << endl;
-    cout << p->to_s() << endl << endl;
+    cout << p->to_s() << endl;
     logger.log(p);
     // drop the packet
     //    cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
@@ -73,7 +73,7 @@ void MockNetworkInterface::receive(WiFuPacket* p) {
     cout << "MockNetworkInterface::network_send() (mocking a receive)" << endl;
     logger.log(p);
     cout << p->to_s_format() << endl;
-    cout << p->to_s() << endl;
+    cout << p->to_s() << endl << endl;
 
     Event* response = new NetworkReceivePacketEvent(s, p);
     Dispatcher::instance().enqueue(response);

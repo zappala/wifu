@@ -143,6 +143,14 @@ string BackEndMockTestDrop35Drop45::get_mock_file() {
     return "drop_3_5_drop_4_5.conf";
 }
 
+string BackEndMockTestDropRandom1Percent::get_mock_file() {
+    return "drop_random_1_percent.conf";
+}
+
+string BackEndMockTestDropRandom5Percent::get_mock_file() {
+    return "drop_random_5_percent.conf";
+}
+
 string BackEndMockTestDropRandom10Percent::get_mock_file() {
     return "drop_random_10_percent.conf";
 }

@@ -61,7 +61,7 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, SendPacketEvent* e)
 }
 
 void TCPTahoeReliabilityState::state_timer_fired(Context* c, TimerFiredEvent* e) {
-        cout << "TCPTahoeReliabilityState::state_timer_fired() on socket: " << e->get_socket() << endl;
+//        cout << "TCPTahoeReliabilityState::state_timer_fired() on socket: " << e->get_socket() << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
 
@@ -85,7 +85,7 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-        cout << "TCPTahoeReliabilityState::state_receive_packet() on socket: " << s << endl;
+//        cout << "TCPTahoeReliabilityState::state_receive_packet() on socket: " << s << endl;
     //    cout << p->to_s_format() << endl;
     //    cout << p->to_s() << endl;
 
@@ -116,7 +116,7 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
             // we did ack some data
             reset_timer(c, s);
         }
-    } else if (less_than(rc->get_snd_nxt(), p->get_tcp_ack_number())) {
+    } else if (p->is_tcp_ack() && less_than(rc->get_snd_nxt(), p->get_tcp_ack_number())) {
         create_and_dispatch_ack(s);
         return;
     } else if (p->is_tcp_ack() &&
@@ -130,26 +130,34 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
         }
         if (rc->get_duplicates() == 3) {
             rc->set_duplicates(0);
-            resend_data(c, s);
+//            cout << "Three duplicate acks, resending data" << endl;
+//            resend_data(c, s);
         }
     }
 
     if (p->is_tcp_syn() || p->is_tcp_fin()) {
         rc->set_rcv_nxt(p->get_tcp_sequence_number() + 1);
     } else if (p->get_data_length_bytes() > 0) {
+        cout << "TCPTahoeReliabilityState::state_receive_packet(), DATA FOUND" << endl;
         // save data
         int num_inserted = rc->get_receive_window().insert(p);
+        cout << "TCPTahoeReliabilityState::state_receive_packet(), DATA FOUND, num inserted: " << num_inserted << endl;
         rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
 
         string& receive_buffer = s->get_receive_buffer();
         u_int32_t before_rcv_buffer_size = receive_buffer.size();
 
+        cout << "TCPTahoeReliabilityState::state_receive_packet(): RCV.NXT is : " << rc->get_rcv_nxt() << endl;
+
         rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
-        u_int32_t amount_put_in_receive_buffer = receive_buffer.size() - before_rcv_buffer_size;
+        u_int32_t after_receive_buffer_size = receive_buffer.size();
+        cout << "TCPTahoeReliabilityState::state_receive_packet(): receive buffer size: " << after_receive_buffer_size << endl;
+        u_int32_t amount_put_in_receive_buffer = after_receive_buffer_size - before_rcv_buffer_size;
         assert(amount_put_in_receive_buffer >= 0);
 
         if (amount_put_in_receive_buffer > 0) {
             rc->set_rcv_nxt(rc->get_rcv_nxt() + amount_put_in_receive_buffer);
+            cout << "TCPTahoeReliabilityState::state_receive_packet(): Increasing RCV.NXT to : " << rc->get_rcv_nxt() << endl;
             Dispatcher::instance().enqueue(new ReceiveBufferNotEmptyEvent(s));
         }
 

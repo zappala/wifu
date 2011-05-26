@@ -470,10 +470,10 @@ namespace {
 
         TCPPacketBuffer buffer;
 
-        bitset < USHRT_MAX > bits;
+        bitset < 2000 > bits;
         bits.set();
         int total = bits.size();
-        int max_data_length = 1400;
+        int max_data_length = 2;
 
 
         // start at sequence #0
@@ -510,5 +510,66 @@ namespace {
         buffer.get_continuous_data(0, b);
         ASSERT_EQ(expected, b);
         ASSERT_EQ(expected.length(), total_inserted);
+    }
+
+    TEST(TCPPacketBufferTest, randomWithIntermitentRemoval) {
+
+        TCPPacketBuffer buffer;
+
+        bitset < 2000 > bits;
+        bits.set();
+        int total = bits.size();
+        int max_data_length = 2;
+
+
+        // start at sequence #0
+        // The index in the string is equal to the sequence number
+        string expected = RandomStringGenerator::get_data(total);
+        int total_inserted = 0;
+        int total_removed = 0;
+
+        int nxt = 0;
+        string actual = "";
+
+        while (bits.any()) {
+            int sequence_number = (rand() % total) + nxt;
+
+            if (sequence_number > expected.size()) {
+                continue;
+            }
+
+            int length = rand() % (max_data_length + 1);
+
+            if (sequence_number + length > expected.size()) {
+                length = expected.size() - sequence_number;
+            }
+
+            if (length == 0) {
+                continue;
+            }
+
+            string s = expected.substr(sequence_number, length);
+
+            TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(sequence_number, s);
+            int count = buffer.insert(p);
+            ASSERT_LE(0, count);
+            total_inserted += count;
+
+            for (int i = sequence_number; i < sequence_number + length; ++i) {
+                bits.set(i, false);
+            }
+
+            // remove data
+            int before_size = actual.size();
+            buffer.get_continuous_data(nxt, actual);
+            int removed = actual.size() - before_size;
+
+            total_removed += removed;
+            nxt += removed;
+        }
+
+        ASSERT_EQ(expected, actual);
+        ASSERT_EQ(expected.length(), total_inserted);
+        ASSERT_EQ(expected.length(), total_removed);
     }
 }

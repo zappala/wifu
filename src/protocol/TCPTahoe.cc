@@ -109,11 +109,12 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     // I guess we could simply cache it again if we are not ready to close???
     // See my notes on May 25, 2011 -RB
     if (p->is_tcp_fin() && rc->get_rcv_wnd() < MAX_TCP_RECEIVE_WINDOW_SIZE) {
+        cout << "Saving FIN" << endl;
         c->set_saved_fin(e);
         return;
     }
 
-    cout << "CMS State: " << cmc->get_state_name() << endl;
+    cout << "TCPTahoe::icontext_receive_packet(): calling all three FSMs" << endl;
     rc->icontext_receive_packet(e);
     cmc->icontext_receive_packet(e);
     c->get_congestion_control()->icontext_receive_packet(e);
@@ -253,7 +254,7 @@ void TCPTahoe::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e) 
 }
 
 void TCPTahoe::icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e) {
-    cout << "TCPTahoe::icontext_receive_buffer_not_full()" << endl;
+//    cout << "TCPTahoe::icontext_receive_buffer_not_full()" << endl;
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c->get_reliability();
