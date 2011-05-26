@@ -138,20 +138,24 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
     if (p->is_tcp_syn() || p->is_tcp_fin()) {
         rc->set_rcv_nxt(p->get_tcp_sequence_number() + 1);
     } else if (p->get_data_length_bytes() > 0) {
-        cout << "TCPTahoeReliabilityState::state_receive_packet(), DATA FOUND" << endl;
         // save data
         int num_inserted = rc->get_receive_window().insert(p);
-        cout << "TCPTahoeReliabilityState::state_receive_packet(), DATA FOUND, num inserted: " << num_inserted << endl;
+        cout << "TCPTahoeReliabilityState::state_receive_packet() on socket " << s << " , DATA FOUND, num inserted: " << num_inserted << endl;
+        cout << "TCPTahoeReliabilityState::state_receive_packet() Packet: " << endl;
+        cout << p->to_s_format() << endl;
+        cout << p->to_s() << endl;
         rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
 
         string& receive_buffer = s->get_receive_buffer();
         u_int32_t before_rcv_buffer_size = receive_buffer.size();
+        cout << "TCPTahoeReliabilityState::state_receive_packet(): before Receive buffer size is : " << before_rcv_buffer_size << endl;
 
         cout << "TCPTahoeReliabilityState::state_receive_packet(): RCV.NXT is : " << rc->get_rcv_nxt() << endl;
+        cout << "TCPTahoeReliabilityState::state_receive_packet(): First seq num in receive window: " << rc->get_receive_window().get_first_sequence_number() << endl;
 
         rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
         u_int32_t after_receive_buffer_size = receive_buffer.size();
-        cout << "TCPTahoeReliabilityState::state_receive_packet(): receive buffer size: " << after_receive_buffer_size << endl;
+        cout << "TCPTahoeReliabilityState::state_receive_packet(): after receive buffer size: " << after_receive_buffer_size << endl;
         u_int32_t amount_put_in_receive_buffer = after_receive_buffer_size - before_rcv_buffer_size;
         assert(amount_put_in_receive_buffer >= 0);
 

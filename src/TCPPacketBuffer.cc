@@ -119,3 +119,13 @@ int TCPPacketBuffer::size() {
 void TCPPacketBuffer::mark_dirty() {
     size_ = -1;
 }
+
+u_int32_t TCPPacketBuffer::get_first_sequence_number() {
+    packet_buffer::iterator itr = buffer_.begin();
+
+    if (buffer_.empty()) {
+        return 0;
+    }
+
+    return itr->first->get_tcp_sequence_number();
+}

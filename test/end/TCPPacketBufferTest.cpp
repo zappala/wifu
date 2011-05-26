@@ -516,10 +516,10 @@ namespace {
 
         TCPPacketBuffer buffer;
 
-        bitset < 2000 > bits;
+        bitset < 20000 > bits;
         bits.set();
         int total = bits.size();
-        int max_data_length = 2;
+        int max_data_length = 1400;
 
 
         // start at sequence #0
@@ -563,6 +563,10 @@ namespace {
             int before_size = actual.size();
             buffer.get_continuous_data(nxt, actual);
             int removed = actual.size() - before_size;
+
+            before_size = actual.size();
+            buffer.get_continuous_data(nxt, actual);
+            ASSERT_EQ(0, actual.size() - before_size);
 
             total_removed += removed;
             nxt += removed;

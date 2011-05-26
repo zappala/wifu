@@ -24,6 +24,7 @@ public:
     int insert(TCPPacket* p);
     void get_continuous_data(u_int32_t sequence_number, string& buffer);
     int size();
+    u_int32_t get_first_sequence_number();
 
 private:
 

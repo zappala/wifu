@@ -174,6 +174,12 @@ public:
      */
     void set_ip_destination_address_s(string daddr);
 
+    static u_int16_t checksum(u_int16_t* ptr, u_int16_t len);
+
+    virtual void calculate_and_set_checksum();
+
+    virtual bool is_valid_checksum();
+
     void init();
 
     bool length_is_set() const;

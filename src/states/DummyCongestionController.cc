@@ -69,6 +69,9 @@ void DummyCongestionController::state_receive_packet(Context* c, NetworkReceiveP
             ccc->set_snd_wnd2(p->get_tcp_ack_number());
             //            cout << "Send window updated on socket: " << e->get_socket() << endl;
         }
+
+
+        send_packets(c, e);
     }
 
 //    cout << "DummyCongestionController::state_recieve_packet()" << endl;
@@ -77,7 +80,7 @@ void DummyCongestionController::state_receive_packet(Context* c, NetworkReceiveP
 
 
 
-    send_packets(c, e);
+    
 }
 
 void DummyCongestionController::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e) {

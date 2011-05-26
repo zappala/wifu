@@ -155,6 +155,10 @@ void tahoe_active_to_passive_test_with_close(string message) {
     sleep(1);
 }
 
+TEST_F(BackEndMockTestDrop32, tahoeSendReceiveTestActiveToPassiveDrop32) {
+    tahoe_active_to_passive_test_with_close(random_string(400));
+}
+
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive1) {
     tahoe_active_to_passive_test_with_close(random_string(1));
 }
@@ -200,7 +204,7 @@ TEST_F(BackEndMockTestDropRandom5Percent, tahoeSendReceiveTestActiveToPassiveDro
 }
 
 TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(2000));
+    tahoe_active_to_passive_test_with_close(random_string(1000));
 }
 
 TEST_F(BackEndMockTestDropRandom20Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
@@ -220,5 +224,5 @@ TEST_F(BackEndMockTestDropRandom50Percent, tahoeSendReceiveTestActiveToPassiveDr
 }
 
 TEST_F(BackEndMockTestDropRandom60Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(20000));
+    tahoe_active_to_passive_test_with_close(random_string(10));
 }

@@ -159,6 +159,36 @@ void IPPacket::set_ip_destination_address_s(string daddr) {
     inet_pton(AF_INET, daddr.c_str(), &ip_->daddr);
 }
 
+u_int16_t IPPacket::checksum(u_int16_t* ptr, u_int16_t len) {
+    long sum = 0;
+    while (len > 1) {
+        sum += *ptr++;
+        if (sum & 0x80000000)
+            sum = (sum & 0xffff) + (sum >> 16);
+        len -= 2;
+    }
+    if (len > 0) {
+        sum += *((unsigned char*) ptr);
+    }
+    while (sum >> 16) {
+        sum = (sum & 0xffff) + (sum >> 16);
+    }
+    return ~sum;
+}
+
+void IPPacket::calculate_and_set_checksum() {
+    set_ip_checksum(0);
+    set_ip_checksum(checksum((u_int16_t*) ip_, get_ip_header_length_bytes()));
+}
+
+bool IPPacket::is_valid_checksum() {
+    u_int16_t current_checksum = get_ip_checksum();
+    calculate_and_set_checksum();
+    u_int16_t calculated_checksum = get_ip_checksum();
+    set_ip_checksum(current_checksum);
+    return current_checksum == calculated_checksum;
+}
+
 void IPPacket::init() {
     ip_ = (struct iphdr*) payload_;
 

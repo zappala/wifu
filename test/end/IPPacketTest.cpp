@@ -224,7 +224,36 @@ namespace {
         ASSERT_EQ(exp, p.max_data_length());
     }
 
-    
+    TEST(IPPacket, checksumCalculation) {
+        IPPacket p1, p2;
+        p1.calculate_and_set_checksum();
+        p2.calculate_and_set_checksum();
+
+        ASSERT_EQ(p1.get_ip_checksum(), p2.get_ip_checksum());
+        ASSERT_TRUE(p1.is_valid_checksum());
+        ASSERT_TRUE(p2.is_valid_checksum());
+
+        // change version
+        u_int8_t version = p1.get_ip_version();
+        p1.set_ip_version(12);
+        ASSERT_FALSE(p1.is_valid_checksum());
+        p1.set_ip_version(version);
+        ASSERT_TRUE(p1.is_valid_checksum());
+
+        // change destination address
+        string destination_address = p1.get_ip_destination_address_s();
+        p1.set_ip_destination_address_s("192.168.0.1");
+        ASSERT_FALSE(p1.is_valid_checksum());
+        p1.set_ip_destination_address_s(destination_address);
+        ASSERT_TRUE(p1.is_valid_checksum());
+
+        // change source address
+        string source_address = p1.get_ip_source_address_s();
+        p1.set_ip_source_address_s("192.168.0.1");
+        ASSERT_FALSE(p1.is_valid_checksum());
+        p1.set_ip_source_address_s(source_address);
+        ASSERT_TRUE(p1.is_valid_checksum());
+    }    
 }
 
 #endif	/* _IPPACKETTEST_H */
