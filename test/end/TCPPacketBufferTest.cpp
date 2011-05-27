@@ -576,4 +576,86 @@ namespace {
         ASSERT_EQ(expected.length(), total_inserted);
         ASSERT_EQ(expected.length(), total_removed);
     }
+
+    TEST(TCPPacketBufferTest, dropOne) {
+
+        TCPPacketBuffer buffer;
+        int num_bytes = 500;
+        int difference = 5;
+
+        // start at sequence #0
+        // The index in the string is equal to the sequence number
+        string expected = RandomStringGenerator::get_data(num_bytes);
+        cout << "Expected: " << expected << endl;
+        int total_inserted = 0;
+        int total_removed = 0;
+        string actual = "";
+
+        // Insert first packet
+        int data_seq_num = 0;
+        string data = expected.substr(data_seq_num, 1);
+        TCPPacket* p0 = HelperFunctions::get_tcp_packet_with_data(data_seq_num, data);
+        total_inserted += buffer.insert(p0);
+        cout << "Inserting: " << data << endl;
+
+        // Remove first packet
+        int before_size = actual.size();
+        buffer.get_continuous_data(data_seq_num, actual);
+        total_removed += actual.size() - before_size;
+
+        ASSERT_EQ(data, actual);
+        ASSERT_EQ(total_inserted, total_removed);
+
+        data_seq_num++;
+
+        for (int i = 0; i < 100; i++) {
+            before_size = actual.size();
+            buffer.get_continuous_data(data_seq_num, actual);
+            total_removed += actual.size() - before_size;
+            ASSERT_EQ(data, actual);
+            ASSERT_EQ(total_inserted, total_removed);
+        }
+
+        for (data_seq_num = 2; data_seq_num < num_bytes - difference; data_seq_num++) {
+            int length = 1;
+            data = expected.substr(data_seq_num, length);
+            cout << "Inserting: " << data << endl;
+            TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(data_seq_num, data);
+            total_inserted += buffer.insert(p);
+        }
+
+        // insert sequence number 1
+        data_seq_num = 1;
+        data = expected.substr(data_seq_num, num_bytes - difference - data_seq_num - 1);
+        cout << "Inserting: " << data << endl;
+        TCPPacket* p1 = HelperFunctions::get_tcp_packet_with_data(data_seq_num, data);
+        total_inserted += buffer.insert(p1);
+
+        // insert the remaining bytes
+        for (data_seq_num = num_bytes - difference - data_seq_num; data_seq_num < num_bytes; data_seq_num++) {
+            int length = (rand() % 2) + 1;
+            if (data_seq_num + 1 == num_bytes) {
+                length = 1;
+            }
+            data = expected.substr(data_seq_num, 1);
+            cout << "Inserting: " << data << endl;
+            TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(data_seq_num, data);
+            total_inserted += buffer.insert(p);
+        }
+
+        data_seq_num = 1;
+
+        // remove all packets
+        before_size = actual.size();
+        buffer.get_continuous_data(data_seq_num, actual);
+        int after_size = actual.size();
+
+        ASSERT_EQ(num_bytes - 1, after_size - before_size);
+
+        total_removed += after_size - before_size;
+
+        ASSERT_EQ(expected, actual);
+        ASSERT_EQ(expected.length(), total_inserted);
+        ASSERT_EQ(expected.length(), total_removed);
+    }
 }

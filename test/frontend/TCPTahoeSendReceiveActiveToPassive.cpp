@@ -156,7 +156,7 @@ void tahoe_active_to_passive_test_with_close(string message) {
 }
 
 TEST_F(BackEndMockTestDrop32, tahoeSendReceiveTestActiveToPassiveDrop32) {
-    tahoe_active_to_passive_test_with_close(random_string(400));
+    tahoe_active_to_passive_test_with_close(random_string(500));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive1) {

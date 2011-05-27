@@ -11,6 +11,7 @@ TCPPacketBuffer::~TCPPacketBuffer() {
 int TCPPacketBuffer::insert(TCPPacket* p) {
     int before_size = size();
 
+    cout << "TCPPacketBuffer::insert() before size: " << before_size << endl;
     pair < packet_buffer::iterator, bool> ret = buffer_.insert(make_pair(p, 0));
     mark_dirty();
 
@@ -24,7 +25,10 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
         }
     }
 
-    int total_inserted = size() - before_size;
+    int after_size = size();
+    int total_inserted = after_size - before_size;
+
+    cout << "TCPPacketBuffer::insert() after size: " << after_size << endl;
 
     assert(total_inserted >= 0);
     if(total_inserted == 0 && can_erase) {

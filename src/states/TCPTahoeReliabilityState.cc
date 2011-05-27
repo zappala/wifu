@@ -138,6 +138,10 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
     if (p->is_tcp_syn() || p->is_tcp_fin()) {
         rc->set_rcv_nxt(p->get_tcp_sequence_number() + 1);
     } else if (p->get_data_length_bytes() > 0) {
+        cout << "TCPTahoeReliabilityState::state_receive_packet() DATA: " << endl;
+        cout << string((const char*) p->get_data(), p->get_data_length_bytes()) << endl;
+
+
         // save data
         int num_inserted = rc->get_receive_window().insert(p);
         cout << "TCPTahoeReliabilityState::state_receive_packet() on socket " << s << " , DATA FOUND, num inserted: " << num_inserted << endl;
@@ -148,20 +152,21 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
 
         string& receive_buffer = s->get_receive_buffer();
         u_int32_t before_rcv_buffer_size = receive_buffer.size();
-        cout << "TCPTahoeReliabilityState::state_receive_packet(): before Receive buffer size is : " << before_rcv_buffer_size << endl;
+        cout << "TCPTahoeReliabilityState::state_receive_packet(): before Receive buffer size is : " <<  (int) before_rcv_buffer_size << endl;
 
-        cout << "TCPTahoeReliabilityState::state_receive_packet(): RCV.NXT is : " << rc->get_rcv_nxt() << endl;
-        cout << "TCPTahoeReliabilityState::state_receive_packet(): First seq num in receive window: " << rc->get_receive_window().get_first_sequence_number() << endl;
+        cout << "TCPTahoeReliabilityState::state_receive_packet(): RCV.NXT is : " << (int) rc->get_rcv_nxt() << endl;
+        cout << "TCPTahoeReliabilityState::state_receive_packet(): First seq num in receive window: " <<  (int) rc->get_receive_window().get_first_sequence_number() << endl;
 
         rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
         u_int32_t after_receive_buffer_size = receive_buffer.size();
-        cout << "TCPTahoeReliabilityState::state_receive_packet(): after receive buffer size: " << after_receive_buffer_size << endl;
+        cout << "TCPTahoeReliabilityState::state_receive_packet(): after receive buffer size: " <<  (int) after_receive_buffer_size << endl;
         u_int32_t amount_put_in_receive_buffer = after_receive_buffer_size - before_rcv_buffer_size;
+        cout << "TCPTahoeReliabilityState::state_receive_packet(): amount put in receive buffer: " <<  (int) amount_put_in_receive_buffer << endl;
         assert(amount_put_in_receive_buffer >= 0);
 
         if (amount_put_in_receive_buffer > 0) {
             rc->set_rcv_nxt(rc->get_rcv_nxt() + amount_put_in_receive_buffer);
-            cout << "TCPTahoeReliabilityState::state_receive_packet(): Increasing RCV.NXT to : " << rc->get_rcv_nxt() << endl;
+            cout << "TCPTahoeReliabilityState::state_receive_packet(): Increasing RCV.NXT to : " <<  (int) rc->get_rcv_nxt() << endl;
             Dispatcher::instance().enqueue(new ReceiveBufferNotEmptyEvent(s));
         }
 
@@ -279,6 +284,7 @@ void TCPTahoeReliabilityState::resend_data(Context* c, Socket* s) {
         rc->set_snd_nxt(rc->get_snd_una() + 1);
         p->set_data((unsigned char*) "", 0);
     } else {
+        // TODO: change this to use the string::data() method instead of substr() so we can avoid the copy
         string data = send_buffer.substr(0, p->max_data_length());
         if (!data.compare(data.size() - 1, 1, FIN_BYTE.c_str())) {
             data.erase(data.size() - 1, 1);
@@ -313,6 +319,7 @@ void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, Rec
     Socket* s = e->get_socket();
     int buffer_size = e->get_receive_buffer_size();
 
+    // TODO: change this to use string::data() so we avoid the copy in substr
     string data = s->get_receive_buffer().substr(0, buffer_size);
     int length = data.size();
     s->get_receive_buffer().erase(0, length);

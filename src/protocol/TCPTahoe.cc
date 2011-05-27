@@ -114,7 +114,6 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
         return;
     }
 
-    cout << "TCPTahoe::icontext_receive_packet(): calling all three FSMs" << endl;
     rc->icontext_receive_packet(e);
     cmc->icontext_receive_packet(e);
     c->get_congestion_control()->icontext_receive_packet(e);
