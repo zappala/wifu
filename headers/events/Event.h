@@ -85,7 +85,7 @@ public:
      * @param t2 the LHS of the expression t1 < t1
      * @return True if t1 < t2, false otherwise.
      */
-    bool operator()(Event*& t1, Event*& t2) {
+    bool operator()(Event* const& t1, Event* const& t2) {
         return t1->less_than(t2);
     }
 

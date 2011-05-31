@@ -9,13 +9,15 @@
 #define	_PRIORITYQUEUE_H
 
 
-#include <queue>
+#include <list>
+#include <algorithm>
 #include <typeinfo>
 #include <signal.h>
 
 #include "defines.h"
 #include "Semaphore.h"
 #include "IQueue.h"
+#include "Utils.h"
 
 using namespace std;
 
@@ -53,8 +55,8 @@ public:
     T dequeue() {
         counter_.wait();
         sem_.wait();
-        T value = q_.top();
-        q_.pop();
+        T value = q_.front();
+        q_.pop_front();
         sem_.post();
         return value;
     }
@@ -67,7 +69,8 @@ public:
      */
     void enqueue(T obj, bool signal = false) {
         sem_.wait();
-        q_.push(obj);
+        q_.insert(upper_bound(q_.begin(), q_.end(), obj, comparator_), obj);
+
         if (signal) {
             raise(SIG_ENQUEUE_EVENT);
         }
@@ -80,7 +83,7 @@ public:
      */
     const T& top() {
         sem_.wait();
-        const T& val = q_.top();
+        const T& val = q_.front();
         sem_.post();
         return val;
     }
@@ -108,9 +111,7 @@ public:
      */
     void clear() {
         sem_.wait();
-        while(!q_.empty()) {
-            q_.pop();
-        }
+        q_.clear();
         sem_.post();
     }
 
@@ -126,10 +127,8 @@ private:
      */
     Semaphore counter_;
 
-    /**
-     * Acutal STL queue we use in this PriorityQueue.
-     */
-    priority_queue<T, deque<T>, Comparator> q_;
+    list<T> q_;
+    Comparator comparator_;
 };
 
 

@@ -20,11 +20,11 @@ namespace {
             q.enqueue(HelperFunctions::get_tcp_packet_with_data(rand(), data));
         }
 
-        u_int32_t current = UINT_MAX;
+        u_int32_t current = 0;
 
         while (!q.is_empty()) {
             TCPPacket* p = q.dequeue();
-            EXPECT_GE(current, p->get_tcp_sequence_number());
+            EXPECT_LE(current, p->get_tcp_sequence_number());
             current = p->get_tcp_sequence_number();
         }
     }

@@ -14,8 +14,8 @@ bool TimeoutEvent::less_than(Event* e) {
 	struct timespec * a = &(get_timeout_time());
 	struct timespec * b = &(rhs->get_timeout_time());
 
-	if (a->tv_sec > b->tv_sec) return true;
-	if (a->tv_sec == b->tv_sec && a->tv_nsec > b->tv_nsec) return true;
+	if (a->tv_sec < b->tv_sec) return true;
+	if (a->tv_sec == b->tv_sec && a->tv_nsec < b->tv_nsec) return true;
 	return false;
 }
 

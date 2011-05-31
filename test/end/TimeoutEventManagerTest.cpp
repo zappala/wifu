@@ -158,7 +158,7 @@ namespace {
     TEST_F(TimeoutEventManagerTest, EnqueueTwoInOrder) {
         Socket* s = new Socket(0, 0, 0);
         int seconds = 0;
-        long int nano = 1000000;
+        long int nano = 10000000;
         TimeoutEvent* A = new TimeoutEvent(s, seconds, nano);
         dispatcher.enqueue(A);
 
@@ -171,7 +171,7 @@ namespace {
     TEST_F(TimeoutEventManagerTest, EnqueueTwoOutOfOrder) {
         Socket* s = new Socket(0, 0, 0);
         int seconds = 0;
-        long int nano = 1000000;
+        long int nano = 10000000;
 
         TimeoutEvent* A = new TimeoutEvent(s, seconds, nano);
         TimeoutEvent* B = new TimeoutEvent(s, seconds, nano * 2);
@@ -207,8 +207,8 @@ namespace {
 
     TEST_F(TimeoutEventManagerTest, MassEnqueueReverseOrder) {
         Socket* s = new Socket(0, 0, 0);
-        int seconds = 1;
-        long int nano = 1000;
+        int seconds = 2;
+        long int nano = 10000;
         int max = 10000;
         vector<Event*> events;
 
@@ -242,8 +242,8 @@ namespace {
 
     TEST_F(TimeoutEventManagerTest, MassEnqueueRandomOrder) {
         Socket* s = new Socket(0, 0, 0);
-        int seconds = 1;
-        long int nano = 1000;
+        int seconds = 3;
+        long int nano = 10000;
         int max = 10000;
         vector<Event*> events;
 
@@ -343,7 +343,7 @@ namespace {
 
     TEST_F(TimeoutEventManagerTest, CancelManyTimersOutOfMany) {
         Socket* s = new Socket(0, 0, 0);
-        int seconds = 1;
+        int seconds = 2;
         long int nano = 1000;
         int max = 10000;
         vector<Event*> events;

@@ -152,8 +152,8 @@ namespace {
     class IntComparator {
     public:
 
-        bool operator()(int& t1, int& t2) {
-            return t1 > t2;
+        bool operator()(int const& t1, int const& t2) {
+            return t1 < t2;
         }
 
     };
@@ -190,6 +190,53 @@ namespace {
         ASSERT_EQ(expected, actual);
         ASSERT_TRUE(q.is_empty());
         ASSERT_EQ(0, q.size());
+    }
+
+    TEST(PriorityQueueTest, FIFO) {
+        PriorityQueue<Event*, EventComparator> q_;
+
+        Socket* s = new Socket(0, 1, 2);
+        list<Event*> a, b, c;
+
+
+        // high priority
+        for (int i = 0; i < 10; i++) {
+            TimeoutEvent* e = new TimeoutEvent(s, 1, 0);
+            q_.enqueue(e);
+            a.push_back(e);
+        }
+
+        // low priority
+        for (int i = 0; i < 10; i++) {
+            TimeoutEvent* e = new TimeoutEvent(s, 10, 0);
+            q_.enqueue(e);
+            b.push_back(e);
+        }
+
+        // high priority
+        for (int i = 0; i < 10; i++) {
+            TimeoutEvent* e = new TimeoutEvent(s, 1, 0);
+            q_.enqueue(e);
+            c.push_back(e);
+        }
+
+        // should get a, c, b
+        list<Event*> all;
+        all.insert(all.end(), a.begin(), a.end());
+        all.insert(all.end(), c.begin(), c.end());
+        all.insert(all.end(), b.begin(), b.end());
+
+        while(!all.empty()) {
+            Event* actual = q_.dequeue();
+            Event* expected = all.front();
+            all.pop_front();
+
+            ASSERT_EQ(expected, actual);
+        }
+
+
+
+
     }
 
 }
