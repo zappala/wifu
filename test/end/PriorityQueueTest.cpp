@@ -10,6 +10,7 @@
 
 #include "gtest/gtest.h"
 #include "PriorityQueue.h"
+#include "TimeoutEventComparator.h"
 #include "Socket.h"
 #include "events/TimeoutEvent.h"
 #include "defines.h"
@@ -28,7 +29,7 @@ namespace {
     }
 
     TEST(PriorityQueueTest, enqueue) {
-        PriorityQueue<Event*, EventComparator> priorityQueue;
+        PriorityQueue<Event*, TimeoutEventComparator> priorityQueue;
         ASSERT_TRUE(priorityQueue.size() == 0);
         ASSERT_TRUE(priorityQueue.is_empty() == true);
 
@@ -52,8 +53,8 @@ namespace {
     void* enqueuer(void* priorityQueue) {
         Socket* s = new Socket(0, 1, 2);
         TimeoutEvent* event1 = new TimeoutEvent(s, 5, 0);
-        PriorityQueue<Event*, EventComparator>* pQueue =
-                (PriorityQueue<Event*, EventComparator>*) priorityQueue;
+        PriorityQueue<Event*, TimeoutEventComparator>* pQueue =
+                (PriorityQueue<Event*, TimeoutEventComparator>*) priorityQueue;
         signalRaised = false;
         usleep(100000);
         pQueue->enqueue(event1, true);
@@ -61,7 +62,7 @@ namespace {
 
     TEST(PriorityQueueTest, dequeue) {
         pthread_t enqueueThread;
-        PriorityQueue<Event*, EventComparator> priorityQueue;
+        PriorityQueue<Event*, TimeoutEventComparator> priorityQueue;
         ASSERT_TRUE(priorityQueue.size() == 0);
         ASSERT_TRUE(priorityQueue.is_empty() == true);
 
@@ -126,7 +127,7 @@ namespace {
     }
 
     TEST(PriorityQueueTest, clear) {
-        PriorityQueue<Event*, EventComparator> priorityQueue;
+        PriorityQueue<Event*, TimeoutEventComparator> priorityQueue;
         ASSERT_TRUE(priorityQueue.size() == 0);
         ASSERT_TRUE(priorityQueue.is_empty() == true);
 
@@ -193,7 +194,7 @@ namespace {
     }
 
     TEST(PriorityQueueTest, FIFO) {
-        PriorityQueue<Event*, EventComparator> q_;
+        PriorityQueue<Event*, TimeoutEventComparator> q_;
 
         Socket* s = new Socket(0, 1, 2);
         list<Event*> a, b, c;

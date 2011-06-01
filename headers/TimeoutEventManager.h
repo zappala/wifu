@@ -14,6 +14,7 @@
 #include "TimeoutEventManagerSemaphore.h"
 #include "Module.h"
 #include "events/CancelTimerEvent.h"
+#include "TimeoutEventComparator.h"
 
 #include <pthread.h>
 #include <stdlib.h>
@@ -89,6 +90,8 @@ private:
      */
     HashSet<TimeoutEvent*> canceled_events_;
 };
+
+
 
 
 
