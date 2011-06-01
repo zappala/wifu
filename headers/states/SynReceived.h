@@ -11,9 +11,9 @@
 #include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
 #include "states/Established.h"
-#include "events/ConnectEvent.h"
-#include "events/ConnectionEstablishedEvent.h"
-#include "events/NetworkReceivePacketEvent.h"
+#include "events/framework_events/ConnectEvent.h"
+#include "events/protocol_events/ConnectionEstablishedEvent.h"
+#include "events/framework_events/NetworkReceivePacketEvent.h"
 
 using namespace std;
 

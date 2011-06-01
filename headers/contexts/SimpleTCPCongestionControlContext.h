@@ -14,9 +14,9 @@
 #include "AddressPort.h"
 #include "Socket.h"
 #include "packet/WiFuPacket.h"
-#include "events/ConnectEvent.h"
-#include "events/AcceptEvent.h"
-#include "events/TimerFiredEvent.h"
+#include "events/framework_events/ConnectEvent.h"
+#include "events/framework_events/AcceptEvent.h"
+#include "events/framework_events/TimerFiredEvent.h"
 
 #include "IQueue.h"
 #include "Queue.h"

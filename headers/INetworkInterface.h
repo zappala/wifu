@@ -12,7 +12,7 @@
 #include "Module.h"
 #include "NetworkCallback.h"
 
-#include "events/NetworkSendPacketEvent.h"
+#include "events/framework_events/NetworkSendPacketEvent.h"
 #include "SocketCollection.h"
 
 /**

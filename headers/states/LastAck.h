@@ -10,11 +10,11 @@
 
 #include "State.h"
 #include "contexts/Context.h"
-#include "events/NetworkReceivePacketEvent.h"
+#include "events/framework_events/NetworkReceivePacketEvent.h"
 #include "packet/TCPPacket.h"
 #include "Socket.h"
 #include "contexts/ConnectionManagerContext.h"
-#include "events/DeleteSocketEvent.h"
+#include "events/protocol_events/DeleteSocketEvent.h"
 
 class LastAck : public State {
 public:

@@ -14,8 +14,8 @@
 
 #include "states/LastAck.h"
 
-#include "events/ResponseEvent.h"
-#include "events/CloseEvent.h"
+#include "events/framework_events/ResponseEvent.h"
+#include "events/framework_events/CloseEvent.h"
 
 #include "packet/TCPPacket.h"
 #include "packet/TCPTimestampOption.h"

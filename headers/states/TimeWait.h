@@ -14,11 +14,11 @@
 #include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
 
-#include "events/TimerFiredEvent.h"
-#include "events/TimeoutEvent.h"
-#include "events/NetworkReceivePacketEvent.h"
-#include "events/CancelTimerEvent.h"
-#include "events/DeleteSocketEvent.h"
+#include "events/framework_events/TimerFiredEvent.h"
+#include "events/framework_events/TimeoutEvent.h"
+#include "events/framework_events/NetworkReceivePacketEvent.h"
+#include "events/framework_events/CancelTimerEvent.h"
+#include "events/protocol_events/DeleteSocketEvent.h"
 
 #include "defines.h"
 

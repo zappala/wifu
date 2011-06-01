@@ -8,8 +8,8 @@
 #ifndef _NETWORKINTERFACE_H
 #define	_NETWORKINTERFACE_H
 
-#include "events/NetworkSendPacketEvent.h"
-#include "events/NetworkReceivePacketEvent.h"
+#include "events/framework_events/NetworkSendPacketEvent.h"
+#include "events/framework_events/NetworkReceivePacketEvent.h"
 #include "RawSocketSender.h"
 #include "RawSocketListener.h"
 #include "AddressPort.h"

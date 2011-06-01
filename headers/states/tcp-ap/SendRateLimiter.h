@@ -9,11 +9,11 @@
 #define	_SENDRATELIMITER_H
 
 #include "events/Event.h"
-#include "events/TimeoutEvent.h"
-#include "events/NetworkSendPacketEvent.h"
-#include "events/SendPacketEvent.h"
-#include "events/TimerEvent.h"
-#include "events/TimerFiredEvent.h"
+#include "events/framework_events/TimeoutEvent.h"
+#include "events/framework_events/NetworkSendPacketEvent.h"
+#include "events/protocol_events/SendPacketEvent.h"
+#include "events/framework_events/TimerEvent.h"
+#include "events/framework_events/TimerFiredEvent.h"
 #include "packet/WiFuPacket.h"
 #include "contexts/Context.h"
 #include "Queue.h"

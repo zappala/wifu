@@ -14,10 +14,10 @@
 
 #include "AddressPort.h"
 #include "Socket.h"
-#include "events/ConnectEvent.h"
-#include "events/AcceptEvent.h"
-#include "events/TimerFiredEvent.h"
-#include "events/ReceiveBufferNotFullEvent.h"
+#include "events/framework_events/ConnectEvent.h"
+#include "events/framework_events/AcceptEvent.h"
+#include "events/framework_events/TimerFiredEvent.h"
+#include "events/protocol_events/ReceiveBufferNotFullEvent.h"
 #include "states/State.h"
 
 using namespace std;

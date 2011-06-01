@@ -9,7 +9,7 @@
 #define	TIMEOUTEVENTCOMPARATOR_H
 
 #include "events/Event.h"
-#include "events/TimeoutEvent.h"
+#include "events/framework_events/TimeoutEvent.h"
 
 class TimeoutEventComparator {
 public:

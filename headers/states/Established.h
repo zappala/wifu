@@ -14,15 +14,14 @@
 #include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
 
-#include "states/Established.h"
 #include "states/FinWait1.h"
 #include "states/CloseWait.h"
 
-#include "events/ResponseEvent.h"
-#include "events/ConnectEvent.h"
-#include "events/NetworkReceivePacketEvent.h"
-#include "events/CloseEvent.h"
-#include "events/ReceiveBufferNotFullEvent.h"
+#include "events/framework_events/ResponseEvent.h"
+#include "events/framework_events/ConnectEvent.h"
+#include "events/framework_events/NetworkReceivePacketEvent.h"
+#include "events/framework_events/CloseEvent.h"
+#include "events/protocol_events/ReceiveBufferNotFullEvent.h"
 
 #include "packet/TCPPacket.h"
 

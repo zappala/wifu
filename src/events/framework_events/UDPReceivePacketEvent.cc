@@ -1,0 +1,9 @@
+#include "events/framework_events/UDPReceivePacketEvent.h"
+
+UDPReceivePacketEvent::UDPReceivePacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {}
+
+UDPReceivePacketEvent::~UDPReceivePacketEvent() {}
+
+void UDPReceivePacketEvent::execute(IModule* m) {
+	m->imodule_udp_receive(this);
+}

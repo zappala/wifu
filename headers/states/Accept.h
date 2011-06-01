@@ -11,8 +11,8 @@
 #include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
 #include "states/SynReceived.h"
-#include "events/ConnectEvent.h"
-#include "events/CloseEvent.h"
+#include "events/framework_events/ConnectEvent.h"
+#include "events/framework_events/CloseEvent.h"
 #include "states/Closed.h"
 #include "SocketCollection.h"
 

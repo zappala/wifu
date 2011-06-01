@@ -9,10 +9,10 @@
 #define	_TIMEOUTHELPER_H
 
 #include "HashSet.h"
-#include "events/TimeoutEvent.h"
+#include "events/framework_events/TimeoutEvent.h"
 #include "Dispatcher.h"
-#include "events/TimerFiredEvent.h"
-#include "events/CancelTimerEvent.h"
+#include "events/framework_events/TimerFiredEvent.h"
+#include "events/framework_events/CancelTimerEvent.h"
 
 /**
  * Class which aides a Module in filtering TimerFiredEvent objects.

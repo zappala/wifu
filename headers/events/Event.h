@@ -28,9 +28,10 @@ public:
     /**
      * Constructs an Event object.
      *
-     * @param socket The socket to which to apply this Event to.
+     * @param s The socket to which to apply this Event to.
+     * @param p The Priority of this Event
      */
-    Event(Socket* s, Priority p = LOW);
+    Event(Socket* s, Priority p);
 
     /**
      * Constructs an Event object.

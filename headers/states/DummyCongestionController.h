@@ -11,8 +11,8 @@
 #include "State.h"
 
 #include "contexts/Context.h"
-#include "events/SendBufferNotEmptyEvent.h"
-#include "events/NetworkReceivePacketEvent.h"
+#include "events/protocol_events/SendBufferNotEmptyEvent.h"
+#include "events/framework_events/NetworkReceivePacketEvent.h"
 #include "Math.h"
 
 #include "packet/TCPPacket.h"

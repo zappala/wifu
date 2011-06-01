@@ -12,9 +12,9 @@
 #include "contexts/TCPTahoeReliabilityContext.h"
 #include "contexts/ConnectionManagerContext.h"
 
-#include "events/SendEvent.h"
-#include "events/CloseEvent.h"
-#include "events/NetworkReceivePacketEvent.h"
+#include "events/framework_events/SendEvent.h"
+#include "events/framework_events/CloseEvent.h"
+#include "events/framework_events/NetworkReceivePacketEvent.h"
 
 class TCPTahoeIContextContainer : public gc {
 public:

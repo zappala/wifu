@@ -11,7 +11,7 @@
 #include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
 #include "Established.h"
-#include "events/ConnectEvent.h"
+#include "events/framework_events/ConnectEvent.h"
 #include "Dispatcher.h"
 
 using namespace std;

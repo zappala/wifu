@@ -10,7 +10,7 @@
 
 #include "State.h"
 #include "contexts/Context.h"
-#include "events/NetworkReceivePacketEvent.h"
+#include "events/framework_events/NetworkReceivePacketEvent.h"
 #include "packet/TCPPacket.h"
 #include "Socket.h"
 #include "contexts/ConnectionManagerContext.h"

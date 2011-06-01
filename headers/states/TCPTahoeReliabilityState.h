@@ -10,13 +10,12 @@
 
 #include "State.h"
 
-#include "events/TimerFiredEvent.h"
-#include "events/SendPacketEvent.h"
-#include "events/NetworkReceivePacketEvent.h"
-#include "events/CancelTimerEvent.h"
-#include "events/ResendPacketEvent.h"
-#include "events/CancelTimerEvent.h"
-#include "events/ResponseEvent.h"
+#include "events/framework_events/TimerFiredEvent.h"
+#include "events/protocol_events/SendPacketEvent.h"
+#include "events/framework_events/NetworkReceivePacketEvent.h"
+#include "events/framework_events/CancelTimerEvent.h"
+#include "events/protocol_events/ResendPacketEvent.h"
+#include "events/framework_events/ResponseEvent.h"
 
 #include "contexts/TCPTahoeReliabilityContext.h"
 

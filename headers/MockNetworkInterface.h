@@ -12,7 +12,7 @@
 #include <map>
 
 #include "INetworkInterface.h"
-#include "events/NetworkReceivePacketEvent.h"
+#include "events/framework_events/NetworkReceivePacketEvent.h"
 #include "packet/TCPPacket.h"
 #include "OptionParser.h"
 #include "exceptions/IllegalStateException.h"

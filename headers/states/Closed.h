@@ -16,9 +16,9 @@
 #include "states/SynSent.h"
 #include "AddressPort.h"
 #include "packet/TCPPacket.h"
-#include "events/SendPacketEvent.h"
-#include "events/ConnectEvent.h"
-#include "events/ConnectionEstablishedEvent.h"
+#include "events/protocol_events/SendPacketEvent.h"
+#include "events/framework_events/ConnectEvent.h"
+#include "events/protocol_events/ConnectionEstablishedEvent.h"
 #include "SourceGetter.h"
 
 using namespace std;
