@@ -1,6 +1,6 @@
 #include "protocol/Protocol.h"
 
-Protocol::Protocol(int protocol) : Module(), protocol_(protocol) {
+Protocol::Protocol(int protocol) : Module(new PriorityQueue<Event*, PriorityEventComparator>()), protocol_(protocol) {
 
 }
 

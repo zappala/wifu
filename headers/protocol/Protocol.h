@@ -50,6 +50,8 @@
 #include "events/protocol_events/ConnectionInitiatedEvent.h"
 #include "events/framework_events/ReceiveEvent.h"
 
+#include "PriorityEventComparator.h"
+#include "PriorityQueue.h"
 
 #include "packet/TCPPacket.h"
 

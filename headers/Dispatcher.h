@@ -59,17 +59,16 @@ public:
      */
     void process(Event*);
 
-    /**
-     * @see QueueProcessor::process()
-     * @see QueueProcessor::enqueue(T, bool)
-     */
-    bool should_enqueue(Event* event);
-
 private:
     /**
      * Map of Event name to a vector of QueueProcessor objects.
      */
     tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*> map_;
+
+    /**
+     * Map iterator
+     */
+    tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*>::iterator itr_;
 
     /**
      * Mutex to make this object thread-safe
