@@ -56,38 +56,11 @@ public:
 
     void set_socket(Socket*);
 
-    /**
-     * Default implementation of less than.
-     *
-     * @param rhs The "right hand side" of the expression A < rhs, where A is this Event.
-     * @return True in each case.  Must be overridden in child classes and satisfy the above expression.
-     */
-    virtual bool less_than(Event* rhs);
-
 private:
     /**
      * Socket which is associated with this Event.
      */
     Socket* socket_;
-
-};
-
-/**
- * Comparator used to compare two Event pointers.
- */
-class EventComparator {
-public:
-    /**
-     * Compares two Event pointers (actually references to Event pointers).
-     * Will return t1 < t2.
-     *
-     * @param t1 The RHS of the expression t1 < t2
-     * @param t2 the LHS of the expression t1 < t1
-     * @return True if t1 < t2, false otherwise.
-     */
-    bool operator()(Event* const& t1, Event* const& t2) {
-        return t1->less_than(t2);
-    }
 
 };
 

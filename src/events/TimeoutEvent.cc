@@ -8,10 +8,6 @@ struct timespec& TimeoutEvent::get_timeout_time() {
 	return timer_;
 }
 
-bool TimeoutEvent::less_than(Event* e) {
-    assert(false);
-}
-
 void TimeoutEvent::execute(IModule* m) {
 	m->imodule_timeout(this);
 }

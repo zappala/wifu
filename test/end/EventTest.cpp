@@ -45,10 +45,6 @@ namespace {
 
         ASSERT_TRUE(*socket == *event.get_socket());
 
-
-        StubEvent* e1 = new StubEvent();
-        StubEvent* e2 = new StubEvent();
-        ASSERT_THROW(e1->less_than(e2), WiFuException);
     }
 
     TEST_F(EventTest, BlankConstructor) {
@@ -60,11 +56,6 @@ namespace {
         event.set_socket(socket);
 
         ASSERT_TRUE(*socket == *event.get_socket());
-
-
-        StubEvent* e1 = new StubEvent();
-        StubEvent* e2 = new StubEvent();
-        ASSERT_THROW(e1->less_than(e2), WiFuException);
     }
 
 }

@@ -99,6 +99,17 @@
 
 typedef const char * event_name;
 
+/*
+ * Represents various priorities.
+ * The lower the number, the higher the priority.
+ * I've left some space between these priorities so others can be added
+ */
+enum Priority {
+    HIGH = 0,
+    MEDIUM = 1000,
+    LOW = 2000
+};
+
 
 
 #endif	/* _INCLUDES_H */

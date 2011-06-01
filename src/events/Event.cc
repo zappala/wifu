@@ -19,7 +19,3 @@ void Event::set_socket(Socket* socket) {
     assert(socket);
     socket_ = socket;
 }
-
-bool Event::less_than(Event* rhs) {
-    throw WiFuException("less_than has not been overridden");
-}

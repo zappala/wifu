@@ -41,14 +41,6 @@ public:
     struct timespec & get_timeout_time();
 
     /**
-     * Determines if this TimeoutEvent's absolute timeout time is earlier than e's.
-     *
-     * @param e The (Timeout)Event to compare this TimeoutEvent to.
-     * @return True if this TimeoutEvent is less than e's, false otherwise.
-     */
-    virtual bool less_than(Event* e);
-
-    /**
      * Will call timeout() on m.
      *
      * @param m The IModule which to call timeout() on.
