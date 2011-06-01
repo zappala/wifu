@@ -20,10 +20,10 @@ class TCPSequenceNumberComparator {
     public:
     /**
      * Compares two TCPPacket pointers according to sequence number
-     * Will return less_than(p2, p1)
+     * Will return less_than(p1, p2)
      * 
      * @see less_than()
-     * @return True if less_than(p2, p1)
+     * @return True if less_than(p1, p2)
      */
     bool operator()(TCPPacket* const& p1, TCPPacket* const& p2);
 };

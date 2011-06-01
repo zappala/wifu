@@ -8,13 +8,15 @@
 #ifndef TCPPACKETBUFFER_H
 #define	TCPPACKETBUFFER_H
 
-#include <map>
+#include <list>
+#include <algorithm>
 #include "packet/TCPPacket.h"
 #include "GarbageCollector.h"
 #include "packet/TCPSequenceNumberComparator.h"
 #include "Math.h"
 
-typedef map<TCPPacket*, char, TCPSequenceNumberComparator> packet_buffer;
+//typedef map<TCPPacket*, char, TCPSequenceNumberComparator> packet_buffer;
+typedef list<TCPPacket*> packet_buffer;
 
 class TCPPacketBuffer : public gc {
 public:
@@ -34,6 +36,7 @@ private:
      * We will only use the key (we basically use it as a tree)
      */
     packet_buffer buffer_;
+    TCPSequenceNumberComparator comparator_;
 
     int size_;
 };

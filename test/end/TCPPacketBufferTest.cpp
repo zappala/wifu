@@ -586,7 +586,7 @@ namespace {
         // start at sequence #0
         // The index in the string is equal to the sequence number
         string expected = RandomStringGenerator::get_data(num_bytes);
-        cout << "Expected: " << expected << endl;
+//        cout << "Expected: " << expected << endl;
         int total_inserted = 0;
         int total_removed = 0;
         string actual = "";
@@ -596,7 +596,7 @@ namespace {
         string data = expected.substr(data_seq_num, 1);
         TCPPacket* p0 = HelperFunctions::get_tcp_packet_with_data(data_seq_num, data);
         total_inserted += buffer.insert(p0);
-        cout << "Inserting: " << data << endl;
+//        cout << "Inserting: " << data << endl;
 
         // Remove first packet
         int before_size = actual.size();
@@ -619,7 +619,7 @@ namespace {
         for (data_seq_num = 2; data_seq_num < num_bytes - difference; data_seq_num++) {
             int length = 1;
             data = expected.substr(data_seq_num, length);
-            cout << "Inserting: " << data << endl;
+//            cout << "Inserting: " << data << endl;
             TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(data_seq_num, data);
             total_inserted += buffer.insert(p);
         }
@@ -627,7 +627,7 @@ namespace {
         // insert sequence number 1
         data_seq_num = 1;
         data = expected.substr(data_seq_num, num_bytes - difference - data_seq_num - 1);
-        cout << "Inserting: " << data << endl;
+//        cout << "Inserting: " << data << endl;
         TCPPacket* p1 = HelperFunctions::get_tcp_packet_with_data(data_seq_num, data);
         total_inserted += buffer.insert(p1);
 
@@ -638,7 +638,7 @@ namespace {
                 length = 1;
             }
             data = expected.substr(data_seq_num, 1);
-            cout << "Inserting: " << data << endl;
+//            cout << "Inserting: " << data << endl;
             TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(data_seq_num, data);
             total_inserted += buffer.insert(p);
         }
