@@ -2,17 +2,46 @@
 #include "AddressPort.h"
 #include "defines.h"
 #include <iostream>
+#include "OptionParser.h"
+#include <stdlib.h>
+#include <bits/basic_string.h>
 
 using namespace std;
 
+#define optionparser OptionParser::instance()
+
 int main(int argc, char** argv) {
 
-    system("cp bin/wifu-end /tmp/");
+    string bindaddr = "address";
+    string hostaddr = "127.0.0.1";
+    string portarg = "port";
+    int port = 5002;
+
+    static struct option long_options[] = {
+        {bindaddr.c_str(), required_argument, NULL, 0},
+        {portarg.c_str(), required_argument, NULL, 0},
+        {0, 0}
+    };
+
+    optionparser.parse(argc, argv, long_options);
+    if (optionparser.present(bindaddr)) {
+        hostaddr = optionparser.argument(bindaddr);
+    }
+    else {
+        cout << "Binding address required!\n";
+        cout << "Use option --address <addr>\n";
+        return -1;
+    }
+    if (optionparser.present(portarg)) {
+        port = atoi(optionparser.argument(portarg).c_str());
+    }
+    
+    system("cp wifu-end /tmp/");
     chdir("/tmp");
     system("./wifu-end --network standard");
     sleep(1);
 
-    AddressPort to_bind("192.168.21.106", 5000);
+    AddressPort to_bind(hostaddr, port);
 
     int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
     assert(server > 0);
