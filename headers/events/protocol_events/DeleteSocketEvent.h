@@ -8,12 +8,12 @@
 #ifndef DELETESOCKETEVENT_H
 #define	DELETESOCKETEVENT_H
 
-#include "events/Event.h"
+#include "ProtocolEvent.h"
 #include "IModule.h"
 #include "Socket.h"
 #include "Dispatcher.h"
 
-class DeleteSocketEvent : public Event {
+class DeleteSocketEvent : public ProtocolEvent {
 public:
     DeleteSocketEvent(Socket* s);
     virtual ~DeleteSocketEvent();

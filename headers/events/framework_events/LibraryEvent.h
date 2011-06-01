@@ -13,13 +13,13 @@
 #include <stdlib.h>
 
 #include "defines.h"
-#include "events/Event.h"
+#include "FrameworkEvent.h"
 #include "QueryStringParser.h"
 #include "Utils.h"
 
 using namespace std;
 
-class LibraryEvent : public Event {
+class LibraryEvent : public FrameworkEvent {
 public:
     LibraryEvent(string& message, string& file, Socket* socket);
 

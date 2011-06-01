@@ -11,8 +11,9 @@
 #include "PacketHolder.h"
 #include "Socket.h"
 #include "IModule.h"
+#include "FrameworkEvent.h"
 
-class NetworkSendPacketEvent : public PacketHolder {
+class NetworkSendPacketEvent : public PacketHolder, public FrameworkEvent {
 public:
     NetworkSendPacketEvent(Socket* socket, WiFuPacket* packet);
 

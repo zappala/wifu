@@ -10,8 +10,9 @@
 
 #include "IModule.h"
 #include "PacketHolder.h"
+#include "ProtocolEvent.h"
 
-class ResendPacketEvent: public PacketHolder {
+class ResendPacketEvent: public PacketHolder, public ProtocolEvent {
 public:
     ResendPacketEvent(Socket* s, WiFuPacket* p);
 

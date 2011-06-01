@@ -8,10 +8,12 @@
 #ifndef _UDPRECEIVEPACKETEVENT_H
 #define	_UDPRECEIVEPACKETEVENT_H
 
-#include "events/PacketEvent.h"
+#include "PacketHolder.h"
 #include "Socket.h"
+#include "IModule.h"
+#include "FrameworkEvent.h"
 
-class UDPReceivePacketEvent : public PacketEvent {
+class UDPReceivePacketEvent : public PacketHolder, public FrameworkEvent {
 public:
     UDPReceivePacketEvent(Socket* socket, WiFuPacket* packet);
 

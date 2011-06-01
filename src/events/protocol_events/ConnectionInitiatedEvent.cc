@@ -2,7 +2,7 @@
 
 ConnectionInitiatedEvent::ConnectionInitiatedEvent( Socket* listening_socket,
                                                     Socket* new_socket) :
-                                                    Event(listening_socket),
+                                                    ProtocolEvent(listening_socket),
                                                     new_socket_(new_socket) {
 
 }

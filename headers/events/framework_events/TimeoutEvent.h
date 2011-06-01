@@ -8,7 +8,7 @@
 #ifndef _TIMEOUTEVENT_H
 #define	_TIMEOUTEVENT_H
 
-#include "events/Event.h"
+#include "FrameworkEvent.h"
 #include "IModule.h"
 #include "Utils.h"
 
@@ -23,7 +23,7 @@ using namespace std;
 /**
  * Event which represents a timeout at some point in the future.
  */
-class TimeoutEvent : public Event {
+class TimeoutEvent : public FrameworkEvent {
 public:
     /**
      * Constructs a TimeoutEvent.

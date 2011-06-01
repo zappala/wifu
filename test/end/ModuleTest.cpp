@@ -8,7 +8,7 @@
 #include "gtest/gtest.h"
 #include "Module.h"
 #include "Dispatcher.h"
-#include "events/NullEvent.h"
+#include "events/framework_events/NullEvent.h"
 
 using namespace std;
 

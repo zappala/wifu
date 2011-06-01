@@ -174,11 +174,13 @@ def build_wifu(bld):
 	src_files += bld.glob('src/exceptions/*.cc')
 	src_files += bld.glob('src/visitors/*.cc')
 	src_files += bld.glob('src/protocol/*.cc')
+	src_files += bld.glob('src/events/protocol_events/*.cc')
+	src_files += bld.glob('src/events/framework_events/*.cc')
 
 	if Options.options.bit_32:
 		exe = bld(features='cxx cprogram',
 		source=src_files,
-		includes='headers lib/gc/include lib/pantheios/include lib/stlsoft/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors headers/states/tcp-ap',
+		includes='headers lib/gc/include lib/pantheios/include lib/stlsoft/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors headers/states/tcp-ap headers/events/protocol_events headers/events/framework_events',
 		uselib='PTHREAD RT',
 			libpath = ['../lib/gc/gc_32'],
 			staticlib = ['gccpp','gc','cord'],
@@ -186,7 +188,7 @@ def build_wifu(bld):
 	else:
 		exe = bld(features='cxx cprogram',
 		source=src_files,
-		includes='headers lib/gc/include lib/pantheios/include lib/stlsoft/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors headers/states/tcp-ap',
+		includes='headers lib/gc/include lib/pantheios/include lib/stlsoft/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors headers/states/tcp-ap headers/events/protocol_events headers/events/framework_events',
 		uselib='PTHREAD RT',
 			libpath = ['../lib/gc/gc_64'],
 			staticlib = ['gccpp','gc','cord'],
@@ -206,13 +208,15 @@ def build_wifu_end_test(bld):
 	project_files += bld.glob('src/exceptions/*.cc')
 	project_files += bld.glob('src/visitors/*.cc')
 	project_files += bld.glob('src/protocol/*.cc')
-	
+	project_files += bld.glob('src/events/protocol_events/*.cc')
+	project_files += bld.glob('src/events/framework_events/*.cc')
+
 	filesToUse = test_files + project_files
 
 	if Options.options.bit_32:
 		test_end = bld(features='cxx cprogram',
 		source=filesToUse,
-		includes='preliminary headers lib/gc/include lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers headers/states/tcp-ap',
+		includes='preliminary headers lib/gc/include lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers headers/states/tcp-ap headers/events/framework_events headers/events/protocol_events',
 		uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_32',
 			staticlib = ['gccpp','gc','cord'],
@@ -220,7 +224,7 @@ def build_wifu_end_test(bld):
 	else:
 		test_end = bld(features='cxx cprogram',
 		source=filesToUse,
-		includes='preliminary headers lib/gc/include lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers headers/states/tcp-ap',
+		includes='preliminary headers lib/gc/include lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers headers/states/tcp-ap headers/events/framework_events headers/events/protocol_events',
 		uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_64',
 			staticlib = ['gccpp','gc','cord'],

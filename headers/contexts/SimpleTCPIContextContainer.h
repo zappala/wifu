@@ -15,10 +15,10 @@
 #include "ConnectionManagerContext.h"
 #include "RateLimiterContext.h"
 
-#include "events/ReceiveEvent.h"
-#include "events/SendEvent.h"
-#include "events/CloseEvent.h"
-#include "events/NetworkReceivePacketEvent.h"
+#include "events/framework_events/ReceiveEvent.h"
+#include "events/framework_events/SendEvent.h"
+#include "events/framework_events/CloseEvent.h"
+#include "events/framework_events/NetworkReceivePacketEvent.h"
 
 using namespace std;
 

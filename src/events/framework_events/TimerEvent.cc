@@ -1,6 +1,6 @@
 #include "events/framework_events/TimerEvent.h"
 
-TimerEvent::TimerEvent(TimeoutEvent* timeout_event) : Event(timeout_event->get_socket()), timeout_event_(timeout_event) {}
+TimerEvent::TimerEvent(TimeoutEvent* timeout_event) : FrameworkEvent(timeout_event->get_socket()), timeout_event_(timeout_event) {}
 
 TimerEvent::~TimerEvent() {}
 

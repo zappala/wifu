@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 #include "../headers/HelperFunctions.h"
 #include "../headers/RandomStringGenerator.h"
-#include "events/TimeoutEvent.h"
+#include "events/framework_events/TimeoutEvent.h"
 #include <bitset>
 
 using namespace std;

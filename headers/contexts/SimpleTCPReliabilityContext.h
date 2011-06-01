@@ -12,12 +12,12 @@
 #include "states/SimpleTCPReliability.h"
 #include "AddressPort.h"
 #include "Socket.h"
-#include "events/ConnectEvent.h"
-#include "events/AcceptEvent.h"
+#include "events/framework_events/ConnectEvent.h"
+#include "events/framework_events/AcceptEvent.h"
 #include "packet/WiFuPacket.h"
 #include "packet/TCPPacket.h"
-#include "events/TimerFiredEvent.h"
-#include "events/TimeoutEvent.h"
+#include "events/framework_events/TimerFiredEvent.h"
+#include "events/framework_events/TimeoutEvent.h"
 
 class SimpleTCPReliabilityContext : public Context {
 public:

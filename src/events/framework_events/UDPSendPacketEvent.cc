@@ -1,6 +1,6 @@
 #include "events/framework_events/UDPSendPacketEvent.h"
 
-UDPSendPacketEvent::UDPSendPacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {}
+UDPSendPacketEvent::UDPSendPacketEvent(Socket* socket, WiFuPacket* packet) : PacketHolder(packet), FrameworkEvent(socket) {}
 
 UDPSendPacketEvent::~UDPSendPacketEvent() {}
 

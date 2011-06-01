@@ -11,9 +11,9 @@
 #include "gtest/gtest.h"
 #include "TimeoutEventManager.h"
 #include "events/Event.h"
-#include "events/TimeoutEvent.h"
-#include "events/TimerFiredEvent.h"
-#include "events/NullEvent.h"
+#include "events/framework_events/TimeoutEvent.h"
+#include "events/framework_events/TimerFiredEvent.h"
+#include "events/framework_events/NullEvent.h"
 
 #include <vector>
 #include <map>

@@ -9,8 +9,8 @@
 #define CANCELTIMEREVENTTEST_H_
 
 #include "gtest/gtest.h"
-#include "events/TimeoutEvent.h"
-#include "events/CancelTimerEvent.h"
+#include "events/framework_events/TimeoutEvent.h"
+#include "events/framework_events/CancelTimerEvent.h"
 #include "IModule.h"
 #include "Socket.h"
 

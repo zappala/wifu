@@ -8,9 +8,9 @@
 #ifndef RECEIVEBUFFERNOTEMPTYEVENT_H
 #define	RECEIVEBUFFERNOTEMPTYEVENT_H
 
-#include "events/Event.h"
+#include "ProtocolEvent.h"
 
-class ReceiveBufferNotEmptyEvent : public Event {
+class ReceiveBufferNotEmptyEvent : public ProtocolEvent {
 public:
     ReceiveBufferNotEmptyEvent(Socket* s);
 

@@ -12,7 +12,7 @@
 #include "PriorityQueue.h"
 #include "TimeoutEventComparator.h"
 #include "Socket.h"
-#include "events/TimeoutEvent.h"
+#include "events/framework_events/TimeoutEvent.h"
 #include "defines.h"
 #include <pthread.h>
 #include <sys/un.h>

@@ -16,7 +16,7 @@
 
 #include "gtest/gtest.h"
 #include "events/Event.h"
-#include "events/TimeoutEvent.h"
+#include "events/framework_events/TimeoutEvent.h"
 
 using namespace std;
 

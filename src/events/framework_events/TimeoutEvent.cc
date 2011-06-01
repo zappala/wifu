@@ -1,6 +1,6 @@
 #include "events/framework_events/TimeoutEvent.h"
 
-TimeoutEvent::TimeoutEvent(Socket* socket, int seconds, long int nanoseconds) : Event(socket) {
+TimeoutEvent::TimeoutEvent(Socket* socket, int seconds, long int nanoseconds) : FrameworkEvent(socket) {
 	Utils::get_timespec_future_time(seconds, nanoseconds, &timer_);
 }
 

@@ -11,8 +11,8 @@
 #include "gtest/gtest.h"
 #include "Dispatcher.h"
 
-#include "events/NullEvent.h"
-#include "events/ResponseEvent.h"
+#include "events/framework_events/NullEvent.h"
+#include "events/framework_events/ResponseEvent.h"
 
 #include "Socket.h"
 #include "defines.h"

@@ -8,9 +8,9 @@
 #ifndef _CONNECTIONINITIATEDEVENT_H
 #define	_CONNECTIONINITIATEDEVENT_H
 
-#include "events/Event.h"
+#include "ProtocolEvent.h"
 
-class ConnectionInitiatedEvent : public Event {
+class ConnectionInitiatedEvent : public ProtocolEvent {
 public:
     ConnectionInitiatedEvent(Socket* listening_socket, Socket* new_socket);
 

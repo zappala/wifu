@@ -1,6 +1,6 @@
 #include "events/framework_events/UDPReceivePacketEvent.h"
 
-UDPReceivePacketEvent::UDPReceivePacketEvent(Socket* socket, WiFuPacket* packet) : PacketEvent(socket, packet) {}
+UDPReceivePacketEvent::UDPReceivePacketEvent(Socket* socket, WiFuPacket* packet) : PacketHolder(packet), FrameworkEvent(socket) {}
 
 UDPReceivePacketEvent::~UDPReceivePacketEvent() {}
 

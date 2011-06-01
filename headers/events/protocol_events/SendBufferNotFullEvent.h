@@ -8,9 +8,9 @@
 #ifndef SENDBUFFERNOTFULLEVENT_H
 #define	SENDBUFFERNOTFULLEVENT_H
 
-#include "events/Event.h"
+#include "ProtocolEvent.h"
 
-class SendBufferNotFullEvent : public Event {
+class SendBufferNotFullEvent : public ProtocolEvent {
 public:
     SendBufferNotFullEvent(Socket* s);
 

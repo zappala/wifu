@@ -5,8 +5,8 @@
  * Created on April 25, 2011, 11:39 AM
  */
 
-#include "events/SendPacketEvent.h"
-#include "events/NetworkSendPacketEvent.h"
+#include "events/protocol_events/SendPacketEvent.h"
+#include "events/framework_events/NetworkSendPacketEvent.h"
 #include "State.h"
 
 #ifndef _PASSTHROUGHRATELIMITER_H

@@ -9,7 +9,7 @@
 #define TIMERFIREDEVENTTEST_H_
 
 #include "gtest/gtest.h"
-#include "events/TimerFiredEvent.h"
+#include "events/framework_events/TimerFiredEvent.h"
 #include "IModule.h"
 #include "Socket.h"
 

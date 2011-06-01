@@ -8,11 +8,11 @@
 #ifndef RECEIVEBUFFERNOTFULLEVENT_H
 #define	RECEIVEBUFFERNOTFULLEVENT_H
 
-#include "events/Event.h"
+#include "ProtocolEvent.h"
 #include "Socket.h"
 #include "IModule.h"
 
-class ReceiveBufferNotFullEvent : public Event {
+class ReceiveBufferNotFullEvent : public ProtocolEvent {
 public:
     ReceiveBufferNotFullEvent(Socket* s);
     ~ReceiveBufferNotFullEvent();

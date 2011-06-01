@@ -8,13 +8,13 @@
 #ifndef _TIMEREVENT_H
 #define	_TIMEREVENT_H
 
-#include "events/Event.h"
+#include "FrameworkEvent.h"
 #include "TimeoutEvent.h"
 
 /**
  * Container class which simply holds a pointer to a TimeoutEvent.
  */
-class TimerEvent : public Event {
+class TimerEvent : public FrameworkEvent {
 public:
     /**
      * Constructs a TimerEvent.

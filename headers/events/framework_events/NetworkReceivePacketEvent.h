@@ -10,8 +10,9 @@
 
 #include "PacketHolder.h"
 #include "Socket.h"
+#include "FrameworkEvent.h"
 
-class NetworkReceivePacketEvent : public PacketHolder {
+class NetworkReceivePacketEvent : public PacketHolder, public FrameworkEvent {
 public:
     NetworkReceivePacketEvent(Socket* socket, WiFuPacket* packet);
 

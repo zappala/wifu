@@ -10,6 +10,7 @@
 #include "Socket.h"
 #include "IModule.h"
 #include "StandardPortManagerCreator.h"
+#include "defines.h"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ namespace {
         StubEvent() : Event() {
         }
 
-        StubEvent(Socket* s) : Event(s) {
+        StubEvent(Socket* s) : Event(s, LOW) {
         }
 
         void execute(IModule* m) {

@@ -10,6 +10,7 @@
 
 #include "PacketHolder.h"
 #include "packet/WiFuPacket.h"
+#include "ProtocolEvent.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ using namespace std;
  * Event which represents the sending of a packet.
  * @see PacketEvent
  */
-class SendPacketEvent : public PacketHolder {
+class SendPacketEvent : public PacketHolder, public ProtocolEvent {
 public:
     /**
      * Constructs a SendPacketEvent.

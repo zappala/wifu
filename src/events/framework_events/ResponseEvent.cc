@@ -1,6 +1,6 @@
 #include "events/framework_events/ResponseEvent.h"
 
-ResponseEvent::ResponseEvent(Socket* socket, string& name, string& file) : Event(socket), name_(name), file_(file) {}
+ResponseEvent::ResponseEvent(Socket* socket, string& name, string& file) : FrameworkEvent(socket), name_(name), file_(file) {}
 
 ResponseEvent::~ResponseEvent() {}
 

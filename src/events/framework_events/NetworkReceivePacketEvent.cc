@@ -1,6 +1,6 @@
 #include "events/framework_events/NetworkReceivePacketEvent.h"
 
-NetworkReceivePacketEvent::NetworkReceivePacketEvent(Socket* socket, WiFuPacket* packet) : PacketHolder(packet) {}
+NetworkReceivePacketEvent::NetworkReceivePacketEvent(Socket* socket, WiFuPacket* packet) : PacketHolder(packet), FrameworkEvent(socket) {}
 
 NetworkReceivePacketEvent::~NetworkReceivePacketEvent() {}
 

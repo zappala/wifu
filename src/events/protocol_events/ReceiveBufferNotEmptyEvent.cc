@@ -1,6 +1,6 @@
 #include "events/protocol_events/ReceiveBufferNotEmptyEvent.h"
 
-ReceiveBufferNotEmptyEvent::ReceiveBufferNotEmptyEvent(Socket* s) : Event(s) {
+ReceiveBufferNotEmptyEvent::ReceiveBufferNotEmptyEvent(Socket* s) : ProtocolEvent(s) {
 
 }
 

@@ -8,9 +8,9 @@
 #ifndef _NULLEVENT_H
 #define	_NULLEVENT_H
 
-#include "events/Event.h"
+#include "FrameworkEvent.h"
 
-class NullEvent : public Event {
+class NullEvent : public FrameworkEvent {
 public:
     NullEvent(Socket* s);
 

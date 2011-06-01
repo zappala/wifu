@@ -9,7 +9,7 @@
 #define SENDPACKETEVENTTEST_H_
 
 #include "gtest/gtest.h"
-#include "events/SendPacketEvent.h"
+#include "events/protocol_events/SendPacketEvent.h"
 #include "IModule.h"
 #include "Socket.h"
 

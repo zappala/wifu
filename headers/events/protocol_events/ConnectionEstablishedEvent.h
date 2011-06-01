@@ -8,10 +8,10 @@
 #ifndef _CONNECTIONESTABLISHEDEVENT_H
 #define	_CONNECTIONESTABLISHEDEVENT_H
 
-#include "events/Event.h"
+#include "ProtocolEvent.h"
 #include "events/framework_events/AcceptEvent.h"
 
-class ConnectionEstablishedEvent : public Event {
+class ConnectionEstablishedEvent : public ProtocolEvent {
 public:
     ConnectionEstablishedEvent(AcceptEvent* e, Socket* new_socket);
 

@@ -19,11 +19,11 @@
 
 #include "packet/TCPPacket.h"
 
-#include "events/ConnectEvent.h"
-#include "events/TimerFiredEvent.h"
-#include "events/TimerEvent.h"
-#include "events/ResendPacketEvent.h"
-#include "events/CancelTimerEvent.h"
+#include "events/framework_events/ConnectEvent.h"
+#include "events/framework_events/TimerFiredEvent.h"
+#include "events/framework_events/TimerEvent.h"
+#include "events/protocol_events/ResendPacketEvent.h"
+#include "events/framework_events/CancelTimerEvent.h"
 
 #include "SimpleTCPCache.h"
 #include "CacheMap.h"

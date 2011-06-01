@@ -1,6 +1,6 @@
 #include "events/framework_events/LibraryEvent.h"
 
-LibraryEvent::LibraryEvent(string& message, string& file, Socket* socket) : Event(socket), file_(file) {
+LibraryEvent::LibraryEvent(string& message, string& file, Socket* socket) : FrameworkEvent(socket), file_(file) {
 	QueryStringParser::parse(message, m_);
 	name_ = m_[NAME_STRING];
 

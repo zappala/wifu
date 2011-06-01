@@ -8,10 +8,11 @@
 #ifndef _UDPSENDPACKETEVENT_H
 #define	_UDPSENDPACKETEVENT_H
 
-#include "events/PacketEvent.h"
+#include "PacketHolder.h"
 #include "Socket.h"
+#include "FrameworkEvent.h"
 
-class UDPSendPacketEvent : public PacketEvent {
+class UDPSendPacketEvent : public PacketHolder, public FrameworkEvent {
 public:
     UDPSendPacketEvent(Socket* socket, WiFuPacket* packet);
 

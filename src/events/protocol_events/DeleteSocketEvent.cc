@@ -1,6 +1,6 @@
 #include "events/protocol_events/DeleteSocketEvent.h"
 
-DeleteSocketEvent::DeleteSocketEvent(Socket* s) : Event(s) {
+DeleteSocketEvent::DeleteSocketEvent(Socket* s) : ProtocolEvent(s) {
 
 }
 

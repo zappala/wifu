@@ -1,6 +1,6 @@
 #include "events/protocol_events/SendBufferNotEmptyEvent.h"
 
-SendBufferNotEmptyEvent::SendBufferNotEmptyEvent(Socket* s) : Event(s) {
+SendBufferNotEmptyEvent::SendBufferNotEmptyEvent(Socket* s) : ProtocolEvent(s) {
 
 }
 

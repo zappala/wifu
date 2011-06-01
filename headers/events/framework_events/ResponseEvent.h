@@ -11,14 +11,14 @@
 #include <string>
 #include <map>
 
-#include "events/Event.h"
+#include "FrameworkEvent.h"
 #include "QueryStringParser.h"
 #include "Socket.h"
 #include "Utils.h"
 
 using namespace std;
 
-class ResponseEvent : public Event {
+class ResponseEvent : public FrameworkEvent {
 public:
     ResponseEvent(Socket* socket, string& name, string& file);
 
