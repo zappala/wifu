@@ -14,8 +14,11 @@
 #include "Socket.h"
 #include "events/framework_events/TimeoutEvent.h"
 #include "defines.h"
+#include "events/protocol_events/SendPacketEvent.h"
+#include "events/protocol_events/ConnectionInitiatedEvent.h"
 #include <pthread.h>
 #include <sys/un.h>
+#include "PriorityEventComparator.h"
 
 using namespace std;
 
@@ -227,19 +230,32 @@ namespace {
         all.insert(all.end(), c.begin(), c.end());
         all.insert(all.end(), b.begin(), b.end());
 
-        while(!all.empty()) {
+        while (!all.empty()) {
             Event* actual = q_.dequeue();
             Event* expected = all.front();
             all.pop_front();
 
             ASSERT_EQ(expected, actual);
         }
-
-
-
-
     }
 
+    TEST(PriorityQueueTest, A) {
+        PriorityQueue<Event*, PriorityEventComparator> q_;
+        Socket* s = new Socket(0, 0, 0);
+        WiFuPacket* p = new WiFuPacket;
+
+        Event* a = new ConnectionInitiatedEvent(s,s);
+        Event* b = new SendPacketEvent(s, p);
+
+        ASSERT_EQ(HIGH, a->get_priority());
+        ASSERT_EQ(HIGH, b->get_priority());
+
+        q_.enqueue(a);
+        q_.enqueue(b);
+
+        EXPECT_EQ(a, q_.dequeue());
+        EXPECT_EQ(b, q_.dequeue());
+    }
 }
 
 #endif /* PRIORITYQUEUETEST_H_ */

@@ -23,7 +23,7 @@ void Event::set_socket(Socket* socket) {
 }
 
 Priority Event::get_priority() {
-
+    return priority_;
 }
 
 void Event::set_priority(Priority priority) {

@@ -134,7 +134,7 @@ void TCPTahoe::icontext_send_packet(SendPacketEvent* e) {
     c->get_connection_manager()->icontext_send_packet(e);
     c->get_congestion_control()->icontext_send_packet(e);
 
-    //    cout << "TCPTahoe::icontext_send_packet(): " << endl;
+        cout << "TCPTahoe::icontext_send_packet(): " << endl;
     //    cout << p->to_s() << endl;
 
     send_network_packet(e->get_socket(), p);

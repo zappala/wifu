@@ -11,6 +11,8 @@
 #include "events/Event.h"
 #include "QueueProcessor.h"
 #include "Queue.h"
+#include "PriorityEventComparator.h"
+#include "PriorityQueue.h"
 #include "defines.h"
 
 #include <algorithm>
