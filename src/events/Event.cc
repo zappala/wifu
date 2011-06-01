@@ -1,21 +1,31 @@
 #include "events/Event.h"
 
-Event::Event(Socket* s) : socket_(s) {}
+Event::Event(Socket* s, Priority p) : socket_(s), priority_(p) {
+}
 
-Event::Event() : socket_(0) {}
+Event::Event() : socket_(0) {
+}
 
-Event::~Event() {}
+Event::~Event() {
+}
 
 Socket* Event::get_socket() {
     if (socket_ == NULL) {
-    	throw WiFuException("Socket not set on Event");
-    }
-    else {
-    	return socket_;
+        throw WiFuException("Socket not set on Event");
+    } else {
+        return socket_;
     }
 }
 
 void Event::set_socket(Socket* socket) {
     assert(socket);
     socket_ = socket;
+}
+
+Priority Event::get_priority() {
+
+}
+
+void Event::set_priority(Priority priority) {
+    priority_ = priority;
 }

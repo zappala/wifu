@@ -14,6 +14,7 @@
 #include "IModule.h"
 #include "Socket.h"
 #include "exceptions/WiFuException.h"
+#include "defines.h"
 
 class IModule;
 
@@ -29,7 +30,7 @@ public:
      *
      * @param socket The socket to which to apply this Event to.
      */
-    Event(Socket* s);
+    Event(Socket* s, Priority p = LOW);
 
     /**
      * Constructs an Event object.
@@ -55,6 +56,10 @@ public:
     Socket* get_socket();
 
     void set_socket(Socket*);
+    
+    Priority get_priority();
+
+    void set_priority(Priority priority);
 
 private:
     /**
@@ -62,6 +67,10 @@ private:
      */
     Socket* socket_;
 
+    /*
+     * The priority of this Event
+     */
+    Priority priority_;
 };
 
 #endif	/* _EVENT_H */
