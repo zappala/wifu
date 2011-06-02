@@ -30,7 +30,7 @@ public:
     void state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e);
 private:
     
-    void send_packets(Context* c, Event* e);
+    void send_packets(Context* c, QueueProcessor<Event*>* q, Event* e);
 
 };
 

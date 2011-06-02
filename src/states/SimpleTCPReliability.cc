@@ -72,7 +72,7 @@ void SimpleTCPReliability::state_timer_fired(Context* c, QueueProcessor<Event*>*
 
         //        cache->save_packet(0);
         ResendPacketEvent* event = new ResendPacketEvent(e->get_socket(), p);
-        Dispatcher::instance().enqueue(event);
+        q->enqueue(event);
 
         TimeoutEvent* timeout_event = new TimeoutEvent(s, 1, 0);
         rc->set_timeout_event(timeout_event);
@@ -100,14 +100,14 @@ void SimpleTCPReliability::state_receive_packet(Context* c, QueueProcessor<Event
         rc->set_ack_number(p->get_tcp_sequence_number() + 1);
         if (p->get_data_length_bytes() > 0) {
             s->get_receive_buffer().append((const char*) p->get_data(), p->get_data_length_bytes());
-            Dispatcher::instance().enqueue(new ReceiveBufferNotEmptyEvent(s));
+            q->enqueue(new ReceiveBufferNotEmptyEvent(s));
         }
     } else if (p->get_tcp_sequence_number() - 1 == rc->get_ack_number()) {
         //        cout << "ReliabilityState::receive_packet(), Case 3" << endl;
         rc->set_ack_number(p->get_tcp_sequence_number() + 1);
         if (p->get_data_length_bytes() > 0) {
             s->get_receive_buffer().append((const char*) p->get_data(), p->get_data_length_bytes());
-            Dispatcher::instance().enqueue(new ReceiveBufferNotEmptyEvent(s));
+            q->enqueue(new ReceiveBufferNotEmptyEvent(s));
         }
     } else if (p->get_tcp_sequence_number() + 1 == rc->get_ack_number() && cache->is_empty()) {
         //        cout << "ReliabilityState::receive_packet(), Case 4" << endl;
@@ -137,7 +137,7 @@ void SimpleTCPReliability::state_receive_packet(Context* c, QueueProcessor<Event
 
         //        cout << "ReliabilityState::receive_packet(), Case 4, Packet: " << p << endl;
 
-        Dispatcher::instance().enqueue(spe);
+        q->enqueue(spe);
     }
     //    cout << "ReliabilityState::receive_packet(), returning" << endl;
 }

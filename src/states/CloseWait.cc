@@ -37,7 +37,7 @@ void CloseWait::state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent* e
     response->set_tcp_fin(true);
 
     SendPacketEvent* event = new SendPacketEvent(s, response);
-    Dispatcher::instance().enqueue(event);
+    q->enqueue(event);
 
 
 

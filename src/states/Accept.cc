@@ -37,7 +37,7 @@ void Accept::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Network
 
         Event* new_connection = new ConnectionInitiatedEvent(listening_socket, new_socket);
         SocketCollection::instance().push(new_socket);
-        Dispatcher::instance().enqueue(new_connection);
+        q->enqueue(new_connection);
 
 
         unsigned char* data = (unsigned char*) "";
@@ -57,7 +57,7 @@ void Accept::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Network
         response->set_data(data, 0);
 
         SendPacketEvent* event = new SendPacketEvent(new_socket, response);
-        Dispatcher::instance().enqueue(event);
+        q->enqueue(event);
 
         cmc->set_state(new SynReceived());
     }
@@ -65,7 +65,7 @@ void Accept::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Network
 
 void Accept::state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent* e) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*)c;
-    Dispatcher::instance().enqueue(new DeleteSocketEvent(e->get_socket()));
+    q->enqueue(new DeleteSocketEvent(e->get_socket()));
     cmc->set_state(new Closed());
 
 }

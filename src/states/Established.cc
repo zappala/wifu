@@ -77,7 +77,7 @@ void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Ne
         response->set_data(data, 0);
 
         SendPacketEvent* event = new SendPacketEvent(s, response);
-        Dispatcher::instance().enqueue(event);
+        q->enqueue(event);
 
         cmc->set_state(new CloseWait());
 
@@ -125,7 +125,7 @@ void Established::state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent*
         cmc->set_state(new FinWait1());
 
         SendPacketEvent* event = new SendPacketEvent(s, response);
-        Dispatcher::instance().enqueue(event);
+        q->enqueue(event);
 
         
 

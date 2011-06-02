@@ -66,7 +66,7 @@ void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Even
     Socket* s = e->get_socket();
 
     if (rc->get_timeout_event() == e->get_timeout_event()) {
-        resend_data(c, s);
+        resend_data(c, q, s);
 
         // TODO: do we need to put this in resend_data()
         // The only reason we would want to is if we need to update the 1) RTO and/or 2) the timer upon receiving duplicate acks
@@ -117,7 +117,7 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, QueueProcessor<E
             reset_timer(c, s);
         }
     } else if (p->is_tcp_ack() && less_than(rc->get_snd_nxt(), p->get_tcp_ack_number())) {
-        create_and_dispatch_ack(s);
+        create_and_dispatch_ack(q, s);
         return;
     } else if (p->is_tcp_ack() &&
             between_equal_left(p->get_tcp_ack_number(), rc->get_snd_una(), rc->get_snd_nxt())) {
@@ -167,10 +167,10 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, QueueProcessor<E
         if (amount_put_in_receive_buffer > 0) {
             rc->set_rcv_nxt(rc->get_rcv_nxt() + amount_put_in_receive_buffer);
             cout << "TCPTahoeReliabilityState::state_receive_packet(): Increasing RCV.NXT to : " <<  (int) rc->get_rcv_nxt() << endl;
-            Dispatcher::instance().enqueue(new ReceiveBufferNotEmptyEvent(s));
+            q->enqueue(new ReceiveBufferNotEmptyEvent(s));
         }
 
-        create_and_dispatch_ack(s);
+        create_and_dispatch_ack(q, s);
     }
 
 //    cout << "TCPTahoeReliabilityState::state_receive_packet()" << endl;
@@ -183,7 +183,7 @@ void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, QueueP
     Socket* s = e->get_socket();
 
     if (rc->get_receive_event() && !s->get_receive_buffer().empty()) {
-        create_and_dispatch_received_data(c, rc->get_receive_event());
+        create_and_dispatch_received_data(c, q, rc->get_receive_event());
         rc->set_receive_event(0);
     }
 }
@@ -193,14 +193,14 @@ void TCPTahoeReliabilityState::state_receive(Context* c, QueueProcessor<Event*>*
     Socket* s = e->get_socket();
 
     if (!s->get_receive_buffer().empty()) {
-        create_and_dispatch_received_data(c, e);
+        create_and_dispatch_received_data(c, q, e);
     } else {
         assert(!rc->get_receive_event());
         rc->set_receive_event(e);
     }
 }
 
-void TCPTahoeReliabilityState::create_and_dispatch_ack(Socket* s) {
+void TCPTahoeReliabilityState::create_and_dispatch_ack(QueueProcessor<Event*>* q, Socket* s) {
     TCPPacket* response = new TCPPacket();
     response->insert_tcp_header_option(new TCPTimestampOption());
 
@@ -216,7 +216,7 @@ void TCPTahoeReliabilityState::create_and_dispatch_ack(Socket* s) {
     response->set_data((unsigned char*) "", 0);
 
     SendPacketEvent* event = new SendPacketEvent(s, response);
-    Dispatcher::instance().enqueue(event);
+    q->enqueue(event);
 }
 
 void TCPTahoeReliabilityState::start_timer(Context* c, Socket* s) {
@@ -250,7 +250,7 @@ void TCPTahoeReliabilityState::cancel_timer(Context* c, Socket* s) {
     rc->set_timeout_event(0);
 }
 
-void TCPTahoeReliabilityState::resend_data(Context* c, Socket* s) {
+void TCPTahoeReliabilityState::resend_data(Context* c, QueueProcessor<Event*>* q, Socket* s) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
 
     TCPPacket* p = new TCPPacket();
@@ -311,10 +311,10 @@ void TCPTahoeReliabilityState::resend_data(Context* c, Socket* s) {
     }
 
     ResendPacketEvent* event = new ResendPacketEvent(s, p);
-    Dispatcher::instance().enqueue(event);
+    q->enqueue(event);
 }
 
-void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, ReceiveEvent* e) {
+void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
     int buffer_size = e->get_receive_buffer_size();
@@ -334,7 +334,7 @@ void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, Rec
     response->put(ERRNO, Utils::itoa(0));
 
     Dispatcher::instance().enqueue(response);
-    Dispatcher::instance().enqueue(new ReceiveBufferNotFullEvent(s));
+    q->enqueue(new ReceiveBufferNotFullEvent(s));
 }
 
 void TCPTahoeReliabilityState::update_rto(Context* c, TCPTimestampOption* ts) {

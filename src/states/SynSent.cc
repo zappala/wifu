@@ -40,7 +40,7 @@ void SynSent::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Networ
         response->set_tcp_ack(true);
 
         SendPacketEvent* event = new SendPacketEvent(e->get_socket(), response);
-        Dispatcher::instance().enqueue(event);
+        q->enqueue(event);
 
         cmc->set_state(new Established());
         return;

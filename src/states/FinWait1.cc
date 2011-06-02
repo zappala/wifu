@@ -43,7 +43,7 @@ void FinWait1::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Netwo
         response->set_data(data, 0);
 
         SendPacketEvent* event = new SendPacketEvent(s, response);
-        Dispatcher::instance().enqueue(event);
+        q->enqueue(event);
 
         cmc->set_state(new TimeWait());
         

@@ -22,7 +22,7 @@ void LastAck::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Networ
     Socket* s = e->get_socket();
 
     if (p->is_naked_ack()) {
-        Dispatcher::instance().enqueue(new DeleteSocketEvent(s));
+        q->enqueue(new DeleteSocketEvent(s));
         cmc->set_state(new Closed());
     }
 }

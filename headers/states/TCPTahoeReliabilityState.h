@@ -35,7 +35,7 @@ public:
     virtual void state_receive_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, ReceiveBufferNotEmptyEvent* e);
     virtual void state_receive(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e);
 
-    void create_and_dispatch_ack(Socket* s);
+    void create_and_dispatch_ack(QueueProcessor<Event*>* q, Socket* s);
 
 private:
     void start_timer(Context* c, Socket* s);
@@ -44,8 +44,8 @@ private:
 
     void update_rto(Context* c, TCPTimestampOption* ts);
 
-    void resend_data(Context* c, Socket* s);
-    void create_and_dispatch_received_data(Context* c, ReceiveEvent* e);
+    void resend_data(Context* c, QueueProcessor<Event*>* q, Socket* s);
+    void create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e);
 
     
 };

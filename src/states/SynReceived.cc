@@ -27,7 +27,7 @@ void SynReceived::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Ne
 
         assert(cmc->get_accept_event());
         ConnectionEstablishedEvent* event = new ConnectionEstablishedEvent(cmc->get_accept_event(), s);
-        Dispatcher::instance().enqueue(event);
+        q->enqueue(event);
         c->set_state(new Established());
 //        cout << "SynReceived::receive_packet(), returning" << endl;
         return;

@@ -71,7 +71,7 @@ void DummyCongestionController::state_receive_packet(Context* c, QueueProcessor<
         }
 
 
-        send_packets(c, e);
+        send_packets(c, q, e);
     }
 
 //    cout << "DummyCongestionController::state_recieve_packet()" << endl;
@@ -84,10 +84,10 @@ void DummyCongestionController::state_receive_packet(Context* c, QueueProcessor<
 }
 
 void DummyCongestionController::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
-    send_packets(c, e);
+    send_packets(c, q, e);
 }
 
-void DummyCongestionController::send_packets(Context* c, Event* e) {
+void DummyCongestionController::send_packets(Context* c, QueueProcessor<Event*>* q, Event* e) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
     string& send_buffer = s->get_send_buffer();
@@ -124,8 +124,8 @@ void DummyCongestionController::send_packets(Context* c, Event* e) {
 
         p->set_data((unsigned char*) data, data_length);
 
-        Dispatcher::instance().enqueue(new SendPacketEvent(s, p));
-        Dispatcher::instance().enqueue(new SendBufferNotFullEvent(s));
+        q->enqueue(new SendPacketEvent(s, p));
+        q->enqueue(new SendBufferNotFullEvent(s));
     }
 }
 

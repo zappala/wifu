@@ -22,7 +22,7 @@ void TimeWait::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFir
     TimeoutEvent* event = e->get_timeout_event();
 
     if (event == timeout_event_) {
-        Dispatcher::instance().enqueue(new DeleteSocketEvent(s));
+        q->enqueue(new DeleteSocketEvent(s));
         cmc->set_state(new Closed());
     }
 }
@@ -54,7 +54,7 @@ void TimeWait::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Netwo
         response->set_data(data, 0);
 
         SendPacketEvent* event = new SendPacketEvent(s, response);
-        Dispatcher::instance().enqueue(event);
+        q->enqueue(event);
 
         restart_timer(c);
     }

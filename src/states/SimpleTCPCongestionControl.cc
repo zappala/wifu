@@ -51,7 +51,7 @@ void SimpleTCPCongestionControl::state_receive_packet(Context* c, QueueProcessor
 
         Event* spe = new SendPacketEvent(s, p);
 
-        Dispatcher::instance().enqueue(spe);
+        q->enqueue(spe);
     } else if (!ccc->get_num_outstanding() && s->get_send_buffer().size() > 0) {
         assert(p->is_tcp_ack());
         // receive an ACK
@@ -73,8 +73,8 @@ void SimpleTCPCongestionControl::state_receive_packet(Context* c, QueueProcessor
         Event* spe = new SendPacketEvent(s, p);
         ccc->set_num_outstanding(ccc->get_num_outstanding() + 1);
         
-        Dispatcher::instance().enqueue(spe);
-        Dispatcher::instance().enqueue(new SendBufferNotFullEvent(s));
+        q->enqueue(spe);
+        q->enqueue(new SendBufferNotFullEvent(s));
     }
 }
 
@@ -109,7 +109,7 @@ void SimpleTCPCongestionControl::state_send_buffer_not_empty(Context* c, QueuePr
         //        cout << "SlowStart::state_send_buffer_not_empty(): Packet: " << p << endl;
 
         ccc->set_num_outstanding(ccc->get_num_outstanding() + 1);
-        Dispatcher::instance().enqueue(spe);
-        Dispatcher::instance().enqueue(sbnf);
+        q->enqueue(spe);
+        q->enqueue(sbnf);
     }
 }
