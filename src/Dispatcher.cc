@@ -53,6 +53,6 @@ void Dispatcher::process(Event* e) {
 }
 
 
-Dispatcher::Dispatcher() : QueueProcessor<Event*>(new PriorityQueue<Event*, PriorityEventComparator>()) {
+Dispatcher::Dispatcher() : QueueProcessor<Event*>() {
     mutex_.init(1);
 }
