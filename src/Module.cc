@@ -13,8 +13,8 @@ Module::~Module() {
 }
 
 void Module::process(Event* e) {
-    static int i;
-    cout << "Module::process(): " << ++i << " Processing on module: " << type_name(*this) << " Event: " << type_name(*e) << endl;
+//    static int i;
+//    cout << "Module::process(): " << ++i << " Processing on module: " << type_name(*this) << " Event: " << type_name(*e) << endl;
     e->execute(this);
 }
 
