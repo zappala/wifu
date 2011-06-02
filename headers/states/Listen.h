@@ -22,7 +22,7 @@ public:
     virtual void state_enter(Context* c);
     virtual void state_exit(Context* c);
 
-    void state_accept(Context* c, AcceptEvent* e);
+    void state_accept(Context* c, QueueProcessor<Event*>* q, AcceptEvent* e);
 
 };
 

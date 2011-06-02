@@ -27,7 +27,7 @@ public:
     virtual void state_enter(Context* c);
     virtual void state_exit(Context* c);
 
-    virtual void state_close(Context* c, CloseEvent* e);
+    virtual void state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent* e);
     virtual bool state_can_send(Context* c, Socket* s);
 };
 

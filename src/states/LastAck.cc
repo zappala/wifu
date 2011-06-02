@@ -16,7 +16,7 @@ void LastAck::state_exit(Context* c) {
 
 }
 
-void LastAck::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void LastAck::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();

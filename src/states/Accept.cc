@@ -17,7 +17,7 @@ void Accept::state_exit(Context* c) {
 
 }
 
-void Accept::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void Accept::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
 //    cout << "Accept::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();
@@ -63,7 +63,7 @@ void Accept::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
     }
 }
 
-void Accept::state_close(Context* c, CloseEvent* e) {
+void Accept::state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent* e) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*)c;
     Dispatcher::instance().enqueue(new DeleteSocketEvent(e->get_socket()));
     cmc->set_state(new Closed());

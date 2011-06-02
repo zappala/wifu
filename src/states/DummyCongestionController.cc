@@ -18,7 +18,7 @@ DummyCongestionController::DummyCongestionController(const DummyCongestionContro
 DummyCongestionController::~DummyCongestionController() {
 }
 
-void DummyCongestionController::state_send_packet(Context* c, SendPacketEvent* e) {
+void DummyCongestionController::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
@@ -36,7 +36,7 @@ void DummyCongestionController::state_send_packet(Context* c, SendPacketEvent* e
 
 }
 
-void DummyCongestionController::state_resend_packet(Context* c, ResendPacketEvent* e) {
+void DummyCongestionController::state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
@@ -51,7 +51,7 @@ void DummyCongestionController::state_resend_packet(Context* c, ResendPacketEven
     // TODO: resize the window?
 }
 
-void DummyCongestionController::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void DummyCongestionController::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
 //    cout << "DummyCongestionContrller::state_receive_packet()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
@@ -83,7 +83,7 @@ void DummyCongestionController::state_receive_packet(Context* c, NetworkReceiveP
     
 }
 
-void DummyCongestionController::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e) {
+void DummyCongestionController::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
     send_packets(c, e);
 }
 

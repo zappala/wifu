@@ -19,7 +19,7 @@ void Protocol::imodule_library_socket(Event* e) {
     }
 
     sockets_.insert(s);
-    icontext_socket(event);
+    icontext_socket(this, event);
 
     ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
     response->put(ERRNO, Utils::itoa(0));
@@ -53,7 +53,7 @@ void Protocol::imodule_library_bind(Event* e) {
 
         if (!v.is_bound()) {
             socket->set_local_address_port(local);
-            icontext_bind(event);
+            icontext_bind(this, event);
             return_val = 0;
         } else {
             error = EINVAL;
@@ -96,7 +96,7 @@ void Protocol::imodule_library_listen(Event* e) {
         error = EADDRINUSE;
         return_val = -1;
     } else {
-        icontext_listen(event);
+        icontext_listen(this, event);
     }
 
     ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
@@ -119,7 +119,7 @@ void Protocol::imodule_library_connect(Event* e) {
     // TODO: Error check
 
     //    cout << "In library connect" << endl;
-    icontext_connect(event);
+    icontext_connect(this, event);
 }
 
 void Protocol::imodule_library_accept(Event* e) {
@@ -132,7 +132,7 @@ void Protocol::imodule_library_accept(Event* e) {
     }
 
     // TODO: Error check
-    icontext_accept(event);
+    icontext_accept(this, event);
 }
 
 void Protocol::imodule_library_receive(Event* e) {
@@ -151,7 +151,7 @@ void Protocol::imodule_library_receive(Event* e) {
     }
 
 
-    icontext_receive(event);
+    icontext_receive(this, event);
 }
 
 void Protocol::imodule_library_send(Event* e) {
@@ -170,7 +170,7 @@ void Protocol::imodule_library_send(Event* e) {
     }
 
     // call contexts
-    icontext_send(event);
+    icontext_send(this, event);
 }
 
 void Protocol::imodule_library_close(Event* e) {
@@ -179,7 +179,7 @@ void Protocol::imodule_library_close(Event* e) {
         // TODO: return an error?
         return;
     }
-    icontext_close(event);
+    icontext_close(this, event);
 }
 
 void Protocol::imodule_send(Event* e) {
@@ -194,7 +194,7 @@ void Protocol::imodule_send(Event* e) {
     event->get_packet()->set_ip_protocol(protocol_);
 
     // TODO: Error check
-    icontext_send_packet(event);
+    icontext_send_packet(this, event);
 }
 
 void Protocol::imodule_network_receive(Event* e) {
@@ -210,7 +210,7 @@ void Protocol::imodule_network_receive(Event* e) {
 
     // TODO: Error check
     // We will potentially save data before we are connected; however, we won't pass data to the application until we are connected.
-    icontext_receive_packet(event);
+    icontext_receive_packet(this, event);
 }
 
 void Protocol::imodule_connection_established(Event* e) {
@@ -228,7 +228,7 @@ void Protocol::imodule_connection_established(Event* e) {
 
     Socket* new_socket = event->get_new_socket();
 
-    icontext_new_connection_established(event);
+    icontext_new_connection_established(this, event);
 
     AcceptEvent* a_event = event->get_accept_event();
 
@@ -254,7 +254,7 @@ void Protocol::imodule_connection_initiated(Event* e) {
 
     // TODO: Error Check: socket(s)
 
-    icontext_new_connection_initiated(event);
+    icontext_new_connection_initiated(this, event);
 }
 
 void Protocol::imodule_timer_fired(Event* e) {
@@ -266,7 +266,7 @@ void Protocol::imodule_timer_fired(Event* e) {
         return;
     }
 
-    icontext_timer_fired_event(event);
+    icontext_timer_fired_event(this, event);
 }
 
 void Protocol::imodule_resend(Event* e) {
@@ -279,7 +279,7 @@ void Protocol::imodule_resend(Event* e) {
 
     event->get_packet()->set_ip_protocol(protocol_);
 
-    icontext_resend_packet(event);
+    icontext_resend_packet(this, event);
 }
 
 void Protocol::imodule_send_buffer_not_empty(Event* e) {
@@ -290,7 +290,7 @@ void Protocol::imodule_send_buffer_not_empty(Event* e) {
         return;
     }
 
-    icontext_send_buffer_not_empty(event);
+    icontext_send_buffer_not_empty(this, event);
 }
 
 void Protocol::imodule_send_buffer_not_full(Event* e) {
@@ -301,7 +301,7 @@ void Protocol::imodule_send_buffer_not_full(Event* e) {
         return;
     }
 
-    icontext_send_buffer_not_full(event);
+    icontext_send_buffer_not_full(this, event);
 }
 
 void Protocol::imodule_receive_buffer_not_empty(Event* e) {
@@ -312,7 +312,7 @@ void Protocol::imodule_receive_buffer_not_empty(Event* e) {
         return;
     }
 
-    icontext_receive_buffer_not_empty(event);
+    icontext_receive_buffer_not_empty(this, event);
 }
 
 void Protocol::imodule_receive_buffer_not_full(Event* e) {
@@ -325,7 +325,7 @@ void Protocol::imodule_receive_buffer_not_full(Event* e) {
         return;
     }
 
-    icontext_receive_buffer_not_full(event);
+    icontext_receive_buffer_not_full(this, event);
 }
 
 void Protocol::imodule_delete_socket(Event* e) {
@@ -337,7 +337,7 @@ void Protocol::imodule_delete_socket(Event* e) {
         
         return;
     }
-    icontext_delete_socket(event);
+    icontext_delete_socket(this, event);
 
     sockets_.remove(socket);
     assert(!sockets_.contains(socket));
@@ -365,7 +365,7 @@ void Protocol::imodule_library_set_socket_option(Event* e) {
 
     // TODO: error check
     socket->get_socket_options().insert(event->get_level_name_pair(), event->get_value_length_pair());
-    icontext_set_socket_option(event);
+    icontext_set_socket_option(this, event);
 
     ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
     response->put(ERRNO, Utils::itoa(0));
@@ -396,7 +396,7 @@ void Protocol::imodule_library_get_socket_option(Event* e) {
     response->put(LENGTH_STRING, Utils::itoa(value.second));
     dispatch(response);
 
-    icontext_get_socket_option(event);
+    icontext_get_socket_option(this, event);
 }
 
 void Protocol::send_network_packet(Socket* s, WiFuPacket* p) {

@@ -46,7 +46,7 @@ void Established::state_exit(Context* c) {
 
 }
 
-void Established::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
 //    cout << "Established::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();
@@ -101,7 +101,7 @@ bool Established::state_can_send(Context*, Socket* s) {
     return true;
 }
 
-void Established::state_close(Context* c, CloseEvent* e) {
+void Established::state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent* e) {
 //    cout << "Established::state_close()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     Socket* s = e->get_socket();

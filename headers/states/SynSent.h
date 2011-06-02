@@ -23,7 +23,7 @@ public:
     virtual void state_enter(Context* c);
     virtual void state_exit(Context* c);
 
-    void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
+    void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
 
 };
 

@@ -30,7 +30,7 @@ long int SendRateLimiter::getNanoseconds() {
     return sendNanos_;
 }
 
-void SendRateLimiter::state_send_packet(Context* c, SendPacketEvent* e) {
+void SendRateLimiter::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e) {
     //cout << "SendRateLimiter::send_packet: Entered\n";
     if (canSend_) {
         //cout << "SendRateLimiter::send_packet: Sending packet: " << e->get_packet() << "\n";
@@ -47,7 +47,7 @@ void SendRateLimiter::state_send_packet(Context* c, SendPacketEvent* e) {
     }
 }
 
-void SendRateLimiter::state_timer_fired(Context* c, TimerFiredEvent* e) {
+void SendRateLimiter::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
     //cout << "SendRateLimiter::timer_fired: got timer: " << e->get_timeout_event() << endl;
     //make sure this is ours
     if (waitingTimeout_ == 0 || e->get_timeout_event() != waitingTimeout_) {

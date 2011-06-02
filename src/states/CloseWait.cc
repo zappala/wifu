@@ -16,7 +16,7 @@ void CloseWait::state_exit(Context* c) {
 //    cout << "CloseWait::exit()" << endl;
 }
 
-void CloseWait::state_close(Context* c, CloseEvent* e) {
+void CloseWait::state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent* e) {
 //    cout << "CloseWait::state_close()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     Socket* s = e->get_socket();

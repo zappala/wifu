@@ -8,7 +8,7 @@ Closed::~Closed() {
 
 }
 
-void Closed::state_connect(Context* c, ConnectEvent* e) {
+void Closed::state_connect(Context* c, QueueProcessor<Event*>* q, ConnectEvent* e) {
 //    cout << "In Closed::connect()" << endl;
     Socket* s = e->get_socket();
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
@@ -48,7 +48,7 @@ void Closed::state_connect(Context* c, ConnectEvent* e) {
     cmc->set_state(new SynSent());
 }
 
-void Closed::state_listen(Context* c, ListenEvent* e) {
+void Closed::state_listen(Context* c, QueueProcessor<Event*>* q, ListenEvent* e) {
 //    cout << "Closed::listen()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(PASSIVE_OPEN);
@@ -58,20 +58,20 @@ void Closed::state_listen(Context* c, ListenEvent* e) {
     cmc->set_state(new Listen());
 }
 
-void Closed::state_new_connection_established(Context* c, ConnectionEstablishedEvent* e) {
+void Closed::state_new_connection_established(Context* c, QueueProcessor<Event*>* q, ConnectionEstablishedEvent* e) {
 //    cout << "Closed::state_new_connection_established()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(ESTABLISHED);
     c->set_state(new Established());
 }
 
-void Closed::state_new_connection_initiated(Context* c, ConnectionInitiatedEvent* e) {
+void Closed::state_new_connection_initiated(Context* c, QueueProcessor<Event*>* q, ConnectionInitiatedEvent* e) {
 //    cout << "Closed::state_new_connection_initiated()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(PASSIVE_OPEN);
     c->set_state(new Listen());
 }
 
-void Closed::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void Closed::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
     cout << "Closed::state_receive_packet()" << endl;
 }

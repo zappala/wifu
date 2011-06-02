@@ -19,37 +19,37 @@ TCPTahoe& TCPTahoe::instance() {
     return instance_;
 }
 
-void TCPTahoe::icontext_socket(SocketEvent* e) {
+void TCPTahoe::icontext_socket(QueueProcessor<Event*>* q, SocketEvent* e) {
     //    cout << "TCPTahoe::icontext_socket()" << endl;
     Socket* s = e->get_socket();
     map_[s] = new TCPTahoeIContextContainer();
 
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_socket(e);
-    c->get_connection_manager()->icontext_socket(e);
-    c->get_congestion_control()->icontext_socket(e);
+    c->get_reliability()->icontext_socket(q, e);
+    c->get_connection_manager()->icontext_socket(q, e);
+    c->get_congestion_control()->icontext_socket(q, e);
 }
 
-void TCPTahoe::icontext_bind(BindEvent* e) {
+void TCPTahoe::icontext_bind(QueueProcessor<Event*>* q, BindEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_bind(e);
-    c->get_connection_manager()->icontext_bind(e);
-    c->get_congestion_control()->icontext_bind(e);
+    c->get_reliability()->icontext_bind(q, e);
+    c->get_connection_manager()->icontext_bind(q, e);
+    c->get_congestion_control()->icontext_bind(q, e);
 }
 
-void TCPTahoe::icontext_listen(ListenEvent* e) {
+void TCPTahoe::icontext_listen(QueueProcessor<Event*>* q, ListenEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_listen(e);
-    c->get_connection_manager()->icontext_listen(e);
-    c->get_congestion_control()->icontext_listen(e);
+    c->get_reliability()->icontext_listen(q, e);
+    c->get_connection_manager()->icontext_listen(q, e);
+    c->get_congestion_control()->icontext_listen(q, e);
 }
 
-void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
+void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
     cout << "TCPTahoe::icontext_receive_packet(): " << endl;
 
     Socket* s = e->get_socket();
@@ -62,7 +62,7 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
     // validate any ack number
     if (p->is_tcp_ack() && !is_valid_ack_number(rc, p)) {
         cout << "INVALID ACK NUMBER" << endl;
-        rc->icontext_receive_packet(e);
+        rc->icontext_receive_packet(q, e);
         return;
     }
 
@@ -76,7 +76,7 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
 
         // See my notes for May 25, 2011 for why this must be - RB
         if(!strcmp(cmc->get_state_name().c_str(), type_name(TimeWait))) {
-            cmc->icontext_receive_packet(e);
+            cmc->icontext_receive_packet(q, e);
         }
         else
         if (states_we_can_send_ack_.contains(cmc->get_state_name())) {
@@ -114,25 +114,25 @@ void TCPTahoe::icontext_receive_packet(NetworkReceivePacketEvent* e) {
         return;
     }
 
-    rc->icontext_receive_packet(e);
-    cmc->icontext_receive_packet(e);
-    c->get_congestion_control()->icontext_receive_packet(e);
+    rc->icontext_receive_packet(q, e);
+    cmc->icontext_receive_packet(q, e);
+    c->get_congestion_control()->icontext_receive_packet(q, e);
 
 
     if (c->get_saved_close_event() && s->get_send_buffer().empty()) {
-        cmc->icontext_close(c->get_saved_close_event());
+        cmc->icontext_close(q, c->get_saved_close_event());
         c->set_saved_close_event(0);
     }
 }
 
-void TCPTahoe::icontext_send_packet(SendPacketEvent* e) {
+void TCPTahoe::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    c->get_reliability()->icontext_send_packet(e);
-    c->get_connection_manager()->icontext_send_packet(e);
-    c->get_congestion_control()->icontext_send_packet(e);
+    c->get_reliability()->icontext_send_packet(q, e);
+    c->get_connection_manager()->icontext_send_packet(q, e);
+    c->get_congestion_control()->icontext_send_packet(q, e);
 
         cout << "TCPTahoe::icontext_send_packet(): " << endl;
     //    cout << p->to_s() << endl;
@@ -140,34 +140,34 @@ void TCPTahoe::icontext_send_packet(SendPacketEvent* e) {
     send_network_packet(e->get_socket(), p);
 }
 
-void TCPTahoe::icontext_connect(ConnectEvent* e) {
+void TCPTahoe::icontext_connect(QueueProcessor<Event*>* q, ConnectEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_connect(e);
-    c->get_connection_manager()->icontext_connect(e);
-    c->get_congestion_control()->icontext_connect(e);
+    c->get_reliability()->icontext_connect(q, e);
+    c->get_connection_manager()->icontext_connect(q, e);
+    c->get_congestion_control()->icontext_connect(q, e);
 }
 
-void TCPTahoe::icontext_accept(AcceptEvent* e) {
+void TCPTahoe::icontext_accept(QueueProcessor<Event*>* q, AcceptEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_accept(e);
-    c->get_connection_manager()->icontext_accept(e);
-    c->get_congestion_control()->icontext_accept(e);
+    c->get_reliability()->icontext_accept(q, e);
+    c->get_connection_manager()->icontext_accept(q, e);
+    c->get_congestion_control()->icontext_accept(q, e);
 }
 
-void TCPTahoe::icontext_new_connection_established(ConnectionEstablishedEvent* e) {
+void TCPTahoe::icontext_new_connection_established(QueueProcessor<Event*>* q, ConnectionEstablishedEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_new_connection_established(e);
-    c->get_connection_manager()->icontext_new_connection_established(e);
-    c->get_congestion_control()->icontext_new_connection_established(e);
+    c->get_reliability()->icontext_new_connection_established(q, e);
+    c->get_connection_manager()->icontext_new_connection_established(q, e);
+    c->get_congestion_control()->icontext_new_connection_established(q, e);
 }
 
-void TCPTahoe::icontext_new_connection_initiated(ConnectionInitiatedEvent* e) {
+void TCPTahoe::icontext_new_connection_initiated(QueueProcessor<Event*>* q, ConnectionInitiatedEvent* e) {
     Socket* listening_socket = e->get_socket();
     Socket* new_socket = e->get_new_socket();
 
@@ -177,18 +177,18 @@ void TCPTahoe::icontext_new_connection_initiated(ConnectionInitiatedEvent* e) {
     TCPTahoeIContextContainer* new_cc = new TCPTahoeIContextContainer();
     map_[listening_socket] = new_cc;
 
-    new_cc->get_reliability()->icontext_new_connection_initiated(e);
-    new_cc->get_connection_manager()->icontext_new_connection_initiated(e);
-    new_cc->get_congestion_control()->icontext_new_connection_initiated(e);
+    new_cc->get_reliability()->icontext_new_connection_initiated(q, e);
+    new_cc->get_connection_manager()->icontext_new_connection_initiated(q, e);
+    new_cc->get_congestion_control()->icontext_new_connection_initiated(q, e);
 }
 
-void TCPTahoe::icontext_close(CloseEvent* e) {
+void TCPTahoe::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
 
     if (s->get_send_buffer().empty()) {
-        c->get_connection_manager()->icontext_close(e);
+        c->get_connection_manager()->icontext_close(q, e);
     } else {
         c->set_saved_close_event(e);
     }
@@ -199,27 +199,27 @@ void TCPTahoe::icontext_close(CloseEvent* e) {
     dispatch(response);
 }
 
-void TCPTahoe::icontext_timer_fired_event(TimerFiredEvent* e) {
+void TCPTahoe::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFiredEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_timer_fired_event(e);
-    c->get_connection_manager()->icontext_timer_fired_event(e);
-    c->get_congestion_control()->icontext_timer_fired_event(e);
+    c->get_reliability()->icontext_timer_fired_event(q, e);
+    c->get_connection_manager()->icontext_timer_fired_event(q, e);
+    c->get_congestion_control()->icontext_timer_fired_event(q, e);
 }
 
-void TCPTahoe::icontext_resend_packet(ResendPacketEvent* e) {
+void TCPTahoe::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_resend_packet(e);
-    c->get_connection_manager()->icontext_resend_packet(e);
-    c->get_congestion_control()->icontext_resend_packet(e);
+    c->get_reliability()->icontext_resend_packet(q, e);
+    c->get_connection_manager()->icontext_resend_packet(q, e);
+    c->get_congestion_control()->icontext_resend_packet(q, e);
 
     send_network_packet(e->get_socket(), e->get_packet());
 }
 
-void TCPTahoe::icontext_send(SendEvent* e) {
+void TCPTahoe::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
@@ -229,30 +229,30 @@ void TCPTahoe::icontext_send(SendEvent* e) {
         c->set_saved_send_event(e);
     }
 
-    c->get_reliability()->icontext_send(e);
-    c->get_connection_manager()->icontext_send(e);
-    c->get_congestion_control()->icontext_send(e);
+    c->get_reliability()->icontext_send(q, e);
+    c->get_connection_manager()->icontext_send(q, e);
+    c->get_congestion_control()->icontext_send(q, e);
 }
 
-void TCPTahoe::icontext_receive(ReceiveEvent* e) {
+void TCPTahoe::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_receive(e);
-    c->get_connection_manager()->icontext_receive(e);
-    c->get_congestion_control()->icontext_receive(e);
+    c->get_reliability()->icontext_receive(q, e);
+    c->get_connection_manager()->icontext_receive(q, e);
+    c->get_congestion_control()->icontext_receive(q, e);
 }
 
-void TCPTahoe::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e) {
+void TCPTahoe::icontext_receive_buffer_not_empty(QueueProcessor<Event*>* q, ReceiveBufferNotEmptyEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_receive_buffer_not_empty(e);
-    c->get_connection_manager()->icontext_receive_buffer_not_empty(e);
-    c->get_congestion_control()->icontext_receive_buffer_not_empty(e);
+    c->get_reliability()->icontext_receive_buffer_not_empty(q, e);
+    c->get_connection_manager()->icontext_receive_buffer_not_empty(q, e);
+    c->get_congestion_control()->icontext_receive_buffer_not_empty(q, e);
 }
 
-void TCPTahoe::icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e) {
+void TCPTahoe::icontext_receive_buffer_not_full(QueueProcessor<Event*>* q, ReceiveBufferNotFullEvent* e) {
 //    cout << "TCPTahoe::icontext_receive_buffer_not_full()" << endl;
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
@@ -262,21 +262,21 @@ void TCPTahoe::icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e) {
         dispatch(c->get_saved_fin());
     }
 
-    c->get_reliability()->icontext_receive_buffer_not_full(e);
-    c->get_connection_manager()->icontext_receive_buffer_not_full(e);
-    c->get_congestion_control()->icontext_receive_buffer_not_full(e);
+    c->get_reliability()->icontext_receive_buffer_not_full(q, e);
+    c->get_connection_manager()->icontext_receive_buffer_not_full(q, e);
+    c->get_congestion_control()->icontext_receive_buffer_not_full(q, e);
 }
 
-void TCPTahoe::icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e) {
+void TCPTahoe::icontext_send_buffer_not_empty(QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_send_buffer_not_empty(e);
-    c->get_connection_manager()->icontext_send_buffer_not_empty(e);
-    c->get_congestion_control()->icontext_send_buffer_not_empty(e);
+    c->get_reliability()->icontext_send_buffer_not_empty(q, e);
+    c->get_connection_manager()->icontext_send_buffer_not_empty(q, e);
+    c->get_congestion_control()->icontext_send_buffer_not_empty(q, e);
 }
 
-void TCPTahoe::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
+void TCPTahoe::icontext_send_buffer_not_full(QueueProcessor<Event*>* q, SendBufferNotFullEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
@@ -286,9 +286,9 @@ void TCPTahoe::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
         save_in_buffer_and_send_events(saved_send_event);
     }
 
-    c->get_reliability()->icontext_send_buffer_not_full(e);
-    c->get_connection_manager()->icontext_send_buffer_not_full(e);
-    c->get_congestion_control()->icontext_send_buffer_not_full(e);
+    c->get_reliability()->icontext_send_buffer_not_full(q, e);
+    c->get_connection_manager()->icontext_send_buffer_not_full(q, e);
+    c->get_congestion_control()->icontext_send_buffer_not_full(q, e);
 }
 
 bool TCPTahoe::icontext_can_send(Socket* s) {
@@ -301,34 +301,34 @@ bool TCPTahoe::icontext_can_receive(Socket* s) {
     return c->get_connection_manager()->icontext_can_receive(s);
 }
 
-void TCPTahoe::icontext_delete_socket(DeleteSocketEvent* e) {
+void TCPTahoe::icontext_delete_socket(QueueProcessor<Event*>* q, DeleteSocketEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_delete_socket(e);
-    c->get_connection_manager()->icontext_delete_socket(e);
-    c->get_congestion_control()->icontext_delete_socket(e);
+    c->get_reliability()->icontext_delete_socket(q, e);
+    c->get_connection_manager()->icontext_delete_socket(q, e);
+    c->get_congestion_control()->icontext_delete_socket(q, e);
 
     map_.erase(s);
     assert(map_.find(s) == map_.end());
 }
 
-void TCPTahoe::icontext_set_socket_option(SetSocketOptionEvent* e) {
+void TCPTahoe::icontext_set_socket_option(QueueProcessor<Event*>* q, SetSocketOptionEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_set_socket_option(e);
-    c->get_connection_manager()->icontext_set_socket_option(e);
-    c->get_congestion_control()->icontext_set_socket_option(e);
+    c->get_reliability()->icontext_set_socket_option(q, e);
+    c->get_connection_manager()->icontext_set_socket_option(q, e);
+    c->get_congestion_control()->icontext_set_socket_option(q, e);
 }
 
-void TCPTahoe::icontext_get_socket_option(GetSocketOptionEvent* e) {
+void TCPTahoe::icontext_get_socket_option(QueueProcessor<Event*>* q, GetSocketOptionEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
-    c->get_reliability()->icontext_get_socket_option(e);
-    c->get_connection_manager()->icontext_get_socket_option(e);
-    c->get_congestion_control()->icontext_get_socket_option(e);
+    c->get_reliability()->icontext_get_socket_option(q, e);
+    c->get_connection_manager()->icontext_get_socket_option(q, e);
+    c->get_congestion_control()->icontext_get_socket_option(q, e);
 }
 
 bool TCPTahoe::is_room_in_send_buffer(SendEvent* e) {

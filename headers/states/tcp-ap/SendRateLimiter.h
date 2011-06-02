@@ -32,9 +32,9 @@ public:
 
     long int getNanoseconds();
 
-    void state_send_packet(Context* c, SendPacketEvent* e);
+    void state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e);
 
-    void state_timer_fired(Context* c, TimerFiredEvent* e);
+    void state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e);
     
 private:
     bool canSend_;

@@ -34,10 +34,10 @@ public:
     virtual void state_enter(Context* c);
     virtual void state_exit(Context* c);
 
-    void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
+    void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     bool state_can_receive(Context* c, Socket* s);
     bool state_can_send(Context* c, Socket* s);
-    void state_close(Context* c, CloseEvent* e);
+    void state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent* e);
 };
 
 #endif	/* ESTABLISHED_H */

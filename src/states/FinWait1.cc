@@ -20,7 +20,7 @@ void FinWait1::close(Context* c) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
 }
 
-void FinWait1::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void FinWait1::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
 //    cout << "FinWait1::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();

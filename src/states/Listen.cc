@@ -16,7 +16,7 @@ void Listen::state_exit(Context* c) {
 
 }
 
-void Listen::state_accept(Context* c, AcceptEvent* e) {
+void Listen::state_accept(Context* c, QueueProcessor<Event*>* q, AcceptEvent* e) {
     // TODO: set up the back log with a Semaphore.
     // Wait here
 

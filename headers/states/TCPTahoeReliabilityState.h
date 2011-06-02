@@ -29,11 +29,11 @@ public:
     TCPTahoeReliabilityState();
     virtual ~TCPTahoeReliabilityState();
 
-    virtual void state_send_packet(Context* c, SendPacketEvent* e);
-    virtual void state_timer_fired(Context* c, TimerFiredEvent* e);
-    virtual void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
-    virtual void state_receive_buffer_not_empty(Context* c, ReceiveBufferNotEmptyEvent* e);
-    virtual void state_receive(Context* c, ReceiveEvent* e);
+    virtual void state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e);
+    virtual void state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e);
+    virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
+    virtual void state_receive_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, ReceiveBufferNotEmptyEvent* e);
+    virtual void state_receive(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e);
 
     void create_and_dispatch_ack(Socket* s);
 

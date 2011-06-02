@@ -27,11 +27,11 @@ class Closed : public State {
 public:
     Closed();
     virtual ~Closed();
-    virtual void state_connect(Context* c, ConnectEvent* e);
-    virtual void state_listen(Context* c, ListenEvent* e);
-    virtual void state_new_connection_established(Context* c, ConnectionEstablishedEvent* e);
-    virtual void state_new_connection_initiated(Context* c, ConnectionInitiatedEvent* e);
-    virtual void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
+    virtual void state_connect(Context* c, QueueProcessor<Event*>* q, ConnectEvent* e);
+    virtual void state_listen(Context* c, QueueProcessor<Event*>* q, ListenEvent* e);
+    virtual void state_new_connection_established(Context* c, QueueProcessor<Event*>* q, ConnectionEstablishedEvent* e);
+    virtual void state_new_connection_initiated(Context* c, QueueProcessor<Event*>* q, ConnectionInitiatedEvent* e);
+    virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
 
 };
 

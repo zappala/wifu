@@ -8,7 +8,7 @@ TCPTahoeReliabilityState::~TCPTahoeReliabilityState() {
 
 }
 
-void TCPTahoeReliabilityState::state_send_packet(Context* c, SendPacketEvent* e) {
+void TCPTahoeReliabilityState::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
@@ -60,7 +60,7 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, SendPacketEvent* e)
 
 }
 
-void TCPTahoeReliabilityState::state_timer_fired(Context* c, TimerFiredEvent* e) {
+void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
 //        cout << "TCPTahoeReliabilityState::state_timer_fired() on socket: " << e->get_socket() << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
@@ -80,7 +80,7 @@ void TCPTahoeReliabilityState::state_timer_fired(Context* c, TimerFiredEvent* e)
 
 }
 
-void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void TCPTahoeReliabilityState::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
@@ -178,7 +178,7 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, NetworkReceivePa
 //    cout << "SND.UNA: " << rc->get_snd_una() << endl;
 }
 
-void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, ReceiveBufferNotEmptyEvent* e) {
+void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, ReceiveBufferNotEmptyEvent* e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
 
@@ -188,7 +188,7 @@ void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, Receiv
     }
 }
 
-void TCPTahoeReliabilityState::state_receive(Context* c, ReceiveEvent* e) {
+void TCPTahoeReliabilityState::state_receive(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
 

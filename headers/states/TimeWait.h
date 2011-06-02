@@ -29,8 +29,8 @@ public:
     virtual void state_enter(Context* c);
     virtual void state_exit(Context* c);
 
-    virtual void state_timer_fired(Context* c, TimerFiredEvent* e);
-    virtual void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
+    virtual void state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e);
+    virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
 
 private:
     void start_timer(Context* c);

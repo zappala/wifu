@@ -21,35 +21,35 @@ SimpleTCP& SimpleTCP::instance() {
 SimpleTCP::~SimpleTCP() {
 }
 
-void SimpleTCP::icontext_socket(SocketEvent* e) {
+void SimpleTCP::icontext_socket(QueueProcessor<Event*>* q, SocketEvent* e) {
     Socket* s = e->get_socket();
     save_socket(s);
     SimpleTCPIContextContainer* c = get_context(s);
 
     CacheMap::instance().put(s, new SimpleTCPCache());
 
-    c->get_connection_manager()->icontext_socket(e);
-    c->get_reliability()->icontext_socket(e);
-    c->get_congestion_control()->icontext_socket(e);
+    c->get_connection_manager()->icontext_socket(q, e);
+    c->get_reliability()->icontext_socket(q, e);
+    c->get_congestion_control()->icontext_socket(q, e);
 }
 
-void SimpleTCP::icontext_bind(BindEvent* e) {
+void SimpleTCP::icontext_bind(QueueProcessor<Event*>* q, BindEvent* e) {
     SimpleTCPIContextContainer* c = get_context(e->get_socket());
 
-    c->get_connection_manager()->icontext_bind(e);
-    c->get_reliability()->icontext_bind(e);
-    c->get_congestion_control()->icontext_bind(e);
+    c->get_connection_manager()->icontext_bind(q, e);
+    c->get_reliability()->icontext_bind(q, e);
+    c->get_congestion_control()->icontext_bind(q, e);
 }
 
-void SimpleTCP::icontext_listen(ListenEvent* e) {
+void SimpleTCP::icontext_listen(QueueProcessor<Event*>* q, ListenEvent* e) {
     SimpleTCPIContextContainer* c = get_context(e->get_socket());
 
-    c->get_connection_manager()->icontext_listen(e);
-    c->get_reliability()->icontext_listen(e);
-    c->get_congestion_control()->icontext_listen(e);
+    c->get_connection_manager()->icontext_listen(q, e);
+    c->get_reliability()->icontext_listen(q, e);
+    c->get_congestion_control()->icontext_listen(q, e);
 }
 
-void SimpleTCP::icontext_receive_packet(NetworkReceivePacketEvent* e) {
+void SimpleTCP::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
 //        cout << "SimpleTCP::receive_packet()" << endl;
     Socket* s = e->get_socket();
     SimpleTCPIContextContainer* c = get_context(s);
@@ -70,18 +70,18 @@ void SimpleTCP::icontext_receive_packet(NetworkReceivePacketEvent* e) {
         return;
     }
 
-    c->get_connection_manager()->icontext_receive_packet(e);
-    c->get_reliability()->icontext_receive_packet(e);
-    c->get_congestion_control()->icontext_receive_packet(e);
+    c->get_connection_manager()->icontext_receive_packet(q, e);
+    c->get_reliability()->icontext_receive_packet(q, e);
+    c->get_congestion_control()->icontext_receive_packet(q, e);
 
     if (close_event && s->get_send_buffer().empty() && ccc->get_num_outstanding() == 0) {
 //                cout << "SimpleTCP::receive_packet(), sending out close event" << endl;
-        c->get_connection_manager()->icontext_close(close_event);
+        c->get_connection_manager()->icontext_close(q, close_event);
         c->set_saved_close_event(0);
     }
 }
 
-void SimpleTCP::icontext_send_packet(SendPacketEvent* e) {
+void SimpleTCP::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent* e) {
     //    cout << "SimpleTCP::send_packet()" << endl;
     Socket* s = e->get_socket();
     SimpleTCPIContextContainer* c = get_context(s);
@@ -96,34 +96,34 @@ void SimpleTCP::icontext_send_packet(SendPacketEvent* e) {
     }
 //    cout << "SimpleTCP::send_packet(), TS: " << option->to_s() << endl;
 
-    c->get_connection_manager()->icontext_send_packet(e);
-    c->get_reliability()->icontext_send_packet(e);
-    c->get_congestion_control()->icontext_send_packet(e);
-    c->get_rate_limiter()->icontext_send_packet(e);
+    c->get_connection_manager()->icontext_send_packet(q, e);
+    c->get_reliability()->icontext_send_packet(q, e);
+    c->get_congestion_control()->icontext_send_packet(q, e);
+    c->get_rate_limiter()->icontext_send_packet(q, e);
 }
 
-void SimpleTCP::icontext_connect(ConnectEvent* e) {
+void SimpleTCP::icontext_connect(QueueProcessor<Event*>* q, ConnectEvent* e) {
     SimpleTCPIContextContainer* c = get_context(e->get_socket());
 
-    c->get_connection_manager()->icontext_connect(e);
-    c->get_reliability()->icontext_connect(e);
-    c->get_congestion_control()->icontext_connect(e);
+    c->get_connection_manager()->icontext_connect(q, e);
+    c->get_reliability()->icontext_connect(q, e);
+    c->get_congestion_control()->icontext_connect(q, e);
 }
 
-void SimpleTCP::icontext_accept(AcceptEvent* e) {
+void SimpleTCP::icontext_accept(QueueProcessor<Event*>* q, AcceptEvent* e) {
     SimpleTCPIContextContainer* c = get_context(e->get_socket());
 
-    c->get_connection_manager()->icontext_accept(e);
-    c->get_reliability()->icontext_accept(e);
-    c->get_congestion_control()->icontext_accept(e);
+    c->get_connection_manager()->icontext_accept(q, e);
+    c->get_reliability()->icontext_accept(q, e);
+    c->get_congestion_control()->icontext_accept(q, e);
 }
 
-void SimpleTCP::icontext_new_connection_established(ConnectionEstablishedEvent* e) {
+void SimpleTCP::icontext_new_connection_established(QueueProcessor<Event*>* q, ConnectionEstablishedEvent* e) {
     //    cout << "SimpleTCP::new_connection_established()" << endl;
 
 }
 
-void SimpleTCP::icontext_new_connection_initiated(ConnectionInitiatedEvent* e) {
+void SimpleTCP::icontext_new_connection_initiated(QueueProcessor<Event*>* q, ConnectionInitiatedEvent* e) {
     //    cout << "SimpleTCP::new_conneciton_initiated()" << endl;
 
     // Get out pointers
@@ -147,12 +147,12 @@ void SimpleTCP::icontext_new_connection_initiated(ConnectionInitiatedEvent* e) {
 
     // Tell the listening socket's (new) context that a new connection is occuring
     // (This is basically a hack so the new context can move back to the appropriate state.)
-    new_cc->get_connection_manager()->icontext_new_connection_initiated(e);
-    new_cc->get_reliability()->icontext_new_connection_initiated(e);
-    new_cc->get_congestion_control()->icontext_new_connection_initiated(e);
+    new_cc->get_connection_manager()->icontext_new_connection_initiated(q, e);
+    new_cc->get_reliability()->icontext_new_connection_initiated(q, e);
+    new_cc->get_congestion_control()->icontext_new_connection_initiated(q, e);
 }
 
-void SimpleTCP::icontext_close(CloseEvent* e) {
+void SimpleTCP::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
     //    cout << "SimpleTCP::icontext_close()" << endl;
     Socket* s = e->get_socket();
     SimpleTCPIContextContainer* c = get_context(s);
@@ -160,7 +160,7 @@ void SimpleTCP::icontext_close(CloseEvent* e) {
 
     if (s->get_send_buffer().empty() && ccc->get_num_outstanding() == 0) {
         //        cout << "SimpleTCP::icontext_close(), calling connection manager" << endl;
-        c->get_connection_manager()->icontext_close(e);
+        c->get_connection_manager()->icontext_close(q, e);
     } else {
         //        cout << "SimpleTCP::icontext_close(), saving close event" << endl;
         c->set_saved_close_event(e);
@@ -173,29 +173,29 @@ void SimpleTCP::icontext_close(CloseEvent* e) {
     dispatch(response);
 }
 
-void SimpleTCP::icontext_timer_fired_event(TimerFiredEvent* e) {
+void SimpleTCP::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFiredEvent* e) {
     //    cout << "In SimpleTCP::timer_fired()\n";
     SimpleTCPIContextContainer* c = get_context(e->get_socket());
 
-    c->get_connection_manager()->icontext_timer_fired_event(e);
-    c->get_reliability()->icontext_timer_fired_event(e);
-    c->get_congestion_control()->icontext_timer_fired_event(e);
-    c->get_rate_limiter()->icontext_timer_fired_event(e);
+    c->get_connection_manager()->icontext_timer_fired_event(q, e);
+    c->get_reliability()->icontext_timer_fired_event(q, e);
+    c->get_congestion_control()->icontext_timer_fired_event(q, e);
+    c->get_rate_limiter()->icontext_timer_fired_event(q, e);
 }
 
-void SimpleTCP::icontext_resend_packet(ResendPacketEvent* e) {
+void SimpleTCP::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEvent* e) {
     //    cout << "In SimpleTCP::resend_packet()\n";
     Socket* s = e->get_socket();
     SimpleTCPIContextContainer* c = get_context(s);
 
-    c->get_connection_manager()->icontext_resend_packet(e);
-    c->get_reliability()->icontext_resend_packet(e);
-    c->get_congestion_control()->icontext_resend_packet(e);
+    c->get_connection_manager()->icontext_resend_packet(q, e);
+    c->get_reliability()->icontext_resend_packet(q, e);
+    c->get_congestion_control()->icontext_resend_packet(q, e);
 
     send_network_packet(s, e->get_packet());
 }
 
-void SimpleTCP::icontext_send(SendEvent* e) {
+void SimpleTCP::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
     //    cout << "SimpleTCP::send_to()" << endl;
     Socket* s = e->get_socket();
     SimpleTCPIContextContainer* c = get_context(s);
@@ -220,7 +220,7 @@ void SimpleTCP::icontext_send(SendEvent* e) {
     }
 }
 
-void SimpleTCP::icontext_receive(ReceiveEvent* e) {
+void SimpleTCP::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
     //    cout << "SimpleTCP::receive_from()" << endl;
 
     Socket* s = e->get_socket();
@@ -234,12 +234,12 @@ void SimpleTCP::icontext_receive(ReceiveEvent* e) {
         c->set_saved_receive_event(e);
     }
 
-    c->get_connection_manager()->icontext_receive(e);
-    c->get_reliability()->icontext_receive(e);
-    c->get_congestion_control()->icontext_receive(e);
+    c->get_connection_manager()->icontext_receive(q, e);
+    c->get_reliability()->icontext_receive(q, e);
+    c->get_congestion_control()->icontext_receive(q, e);
 }
 
-void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e) {
+void SimpleTCP::icontext_receive_buffer_not_empty(QueueProcessor<Event*>* q, ReceiveBufferNotEmptyEvent* e) {
     //    cout << "SimpleTCP::icontext_receive_buffer_not_empty()" << endl;
     Socket* s = e->get_socket();
     SimpleTCPIContextContainer* c = get_context(s);
@@ -251,20 +251,20 @@ void SimpleTCP::icontext_receive_buffer_not_empty(ReceiveBufferNotEmptyEvent* e)
         c->set_saved_receive_event(NULL);
     }
 
-    c->get_connection_manager()->icontext_receive_buffer_not_empty(e);
-    c->get_reliability()->icontext_receive_buffer_not_empty(e);
-    c->get_congestion_control()->icontext_receive_buffer_not_empty(e);
+    c->get_connection_manager()->icontext_receive_buffer_not_empty(q, e);
+    c->get_reliability()->icontext_receive_buffer_not_empty(q, e);
+    c->get_congestion_control()->icontext_receive_buffer_not_empty(q, e);
 }
 
-void SimpleTCP::icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e) {
+void SimpleTCP::icontext_receive_buffer_not_full(QueueProcessor<Event*>* q, ReceiveBufferNotFullEvent* e) {
     //    cout << "SimpleTCP::icontext_receive_buffer_not_full()" << endl;
 
     Socket* s = e->get_socket();
     SimpleTCPIContextContainer* c = get_context(s);
 
-    c->get_connection_manager()->icontext_receive_buffer_not_full(e);
-    c->get_reliability()->icontext_receive_buffer_not_full(e);
-    c->get_congestion_control()->icontext_receive_buffer_not_full(e);
+    c->get_connection_manager()->icontext_receive_buffer_not_full(q, e);
+    c->get_reliability()->icontext_receive_buffer_not_full(q, e);
+    c->get_congestion_control()->icontext_receive_buffer_not_full(q, e);
 
     if (c->get_fin() && s->get_receive_buffer().empty()) {
         //        cout << "SimpleTCP::icontext_receive_buffer_not_full(), sending out FIN again" << endl;
@@ -273,17 +273,17 @@ void SimpleTCP::icontext_receive_buffer_not_full(ReceiveBufferNotFullEvent* e) {
     }
 }
 
-void SimpleTCP::icontext_send_buffer_not_empty(SendBufferNotEmptyEvent* e) {
+void SimpleTCP::icontext_send_buffer_not_empty(QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
     //    cout << "SimpleTCP::icontext_send_buffer_not_empty()" << endl;
     Socket* s = e->get_socket();
     SimpleTCPIContextContainer* c = get_context(s);
 
-    c->get_connection_manager()->icontext_send_buffer_not_empty(e);
-    c->get_reliability()->icontext_send_buffer_not_empty(e);
-    c->get_congestion_control()->icontext_send_buffer_not_empty(e);
+    c->get_connection_manager()->icontext_send_buffer_not_empty(q, e);
+    c->get_reliability()->icontext_send_buffer_not_empty(q, e);
+    c->get_congestion_control()->icontext_send_buffer_not_empty(q, e);
 }
 
-void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
+void SimpleTCP::icontext_send_buffer_not_full(QueueProcessor<Event*>* q, SendBufferNotFullEvent* e) {
     //    cout << "SimpleTCP::icontext_send_buffer_not_full()" << endl;
 
     Socket* s = e->get_socket();
@@ -299,9 +299,9 @@ void SimpleTCP::icontext_send_buffer_not_full(SendBufferNotFullEvent* e) {
 
 
 
-    c->get_connection_manager()->icontext_send_buffer_not_full(e);
-    c->get_reliability()->icontext_send_buffer_not_full(e);
-    c->get_congestion_control()->icontext_send_buffer_not_full(e);
+    c->get_connection_manager()->icontext_send_buffer_not_full(q, e);
+    c->get_reliability()->icontext_send_buffer_not_full(q, e);
+    c->get_congestion_control()->icontext_send_buffer_not_full(q, e);
 }
 
 bool SimpleTCP::icontext_can_send(Socket* s) {
@@ -314,37 +314,37 @@ bool SimpleTCP::icontext_can_receive(Socket* s) {
     return c->get_connection_manager()->icontext_can_receive(s);
 }
 
-void SimpleTCP::icontext_delete_socket(DeleteSocketEvent* e) {
+void SimpleTCP::icontext_delete_socket(QueueProcessor<Event*>* q, DeleteSocketEvent* e) {
     //    cout << "SimpleTCP::icontext_delete_socket()" << endl;
     Socket* s = e->get_socket();
     SimpleTCPIContextContainer* c = get_context(s);
 
-    c->get_connection_manager()->icontext_delete_socket(e);
-    c->get_reliability()->icontext_delete_socket(e);
-    c->get_congestion_control()->icontext_delete_socket(e);
+    c->get_connection_manager()->icontext_delete_socket(q, e);
+    c->get_reliability()->icontext_delete_socket(q, e);
+    c->get_congestion_control()->icontext_delete_socket(q, e);
 
     map_.erase(s);
     assert(map_.find(s) == map_.end());
 }
 
-void SimpleTCP::icontext_set_socket_option(SetSocketOptionEvent* e) {
+void SimpleTCP::icontext_set_socket_option(QueueProcessor<Event*>* q, SetSocketOptionEvent* e) {
     //    cout << "SimpleTCP::icontext_set_socket_option()" << endl;
     Socket* s = e->get_socket();
     SimpleTCPIContextContainer* c = get_context(s);
 
-    c->get_connection_manager()->icontext_set_socket_option(e);
-    c->get_reliability()->icontext_set_socket_option(e);
-    c->get_congestion_control()->icontext_set_socket_option(e);
+    c->get_connection_manager()->icontext_set_socket_option(q, e);
+    c->get_reliability()->icontext_set_socket_option(q, e);
+    c->get_congestion_control()->icontext_set_socket_option(q, e);
 }
 
-void SimpleTCP::icontext_get_socket_option(GetSocketOptionEvent* e) {
+void SimpleTCP::icontext_get_socket_option(QueueProcessor<Event*>* q, GetSocketOptionEvent* e) {
     //    cout << "SimpleTCP::icontext_get_socket_option()" << endl;
     Socket* s = e->get_socket();
     SimpleTCPIContextContainer* c = get_context(s);
 
-    c->get_connection_manager()->icontext_get_socket_option(e);
-    c->get_reliability()->icontext_get_socket_option(e);
-    c->get_congestion_control()->icontext_get_socket_option(e);
+    c->get_connection_manager()->icontext_get_socket_option(q, e);
+    c->get_reliability()->icontext_get_socket_option(q, e);
+    c->get_congestion_control()->icontext_get_socket_option(q, e);
 }
 
 

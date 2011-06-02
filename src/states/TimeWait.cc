@@ -16,7 +16,7 @@ void TimeWait::state_exit(Context* c) {
     stop_timer(c);
 }
 
-void TimeWait::state_timer_fired(Context* c, TimerFiredEvent* e) {
+void TimeWait::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     Socket* s = e->get_socket();
     TimeoutEvent* event = e->get_timeout_event();
@@ -27,7 +27,7 @@ void TimeWait::state_timer_fired(Context* c, TimerFiredEvent* e) {
     }
 }
 
-void TimeWait::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void TimeWait::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
     //    RFC p. 73:
     //    The only thing that can arrive in this state is a
     //    retransmission of the remote FIN. Acknowledge it, and restart

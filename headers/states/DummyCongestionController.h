@@ -24,10 +24,10 @@ public:
     DummyCongestionController(const DummyCongestionController& orig);
     virtual ~DummyCongestionController();
     
-    void state_send_packet(Context* c, SendPacketEvent* e);
-    void state_resend_packet(Context* c, ResendPacketEvent* e);
-    void state_receive_packet(Context* c, NetworkReceivePacketEvent* e);
-    void state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e);
+    void state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e);
+    void state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e);
+    void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
+    void state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e);
 private:
     
     void send_packets(Context* c, Event* e);

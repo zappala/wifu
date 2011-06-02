@@ -6,7 +6,7 @@ SimpleTCPReliability::SimpleTCPReliability() {
 SimpleTCPReliability::~SimpleTCPReliability() {
 }
 
-void SimpleTCPReliability::state_send_packet(Context* c, SendPacketEvent* e) {
+void SimpleTCPReliability::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e) {
     //    cout << "ReliabilityState::send_packet()" << endl;
 
     SimpleTCPReliabilityContext* rc = (SimpleTCPReliabilityContext*) c;
@@ -47,7 +47,7 @@ void SimpleTCPReliability::state_send_packet(Context* c, SendPacketEvent* e) {
     }
 }
 
-void SimpleTCPReliability::state_timer_fired(Context* c, TimerFiredEvent* e) {
+void SimpleTCPReliability::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
     //    cout << "ReliabilityState::timer_fired()" << endl;
     SimpleTCPReliabilityContext* rc = (SimpleTCPReliabilityContext*) c;
 
@@ -80,7 +80,7 @@ void SimpleTCPReliability::state_timer_fired(Context* c, TimerFiredEvent* e) {
     }
 }
 
-void SimpleTCPReliability::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void SimpleTCPReliability::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
         //cout << "ReliabilityState::receive_packet()" << endl;
     SimpleTCPReliabilityContext* rc = (SimpleTCPReliabilityContext*) c;
     Socket* s = e->get_socket();

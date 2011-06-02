@@ -7,7 +7,7 @@ SimpleTCPCongestionControl::~SimpleTCPCongestionControl() {
 
 }
 
-void SimpleTCPCongestionControl::state_send_packet(Context* c, SendPacketEvent* e) {
+void SimpleTCPCongestionControl::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e) {
     SimpleTCPCongestionControlContext* ccc = (SimpleTCPCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
@@ -18,7 +18,7 @@ void SimpleTCPCongestionControl::state_send_packet(Context* c, SendPacketEvent* 
     }
 }
 
-void SimpleTCPCongestionControl::state_receive_packet(Context* c, NetworkReceivePacketEvent* e) {
+void SimpleTCPCongestionControl::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
 //    cout << "SlowStart::receive_packet()" << endl;
     SimpleTCPCongestionControlContext* ccc = (SimpleTCPCongestionControlContext*) c;
     Socket* s = e->get_socket();
@@ -78,7 +78,7 @@ void SimpleTCPCongestionControl::state_receive_packet(Context* c, NetworkReceive
     }
 }
 
-void SimpleTCPCongestionControl::state_send_buffer_not_empty(Context* c, SendBufferNotEmptyEvent* e) {
+void SimpleTCPCongestionControl::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
     //    cout << "SlowStart::state_send_buffer_not_empty()" << endl;
     SimpleTCPCongestionControlContext* ccc = (SimpleTCPCongestionControlContext*) c;
     Socket* s = e->get_socket();

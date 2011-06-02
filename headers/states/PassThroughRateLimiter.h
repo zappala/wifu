@@ -15,7 +15,7 @@
 class PassThroughRateLimiter : public State {
 public:
     /*Simple pass-through placeholder for rate limiters.*/
-    void state_send_packet(Context* c, SendPacketEvent* e);
+    void state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e);
 };
 
 #endif	/* _PASSTHROUGHRATELIMITER_H */
