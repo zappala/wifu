@@ -97,7 +97,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
             response->set_data((unsigned char*) "", 0);
 
             SendPacketEvent* event = new SendPacketEvent(s, response);
-            dispatch(event);
+            q->enqueue(event);
             // </editor-fold>
         }
         return;
@@ -224,7 +224,7 @@ void TCPTahoe::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
     if (is_room_in_send_buffer(e)) {
-        save_in_buffer_and_send_events(e);
+        save_in_buffer_and_send_events(q, e);
     } else {
         c->set_saved_send_event(e);
     }
@@ -283,7 +283,7 @@ void TCPTahoe::icontext_send_buffer_not_full(QueueProcessor<Event*>* q, SendBuff
     SendEvent* saved_send_event = c->get_saved_send_event();
 
     if (saved_send_event && is_room_in_send_buffer(saved_send_event)) {
-        save_in_buffer_and_send_events(saved_send_event);
+        save_in_buffer_and_send_events(q, saved_send_event);
     }
 
     c->get_reliability()->icontext_send_buffer_not_full(q, e);
@@ -337,7 +337,7 @@ bool TCPTahoe::is_room_in_send_buffer(SendEvent* e) {
     return s->get_send_buffer().size() + num_bytes_to_send <= MAX_BUFFER_SIZE;
 }
 
-void TCPTahoe::save_in_buffer_and_send_events(SendEvent* e) {
+void TCPTahoe::save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e) {
     int num_bytes_to_send = e->data_length();
     const char* data = (const char*) e->get_data();
 
@@ -349,10 +349,10 @@ void TCPTahoe::save_in_buffer_and_send_events(SendEvent* e) {
     response->put(ERRNO, Utils::itoa(0));
 
     dispatch(response);
-    dispatch(new SendBufferNotEmptyEvent(s));
+    q->enqueue(new SendBufferNotEmptyEvent(s));
 }
 
-void TCPTahoe::create_and_dispatch_received_data(ReceiveEvent* e) {
+void TCPTahoe::create_and_dispatch_received_data(QueueProcessor<Event*>* q, ReceiveEvent* e) {
     Socket* s = e->get_socket();
     int buffer_size = e->get_receive_buffer_size();
 
@@ -367,7 +367,7 @@ void TCPTahoe::create_and_dispatch_received_data(ReceiveEvent* e) {
     response->put(ERRNO, Utils::itoa(0));
 
     dispatch(response);
-    dispatch(new ReceiveBufferNotFullEvent(s));
+    q->enqueue(new ReceiveBufferNotFullEvent(s));
 }
 
 bool TCPTahoe::is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacket* p) {

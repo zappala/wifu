@@ -23,8 +23,8 @@ private:
     HashSet<string> states_we_can_send_ack_;
 
     bool is_room_in_send_buffer(SendEvent* e);
-    void save_in_buffer_and_send_events(SendEvent* e);
-    void create_and_dispatch_received_data(ReceiveEvent* e);
+    void save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e);
+    void create_and_dispatch_received_data(QueueProcessor<Event*>* q, ReceiveEvent* e);
 
     bool is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacket* p);
     bool is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p);
