@@ -196,33 +196,17 @@ TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive50000) {
 }
 
 TEST_F(BackEndMockTestDropRandom1Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(1000));
+    tahoe_active_to_passive_test_with_close(random_string(10000));
 }
 
 TEST_F(BackEndMockTestDropRandom5Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(1000));
+    tahoe_active_to_passive_test_with_close(random_string(10000));
 }
 
 TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(1000));
+    tahoe_active_to_passive_test_with_close(random_string(5000));
 }
 
 TEST_F(BackEndMockTestDropRandom20Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(2000));
-}
-
-TEST_F(BackEndMockTestDropRandom30Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(20000));
-}
-
-TEST_F(BackEndMockTestDropRandom40Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(20000));
-}
-
-TEST_F(BackEndMockTestDropRandom50Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(20000));
-}
-
-TEST_F(BackEndMockTestDropRandom60Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(10));
+    tahoe_active_to_passive_test_with_close(random_string(5000));
 }
