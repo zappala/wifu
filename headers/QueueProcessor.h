@@ -125,6 +125,10 @@ public:
         start_.post();
     }
 
+    int size() {
+        return queue_->size();
+    }
+
 private:
     /**
      * Pointer to an IQueue which points to either a Queue or PriorityQueue object.

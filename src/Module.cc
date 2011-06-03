@@ -14,7 +14,8 @@ Module::~Module() {
 
 void Module::process(Event* e) {
 //    static int i;
-//    cout << "Module::process(): " << ++i << " Processing on module: " << type_name(*this) << " Event: " << type_name(*e) << endl;
+//    cout << "Module::process(): " << ++i << " Processing on module: " << type_name(*this) << " Event: " << type_name(*e) << " Socket: " << e->get_socket() << endl;
+//    cout.flush();
     e->execute(this);
 }
 

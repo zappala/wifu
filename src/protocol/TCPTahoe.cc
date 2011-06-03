@@ -1,4 +1,5 @@
 #include "protocol/TCPTahoe.h"
+#include "MockNetworkInterface.h"
 
 TCPTahoe::TCPTahoe(int protocol) : Protocol(protocol) {
     states_we_can_send_ack_.insert(type_name(Established));
@@ -50,7 +51,7 @@ void TCPTahoe::icontext_listen(QueueProcessor<Event*>* q, ListenEvent* e) {
 }
 
 void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-    cout << "TCPTahoe::icontext_receive_packet(): " << endl;
+//    cout << "TCPTahoe::icontext_receive_packet(): " << endl;
 
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
@@ -134,7 +135,7 @@ void TCPTahoe::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent* 
     c->get_connection_manager()->icontext_send_packet(q, e);
     c->get_congestion_control()->icontext_send_packet(q, e);
 
-        cout << "TCPTahoe::icontext_send_packet(): " << endl;
+//        cout << "TCPTahoe::icontext_send_packet(): " << endl;
     //    cout << p->to_s() << endl;
 
     send_network_packet(e->get_socket(), p);
@@ -209,12 +210,19 @@ void TCPTahoe::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFiredE
 }
 
 void TCPTahoe::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEvent* e) {
+//    cout << "TCPTahoe::icontext_resend_packet()" << endl;
+//    cout << e->get_packet()->to_s_format() << endl;
+//    cout << e->get_packet()->to_s() << endl;
+    
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
     c->get_reliability()->icontext_resend_packet(q, e);
     c->get_connection_manager()->icontext_resend_packet(q, e);
     c->get_congestion_control()->icontext_resend_packet(q, e);
+
+    cout << "TCPTahoe::icontext_resend_packet()" << endl;
+    cout << "NetworkInterfaceQueueSize: " << MockNetworkInterface::instance().size() << endl;
 
     send_network_packet(e->get_socket(), e->get_packet());
 }

@@ -58,7 +58,7 @@ void* tahoe_active_to_passive_thread_with_close(void* args) {
     string address("127.0.0.1");
     string res = ap.get_address();
     EXPECT_EQ(address, res);
-//    cout << "Connected to: " << ap.to_s() << endl;
+    //    cout << "Connected to: " << ap.to_s() << endl;
 
     // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
@@ -71,7 +71,7 @@ void* tahoe_active_to_passive_thread_with_close(void* args) {
         int return_value = wifu_recv(connection, &buffer, 1, 0);
 
         if (return_value == 0) {
-//            cout << "Close Thread BREAK" << endl;
+            //            cout << "Close Thread BREAK" << endl;
             break;
         }
 
@@ -82,7 +82,7 @@ void* tahoe_active_to_passive_thread_with_close(void* args) {
     wifu_close(server);
     EXPECT_EQ(expected, all_received);
     done->post();
-//    cout << "Received: " << all_received << endl;
+    //    cout << "Received: " << all_received << endl;
 }
 
 /**
@@ -142,21 +142,17 @@ void tahoe_active_to_passive_test_with_close(string message) {
 
     // TODO: this only sends one character at a time
     for (int i = 0; i < message.length(); i++) {
-//        cout << "Sending" << endl;
+        //        cout << "Sending" << endl;
         num_sent += wifu_send(client, &(buffer[i]), count, 0);
     }
 
     EXPECT_EQ(message.length(), num_sent);
 
-//    cout << "Sent: " << message << endl;
+    //    cout << "Sent: " << message << endl;
 
     wifu_close(client);
     v.done_->wait();
     sleep(1);
-}
-
-TEST_F(BackEndMockTestDrop32, tahoeSendReceiveTestActiveToPassiveDrop32) {
-    tahoe_active_to_passive_test_with_close(random_string(500));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive1) {
@@ -195,6 +191,10 @@ TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive50000) {
     tahoe_active_to_passive_test_with_close(random_string(50000));
 }
 
+TEST_F(BackEndMockTestDrop32, tahoeSendReceiveTestActiveToPassiveDrop32) {
+    tahoe_active_to_passive_test_with_close(random_string(500));
+}
+
 TEST_F(BackEndMockTestDropRandom1Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
     tahoe_active_to_passive_test_with_close(random_string(10000));
 }
@@ -204,7 +204,7 @@ TEST_F(BackEndMockTestDropRandom5Percent, tahoeSendReceiveTestActiveToPassiveDro
 }
 
 TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(5000));
+    tahoe_active_to_passive_test_with_close(random_string(1000));
 }
 
 TEST_F(BackEndMockTestDropRandom20Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
