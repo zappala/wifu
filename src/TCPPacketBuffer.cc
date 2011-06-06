@@ -1,6 +1,6 @@
 #include "TCPPacketBuffer.h"
 
-TCPPacketBuffer::TCPPacketBuffer() {
+TCPPacketBuffer::TCPPacketBuffer() : started_(false) {
     mark_dirty();
 }
 
@@ -9,7 +9,10 @@ TCPPacketBuffer::~TCPPacketBuffer() {
 }
 
 int TCPPacketBuffer::insert(TCPPacket* p) {
+    assert(started_);
+
     int before_size = size();
+//    cout << "Before size: " << before_size << endl;
 
     packet_buffer::iterator itr = lower_bound(buffer_.begin(), buffer_.end(), p, comparator_);
     TCPPacket* found_packet = *itr;
@@ -29,7 +32,9 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
         }
     }
 
-    int total_inserted = size() - before_size;
+    int after_size = size();
+    int total_inserted = after_size - before_size;
+//    cout << "after size: " << after_size << endl;
 
     assert(total_inserted >= 0);
     if(total_inserted == 0 && !already_inserted) {
@@ -39,12 +44,15 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
 }
 
 void TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number, string& buffer) {
-
+    assert(started_);
+    
     packet_buffer::iterator itr = buffer_.begin();
 
-    if (buffer_.empty() || (*itr)->get_tcp_sequence_number() != sequence_number) {
+    if(buffer_.empty()) {
         return;
     }
+
+    assert(first_expected_sequence_number_ == sequence_number);
 
     while (itr != buffer_.end()) {
         TCPPacket* p = *itr;
@@ -73,12 +81,17 @@ void TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number, string& buf
         ++itr;
     }
 
+    first_expected_sequence_number_ = sequence_number;
+//    cout << "After getting data, first expected seq num: " << first_expected_sequence_number_ << endl;
+
     buffer_.erase(buffer_.begin(), itr);
     mark_dirty();
     return;
 }
 
 int TCPPacketBuffer::size() {
+    assert(started_);
+
     if(size_ >= 0) {
         return size_;
     }
@@ -91,7 +104,7 @@ int TCPPacketBuffer::size() {
 
     packet_buffer::iterator itr = buffer_.begin();
 
-    u_int32_t sequence_number = (*itr)->get_tcp_sequence_number();
+    u_int32_t sequence_number = first_expected_sequence_number_;
     
     while (itr != buffer_.end()) {
         int count = 0;
@@ -113,6 +126,7 @@ int TCPPacketBuffer::size() {
             count += p->get_data_length_bytes();
             sequence_number = p->get_tcp_sequence_number();
         }
+
         sequence_number += count;
         size_ += count;
         ++itr;
@@ -126,11 +140,10 @@ void TCPPacketBuffer::mark_dirty() {
 }
 
 u_int32_t TCPPacketBuffer::get_first_sequence_number() {
-    packet_buffer::iterator itr = buffer_.begin();
+    return first_expected_sequence_number_;
+}
 
-    if (buffer_.empty()) {
-        return 0;
-    }
-
-    return (*itr)->get_tcp_sequence_number();
+void TCPPacketBuffer::set_first_sequence_number(u_int32_t seq_num) {
+    first_expected_sequence_number_ = seq_num;
+    started_ = true;
 }

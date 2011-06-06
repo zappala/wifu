@@ -27,6 +27,7 @@ public:
     void get_continuous_data(u_int32_t sequence_number, string& buffer);
     int size();
     u_int32_t get_first_sequence_number();
+    void set_first_sequence_number(u_int32_t seq_num);
 
 private:
 
@@ -37,6 +38,8 @@ private:
      */
     packet_buffer buffer_;
     TCPSequenceNumberComparator comparator_;
+    u_int32_t first_expected_sequence_number_;
+    bool started_;
 
     int size_;
 };
