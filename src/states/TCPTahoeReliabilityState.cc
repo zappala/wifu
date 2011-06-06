@@ -33,8 +33,8 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, QueueProcessor<Even
     }
 
     if (p->get_data_length_bytes() > 0 || p->is_tcp_syn() || p->is_tcp_fin()) {
-//        cout << "TCPTahoeReliabilityState::state_send_packet() starting time for packet: " << endl;
-//        cout << p->to_s() << endl;
+        //        cout << "TCPTahoeReliabilityState::state_send_packet() starting time for packet: " << endl;
+        //        cout << p->to_s() << endl;
         start_timer(c, s);
     }
 
@@ -71,7 +71,7 @@ void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Even
         rc->set_rto(rc->get_rto() * 2);
         reset_timer(c, s);
         cout << "TCPTahoeReliabilityState::state_timer_fired(): " << e->get_timeout_event() << endl;
-//        cout << "TCPTahoeReliabilityState::state_timer_fired(), current time: " << TimeoutEvent(s, 0, 0).to_s() << endl;
+        //        cout << "TCPTahoeReliabilityState::state_timer_fired(), current time: " << TimeoutEvent(s, 0, 0).to_s() << endl;
         //        cout << "SND.NXT: " << rc->get_snd_nxt() << endl;
         //        cout << "SND.UNA: " << rc->get_snd_una() << endl;
     }
@@ -108,7 +108,7 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, QueueProcessor<E
 
         if (rc->get_snd_nxt() == rc->get_snd_una()) {
             // no outstanding data
-//            cout << "TCPTahoeReliabilityState::state_receive_packet(), canceling timer" << endl;
+            //            cout << "TCPTahoeReliabilityState::state_receive_packet(), canceling timer" << endl;
             cancel_timer(c, s);
             //            cout << "TCPTahoeReliabilityState::state_receive_packet(), timer canceled" << endl;
         } else if (num_acked > 0) {
@@ -129,18 +129,22 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, QueueProcessor<E
         }
         if (rc->get_duplicates() == 3) {
             rc->set_duplicates(0);
-//            cout << "Three duplicate acks, resending data" << endl;
+            //            cout << "Three duplicate acks, resending data" << endl;
 
             // I read the following three lines of comments from inet/src/transport/tcp/flavours/TCPTahoe.cc
             // Do not restart REXMIT timer.
             // Note: Restart of REXMIT timer on retransmission is not part of RFC 2581, however optional in RFC 3517 if sent during recovery.
             // Resetting the REXMIT timer is discussed in RFC 2582/3782 (NewReno) and RFC 2988.
-//            resend_data(c, q, s);
+            //            resend_data(c, q, s);
         }
     }
 
+
     if (p->is_tcp_syn() || p->is_tcp_fin()) {
         rc->set_rcv_nxt(p->get_tcp_sequence_number() + 1);
+        if (p->is_tcp_syn()) {
+            rc->get_receive_window().set_first_sequence_number(rc->get_rcv_nxt());
+        }
     } else if (p->get_data_length_bytes() > 0) {
         cout << "TCPTahoeReliabilityState::state_receive_packet(), DATA found" << endl;
         // save data
@@ -222,13 +226,13 @@ void TCPTahoeReliabilityState::start_timer(Context* c, Socket* s) {
     if (!rc->get_timeout_event()) {
         double seconds;
         long int nanoseconds = modf(rc->get_rto(), &seconds) * NANOSECONDS_IN_SECONDS;
-//        cout << "TCPTahoeReliabilityState::start_timer(): RTO: " << rc->get_rto() << endl;
-//        cout << "TCPTahoeReliabilityState::start_timer(): Seconds: " << seconds << endl;
-//        cout << "TCPTahoeReliabilityState::start_timer(): Nanoseconds" << nanoseconds << endl;
+        //        cout << "TCPTahoeReliabilityState::start_timer(): RTO: " << rc->get_rto() << endl;
+        //        cout << "TCPTahoeReliabilityState::start_timer(): Seconds: " << seconds << endl;
+        //        cout << "TCPTahoeReliabilityState::start_timer(): Nanoseconds" << nanoseconds << endl;
         TimeoutEvent* timer = new TimeoutEvent(s, seconds, nanoseconds);
-//        cout << "TCPTahoeReliabilityState::start_timer(): " << timer << endl;
-//        cout << "TCPTahoeReliabilityState::start_timer() current time: " << TimeoutEvent(s, 0, 0).to_s() << endl;
-//        cout << "TCPTahoeReliabilityState::start_timer() to_s: " << timer->to_s() << endl;
+        //        cout << "TCPTahoeReliabilityState::start_timer(): " << timer << endl;
+        //        cout << "TCPTahoeReliabilityState::start_timer() current time: " << TimeoutEvent(s, 0, 0).to_s() << endl;
+        //        cout << "TCPTahoeReliabilityState::start_timer() to_s: " << timer->to_s() << endl;
         rc->set_timeout_event(timer);
         Dispatcher::instance().enqueue(timer);
     }
@@ -320,7 +324,7 @@ void TCPTahoeReliabilityState::resend_data(Context* c, QueueProcessor<Event*>* q
 
     ResendPacketEvent* event = new ResendPacketEvent(s, p);
     q->enqueue(event);
-    
+
 }
 
 void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
@@ -352,7 +356,7 @@ void TCPTahoeReliabilityState::update_rto(Context* c, TCPTimestampOption* ts) {
     double rtt = Utils::get_current_time_microseconds_32() - ts->get_echo_reply();
     rtt /= MICROSECONDS_IN_SECONDS;
 
-//        cout << "RTT: " << rtt << endl;
+    //        cout << "RTT: " << rtt << endl;
 
     // From here all arithmetic is done in seconds
     // first RTT calculation
@@ -367,5 +371,5 @@ void TCPTahoeReliabilityState::update_rto(Context* c, TCPTimestampOption* ts) {
 
     rc->set_rto(max(MIN_RTO, rc->get_srtt() + max(G, K * rc->get_rttvar())));
 
-//        cout << "Updated RTO: " << rc->get_rto() << endl;
+    //        cout << "Updated RTO: " << rc->get_rto() << endl;
 }

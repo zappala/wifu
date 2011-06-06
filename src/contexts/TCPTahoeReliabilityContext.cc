@@ -41,7 +41,6 @@ void TCPTahoeReliabilityContext::set_timeout_event(TimeoutEvent* e) {
 }
 
 double TCPTahoeReliabilityContext::get_rto() {
-    return 0.01;
     return rto_;
 }
 
