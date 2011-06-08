@@ -124,6 +124,8 @@ void DummyCongestionController::send_packets(Context* c, QueueProcessor<Event*>*
 
         p->set_data((unsigned char*) data, data_length);
 
+        assert(p->get_data_length_bytes() > 0);
+
         q->enqueue(new SendPacketEvent(s, p));
         q->enqueue(new SendBufferNotFullEvent(s));
     }
