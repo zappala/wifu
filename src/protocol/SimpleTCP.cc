@@ -188,6 +188,8 @@ void SimpleTCP::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEv
     Socket* s = e->get_socket();
     SimpleTCPIContextContainer* c = get_context(s);
 
+    e->get_packet()->set_ip_protocol(s->get_protocol());
+
     c->get_connection_manager()->icontext_resend_packet(q, e);
     c->get_reliability()->icontext_resend_packet(q, e);
     c->get_congestion_control()->icontext_resend_packet(q, e);

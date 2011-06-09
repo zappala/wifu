@@ -217,12 +217,16 @@ void TCPTahoe::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEve
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
+
+
     c->get_reliability()->icontext_resend_packet(q, e);
     c->get_connection_manager()->icontext_resend_packet(q, e);
     c->get_congestion_control()->icontext_resend_packet(q, e);
 
 //    cout << "TCPTahoe::icontext_resend_packet()" << endl;
 //    cout << "NetworkInterfaceQueueSize: " << MockNetworkInterface::instance().size() << endl;
+
+    
 
     send_network_packet(e->get_socket(), e->get_packet());
 }

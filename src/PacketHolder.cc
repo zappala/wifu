@@ -1,9 +1,12 @@
 #include "PacketHolder.h"
 
-PacketHolder::PacketHolder(WiFuPacket* p) : packet_(p) {}
+PacketHolder::PacketHolder(WiFuPacket* p) : packet_(p) {
+}
 
-PacketHolder::~PacketHolder() {}
+PacketHolder::~PacketHolder() {
+}
 
 WiFuPacket* PacketHolder::get_packet() {
-	return packet_;
+    assert(packet_);
+    return packet_;
 }

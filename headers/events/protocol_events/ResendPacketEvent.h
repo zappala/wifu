@@ -16,7 +16,11 @@ class ResendPacketEvent: public PacketHolder, public ProtocolEvent {
 public:
     ResendPacketEvent(Socket* s, WiFuPacket* p);
 
-    void execute(IModule* m);
+    ResendPacketEvent(Socket* s);
+
+    virtual ~ResendPacketEvent();
+
+    virtual void execute(IModule* m);
 
 };
 

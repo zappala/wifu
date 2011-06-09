@@ -277,8 +277,6 @@ void Protocol::imodule_resend(Event* e) {
         return;
     }
 
-    event->get_packet()->set_ip_protocol(protocol_);
-
     icontext_resend_packet(this, event);
 }
 
