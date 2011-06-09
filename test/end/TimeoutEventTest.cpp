@@ -9,7 +9,7 @@
 #define TIMEOUTEVENTTEST_H_
 
 #include "gtest/gtest.h"
-#include "events/TimeoutEvent.h"
+#include "events/framework_events/TimeoutEvent.h"
 #include "IModule.h"
 #include "Socket.h"
 #include <time.h>
