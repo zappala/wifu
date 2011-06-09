@@ -47,13 +47,7 @@ void DummyCongestionController::state_send_packet(Context* c, QueueProcessor<Eve
 }
 
 void DummyCongestionController::state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e) {
-    TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
-    TCPPacket* p = (TCPPacket*) e->get_packet();
-
-    u_int32_t length = (p->is_tcp_syn() || p->is_tcp_fin()) ? 1 : p->get_data_length_bytes();
-
-    ccc->set_snd_nxt(ccc->get_snd_una() + length);
-
+    resend_data(c, q, e);
     // TODO: resize the window?
 }
 
@@ -127,16 +121,8 @@ void DummyCongestionController::send_one_packet(Context* c, QueueProcessor<Event
     TCPPacket* p = new TCPPacket();
     p->insert_tcp_header_option(new TCPTimestampOption());
 
-    int available_window_space = (int) ccc->get_snd_wnd() - (int) ccc->get_num_outstanding();
-    int num_unsent = (int) send_buffer.size() - (int) ccc->get_num_outstanding();
+    int data_length = get_data_length(c, e, p, ignore_window);
 
-    // we do not want to make a packet larger than the window size
-    u_int32_t data_length = min(min(num_unsent, (int) p->max_data_length()), MAX_TCP_RECEIVE_WINDOW_SIZE);
-    if (!ignore_window) {
-        data_length = min((int) data_length, available_window_space);
-    }
-
-    assert(data_length > 0);
     assert(send_buffer.size() > 0);
 
     const char* data = (send_buffer.data() + index);
@@ -160,3 +146,70 @@ void DummyCongestionController::send_one_packet(Context* c, QueueProcessor<Event
     q->enqueue(new SendBufferNotFullEvent(s));
 }
 
+void DummyCongestionController::resend_data(Context* c, QueueProcessor<Event*>* q, Event* e) {
+    TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
+    Socket* s = e->get_socket();
+
+    TCPPacket* p = new TCPPacket();
+    p->insert_tcp_header_option(new TCPTimestampOption());
+
+    AddressPort* destination = s->get_remote_address_port();
+    AddressPort* source = s->get_local_address_port();
+
+    p->set_ip_destination_address_s(destination->get_address());
+    p->set_destination_port(destination->get_port());
+
+    p->set_ip_source_address_s(source->get_address());
+    p->set_source_port(source->get_port());
+
+    // Check for SYN or FIN byte in the buffer
+    string& send_buffer = s->get_send_buffer();
+    assert(!send_buffer.empty());
+    bool control_bit = false;
+
+    if (!send_buffer.compare(0, 1, SYN_BYTE.c_str())) {
+        p->set_tcp_syn(true);
+        control_bit = true;
+
+    } else if (!send_buffer.compare(0, 1, FIN_BYTE.c_str())) {
+        p->set_tcp_fin(true);
+        control_bit = true;
+    }
+
+    if (control_bit) {
+        //                cout << "Control bit set, setting snd_nxt to snd.una + 1" << endl;
+        p->set_data((unsigned char*) "", 0);
+    } else {
+        // TODO: change this to use the string::data() method instead of substr() so we can avoid the copy
+        int length = get_data_length(c, e, p, false);
+        string data = send_buffer.substr(0, length);
+        if (!data.compare(data.size() - 1, 1, FIN_BYTE.c_str())) {
+            data.erase(data.size() - 1, 1);
+        }
+        p->set_data((unsigned char*) data.data(), data.size());
+        assert(p->get_data_length_bytes() > 0);
+    }
+
+    u_int32_t length = (p->is_tcp_syn() || p->is_tcp_fin()) ? 1 : p->get_data_length_bytes();
+    ccc->set_snd_nxt(ccc->get_snd_una() + length);
+
+    SendPacketEvent* event = new SendPacketEvent(s, p);
+    q->enqueue(event);
+}
+
+int DummyCongestionController::get_data_length(Context* c, Event* e, WiFuPacket* p, bool ignore_window) {
+    TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
+    string& send_buffer = e->get_socket()->get_send_buffer();
+
+    int num_unsent = (int) send_buffer.size() - (int) ccc->get_num_outstanding();
+
+    // we do not want to make a packet larger than the window size
+    int data_length = min(min(num_unsent, (int) p->max_data_length()), MAX_TCP_RECEIVE_WINDOW_SIZE);
+    if (!ignore_window) {
+        int available_window_space = (int) ccc->get_snd_wnd() - (int) ccc->get_num_outstanding();
+        data_length = min((int) data_length, available_window_space);
+    }
+
+    assert(data_length > 0);
+    return data_length;
+}

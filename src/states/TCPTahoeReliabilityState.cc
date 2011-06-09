@@ -12,6 +12,7 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, QueueProcessor<Even
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
+    string& send_buffer = s->get_send_buffer();
 
     // Sequence numbers
     if (!rc->is_initialized()) {
@@ -27,22 +28,25 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, QueueProcessor<Even
     }
 
     // ACK number and bit
+    // TODO: what about wrap-around and we are ack'ing byte 0?
     p->set_tcp_ack_number(rc->get_rcv_nxt());
     if (p->get_tcp_ack_number()) {
         p->set_tcp_ack(true);
     }
 
     if (p->get_data_length_bytes() > 0 || p->is_tcp_syn() || p->is_tcp_fin()) {
-        //        cout << "TCPTahoeReliabilityState::state_send_packet() starting time for packet: " << endl;
-        //        cout << p->to_s() << endl;
         start_timer(c, s);
     }
 
-    if (p->is_tcp_syn()) {
+
+    // if SYN and send buffer doesn't already have the SYN saved (resend)
+    if (p->is_tcp_syn() && send_buffer.compare(0, 1, SYN_BYTE.c_str())) {
         assert(s->get_send_buffer().empty());
-        s->get_send_buffer().append(SYN_BYTE);
-    } else if (p->is_tcp_fin()) {
-        s->get_send_buffer().append(FIN_BYTE);
+        send_buffer.append(SYN_BYTE);
+
+    } // if FIN and send buffer doesn't already have the FIN saved (resend)
+    else if (p->is_tcp_fin() && (send_buffer.empty() || send_buffer.compare(send_buffer.size() - 1, 1, FIN_BYTE.c_str()))) {
+        send_buffer.append(FIN_BYTE);
     }
 
     p->set_tcp_receive_window_size(rc->get_rcv_wnd());
@@ -53,11 +57,6 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, QueueProcessor<Even
     if (rc->get_echo_reply()) {
         option->set_echo_reply(rc->get_echo_reply());
     }
-
-    //    cout << "TCPTahoeReliabilityState::state_send_packet()" << endl;
-    //    cout << "SND.NXT: " << rc->get_snd_nxt() << endl;
-    //    cout << "SND.UNA: " << rc->get_snd_una() << endl;
-
 }
 
 void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
@@ -66,17 +65,9 @@ void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Even
     Socket* s = e->get_socket();
 
     if (rc->get_timeout_event() == e->get_timeout_event()) {
-        resend_data(c, q, s);
-
         rc->set_rto(rc->get_rto() * 2);
-        reset_timer(c, s);
-        //        cout << "TCPTahoeReliabilityState::state_timer_fired(): " << e->get_timeout_event() << endl;
-        //        cout << "TCPTahoeReliabilityState::state_timer_fired(), current time: " << TimeoutEvent(s, 0, 0).to_s() << endl;
-        //        cout << "SND.NXT: " << rc->get_snd_nxt() << endl;
-        //        cout << "SND.UNA: " << rc->get_snd_una() << endl;
+        resend_data(c, q, s);
     }
-
-
 }
 
 void TCPTahoeReliabilityState::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
@@ -229,13 +220,7 @@ void TCPTahoeReliabilityState::start_timer(Context* c, Socket* s) {
     if (!rc->get_timeout_event()) {
         double seconds;
         long int nanoseconds = modf(rc->get_rto(), &seconds) * NANOSECONDS_IN_SECONDS;
-        //        cout << "TCPTahoeReliabilityState::start_timer(): RTO: " << rc->get_rto() << endl;
-        //        cout << "TCPTahoeReliabilityState::start_timer(): Seconds: " << seconds << endl;
-        //        cout << "TCPTahoeReliabilityState::start_timer(): Nanoseconds" << nanoseconds << endl;
         TimeoutEvent* timer = new TimeoutEvent(s, seconds, nanoseconds);
-        //        cout << "TCPTahoeReliabilityState::start_timer(): " << timer << endl;
-        //        cout << "TCPTahoeReliabilityState::start_timer() current time: " << TimeoutEvent(s, 0, 0).to_s() << endl;
-        //        cout << "TCPTahoeReliabilityState::start_timer() to_s: " << timer->to_s() << endl;
         rc->set_timeout_event(timer);
         Dispatcher::instance().enqueue(timer);
     }
@@ -260,77 +245,8 @@ void TCPTahoeReliabilityState::cancel_timer(Context* c, Socket* s) {
 
 void TCPTahoeReliabilityState::resend_data(Context* c, QueueProcessor<Event*>* q, Socket* s) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
-
-    TCPPacket* p = new TCPPacket();
-    p->insert_tcp_header_option(new TCPTimestampOption());
-
-    AddressPort* destination = s->get_remote_address_port();
-    AddressPort* source = s->get_local_address_port();
-
-    p->set_ip_destination_address_s(destination->get_address());
-    p->set_destination_port(destination->get_port());
-
-    p->set_ip_source_address_s(source->get_address());
-    p->set_source_port(source->get_port());
-
-    // Check for SYN or FIN byte in the buffer
-    string& send_buffer = s->get_send_buffer();
-    assert(!send_buffer.empty());
-    bool control_bit = false;
-
-    if (!send_buffer.compare(0, 1, SYN_BYTE.c_str())) {
-        p->set_tcp_syn(true);
-        control_bit = true;
-
-    } else if (!send_buffer.compare(0, 1, FIN_BYTE.c_str())) {
-        p->set_tcp_fin(true);
-        control_bit = true;
-    }
-
-    if (control_bit) {
-        //                cout << "Control bit set, setting snd_nxt to snd.una + 1" << endl;
-        rc->set_snd_nxt(rc->get_snd_una() + 1);
-        p->set_data((unsigned char*) "", 0);
-    } else {
-        // TODO: change this to use the string::data() method instead of substr() so we can avoid the copy
-        // TODO: we cannot send more than the send window allows; however, the send window is kept track in the congestion congroller
-        // Should the congestion controller be the one who resends data?
-        string data = send_buffer.substr(0, p->max_data_length());
-        if (!data.compare(data.size() - 1, 1, FIN_BYTE.c_str())) {
-            data.erase(data.size() - 1, 1);
-        }
-        //                cout << "No control bit found, setting snd_nxt to snd.una + data.size" << rc->get_snd_nxt() << " + " << data.size() << endl;
-        rc->set_snd_nxt(rc->get_snd_una() + data.size());
-        p->set_data((unsigned char*) data.data(), data.size());
-        assert(p->get_data_length_bytes() > 0);
-    }
-
-    p->set_tcp_sequence_number(rc->get_snd_una());
-    p->set_tcp_ack_number(rc->get_rcv_nxt());
-
-    if (p->get_tcp_ack_number()) {
-        p->set_tcp_ack(true);
-    }
-
-    p->set_tcp_receive_window_size(rc->get_rcv_wnd());
-
-    TCPTimestampOption* option = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
-    assert(option);
-    option->set_timestamp();
-    if (rc->get_echo_reply()) {
-        option->set_echo_reply(rc->get_echo_reply());
-    }
-
-    cout.flush();
-    cout << "TCPTahoeReliabilityState::resend_data(), packet: " << endl;
-    cout << p->to_s_format() << endl;
-    cout << p->to_s() << endl;
-    cout.flush();
-
-
-    ResendPacketEvent* event = new ResendPacketEvent(s, p);
-    q->enqueue(event);
-
+    rc->set_snd_nxt(rc->get_snd_una());
+    q->enqueue(new ResendPacketEvent(s));
 }
 
 void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
