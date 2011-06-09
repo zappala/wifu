@@ -1,6 +1,6 @@
 #include "contexts/TCPTahoeCongestionControlContext.h"
 
-TCPTahoeCongestionControlContext::TCPTahoeCongestionControlContext(u_int32_t iss) : OutstandingDataContext(iss) {
+TCPTahoeCongestionControlContext::TCPTahoeCongestionControlContext(u_int32_t iss) : OutstandingDataContext(iss), probe_timer_(0), probe_timer_duration_(INITIAL_PROBE_TIMEOUT_DURATION) {
     set_state(new DummyCongestionController());
 }
 
@@ -30,4 +30,20 @@ u_int32_t TCPTahoeCongestionControlContext::get_snd_wnd2() const {
 
 void TCPTahoeCongestionControlContext::set_snd_wnd2(u_int32_t snd_wnd2) {
     snd_wnd2_ = snd_wnd2;
+}
+
+TimeoutEvent* TCPTahoeCongestionControlContext::get_probe_timer() const {
+    return probe_timer_;
+}
+
+void TCPTahoeCongestionControlContext::set_probe_timer(TimeoutEvent* e) {
+    probe_timer_ = e;
+}
+
+int TCPTahoeCongestionControlContext::get_probe_timer_duration() const {
+    return probe_timer_duration_;
+}
+
+void TCPTahoeCongestionControlContext::set_probe_timer_duration(int duration) {
+    probe_timer_duration_ = duration;
 }

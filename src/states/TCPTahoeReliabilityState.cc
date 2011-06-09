@@ -61,7 +61,7 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, QueueProcessor<Even
 }
 
 void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
-    //        cout << "TCPTahoeReliabilityState::state_timer_fired() on socket: " << e->get_socket() << endl;
+    cout << "TCPTahoeReliabilityState::state_timer_fired() on socket: " << e->get_socket() << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
 
@@ -70,7 +70,7 @@ void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Even
 
         rc->set_rto(rc->get_rto() * 2);
         reset_timer(c, s);
-//        cout << "TCPTahoeReliabilityState::state_timer_fired(): " << e->get_timeout_event() << endl;
+        //        cout << "TCPTahoeReliabilityState::state_timer_fired(): " << e->get_timeout_event() << endl;
         //        cout << "TCPTahoeReliabilityState::state_timer_fired(), current time: " << TimeoutEvent(s, 0, 0).to_s() << endl;
         //        cout << "SND.NXT: " << rc->get_snd_nxt() << endl;
         //        cout << "SND.UNA: " << rc->get_snd_una() << endl;
@@ -129,7 +129,7 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, QueueProcessor<E
         }
         if (rc->get_duplicates() == 3) {
             rc->set_duplicates(0);
-//                        cout << "Three duplicate acks, resending data" << endl;
+            cout << "Three duplicate acks, resending data" << endl;
 
             // I read the following three lines of comments from inet/src/transport/tcp/flavours/TCPTahoe.cc
             // Do not restart REXMIT timer.
@@ -146,32 +146,35 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, QueueProcessor<E
             rc->get_receive_window().set_first_sequence_number(rc->get_rcv_nxt());
         }
     } else if (p->get_data_length_bytes() > 0) {
-//        cout << "TCPTahoeReliabilityState::state_receive_packet(), DATA found" << endl;
-        // save data
-        int num_inserted = rc->get_receive_window().insert(p);
 
-//        cout << "TCPTahoeReliabilityState::state_receive_packet(), num put in receive window: " << num_inserted << endl;
-        rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
+        if (rc->get_rcv_wnd() >= p->get_data_length_bytes()) {
+            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), DATA found" << endl;
+            // save data
+            int num_inserted = rc->get_receive_window().insert(p);
 
-//        cout << "TCPTahoeReliabilityState::state_receive_packet(), receive window first byte: " << rc->get_receive_window().get_first_sequence_number() << endl;
-//        cout << "TCPTahoeReliabilityState::state_receive_packet(), RCV.NXT: " << rc->get_rcv_nxt() << endl;
+            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), num put in receive window: " << num_inserted << endl;
+            rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
 
-        string& receive_buffer = s->get_receive_buffer();
-        u_int32_t before_rcv_buffer_size = receive_buffer.size();
-//        cout << "TCPTahoeReliabilityState::state_receive_packet(), Receive receive buffer before size: " << before_rcv_buffer_size << endl;
+            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), receive window first byte: " << rc->get_receive_window().get_first_sequence_number() << endl;
+            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), RCV.NXT: " << rc->get_rcv_nxt() << endl;
+
+            string& receive_buffer = s->get_receive_buffer();
+            u_int32_t before_rcv_buffer_size = receive_buffer.size();
+            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), Receive receive buffer before size: " << before_rcv_buffer_size << endl;
 
 
 
-        rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
-        u_int32_t after_receive_buffer_size = receive_buffer.size();
-//        cout << "TCPTahoeReliabilityState::state_receive_packet(), Arter receive buffer before size: " << after_receive_buffer_size << endl;
-        u_int32_t amount_put_in_receive_buffer = after_receive_buffer_size - before_rcv_buffer_size;
-//        cout << "TCPTahoeReliabilityState::state_receive_packet(), Amount put in receive buffer: " << amount_put_in_receive_buffer << endl;
-        assert(amount_put_in_receive_buffer >= 0);
+            rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
+            u_int32_t after_receive_buffer_size = receive_buffer.size();
+            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), Arter receive buffer before size: " << after_receive_buffer_size << endl;
+            u_int32_t amount_put_in_receive_buffer = after_receive_buffer_size - before_rcv_buffer_size;
+            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), Amount put in receive buffer: " << amount_put_in_receive_buffer << endl;
+            assert(amount_put_in_receive_buffer >= 0);
 
-        if (amount_put_in_receive_buffer > 0) {
-            rc->set_rcv_nxt(rc->get_rcv_nxt() + amount_put_in_receive_buffer);
-            q->enqueue(new ReceiveBufferNotEmptyEvent(s));
+            if (amount_put_in_receive_buffer > 0) {
+                rc->set_rcv_nxt(rc->get_rcv_nxt() + amount_put_in_receive_buffer);
+                q->enqueue(new ReceiveBufferNotEmptyEvent(s));
+            }
         }
 
         create_and_dispatch_ack(q, s);
@@ -290,6 +293,8 @@ void TCPTahoeReliabilityState::resend_data(Context* c, QueueProcessor<Event*>* q
         p->set_data((unsigned char*) "", 0);
     } else {
         // TODO: change this to use the string::data() method instead of substr() so we can avoid the copy
+        // TODO: we cannot send more than the send window allows; however, the send window is kept track in the congestion congroller
+        // Should the congestion controller be the one who resends data?
         string data = send_buffer.substr(0, p->max_data_length());
         if (!data.compare(data.size() - 1, 1, FIN_BYTE.c_str())) {
             data.erase(data.size() - 1, 1);
@@ -316,11 +321,11 @@ void TCPTahoeReliabilityState::resend_data(Context* c, QueueProcessor<Event*>* q
         option->set_echo_reply(rc->get_echo_reply());
     }
 
-//    cout.flush();
-//    cout << "TCPTahoeReliabilityState::resend_data(), packet: " << endl;
-//    cout << p->to_s_format() << endl;
-//    cout << p->to_s() << endl;
-//    cout.flush();
+    cout.flush();
+    cout << "TCPTahoeReliabilityState::resend_data(), packet: " << endl;
+    cout << p->to_s_format() << endl;
+    cout << p->to_s() << endl;
+    cout.flush();
 
 
     ResendPacketEvent* event = new ResendPacketEvent(s, p);

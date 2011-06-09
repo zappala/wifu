@@ -14,6 +14,11 @@
 // TODO: replace this with an actual state machine
 #include "states/DummyCongestionController.h"
 
+#include "events/framework_events/TimeoutEvent.h"
+#include "events/framework_events/TimerFiredEvent.h"
+
+#include "defines.h"
+
 class TCPTahoeCongestionControlContext : public OutstandingDataContext {
 public:
     TCPTahoeCongestionControlContext(u_int32_t iss);
@@ -27,11 +32,27 @@ public:
 
     u_int32_t get_snd_wnd2() const;
     void set_snd_wnd2(u_int32_t snd_wnd2);
+
+    TimeoutEvent* get_probe_timer() const;
+    void set_probe_timer(TimeoutEvent* e);
+
+    int get_probe_timer_duration() const;
+    void set_probe_timer_duration(int duration);
     
 private:
+
     u_int16_t snd_wnd_;
     u_int32_t snd_wnd1_;
     u_int32_t snd_wnd2_;
+
+    TimeoutEvent* probe_timer_;
+
+    /**
+     * Duration which the probe timer lasts
+     * According to RFC 793 it should be initially set to 2 minutes
+     * We store it here as seconds
+     */
+    int probe_timer_duration_;
 
 };
 

@@ -83,6 +83,9 @@
 #define INITIAL_RTO 3.0
 #define MIN_RTO 1.0
 
+// in seconds
+#define INITIAL_PROBE_TIMEOUT_DURATION 5
+
 // RFC 2988
 #define ALPHA 0.125
 #define BETA 0.25
@@ -92,7 +95,7 @@
 
 
 // TODO: if we want it any bigger we need to employ the window scale option
-#define MAX_TCP_RECEIVE_WINDOW_SIZE USHRT_MAX
+#define MAX_TCP_RECEIVE_WINDOW_SIZE 10
 
 #define SYN_BYTE std::string(1, 22)
 #define FIN_BYTE std::string(1, 23)

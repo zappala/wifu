@@ -11,8 +11,14 @@
 #include "State.h"
 
 #include "contexts/Context.h"
+#include "contexts/TCPTahoeCongestionControlContext.h"
+
 #include "events/protocol_events/SendBufferNotEmptyEvent.h"
 #include "events/framework_events/NetworkReceivePacketEvent.h"
+#include "events/framework_events/CancelTimerEvent.h"
+#include "events/framework_events/TimeoutEvent.h"
+#include "events/framework_events/TimerFiredEvent.h"
+
 #include "Math.h"
 
 #include "packet/TCPPacket.h"
@@ -23,13 +29,14 @@ public:
     DummyCongestionController();
     DummyCongestionController(const DummyCongestionController& orig);
     virtual ~DummyCongestionController();
-    
-    void state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e);
-    void state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e);
-    void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
-    void state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e);
+
+    virtual void state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e);
+    virtual void state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e);
+    virtual void state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e);
+    virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
+    virtual void state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e);
 private:
-    
+    void send_probe_packet(Context* c, QueueProcessor<Event*>* q, Event* e);
     void send_packets(Context* c, QueueProcessor<Event*>* q, Event* e);
 
 };
