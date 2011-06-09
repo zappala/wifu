@@ -29,7 +29,7 @@ void DummyCongestionController::state_timer_fired(Context* c, QueueProcessor<Eve
         ccc->set_probe_timer(event);
         Dispatcher::instance().enqueue(event);
 
-        send_probe_packet(c, q, e);
+        send_one_packet(c, q, e, true);
     }
 }
 
@@ -103,60 +103,18 @@ void DummyCongestionController::state_send_buffer_not_empty(Context* c, QueuePro
 
 void DummyCongestionController::send_packets(Context* c, QueueProcessor<Event*>* q, Event* e) {
     cout << "DummyCongestionController::send_packets()" << endl;
-
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
-
     string& send_buffer = s->get_send_buffer();
 
-    // Represents the first byte in the send buffer which has "never" been sent before.
-    // We actually may have sent data already but if SND.UNA changes due to a drop we will treat it as if we never sent it.
-    int index = ccc->get_num_outstanding();
-    cout << "DummyCongestionController::send_packets(), num outstanding:  " << ccc->get_num_outstanding() << endl;
-    cout << "DummyCongestionController::send_packets(), send window size: " << ccc->get_snd_wnd() << endl;
     assert(ccc->get_num_outstanding() <= ccc->get_snd_wnd());
 
-
-    int num_unsent = send_buffer.size() - index;
-
-    while (num_unsent > 0 && ccc->get_num_outstanding() < ccc->get_snd_wnd()) {
-
-        TCPPacket* p = new TCPPacket();
-        p->insert_tcp_header_option(new TCPTimestampOption());
-
-        int available_window_space = (int) ccc->get_snd_wnd() - (int) ccc->get_num_outstanding();
-
-        u_int32_t data_length = min(min(available_window_space, num_unsent), (int) p->max_data_length());
-        cout << "Data length: " << data_length << endl;
-        assert(data_length > 0);
-        assert(send_buffer.size() > 0);
-
-
-        const char* data = (send_buffer.data() + index);
-
-        num_unsent -= data_length;
-        index += data_length;
-        ccc->set_snd_nxt(ccc->get_snd_nxt() + data_length);
-
-        AddressPort* destination = s->get_remote_address_port();
-        AddressPort* source = s->get_local_address_port();
-
-        p->set_ip_destination_address_s(destination->get_address());
-        p->set_destination_port(destination->get_port());
-
-        p->set_ip_source_address_s(source->get_address());
-        p->set_source_port(source->get_port());
-
-        p->set_data((unsigned char*) data, data_length);
-
-        assert(p->get_data_length_bytes() > 0);
-
-        q->enqueue(new SendPacketEvent(s, p));
-        q->enqueue(new SendBufferNotFullEvent(s));
+    while ((int) send_buffer.size() - (int) ccc->get_num_outstanding() > 0 && ccc->get_num_outstanding() < ccc->get_snd_wnd()) {
+        send_one_packet(c, q, e);
     }
 }
 
-void DummyCongestionController::send_probe_packet(Context* c, QueueProcessor<Event*>* q, Event* e) {
+void DummyCongestionController::send_one_packet(Context* c, QueueProcessor<Event*>* q, Event* e, bool ignore_window) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
 
@@ -165,17 +123,24 @@ void DummyCongestionController::send_probe_packet(Context* c, QueueProcessor<Eve
     // Represents the first byte in the send buffer which has "never" been sent before.
     // We actually may have sent data already but if SND.UNA changes due to a drop we will treat it as if we never sent it.
     int index = ccc->get_num_outstanding();
-    int num_unsent = send_buffer.size() - index;
-
-    assert(num_unsent > 0);
 
     TCPPacket* p = new TCPPacket();
     p->insert_tcp_header_option(new TCPTimestampOption());
 
+    int available_window_space = (int) ccc->get_snd_wnd() - (int) ccc->get_num_outstanding();
+    int num_unsent = (int) send_buffer.size() - (int) ccc->get_num_outstanding();
+
+    // we do not want to make a packet larger than the window size
+    u_int32_t data_length = min(min(num_unsent, (int) p->max_data_length()), MAX_TCP_RECEIVE_WINDOW_SIZE);
+    if (!ignore_window) {
+        data_length = min((int) data_length, available_window_space);
+    }
+
+    assert(data_length > 0);
+    assert(send_buffer.size() > 0);
+
     const char* data = (send_buffer.data() + index);
 
-    u_int32_t data_length = 1;
-    index += data_length;
     ccc->set_snd_nxt(ccc->get_snd_nxt() + data_length);
 
     AddressPort* destination = s->get_remote_address_port();

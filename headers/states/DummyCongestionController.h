@@ -36,7 +36,7 @@ public:
     virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     virtual void state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e);
 private:
-    void send_probe_packet(Context* c, QueueProcessor<Event*>* q, Event* e);
+    void send_one_packet(Context* c, QueueProcessor<Event*>* q, Event* e, bool ignore_window = false);
     void send_packets(Context* c, QueueProcessor<Event*>* q, Event* e);
 
 };
