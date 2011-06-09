@@ -40,7 +40,8 @@ private:
     void resend_data(Context* c, QueueProcessor<Event*>* q, Event* e);
     void send_one_packet(Context* c, QueueProcessor<Event*>* q, Event* e, bool ignore_window = false);
     void send_packets(Context* c, QueueProcessor<Event*>* q, Event* e);
-    int get_data_length(Context* c, Event* e, WiFuPacket* p, bool ignore_window);
+    int get_send_data_length(Context* c, Event* e, WiFuPacket* p, bool ignore_window);
+    int get_resend_data_length(Context* c, Event* e, WiFuPacket* p);
 
 };
 
