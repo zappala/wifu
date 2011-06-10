@@ -10,53 +10,14 @@ TCPTahoeReliabilityState::~TCPTahoeReliabilityState() {
 
 void TCPTahoeReliabilityState::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
-    Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
-    string& send_buffer = s->get_send_buffer();
 
-    // Sequence numbers
-    if (!rc->is_initialized()) {
-        // Original SYN
-        p->set_tcp_sequence_number(rc->get_iss());
-        rc->set_snd_una(rc->get_iss());
-        rc->set_snd_nxt(rc->get_iss() + 1);
-        rc->set_initialized();
-    } else {
-        p->set_tcp_sequence_number(rc->get_snd_nxt());
-        u_int32_t len = rc->get_snd_nxt() + (p->is_tcp_syn() || p->is_tcp_fin() ? 1 : p->get_data_length_bytes());
-        rc->set_snd_nxt(len);
-    }
-
-    // ACK number and bit
-    // TODO: what about wrap-around and we are ack'ing byte 0?
-    p->set_tcp_ack_number(rc->get_rcv_nxt());
-    if (p->get_tcp_ack_number()) {
-        p->set_tcp_ack(true);
-    }
-
-    if (p->get_data_length_bytes() > 0 || p->is_tcp_syn() || p->is_tcp_fin()) {
-        start_timer(c, s);
-    }
-
-
-    // if SYN and send buffer doesn't already have the SYN saved (resend)
-    if (p->is_tcp_syn() && send_buffer.compare(0, 1, SYN_BYTE.c_str())) {
-        assert(s->get_send_buffer().empty());
-        send_buffer.append(SYN_BYTE);
-
-    } // if FIN and send buffer doesn't already have the FIN saved (resend)
-    else if (p->is_tcp_fin() && (send_buffer.empty() || send_buffer.compare(send_buffer.size() - 1, 1, FIN_BYTE.c_str()))) {
-        send_buffer.append(FIN_BYTE);
-    }
-
+    set_sequence_number_and_update_window_variables(rc, p);
+    set_ack_number_and_bit(rc, p);
+    check_and_start_timer(c, e);
+    append_control_bytes_to_send_buffer(e);
+    insert_timestamp(c, p);
     p->set_tcp_receive_window_size(rc->get_rcv_wnd());
-
-    TCPTimestampOption* option = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
-    assert(option);
-    option->set_timestamp();
-    if (rc->get_echo_reply()) {
-        option->set_echo_reply(rc->get_echo_reply());
-    }
 }
 
 void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
@@ -71,112 +32,11 @@ void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Even
 }
 
 void TCPTahoeReliabilityState::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
-    Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    //        cout << "TCPTahoeReliabilityState::state_receive_packet() on socket: " << s << endl;
-    //    cout << p->to_s_format() << endl;
-    //    cout << p->to_s() << endl;
-
-    // TODO: we will (for now) blindly update the echo reply here (is this okay?)
-    // we can reach this point without validating either the ack or seq number
-    TCPTimestampOption* ts = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
-    if (ts) {
-        rc->set_echo_reply(ts->get_timestamp());
-    }
-
-    //    cout << "Received packet TS: " << ts->to_s() << endl;
-
-    if (p->is_tcp_ack() && between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt())) {
-        //        cout << "TCPTahoeReliabilityState::state_receive_packet(), ACK'ing data" << endl;
-        u_int32_t num_acked = p->get_tcp_ack_number() - rc->get_snd_una();
-        rc->set_snd_una(p->get_tcp_ack_number());
-        s->get_send_buffer().erase(0, num_acked);
-
-        // TODO: is this the correct place to update the RTO?
-        update_rto(c, ts);
-
-        if (rc->get_snd_nxt() == rc->get_snd_una()) {
-            // no outstanding data
-            //            cout << "TCPTahoeReliabilityState::state_receive_packet(), canceling timer" << endl;
-            cancel_timer(c, s);
-            //            cout << "TCPTahoeReliabilityState::state_receive_packet(), timer canceled" << endl;
-        } else if (num_acked > 0) {
-            // we did ack some data
-            reset_timer(c, s);
-        }
-    } else if (p->is_tcp_ack() && less_than(rc->get_snd_nxt(), p->get_tcp_ack_number())) {
-        create_and_dispatch_ack(q, s);
-        return;
-    } else if (p->is_tcp_ack() &&
-            between_equal_left(p->get_tcp_ack_number(), rc->get_snd_una(), rc->get_snd_nxt())) {
-
-        if (rc->get_duplicate_ack_number() == p->get_tcp_ack_number()) {
-            rc->set_duplicates(rc->get_duplicates() + 1);
-        } else {
-            rc->set_duplicate_ack_number(p->get_tcp_ack_number());
-            rc->set_duplicates(1);
-        }
-        if (rc->get_duplicates() == 3) {
-            rc->set_duplicates(0);
-            cout << "Three duplicate acks, resending data" << endl;
-
-            // I read the following three lines of comments from inet/src/transport/tcp/flavours/TCPTahoe.cc
-            // Do not restart REXMIT timer.
-            // Note: Restart of REXMIT timer on retransmission is not part of RFC 2581, however optional in RFC 3517 if sent during recovery.
-            // Resetting the REXMIT timer is discussed in RFC 2582/3782 (NewReno) and RFC 2988.
-            resend_data(c, q, s);
-        }
-    }
-
-
-    if (p->is_tcp_syn() || p->is_tcp_fin()) {
-        rc->set_rcv_nxt(p->get_tcp_sequence_number() + 1);
-        if (p->is_tcp_syn()) {
-            rc->get_receive_window().set_first_sequence_number(rc->get_rcv_nxt());
-        }
-    } else if (p->get_data_length_bytes() > 0) {
-
-        int num_inserted = rc->get_receive_window().insert(p);
-        if (rc->get_rcv_wnd() - num_inserted >= 0) {
-            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), DATA found" << endl;
-            // save data
-
-            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), num put in receive window: " << num_inserted << endl;
-            rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
-
-            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), receive window first byte: " << rc->get_receive_window().get_first_sequence_number() << endl;
-            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), RCV.NXT: " << rc->get_rcv_nxt() << endl;
-
-            string& receive_buffer = s->get_receive_buffer();
-            u_int32_t before_rcv_buffer_size = receive_buffer.size();
-            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), Receive receive buffer before size: " << before_rcv_buffer_size << endl;
-
-
-
-            rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
-            u_int32_t after_receive_buffer_size = receive_buffer.size();
-            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), Arter receive buffer before size: " << after_receive_buffer_size << endl;
-            u_int32_t amount_put_in_receive_buffer = after_receive_buffer_size - before_rcv_buffer_size;
-            //        cout << "TCPTahoeReliabilityState::state_receive_packet(), Amount put in receive buffer: " << amount_put_in_receive_buffer << endl;
-            assert(amount_put_in_receive_buffer >= 0);
-
-            if (amount_put_in_receive_buffer > 0) {
-                rc->set_rcv_nxt(rc->get_rcv_nxt() + amount_put_in_receive_buffer);
-                q->enqueue(new ReceiveBufferNotEmptyEvent(s));
-            }
-        }
-        else {
-            // I don't think we should get here.
-            // I ran some tests with the assert on and it never asserted.
-            // But just in case...
-            //assert(false);
-            rc->get_receive_window().remove(p);
-        }
-
-        create_and_dispatch_ack(q, s);
-    }
+    update_echo_reply(c, p);
+    if(!handle_ack(c, q,e )) return;
+    handle_control_bits_and_data(c, q, e);
 }
 
 void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, ReceiveBufferNotEmptyEvent* e) {
@@ -297,3 +157,188 @@ void TCPTahoeReliabilityState::update_rto(Context* c, TCPTimestampOption* ts) {
 
     rc->set_rto(max(MIN_RTO, rc->get_srtt() + max(G, K * rc->get_rttvar())));
 }
+
+
+// <editor-fold defaultstate="collapsed" desc="state_send_packet() helper functions">
+void TCPTahoeReliabilityState::set_sequence_number_and_update_window_variables(Context* c, TCPPacket* p) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+
+    if (!rc->is_initialized()) {
+        // Original SYN
+        p->set_tcp_sequence_number(rc->get_iss());
+        rc->set_snd_una(rc->get_iss());
+        rc->set_snd_nxt(rc->get_iss() + 1);
+        rc->set_initialized();
+    } else {
+        p->set_tcp_sequence_number(rc->get_snd_nxt());
+        u_int32_t len = rc->get_snd_nxt() + (p->is_tcp_syn() || p->is_tcp_fin() ? 1 : p->get_data_length_bytes());
+        rc->set_snd_nxt(len);
+    }
+}
+
+void TCPTahoeReliabilityState::set_ack_number_and_bit(Context* c, TCPPacket* p) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+    // TODO: what about wrap-around and we are ack'ing byte 0?
+    p->set_tcp_ack_number(rc->get_rcv_nxt());
+    if (p->get_tcp_ack_number()) {
+        p->set_tcp_ack(true);
+    }
+}
+
+void TCPTahoeReliabilityState::check_and_start_timer(Context*c, SendPacketEvent* e) {
+    TCPPacket* p = (TCPPacket*) e->get_packet();
+    if (p->get_data_length_bytes() > 0 || p->is_tcp_syn() || p->is_tcp_fin()) {
+        start_timer(c, e->get_socket());
+    }
+}
+
+void TCPTahoeReliabilityState::append_control_bytes_to_send_buffer(SendPacketEvent* e) {
+    TCPPacket* p = (TCPPacket*)e->get_packet();
+    string& send_buffer = e->get_socket()->get_send_buffer();
+
+    // if SYN and send buffer doesn't already have the SYN saved (resend)
+    if (p->is_tcp_syn() && send_buffer.compare(0, 1, SYN_BYTE.c_str())) {
+        assert(send_buffer.empty());
+        send_buffer.append(SYN_BYTE);
+
+    }// if FIN and send buffer doesn't already have the FIN saved (resend)
+    else if (p->is_tcp_fin() && (send_buffer.empty() || send_buffer.compare(send_buffer.size() - 1, 1, FIN_BYTE.c_str()))) {
+        send_buffer.append(FIN_BYTE);
+    }
+}
+
+void TCPTahoeReliabilityState::insert_timestamp(Context* c, TCPPacket* p) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+
+    TCPTimestampOption* option = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
+    assert(option);
+    option->set_timestamp();
+    if (rc->get_echo_reply()) {
+        option->set_echo_reply(rc->get_echo_reply());
+    }
+}// </editor-fold>
+
+// <editor-fold defaultstate="collapsed" desc="state_receive_packet() helper functions">
+
+void TCPTahoeReliabilityState::update_echo_reply(Context* c, TCPPacket* p) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+
+    // TODO: we will (for now) blindly update the echo reply here (is this okay?)
+    // we can reach this point without validating either the ack or seq number
+    TCPTimestampOption* ts = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
+    if (ts) {
+        rc->set_echo_reply(ts->get_timestamp());
+    }
+}
+
+bool TCPTahoeReliabilityState::handle_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+    TCPPacket* p = (TCPPacket*) e->get_packet();
+
+    if (p->is_tcp_ack() && between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt())) {
+        handle_valid_ack(c, e);
+    } else if (p->is_tcp_ack() && less_than(rc->get_snd_nxt(), p->get_tcp_ack_number())) {
+        // invalid ack
+        create_and_dispatch_ack(q, e->get_socket());
+        return false;
+    } else if (p->is_tcp_ack() && between_equal_left(p->get_tcp_ack_number(), rc->get_snd_una(), rc->get_snd_nxt())) {
+        handle_duplicate_ack(c, q, e);
+    }
+    return true;
+}
+
+void TCPTahoeReliabilityState::handle_valid_ack(Context* c, NetworkReceivePacketEvent* e) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+    TCPPacket* p = (TCPPacket*) e->get_packet();
+    Socket* s = e->get_socket();
+
+    u_int32_t num_acked = p->get_tcp_ack_number() - rc->get_snd_una();
+    rc->set_snd_una(p->get_tcp_ack_number());
+    s->get_send_buffer().erase(0, num_acked);
+
+    // TODO: is this the correct place to update the RTO?
+    TCPTimestampOption* ts = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
+    update_rto(c, ts);
+
+    if (rc->get_snd_nxt() == rc->get_snd_una()) {
+        // no outstanding data
+        cancel_timer(c, s);
+    } else if (num_acked > 0) {
+        // we did ack some data
+        reset_timer(c, s);
+    }
+}
+
+void TCPTahoeReliabilityState::handle_duplicate_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+    TCPPacket* p = (TCPPacket*) e->get_packet();
+
+    if (rc->get_duplicate_ack_number() == p->get_tcp_ack_number()) {
+        rc->set_duplicates(rc->get_duplicates() + 1);
+    } else {
+        rc->set_duplicate_ack_number(p->get_tcp_ack_number());
+        rc->set_duplicates(1);
+    }
+    if (rc->get_duplicates() == 3) {
+        rc->set_duplicates(0);
+        cout << "Three duplicate acks, resending data" << endl;
+
+        // I read the following three lines of comments from inet/src/transport/tcp/flavours/TCPTahoe.cc
+        // Do not restart REXMIT timer.
+        // Note: Restart of REXMIT timer on retransmission is not part of RFC 2581, however optional in RFC 3517 if sent during recovery.
+        // Resetting the REXMIT timer is discussed in RFC 2582/3782 (NewReno) and RFC 2988.
+        resend_data(c, q, e->get_socket());
+    }
+}
+
+void TCPTahoeReliabilityState::handle_control_bits_and_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+    TCPPacket* p = (TCPPacket*) e->get_packet();
+
+    if (p->is_tcp_syn() || p->is_tcp_fin()) {
+        handle_control_bits(c, q, e);
+    } else if (p->get_data_length_bytes() > 0) {
+        handle_data(c, q, e);
+    }
+}
+
+void TCPTahoeReliabilityState::handle_control_bits(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+    TCPPacket* p = (TCPPacket*) e->get_packet();
+
+    rc->set_rcv_nxt(p->get_tcp_sequence_number() + 1);
+    if (p->is_tcp_syn()) {
+        rc->get_receive_window().set_first_sequence_number(rc->get_rcv_nxt());
+    }
+}
+
+void TCPTahoeReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+    TCPPacket* p = (TCPPacket*) e->get_packet();
+    Socket* s = e->get_socket();
+
+    int num_inserted = rc->get_receive_window().insert(p);
+    if (rc->get_rcv_wnd() - num_inserted >= 0) {
+
+        rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
+        string& receive_buffer = s->get_receive_buffer();
+        u_int32_t before_rcv_buffer_size = receive_buffer.size();
+        rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
+        u_int32_t after_receive_buffer_size = receive_buffer.size();
+        u_int32_t amount_put_in_receive_buffer = after_receive_buffer_size - before_rcv_buffer_size;
+        assert(amount_put_in_receive_buffer >= 0);
+
+        if (amount_put_in_receive_buffer > 0) {
+            rc->set_rcv_nxt(rc->get_rcv_nxt() + amount_put_in_receive_buffer);
+            q->enqueue(new ReceiveBufferNotEmptyEvent(s));
+        }
+    } else {
+        // I don't think we should get here.
+        // I ran some tests with the assert on and it never asserted.
+        // But just in case...
+        //assert(false);
+        rc->get_receive_window().remove(p);
+    }
+
+    create_and_dispatch_ack(q, s);
+}
+// </editor-fold>
