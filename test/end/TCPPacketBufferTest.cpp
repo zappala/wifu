@@ -329,9 +329,9 @@ namespace {
         //                     10        20        30        40        50
         //             123456789012345678901234567890123456789012345678901234
         string data = "This is the data. ";
-        string data2 =                       "is more data";
-        string data3 =                                         "I ever wanted.";
-        string data4 =                  "This is more data than I ever wa";
+        string data2 = "is more data";
+        string data3 = "I ever wanted.";
+        string data4 = "This is more data than I ever wa";
 
         u_int32_t data_seq_num = 1;
         buffer.set_first_sequence_number(data_seq_num);
@@ -379,9 +379,9 @@ namespace {
         //                     10        20        30        40        50
         //             12345678901234567890123456789012345678901234567890123456
         string data = "This is the data. ";
-        string data2 =                       "is more data";
-        string data3 =                                         "I ever wanted.";
-        string data4 =     "is the data. This is more data than I ever wa";
+        string data2 = "is more data";
+        string data3 = "I ever wanted.";
+        string data4 = "is the data. This is more data than I ever wa";
 
         u_int32_t data_seq_num = 1;
         buffer.set_first_sequence_number(data_seq_num);
@@ -728,6 +728,25 @@ namespace {
         ASSERT_EQ(expected, actual);
         ASSERT_EQ(expected.length(), total_inserted);
         ASSERT_EQ(expected.length(), total_removed);
+    }
+
+    TEST(TCPPacketBufferTest, remove) {
+        TCPPacketBuffer buffer;
+        string data = "This is the data";
+        u_int32_t sequence_number = 1;
+        buffer.set_first_sequence_number(sequence_number);
+        TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(sequence_number, data);
+
+        int actual = buffer.insert(p);
+        int expected = data.size();
+        ASSERT_EQ(expected, actual);
+
+        TCPPacket* erased = buffer.remove(p);
+        ASSERT_EQ(p, erased);
+
+        actual = buffer.size();
+        expected = 0;
+        ASSERT_EQ(expected, actual);
     }
 
 

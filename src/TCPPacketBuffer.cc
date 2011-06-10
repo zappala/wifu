@@ -43,6 +43,19 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
     return total_inserted;
 }
 
+TCPPacket* TCPPacketBuffer::remove(TCPPacket* p) {
+    packet_buffer::iterator itr = lower_bound(buffer_.begin(), buffer_.end(), p, comparator_);
+    TCPPacket* found_packet = *itr;
+    if(found_packet == p) {
+        buffer_.erase(itr);
+        mark_dirty();
+        return found_packet;
+    }
+
+    return 0;
+    
+}
+
 void TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number, string& buffer) {
     assert(started_);
     
