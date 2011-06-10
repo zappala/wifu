@@ -285,8 +285,6 @@ void TCPTahoeReliabilityState::update_rto(Context* c, TCPTimestampOption* ts) {
     double rtt = Utils::get_current_time_microseconds_32() - ts->get_echo_reply();
     rtt /= MICROSECONDS_IN_SECONDS;
 
-    //        cout << "RTT: " << rtt << endl;
-
     // From here all arithmetic is done in seconds
     // first RTT calculation
     if (rc->get_srtt() < 0) {
@@ -297,8 +295,5 @@ void TCPTahoeReliabilityState::update_rto(Context* c, TCPTimestampOption* ts) {
         rc->set_srtt(((1 - ALPHA) * rc->get_srtt()) + (ALPHA * rtt));
     }
 
-
     rc->set_rto(max(MIN_RTO, rc->get_srtt() + max(G, K * rc->get_rttvar())));
-
-    //        cout << "Updated RTO: " << rc->get_rto() << endl;
 }
