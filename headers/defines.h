@@ -95,7 +95,7 @@
 
 
 // TODO: if we want it any bigger we need to employ the window scale option
-#define MAX_TCP_RECEIVE_WINDOW_SIZE 10
+#define MAX_TCP_RECEIVE_WINDOW_SIZE USHRT_MAX
 
 #define SYN_BYTE std::string(1, 22)
 #define FIN_BYTE std::string(1, 23)

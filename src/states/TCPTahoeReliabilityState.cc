@@ -16,14 +16,14 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, QueueProcessor<Even
 
     // Sequence numbers
     if (!rc->is_initialized()) {
-        // SYN
+        // Original SYN
         p->set_tcp_sequence_number(rc->get_iss());
         rc->set_snd_una(rc->get_iss());
         rc->set_snd_nxt(rc->get_iss() + 1);
         rc->set_initialized();
     } else {
         p->set_tcp_sequence_number(rc->get_snd_nxt());
-        u_int32_t len = rc->get_snd_nxt() + (p->is_tcp_fin() ? 1 : p->get_data_length_bytes());
+        u_int32_t len = rc->get_snd_nxt() + (p->is_tcp_syn() || p->is_tcp_fin() ? 1 : p->get_data_length_bytes());
         rc->set_snd_nxt(len);
     }
 
@@ -138,10 +138,10 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, QueueProcessor<E
         }
     } else if (p->get_data_length_bytes() > 0) {
 
-        if (rc->get_rcv_wnd() >= p->get_data_length_bytes()) {
+        int num_inserted = rc->get_receive_window().insert(p);
+        if (rc->get_rcv_wnd() - num_inserted >= 0) {
             //        cout << "TCPTahoeReliabilityState::state_receive_packet(), DATA found" << endl;
             // save data
-            int num_inserted = rc->get_receive_window().insert(p);
 
             //        cout << "TCPTahoeReliabilityState::state_receive_packet(), num put in receive window: " << num_inserted << endl;
             rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
@@ -166,6 +166,13 @@ void TCPTahoeReliabilityState::state_receive_packet(Context* c, QueueProcessor<E
                 rc->set_rcv_nxt(rc->get_rcv_nxt() + amount_put_in_receive_buffer);
                 q->enqueue(new ReceiveBufferNotEmptyEvent(s));
             }
+        }
+        else {
+            // I don't think we should get here.
+            // I ran some tests with the assert on and it never asserted.
+            // But just in case...
+            //assert(false);
+            rc->get_receive_window().remove(p);
         }
 
         create_and_dispatch_ack(q, s);

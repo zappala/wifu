@@ -186,11 +186,10 @@ void DummyCongestionController::resend_data(Context* c, QueueProcessor<Event*>* 
     } else {
         // TODO: change this to use the string::data() method instead of substr() so we can avoid the copy
         int length = get_resend_data_length(c, e, p);
-        string data = send_buffer.substr(0, length);
-        if (!data.compare(data.size() - 1, 1, FIN_BYTE.c_str())) {
-            data.erase(data.size() - 1, 1);
+        if(!send_buffer.compare(send_buffer.size() - 1, 1, FIN_BYTE.c_str())) {
+            length -= 1;
         }
-        p->set_data((unsigned char*) data.data(), data.size());
+        p->set_data((unsigned char*) send_buffer.data(), length);
         assert(p->get_data_length_bytes() > 0);
     }
 
@@ -201,19 +200,17 @@ void DummyCongestionController::resend_data(Context* c, QueueProcessor<Event*>* 
     q->enqueue(event);
 }
 
+// TODO: these two data lenght calculators could (and should) be refactored together at some point
 int DummyCongestionController::get_send_data_length(Context* c, Event* e, WiFuPacket* p, bool ignore_window) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     string& send_buffer = e->get_socket()->get_send_buffer();
 
     int num_unsent = (int) send_buffer.size() - (int) ccc->get_num_outstanding();
-    cout << "num_unsent: " << num_unsent << endl;
-
 
     // we do not want to make a packet larger than the window size
     int data_length = min(min(num_unsent, (int) p->max_data_length()), MAX_TCP_RECEIVE_WINDOW_SIZE);
     if (!ignore_window) {
         int available_window_space = (int) ccc->get_snd_wnd() - (int) ccc->get_num_outstanding();
-        cout << "window size: " << available_window_space << endl;
         data_length = min(data_length, available_window_space);
     }
 
@@ -225,8 +222,8 @@ int DummyCongestionController::get_resend_data_length(Context* c, Event* e, WiFu
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     string& send_buffer = e->get_socket()->get_send_buffer();
 
+    // SND.NXT should have previously been set back to SND.UNA
     int num_unsent = (int) send_buffer.size() - (int) ccc->get_num_outstanding();
-    cout << "num_unsent: " << num_unsent << endl;
 
     // we do not want to make a packet larger than the window size
     int data_length = min(min(num_unsent, (int) p->max_data_length()), min((int) ccc->get_snd_wnd(), MAX_TCP_RECEIVE_WINDOW_SIZE));
