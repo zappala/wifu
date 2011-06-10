@@ -33,9 +33,9 @@ public:
     SimpleTCPCongestionControl();
     virtual ~SimpleTCPCongestionControl();
 
-    void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
-    void state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e);
-    void state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e);
+    virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
+    virtual void state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e);
+    virtual void state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e);
 };
 
 
