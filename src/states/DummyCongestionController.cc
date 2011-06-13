@@ -6,6 +6,8 @@
  */
 
 #include "states/DummyCongestionController.h"
+// must be here to avoid circular dependencies
+#include "contexts/TCPTahoeCongestionControlContext.h"
 
 DummyCongestionController::DummyCongestionController() : State() {
 }
@@ -48,9 +50,10 @@ void DummyCongestionController::state_send_packet(Context* c, QueueProcessor<Eve
 
 void DummyCongestionController::state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
+
+    resend(c, q, e);
     ccc->set_snd_nxt(ccc->get_snd_una());
     resend_data(c, q, e);
-    // TODO: resize the window?
 }
 
 void DummyCongestionController::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
@@ -71,9 +74,11 @@ void DummyCongestionController::state_receive_packet(Context* c, QueueProcessor<
             ccc->set_snd_wnd2(p->get_tcp_ack_number());
         }
 
+        set_cwnd(c, q, e);
 
-        // check to see if there is room in the send window to send data
-        if (ccc->get_num_outstanding() == ccc->get_snd_wnd()) {
+        // check to see if there is room to send data
+        assert(ccc->get_num_outstanding() <= ccc->get_max_allowed_to_send());
+        if (ccc->get_num_outstanding() == ccc->get_max_allowed_to_send()) {
             // set timer for probe packet
             if (!ccc->get_probe_timer()) {
                 TimeoutEvent* timer = new TimeoutEvent(e->get_socket(), ccc->get_probe_timer_duration(), 0);
@@ -97,15 +102,25 @@ void DummyCongestionController::state_send_buffer_not_empty(Context* c, QueuePro
     send_packets(c, q, e);
 }
 
+void DummyCongestionController::set_cwnd(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+    // do nothing here
+    // overriding state should set this congestion window according to whatever algorithm it represents
+}
+
+void DummyCongestionController::resend(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e) {
+    // do nothing here
+    // overriding state should respond to a resend event
+}
+
 void DummyCongestionController::send_packets(Context* c, QueueProcessor<Event*>* q, Event* e) {
     cout << "DummyCongestionController::send_packets()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
     string& send_buffer = s->get_send_buffer();
 
-    assert(ccc->get_num_outstanding() <= ccc->get_snd_wnd());
+    assert(ccc->get_num_outstanding() <= ccc->get_max_allowed_to_send());
 
-    while ((int) send_buffer.size() - (int) ccc->get_num_outstanding() > 0 && ccc->get_num_outstanding() < ccc->get_snd_wnd()) {
+    while ((int) send_buffer.size() - (int) ccc->get_num_outstanding() > 0 && ccc->get_num_outstanding() < ccc->get_max_allowed_to_send()) {
         send_one_packet(c, q, e);
     }
 }
@@ -186,7 +201,7 @@ void DummyCongestionController::resend_data(Context* c, QueueProcessor<Event*>* 
     } else {
         // TODO: change this to use the string::data() method instead of substr() so we can avoid the copy
         int length = get_resend_data_length(c, e, p);
-        if(!send_buffer.compare(send_buffer.size() - 1, 1, FIN_BYTE.c_str())) {
+        if (!send_buffer.compare(send_buffer.size() - 1, 1, FIN_BYTE.c_str())) {
             length -= 1;
         }
         p->set_data((unsigned char*) send_buffer.data(), length);
@@ -201,6 +216,7 @@ void DummyCongestionController::resend_data(Context* c, QueueProcessor<Event*>* 
 }
 
 // TODO: these two data lenght calculators could (and should) be refactored together at some point
+
 int DummyCongestionController::get_send_data_length(Context* c, Event* e, WiFuPacket* p, bool ignore_window) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     string& send_buffer = e->get_socket()->get_send_buffer();
@@ -210,7 +226,7 @@ int DummyCongestionController::get_send_data_length(Context* c, Event* e, WiFuPa
     // we do not want to make a packet larger than the window size
     int data_length = min(min(num_unsent, (int) p->max_data_length()), MAX_TCP_RECEIVE_WINDOW_SIZE);
     if (!ignore_window) {
-        int available_window_space = (int) ccc->get_snd_wnd() - (int) ccc->get_num_outstanding();
+        int available_window_space = (int) ccc->get_max_allowed_to_send() - (int) ccc->get_num_outstanding();
         data_length = min(data_length, available_window_space);
     }
 
@@ -226,7 +242,8 @@ int DummyCongestionController::get_resend_data_length(Context* c, Event* e, WiFu
     int num_unsent = (int) send_buffer.size() - (int) ccc->get_num_outstanding();
 
     // we do not want to make a packet larger than the window size
-    int data_length = min(min(num_unsent, (int) p->max_data_length()), min((int) ccc->get_snd_wnd(), MAX_TCP_RECEIVE_WINDOW_SIZE));
+    int data_length = min(min(num_unsent, (int) p->max_data_length()), min((int) ccc->get_max_allowed_to_send(), MAX_TCP_RECEIVE_WINDOW_SIZE));
     assert(data_length > 0);
     return data_length;
 }
+

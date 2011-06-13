@@ -40,7 +40,7 @@ private:
     void reset_timer(Context* c, Socket* s);
     void cancel_timer(Context* c, Socket* s);
     void update_rto(Context* c, TCPTimestampOption* ts);
-    void resend_data(Context* c, QueueProcessor<Event*>* q, Socket* s);
+    void resend_data(Context* c, QueueProcessor<Event*>* q, Socket* s, ResendReason reason);
     void create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e);    
     void create_and_dispatch_ack(QueueProcessor<Event*>* q, Socket* s);
 

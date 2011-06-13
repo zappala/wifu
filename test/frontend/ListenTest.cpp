@@ -20,7 +20,6 @@
 
 TEST_F(BackEndTest, listenTest) {
     // Bad fd
-    // TODO: need to close all the sockets opened up above as we may collide
     // (badfd may actually have been created above)
     int badfd = 4000;
     int queue_size = 5;

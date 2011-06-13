@@ -84,7 +84,7 @@
 #define MIN_RTO 1.0
 
 // in seconds
-#define INITIAL_PROBE_TIMEOUT_DURATION 5
+#define INITIAL_PROBE_TIMEOUT_DURATION 120
 
 // RFC 2988
 #define ALPHA 0.125

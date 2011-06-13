@@ -11,13 +11,13 @@
 #include "State.h"
 
 #include "contexts/Context.h"
-#include "contexts/TCPTahoeCongestionControlContext.h"
 
 #include "events/protocol_events/SendBufferNotEmptyEvent.h"
 #include "events/framework_events/NetworkReceivePacketEvent.h"
 #include "events/framework_events/CancelTimerEvent.h"
 #include "events/framework_events/TimeoutEvent.h"
 #include "events/framework_events/TimerFiredEvent.h"
+#include "events/protocol_events/ResendPacketEvent.h"
 
 #include "Math.h"
 
@@ -35,6 +35,9 @@ public:
     virtual void state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e);
     virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     virtual void state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e);
+
+    virtual void set_cwnd(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
+    virtual void resend(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e);
 private:
 
     void resend_data(Context* c, QueueProcessor<Event*>* q, Event* e);

@@ -26,8 +26,9 @@ void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Even
     Socket* s = e->get_socket();
 
     if (rc->get_timeout_event() == e->get_timeout_event()) {
+        rc->set_timeout_event(0);
         rc->set_rto(rc->get_rto() * 2);
-        resend_data(c, q, s);
+        resend_data(c, q, s, TIMEOUT);
     }
 }
 
@@ -82,7 +83,7 @@ void TCPTahoeReliabilityState::create_and_dispatch_ack(QueueProcessor<Event*>* q
 
 void TCPTahoeReliabilityState::start_timer(Context* c, Socket* s) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
-    //    cout << "TCPTahoeReliabilityState::start_timer() on socket: " << s << endl;
+        cout << "TCPTahoeReliabilityState::start_timer() on socket: " << s << endl;
     // only start the timer if it is not already running
     if (!rc->get_timeout_event()) {
         double seconds;
@@ -110,10 +111,10 @@ void TCPTahoeReliabilityState::cancel_timer(Context* c, Socket* s) {
     rc->set_timeout_event(0);
 }
 
-void TCPTahoeReliabilityState::resend_data(Context* c, QueueProcessor<Event*>* q, Socket* s) {
+void TCPTahoeReliabilityState::resend_data(Context* c, QueueProcessor<Event*>* q, Socket* s, ResendReason reason) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     rc->set_snd_nxt(rc->get_snd_una());
-    q->enqueue(new ResendPacketEvent(s));
+    q->enqueue(new ResendPacketEvent(s, reason));
 }
 
 void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
@@ -287,7 +288,7 @@ void TCPTahoeReliabilityState::handle_duplicate_ack(Context* c, QueueProcessor<E
         // Do not restart REXMIT timer.
         // Note: Restart of REXMIT timer on retransmission is not part of RFC 2581, however optional in RFC 3517 if sent during recovery.
         // Resetting the REXMIT timer is discussed in RFC 2582/3782 (NewReno) and RFC 2988.
-        resend_data(c, q, e->get_socket());
+        resend_data(c, q, e->get_socket(), TIMEOUT);
     }
 }
 

@@ -47,9 +47,9 @@ void* active_to_passive_thread(void* args) {
     }
 
     AddressPort ap(&addr);
-    //string address("127.0.0.1");
+    string address("127.0.0.1");
     //TODO: move this into real network test
-    string address("192.168.21.103");
+//    string address("192.168.21.103");
     string res = ap.get_address();
     EXPECT_EQ(address, res);
     //    cout << "Connected to: " << ap.to_s() << endl;
@@ -83,9 +83,9 @@ void* active_to_passive_thread(void* args) {
  *
  */
 void active_to_passive_test(string message) {
-    //AddressPort to_connect("127.0.0.1", 5002);
+    AddressPort to_connect("127.0.0.1", 5002);
     //use below for over-the-network tests; TODO: break out into separate test function
-    AddressPort to_connect("192.168.21.103", 5002);
+//    AddressPort to_connect("192.168.21.103", 5002);
 
     pthread_t t;
     struct var v;
@@ -95,8 +95,8 @@ void active_to_passive_test(string message) {
 
     v.sem_ = new Semaphore();
     v.sem_->init(0);
-    //v.to_bind_ = new AddressPort("127.0.0.1", 5002);
-    v.to_bind_ = new AddressPort("192.168.21.103", 5002);
+    v.to_bind_ = new AddressPort("127.0.0.1", 5002);
+//    v.to_bind_ = new AddressPort("192.168.21.103", 5002);
 
     //Specify the number of bytes to send here.
     v.expected_string = message;
