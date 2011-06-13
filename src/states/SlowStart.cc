@@ -1,6 +1,6 @@
 #include "states/SlowStart.h"
 
-SlowStart::SlowStart() : DummyCongestionController() {
+SlowStart::SlowStart() : TCPTahoeBaseCongestionControl() {
 
 }
 

@@ -1,12 +1,12 @@
 /* 
- * File:   DummyCongestionController.h
+ * File:   TCPTahoeBaseCongestionControl.h
  * Author: rbuck
  *
  * Created on May 23, 2011, 2:59 PM
  */
 
-#ifndef DUMMYCONGESTIONCONTROLLER_H
-#define	DUMMYCONGESTIONCONTROLLER_H
+#ifndef TCPTahoeBaseCongestionControl_H
+#define	TCPTahoeBaseCongestionControl_H
 
 #include "State.h"
 
@@ -24,11 +24,11 @@
 #include "packet/TCPPacket.h"
 #include "packet/TCPTimestampOption.h"
 
-class DummyCongestionController : public State {
+class TCPTahoeBaseCongestionControl : public State {
 public:
-    DummyCongestionController();
-    DummyCongestionController(const DummyCongestionController& orig);
-    virtual ~DummyCongestionController();
+    TCPTahoeBaseCongestionControl();
+    TCPTahoeBaseCongestionControl(const TCPTahoeBaseCongestionControl& orig);
+    virtual ~TCPTahoeBaseCongestionControl();
 
     virtual void state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e);
     virtual void state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e);
@@ -48,5 +48,5 @@ private:
 
 };
 
-#endif	/* DUMMYCONGESTIONCONTROLLER_H */
+#endif	/* TCPTahoeBaseCongestionControl_H */
 

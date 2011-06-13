@@ -1,29 +1,29 @@
 /* 
- * File:   DummyCongestionController.cc
+ * File:   TCPTahoeBaseCongestionControl.cc
  * Author: rbuck
  * 
  * Created on May 23, 2011, 2:59 PM
  */
 
-#include "states/DummyCongestionController.h"
+#include "states/TCPTahoeBaseCongestionControl.h"
 // must be here to avoid circular dependencies
 #include "contexts/TCPTahoeCongestionControlContext.h"
 
-DummyCongestionController::DummyCongestionController() : State() {
+TCPTahoeBaseCongestionControl::TCPTahoeBaseCongestionControl() : State() {
 }
 
-DummyCongestionController::DummyCongestionController(const DummyCongestionController& orig) : State() {
+TCPTahoeBaseCongestionControl::TCPTahoeBaseCongestionControl(const TCPTahoeBaseCongestionControl& orig) : State() {
 }
 
-DummyCongestionController::~DummyCongestionController() {
+TCPTahoeBaseCongestionControl::~TCPTahoeBaseCongestionControl() {
 }
 
-void DummyCongestionController::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
+void TCPTahoeBaseCongestionControl::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
 
     if (ccc->get_probe_timer() && e->get_timeout_event() == ccc->get_probe_timer()) {
         // this is our probe timer
-        cout << "DummyCongestionController::state_timer_fired() Timer Fired" << endl;
+        cout << "TCPTahoeBaseCongestionControl::state_timer_fired() Timer Fired" << endl;
 
         // restart the probe timer
         ccc->set_probe_timer_duration(ccc->get_probe_timer_duration() * 2);
@@ -35,7 +35,7 @@ void DummyCongestionController::state_timer_fired(Context* c, QueueProcessor<Eve
     }
 }
 
-void DummyCongestionController::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e) {
+void TCPTahoeBaseCongestionControl::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
@@ -48,7 +48,7 @@ void DummyCongestionController::state_send_packet(Context* c, QueueProcessor<Eve
     // we will set snd.nxt for data when we originally send data
 }
 
-void DummyCongestionController::state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e) {
+void TCPTahoeBaseCongestionControl::state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
 
     resend(c, q, e);
@@ -56,7 +56,7 @@ void DummyCongestionController::state_resend_packet(Context* c, QueueProcessor<E
     resend_data(c, q, e);
 }
 
-void DummyCongestionController::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
     //    cout << "DummyCongestionContrller::state_receive_packet()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
@@ -98,22 +98,22 @@ void DummyCongestionController::state_receive_packet(Context* c, QueueProcessor<
     }
 }
 
-void DummyCongestionController::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
+void TCPTahoeBaseCongestionControl::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
     send_packets(c, q, e);
 }
 
-void DummyCongestionController::set_cwnd(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+void TCPTahoeBaseCongestionControl::set_cwnd(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
     // do nothing here
     // overriding state should set this congestion window according to whatever algorithm it represents
 }
 
-void DummyCongestionController::resend(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e) {
+void TCPTahoeBaseCongestionControl::resend(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e) {
     // do nothing here
     // overriding state should respond to a resend event
 }
 
-void DummyCongestionController::send_packets(Context* c, QueueProcessor<Event*>* q, Event* e) {
-    cout << "DummyCongestionController::send_packets()" << endl;
+void TCPTahoeBaseCongestionControl::send_packets(Context* c, QueueProcessor<Event*>* q, Event* e) {
+    cout << "TCPTahoeBaseCongestionControl::send_packets()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
     string& send_buffer = s->get_send_buffer();
@@ -125,8 +125,8 @@ void DummyCongestionController::send_packets(Context* c, QueueProcessor<Event*>*
     }
 }
 
-void DummyCongestionController::send_one_packet(Context* c, QueueProcessor<Event*>* q, Event* e, bool ignore_window) {
-    cout << "DummyCongestionController::send_one_packet()" << endl;
+void TCPTahoeBaseCongestionControl::send_one_packet(Context* c, QueueProcessor<Event*>* q, Event* e, bool ignore_window) {
+    cout << "TCPTahoeBaseCongestionControl::send_one_packet()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
 
@@ -164,8 +164,8 @@ void DummyCongestionController::send_one_packet(Context* c, QueueProcessor<Event
     q->enqueue(new SendBufferNotFullEvent(s));
 }
 
-void DummyCongestionController::resend_data(Context* c, QueueProcessor<Event*>* q, Event* e) {
-    cout << "DummyCongestionController::resend_data()" << endl;
+void TCPTahoeBaseCongestionControl::resend_data(Context* c, QueueProcessor<Event*>* q, Event* e) {
+    cout << "TCPTahoeBaseCongestionControl::resend_data()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
 
@@ -217,7 +217,7 @@ void DummyCongestionController::resend_data(Context* c, QueueProcessor<Event*>* 
 
 // TODO: these two data lenght calculators could (and should) be refactored together at some point
 
-int DummyCongestionController::get_send_data_length(Context* c, Event* e, WiFuPacket* p, bool ignore_window) {
+int TCPTahoeBaseCongestionControl::get_send_data_length(Context* c, Event* e, WiFuPacket* p, bool ignore_window) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     string& send_buffer = e->get_socket()->get_send_buffer();
 
@@ -234,7 +234,7 @@ int DummyCongestionController::get_send_data_length(Context* c, Event* e, WiFuPa
     return data_length;
 }
 
-int DummyCongestionController::get_resend_data_length(Context* c, Event* e, WiFuPacket* p) {
+int TCPTahoeBaseCongestionControl::get_resend_data_length(Context* c, Event* e, WiFuPacket* p) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     string& send_buffer = e->get_socket()->get_send_buffer();
 

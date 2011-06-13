@@ -9,10 +9,10 @@
 #define	SLOWSTART_H
 
 #include "contexts/TCPTahoeCongestionControlContext.h"
-#include "states/DummyCongestionController.h"
+#include "states/TCPTahoeBaseCongestionControl.h"
 #include "states/CongestionAvoidance.h"
 
-class SlowStart : public DummyCongestionController {
+class SlowStart : public TCPTahoeBaseCongestionControl {
 public:
     SlowStart();
     virtual ~SlowStart();
