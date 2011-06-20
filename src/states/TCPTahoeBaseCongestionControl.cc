@@ -45,6 +45,11 @@ void TCPTahoeBaseCongestionControl::state_send_packet(Context* c, QueueProcessor
     } else if (p->is_tcp_fin()) {
         ccc->set_snd_nxt(ccc->get_snd_nxt() + 1);
     }
+
+    if(!ccc->is_data_sent() && p->get_data_length_bytes() > 0) {
+        ccc->set_data_sent(true);
+    }
+    
     // we will set snd.nxt for data when we originally send data
 }
 
@@ -74,7 +79,9 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
             ccc->set_snd_wnd2(p->get_tcp_ack_number());
         }
 
-        set_cwnd(c, q, e);
+        if (ccc->is_data_sent()) {
+            set_cwnd(c, q, e);
+        }
 
         // check to see if there is room to send data
         assert(ccc->get_num_outstanding() <= ccc->get_max_allowed_to_send());
@@ -88,6 +95,7 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
         } else {
             // cancel timer
             if (ccc->get_probe_timer()) {
+
                 ccc->set_probe_timer_duration(INITIAL_PROBE_TIMEOUT_DURATION);
                 CancelTimerEvent* cancel_timer = new CancelTimerEvent(ccc->get_probe_timer());
                 ccc->set_probe_timer(0);
@@ -99,6 +107,7 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
 }
 
 void TCPTahoeBaseCongestionControl::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
+
     send_packets(c, q, e);
 }
 
@@ -121,11 +130,13 @@ void TCPTahoeBaseCongestionControl::send_packets(Context* c, QueueProcessor<Even
     assert(ccc->get_num_outstanding() <= ccc->get_max_allowed_to_send());
 
     while ((int) send_buffer.size() - (int) ccc->get_num_outstanding() > 0 && ccc->get_num_outstanding() < ccc->get_max_allowed_to_send()) {
+
         send_one_packet(c, q, e);
     }
 }
 
 void TCPTahoeBaseCongestionControl::send_one_packet(Context* c, QueueProcessor<Event*>* q, Event* e, bool ignore_window) {
+
     cout << "TCPTahoeBaseCongestionControl::send_one_packet()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
@@ -202,6 +213,7 @@ void TCPTahoeBaseCongestionControl::resend_data(Context* c, QueueProcessor<Event
         // TODO: change this to use the string::data() method instead of substr() so we can avoid the copy
         int length = get_resend_data_length(c, e, p);
         if (!send_buffer.compare(send_buffer.size() - 1, 1, FIN_BYTE.c_str())) {
+
             length -= 1;
         }
         p->set_data((unsigned char*) send_buffer.data(), length);
@@ -231,6 +243,7 @@ int TCPTahoeBaseCongestionControl::get_send_data_length(Context* c, Event* e, Wi
     }
 
     assert(data_length > 0);
+
     return data_length;
 }
 

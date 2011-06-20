@@ -46,6 +46,10 @@ public:
 
     u_int16_t get_mss() const;
     void set_mss(u_int16_t mss);
+
+    bool is_data_sent() const;
+    void set_data_sent(bool data_sent);
+
 private:
 
     u_int16_t snd_wnd_;
@@ -53,6 +57,7 @@ private:
     u_int32_t snd_wnd2_;
 
     u_int16_t cwnd_;
+
     u_int16_t ssthreashold_;
     u_int16_t mss_;
 
@@ -64,6 +69,12 @@ private:
      * We store it here as seconds
      */
     int probe_timer_duration_;
+
+    /**
+     * Indicates whether we have sent any data bytes (excluding control bits)
+     * This will be used to determine whether to update cwnd or not
+     */
+    bool data_sent_;
 
 };
 

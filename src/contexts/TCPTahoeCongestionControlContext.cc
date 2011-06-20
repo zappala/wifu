@@ -1,6 +1,6 @@
 #include "contexts/TCPTahoeCongestionControlContext.h"
 
-TCPTahoeCongestionControlContext::TCPTahoeCongestionControlContext(u_int32_t iss) : OutstandingDataContext(iss), probe_timer_(0), probe_timer_duration_(INITIAL_PROBE_TIMEOUT_DURATION), cwnd_(USHRT_MAX), ssthreashold_(USHRT_MAX) {
+TCPTahoeCongestionControlContext::TCPTahoeCongestionControlContext(u_int32_t iss) : OutstandingDataContext(iss), probe_timer_(0), probe_timer_duration_(INITIAL_PROBE_TIMEOUT_DURATION), cwnd_(USHRT_MAX), ssthreashold_(USHRT_MAX), data_sent_(false) {
     // TODO: replace this with the MSS tcp header option
     TCPPacket p;
     TCPTimestampOption o;
@@ -79,4 +79,12 @@ u_int16_t TCPTahoeCongestionControlContext::get_mss() const {
 
 void TCPTahoeCongestionControlContext::set_mss(u_int16_t mss) {
     mss_ = mss;
+}
+
+bool TCPTahoeCongestionControlContext::is_data_sent() const {
+    return data_sent_;
+}
+
+void TCPTahoeCongestionControlContext::set_data_sent(bool data_sent) {
+    data_sent_ = data_sent;
 }

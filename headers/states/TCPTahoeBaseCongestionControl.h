@@ -46,6 +46,8 @@ private:
     int get_send_data_length(Context* c, Event* e, WiFuPacket* p, bool ignore_window);
     int get_resend_data_length(Context* c, Event* e, WiFuPacket* p);
 
+
+
 };
 
 #endif	/* TCPTahoeBaseCongestionControl_H */
