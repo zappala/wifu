@@ -76,6 +76,10 @@ string BackEndMockTestDrop22Drop32::get_mock_file() {
     return "drop_2_2_drop_3_2.conf";
 }
 
+string BackEndMockTestDrop22Drop22::get_mock_file() {
+    return "drop_2_2_drop_2_2.conf";
+}
+
 string BackEndMockTestDrop22Delay32::get_mock_file() {
     return "drop_2_2_delay_3_2.conf";
 }

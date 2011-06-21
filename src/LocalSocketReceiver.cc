@@ -81,12 +81,12 @@ void * unix_receive_handler(void* arg) {
     
     obj->sem.post();
 
-    char buf[UNIX_SOCKET_MESSAGE_LENGTH];
+    char buf[MAX_BUFFER_SIZE];
     int nread;
 
     while (1) {
-        memset(buf, 0, UNIX_SOCKET_MESSAGE_LENGTH);
-        nread = recv(socket, buf, UNIX_SOCKET_MESSAGE_LENGTH, 0);
+        memset(buf, 0, MAX_BUFFER_SIZE);
+        nread = recv(socket, buf, MAX_BUFFER_SIZE, 0);
         if (nread < 0) {
             if (errno == EINTR)
                 continue;
@@ -97,7 +97,7 @@ void * unix_receive_handler(void* arg) {
             break;
         }
 
-        string s(buf);
+        string s(buf, nread);
         receiver->recv(s);
     }
 }

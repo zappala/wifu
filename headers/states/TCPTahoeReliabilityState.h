@@ -40,7 +40,7 @@ private:
     void reset_timer(Context* c, Socket* s);
     void cancel_timer(Context* c, Socket* s);
     void update_rto(Context* c, TCPTimestampOption* ts);
-    void resend_data(Context* c, QueueProcessor<Event*>* q, Socket* s);
+    void resend_data(Context* c, QueueProcessor<Event*>* q, Socket* s, ResendReason reason);
     void create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e);    
     void create_and_dispatch_ack(QueueProcessor<Event*>* q, Socket* s);
 
@@ -63,7 +63,7 @@ private:
      * @return True if we may continue (and try to process data), false if it is an invalid ack
      */
     bool handle_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
-    void handle_valid_ack(Context* c, NetworkReceivePacketEvent* e);
+    void handle_valid_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     void handle_duplicate_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     void handle_control_bits_and_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     void handle_control_bits(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);

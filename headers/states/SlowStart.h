@@ -8,12 +8,19 @@
 #ifndef SLOWSTART_H
 #define	SLOWSTART_H
 
-#include "State.h"
+#include "contexts/TCPTahoeCongestionControlContext.h"
+#include "states/TCPTahoeBaseCongestionControl.h"
+#include "states/CongestionAvoidance.h"
 
-class SlowStart : public State {
+class SlowStart : public TCPTahoeBaseCongestionControl {
 public:
     SlowStart();
     virtual ~SlowStart();
+
+    virtual void state_enter(Context* c);
+    virtual void set_cwnd(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
+    virtual void resend(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e);
+
 };
 
 #endif	/* SLOWSTART_H */
