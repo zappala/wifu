@@ -190,3 +190,7 @@ TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks1000000) {
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks10000000) {
     tahoe_active_to_passive_big_chunks(random_string(10000000));
 }
+
+TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveBigChunks10000) {
+    tahoe_active_to_passive_big_chunks(random_string(10000));
+}

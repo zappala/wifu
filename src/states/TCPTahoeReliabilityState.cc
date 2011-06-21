@@ -239,9 +239,9 @@ bool TCPTahoeReliabilityState::handle_ack(Context* c, QueueProcessor<Event*>* q,
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    if (p->is_tcp_ack() && between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt())) {
+    if (p->is_tcp_ack() && between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_max())) {
         handle_valid_ack(c, q, e);
-    } else if (p->is_tcp_ack() && less_than(rc->get_snd_nxt(), p->get_tcp_ack_number())) {
+    } else if (p->is_tcp_ack() && less_than(rc->get_snd_max(), p->get_tcp_ack_number())) {
         // invalid ack
         create_and_dispatch_ack(q, e->get_socket());
         return false;

@@ -66,7 +66,7 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    if (p->is_tcp_ack() && between_equal_right(ccc->get_snd_una(), p->get_tcp_ack_number(), ccc->get_snd_nxt())) {
+    if (p->is_tcp_ack() && between_equal_right(ccc->get_snd_una(), p->get_tcp_ack_number(), ccc->get_snd_max())) {
         ccc->set_snd_una(p->get_tcp_ack_number());
 
         // update send window (RFC p. 72)

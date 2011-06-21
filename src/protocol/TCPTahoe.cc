@@ -51,7 +51,7 @@ void TCPTahoe::icontext_listen(QueueProcessor<Event*>* q, ListenEvent* e) {
 }
 
 void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-//    cout << "TCPTahoe::icontext_receive_packet(): " << endl;
+    //    cout << "TCPTahoe::icontext_receive_packet(): " << endl;
 
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
@@ -76,11 +76,10 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
         //        cout << "Current state: " << cmc->get_state_name() << endl;
 
         // See my notes for May 25, 2011 for why this must be - RB
-        if(!strcmp(cmc->get_state_name().c_str(), type_name(TimeWait))) {
+        if (!strcmp(cmc->get_state_name().c_str(), type_name(TimeWait))) {
             cmc->icontext_receive_packet(q, e);
-        }
-        else
-        if (states_we_can_send_ack_.contains(cmc->get_state_name())) {
+        } else
+            if (states_we_can_send_ack_.contains(cmc->get_state_name())) {
             cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
             // <editor-fold defaultstate="collapsed" desc="Dispatch ACK">
             TCPPacket* response = new TCPPacket();
@@ -110,7 +109,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
     // I guess we could simply cache it again if we are not ready to close???
     // See my notes on May 25, 2011 -RB
     if (p->is_tcp_fin() && rc->get_rcv_wnd() < MAX_TCP_RECEIVE_WINDOW_SIZE) {
-//        cout << "Saving FIN" << endl;
+        //        cout << "Saving FIN" << endl;
         c->set_saved_fin(e);
         return;
     }
@@ -135,7 +134,7 @@ void TCPTahoe::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent* 
     c->get_connection_manager()->icontext_send_packet(q, e);
     c->get_congestion_control()->icontext_send_packet(q, e);
 
-//        cout << "TCPTahoe::icontext_send_packet(): " << endl;
+    //        cout << "TCPTahoe::icontext_send_packet(): " << endl;
     //    cout << p->to_s() << endl;
 
     send_network_packet(e->get_socket(), p);
@@ -210,8 +209,8 @@ void TCPTahoe::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFiredE
 }
 
 void TCPTahoe::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEvent* e) {
-//    cout << "TCPTahoe::icontext_resend_packet()" << endl;
-    
+    //    cout << "TCPTahoe::icontext_resend_packet()" << endl;
+
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
@@ -236,8 +235,8 @@ void TCPTahoe::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
 }
 
 void TCPTahoe::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
-    
-//    cout << "TCPTahoe::icontext_receive()" << endl;
+
+    //    cout << "TCPTahoe::icontext_receive()" << endl;
 
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
@@ -257,7 +256,7 @@ void TCPTahoe::icontext_receive_buffer_not_empty(QueueProcessor<Event*>* q, Rece
 }
 
 void TCPTahoe::icontext_receive_buffer_not_full(QueueProcessor<Event*>* q, ReceiveBufferNotFullEvent* e) {
-//    cout << "TCPTahoe::icontext_receive_buffer_not_full()" << endl;
+    //    cout << "TCPTahoe::icontext_receive_buffer_not_full()" << endl;
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c->get_reliability();
@@ -409,6 +408,6 @@ bool TCPTahoe::is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacke
 }
 
 bool TCPTahoe::is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p) {
-    //    cout << "TCPTahoe::is_valid_ack_number(), checking: " << rc->get_snd_una() << " <= " << p->get_tcp_ack_number() << " <= " << rc->get_snd_nxt() << endl;
-    return between_equal(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt());
+    cout << "TCPTahoe::is_valid_ack_number(), checking: " << rc->get_snd_una() << " <= " << p->get_tcp_ack_number() << " <= " << rc->get_snd_max() << endl;
+    return between_equal(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_max());
 }
