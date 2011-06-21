@@ -163,6 +163,10 @@ void tahoe_active_to_passive_big_chunks(string message) {
     v.done_->wait();
 }
 
+TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks1000) {
+    tahoe_active_to_passive_big_chunks(random_string(1000));
+}
+
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks10000) {
     tahoe_active_to_passive_big_chunks(random_string(10000));
 }

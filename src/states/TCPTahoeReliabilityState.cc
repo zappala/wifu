@@ -252,14 +252,19 @@ bool TCPTahoeReliabilityState::handle_ack(Context* c, QueueProcessor<Event*>* q,
 }
 
 void TCPTahoeReliabilityState::handle_valid_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+    cout << "TCPTahoeReliabilityState::handle_valid_ack() Socket: " << e->get_socket() << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();
 
+
     u_int32_t num_acked = p->get_tcp_ack_number() - rc->get_snd_una();
     rc->set_snd_una(p->get_tcp_ack_number());
     s->get_send_buffer().erase(0, num_acked);
+
+    // TODO: this may need to move if we decide that we want to open up the send buffer on things other than data acks
     q->enqueue(new SendBufferNotFullEvent(s));
+
 
     // TODO: is this the correct place to update the RTO?
     TCPTimestampOption* ts = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
