@@ -63,7 +63,7 @@ private:
      * @return True if we may continue (and try to process data), false if it is an invalid ack
      */
     bool handle_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
-    void handle_valid_ack(Context* c, NetworkReceivePacketEvent* e);
+    void handle_valid_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     void handle_duplicate_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     void handle_control_bits_and_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     void handle_control_bits(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);

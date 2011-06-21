@@ -53,11 +53,11 @@ void TCPTahoeCongestionControlContext::set_probe_timer_duration(int duration) {
     probe_timer_duration_ = duration;
 }
 
-u_int16_t TCPTahoeCongestionControlContext::get_cwnd() const {
+u_int32_t TCPTahoeCongestionControlContext::get_cwnd() const {
     return cwnd_;
 }
 
-void TCPTahoeCongestionControlContext::set_cwnd(u_int16_t cwnd) {
+void TCPTahoeCongestionControlContext::set_cwnd(u_int32_t cwnd) {
     cwnd_ = cwnd;
 }
 
@@ -69,8 +69,8 @@ void TCPTahoeCongestionControlContext::set_ssthreshold(u_int16_t ssthreashold) {
     ssthreashold_ = ssthreashold;
 }
 
-u_int16_t TCPTahoeCongestionControlContext::get_max_allowed_to_send() const {
-    return min(get_snd_wnd(), get_cwnd());
+u_int32_t TCPTahoeCongestionControlContext::get_max_allowed_to_send() const {
+    return min((u_int32_t) get_snd_wnd(), get_cwnd());
 }
 
 u_int16_t TCPTahoeCongestionControlContext::get_mss() const {

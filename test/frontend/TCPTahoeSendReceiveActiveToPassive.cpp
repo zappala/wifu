@@ -62,7 +62,7 @@ void* tahoe_active_to_passive_thread_with_close(void* args) {
 
     // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
-    int size = 50000;
+    int size = 500000;
     char buffer[size];
     memset(buffer, 0, size);
     string all_received = "";
@@ -132,7 +132,7 @@ void tahoe_active_to_passive_test_with_close(string message) {
 
     cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
-    int size = 50000;
+    int size = 500000;
     char buffer[size];
 
     memcpy(buffer, message.c_str(), message.length());
@@ -189,6 +189,10 @@ TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive5000) {
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive50000) {
     tahoe_active_to_passive_test_with_close(random_string(50000));
+}
+
+TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive100000) {
+    tahoe_active_to_passive_test_with_close(random_string(100000));
 }
 
 TEST_F(BackEndMockTestDrop32, tahoeSendReceiveTestActiveToPassiveDrop32) {

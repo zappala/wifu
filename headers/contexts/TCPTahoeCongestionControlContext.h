@@ -36,13 +36,13 @@ public:
     int get_probe_timer_duration() const;
     void set_probe_timer_duration(int duration);
 
-    u_int16_t get_cwnd() const;
-    void set_cwnd(u_int16_t cwnd);
+    u_int32_t get_cwnd() const;
+    void set_cwnd(u_int32_t cwnd);
 
     u_int16_t get_ssthreshold() const;
     void set_ssthreshold(u_int16_t ssthreashold);
 
-    u_int16_t get_max_allowed_to_send() const;
+    u_int32_t get_max_allowed_to_send() const;
 
     u_int16_t get_mss() const;
     void set_mss(u_int16_t mss);
@@ -50,13 +50,14 @@ public:
     bool is_data_sent() const;
     void set_data_sent(bool data_sent);
 
+
 private:
 
     u_int16_t snd_wnd_;
     u_int32_t snd_wnd1_;
     u_int32_t snd_wnd2_;
 
-    u_int16_t cwnd_;
+    u_int32_t cwnd_;
 
     u_int16_t ssthreashold_;
     u_int16_t mss_;
@@ -75,7 +76,6 @@ private:
      * This will be used to determine whether to update cwnd or not
      */
     bool data_sent_;
-
 };
 
 #endif	/* TCPTAHOECONGESTIONCONTROLCONTEXT_H */

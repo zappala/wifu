@@ -90,7 +90,7 @@ public:
      * @see WifuEndAPILocalSocket::receive()
      */
     void set_payload(string& payload, size_t length) {
-        memcpy(payload_, payload.c_str(), length);
+        memcpy(payload_, payload.data(), length);
         set_payload_length(length);
     }
 
@@ -187,7 +187,7 @@ private:
     /**
      * Buffer which will store the payload from the back-end (on calls like recv())
      */
-    unsigned char payload_[MTU + 1];
+    unsigned char payload_[MAX_BUFFER_SIZE];
 
     /**
      * The length of the payload

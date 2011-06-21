@@ -236,6 +236,9 @@ void TCPTahoe::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
 }
 
 void TCPTahoe::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
+    
+//    cout << "TCPTahoe::icontext_receive()" << endl;
+
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
@@ -285,6 +288,7 @@ void TCPTahoe::icontext_send_buffer_not_full(QueueProcessor<Event*>* q, SendBuff
 
     if (saved_send_event && is_room_in_send_buffer(saved_send_event)) {
         save_in_buffer_and_send_events(q, saved_send_event);
+        c->set_saved_send_event(0);
     }
 
     c->get_reliability()->icontext_send_buffer_not_full(q, e);
@@ -378,7 +382,6 @@ bool TCPTahoe::is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacke
     // TODO: this may need to change to something else as we may wrap around
     // I actually cannot remember why this needs to be here -- RB
     if (rc->get_rcv_nxt() == 0) {
-        cout << "A" << endl;
         return true;
     }
 
@@ -386,23 +389,19 @@ bool TCPTahoe::is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacke
     // These checks are in reverse order that they are on page 69
     // because I always seemed to get to the last one in tests
     if (p->get_data_length_bytes() > 0 && rc->get_rcv_wnd() > 0) {
-        cout << "B" << endl;
         return between_equal_left(rc->get_rcv_nxt(), p->get_tcp_sequence_number(), rc->get_rcv_nxt() + rc->get_rcv_wnd()) ||
                 between_equal_left(rc->get_rcv_nxt(), p->get_tcp_sequence_number() + p->get_data_length_bytes() - 1, rc->get_rcv_nxt() + rc->get_rcv_wnd());
     }
 
     if (p->get_data_length_bytes() > 0 && rc->get_rcv_wnd() == 0) {
-        cout << "C" << endl;
         return false;
     }
 
     if (p->get_data_length_bytes() == 0 && rc->get_rcv_wnd() > 0) {
-        cout << "D" << endl;
         return between_equal_left(rc->get_rcv_nxt(), p->get_tcp_sequence_number(), rc->get_rcv_nxt() + rc->get_rcv_wnd());
     }
 
     if (p->get_data_length_bytes() == 0 && rc->get_rcv_wnd() == 0) {
-        cout << "E" << endl;
         return p->get_tcp_sequence_number() == rc->get_rcv_nxt();
     }
 

@@ -101,13 +101,14 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
                 ccc->set_probe_timer(0);
                 Dispatcher::instance().enqueue(cancel_timer);
             }
+            cout << "TCPTahoeBaseCongestionControl::state_receive_packet(), sending packets" << endl;
             send_packets(c, q, e);
         }
     }
 }
 
 void TCPTahoeBaseCongestionControl::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
-
+    cout << "TCPTahoeBaseCongestionControl::state_send_buffer_not_empty(), sending packets" << endl;
     send_packets(c, q, e);
 }
 
@@ -172,7 +173,8 @@ void TCPTahoeBaseCongestionControl::send_one_packet(Context* c, QueueProcessor<E
     assert(p->get_data_length_bytes() > 0);
 
     q->enqueue(new SendPacketEvent(s, p));
-    q->enqueue(new SendBufferNotFullEvent(s));
+    // TODO: I moved this to relability when we get an ack
+//    q->enqueue(new SendBufferNotFullEvent(s));
 }
 
 void TCPTahoeBaseCongestionControl::resend_data(Context* c, QueueProcessor<Event*>* q, Event* e) {
@@ -234,15 +236,25 @@ int TCPTahoeBaseCongestionControl::get_send_data_length(Context* c, Event* e, Wi
     string& send_buffer = e->get_socket()->get_send_buffer();
 
     int num_unsent = (int) send_buffer.size() - (int) ccc->get_num_outstanding();
+    cout << "TCPTahoeBaseCongestionControl::get_send_data_length(): send buffer size:      " << (int) send_buffer.size() << endl;
+    cout << "TCPTahoeBaseCongestionControl::get_send_data_length(): num outstanding :      " << (int) ccc->get_num_outstanding() << endl;
+    cout << "TCPTahoeBaseCongestionControl::get_send_data_length(): p->max_data_length() : " << (int) p->max_data_length() << endl;
+    cout << "TCPTahoeBaseCongestionControl::get_send_data_length(): max tcp rcv wnd size : " << MAX_TCP_RECEIVE_WINDOW_SIZE << endl;
+    cout << "TCPTahoeBaseCongestionControl::get_send_data_length(): max allowed to send  : " << (int) ccc->get_max_allowed_to_send() << endl;
+
+
 
     // we do not want to make a packet larger than the window size
     int data_length = min(min(num_unsent, (int) p->max_data_length()), MAX_TCP_RECEIVE_WINDOW_SIZE);
     if (!ignore_window) {
         int available_window_space = (int) ccc->get_max_allowed_to_send() - (int) ccc->get_num_outstanding();
+        cout << "TCPTahoeBaseCongestionControl::get_send_data_length(): available_window_space  : " << available_window_space << endl;
         data_length = min(data_length, available_window_space);
     }
 
     assert(data_length > 0);
+
+    cout << "TCPTahoeBaseCongestionControl::get_send_data_length(): data_length          : " << data_length << endl;
 
     return data_length;
 }

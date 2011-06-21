@@ -131,8 +131,10 @@ public:
         if (!data) {
             cout << "Socket: " << socket << " is deleted" << endl;
             cout << "Message: " << message << endl;
+
             //TODO: is this really an error?
-            assert(data);
+            //assert(data);
+            return;
         }
 
         data->get_flag()->wait();
@@ -465,6 +467,7 @@ public:
      * @return On success, the number of characters sent.  If an error occurs, -1 is returned and ERRNO is set.
      */
     ssize_t wifu_sendto(int fd, const void* buf, size_t n, int flags, const struct sockaddr* addr, socklen_t addr_len) {
+
         map<string, string> m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
@@ -483,7 +486,11 @@ public:
         }
 
         string message = QueryStringParser::create(WIFU_SENDTO_NAME, m);
-        send_to(write_file_, message);
+        ssize_t bytes_sent = send_to(write_file_, message);
+
+        assert(message.length() <= MAX_BUFFER_SIZE);
+        cout << "Message length: " << message.length() << endl;
+        cout << "Bytes sent over unix socket: " << bytes_sent << endl;
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
@@ -511,7 +518,7 @@ public:
      * The return value may also be 0 if the peer performed an orderly shutdown
      */
     ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr, socklen_t *__restrict addr_len) {
-        //        cout << "wifu_recvfrom()" << endl;
+                cout << "wifu_recvfrom()" << endl;
         map<string, string> m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);

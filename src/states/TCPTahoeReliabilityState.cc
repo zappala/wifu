@@ -83,9 +83,10 @@ void TCPTahoeReliabilityState::create_and_dispatch_ack(QueueProcessor<Event*>* q
 
 void TCPTahoeReliabilityState::start_timer(Context* c, Socket* s) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
-        cout << "TCPTahoeReliabilityState::start_timer() on socket: " << s << endl;
+        
     // only start the timer if it is not already running
     if (!rc->get_timeout_event()) {
+        cout << "TCPTahoeReliabilityState::start_timer() on socket: " << s << endl;
         double seconds;
         long int nanoseconds = modf(rc->get_rto(), &seconds) * NANOSECONDS_IN_SECONDS;
         TimeoutEvent* timer = new TimeoutEvent(s, seconds, nanoseconds);
@@ -101,7 +102,7 @@ void TCPTahoeReliabilityState::reset_timer(Context* c, Socket* s) {
 }
 
 void TCPTahoeReliabilityState::cancel_timer(Context* c, Socket* s) {
-    //    cout << "TCPTahoeReliabilityState::cancel_timer() on socket: " << s << endl;
+        cout << "TCPTahoeReliabilityState::cancel_timer() on socket: " << s << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
 
     assert(rc->get_timeout_event());
@@ -128,6 +129,7 @@ void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, Que
     s->get_receive_buffer().erase(0, length);
 
     rc->set_rcv_wnd(rc->get_rcv_wnd() + length);
+    cout << "TCPTahoeReliabilityState::create_and_dispatch_received_data(), receive window size: " << rc->get_rcv_wnd() << endl;
 
     ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
     response->put(BUFFER_STRING, data);
@@ -172,9 +174,10 @@ void TCPTahoeReliabilityState::set_sequence_number_and_update_window_variables(C
         rc->set_initialized();
     } else {
         p->set_tcp_sequence_number(rc->get_snd_nxt());
-        u_int32_t len = rc->get_snd_nxt() + (p->is_tcp_syn() || p->is_tcp_fin() ? 1 : p->get_data_length_bytes());
-        rc->set_snd_nxt(len);
+        u_int32_t len = (p->is_tcp_syn() || p->is_tcp_fin() ? 1 : p->get_data_length_bytes());
+        rc->set_snd_nxt(rc->get_snd_nxt() + len);
     }
+    
 }
 
 void TCPTahoeReliabilityState::set_ack_number_and_bit(Context* c, TCPPacket* p) {
@@ -237,7 +240,7 @@ bool TCPTahoeReliabilityState::handle_ack(Context* c, QueueProcessor<Event*>* q,
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
     if (p->is_tcp_ack() && between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt())) {
-        handle_valid_ack(c, e);
+        handle_valid_ack(c, q, e);
     } else if (p->is_tcp_ack() && less_than(rc->get_snd_nxt(), p->get_tcp_ack_number())) {
         // invalid ack
         create_and_dispatch_ack(q, e->get_socket());
@@ -248,7 +251,7 @@ bool TCPTahoeReliabilityState::handle_ack(Context* c, QueueProcessor<Event*>* q,
     return true;
 }
 
-void TCPTahoeReliabilityState::handle_valid_ack(Context* c, NetworkReceivePacketEvent* e) {
+void TCPTahoeReliabilityState::handle_valid_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();
@@ -256,6 +259,7 @@ void TCPTahoeReliabilityState::handle_valid_ack(Context* c, NetworkReceivePacket
     u_int32_t num_acked = p->get_tcp_ack_number() - rc->get_snd_una();
     rc->set_snd_una(p->get_tcp_ack_number());
     s->get_send_buffer().erase(0, num_acked);
+    q->enqueue(new SendBufferNotFullEvent(s));
 
     // TODO: is this the correct place to update the RTO?
     TCPTimestampOption* ts = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
@@ -321,6 +325,7 @@ void TCPTahoeReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q
     if (rc->get_rcv_wnd() - num_inserted >= 0) {
 
         rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
+        cout << "TCPTahoeReliabilityState::handle_data(), receive window size: " << rc->get_rcv_wnd() << endl;
         string& receive_buffer = s->get_receive_buffer();
         u_int32_t before_rcv_buffer_size = receive_buffer.size();
         rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
@@ -336,7 +341,7 @@ void TCPTahoeReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q
         // I don't think we should get here.
         // I ran some tests with the assert on and it never asserted.
         // But just in case...
-        //assert(false);
+        assert(false);
         rc->get_receive_window().remove(p);
     }
 
