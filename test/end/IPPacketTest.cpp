@@ -310,11 +310,7 @@ namespace {
         ASSERT_FALSE(p1.is_valid_checksum());
         p1.set_ip_destination_address_s(destination_address);
         ASSERT_TRUE(p1.is_valid_checksum());
-
-
     }
 }
 
 #endif	/* _IPPACKETTEST_H */
-
-
