@@ -119,7 +119,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
     c->get_congestion_control()->icontext_receive_packet(q, e);
 
 
-    if (c->get_saved_close_event() && s->get_send_buffer().empty()) {
+    if (c->get_saved_close_event() && s->get_send_buffer().empty() && !c->get_saved_send_event()) {
         cmc->icontext_close(q, c->get_saved_close_event());
         c->set_saved_close_event(0);
     }
@@ -187,7 +187,7 @@ void TCPTahoe::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
 
-    if (s->get_send_buffer().empty()) {
+    if (s->get_send_buffer().empty() && !c->get_saved_send_event()) {
         c->get_connection_manager()->icontext_close(q, e);
     } else {
         c->set_saved_close_event(e);
