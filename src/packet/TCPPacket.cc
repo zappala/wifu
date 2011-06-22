@@ -29,7 +29,7 @@ void TCPPacket::set_data(unsigned char* data, int length) {
         // Can not set the data twice
         throw IllegalStateException();
     }
-    
+
     memcpy(get_data(), data, length);
     data_set_ = true;
 
@@ -145,6 +145,18 @@ void TCPPacket::set_tcp_urgent_pointer(u_int16_t urg_ptr) {
     tcp_->urg_ptr = htons(urg_ptr);
 }
 
+void TCPPacket::calculate_and_set_tcp_checksum() {
+    set_tcp_checksum(compute_next_checksum());
+}
+
+bool TCPPacket::is_valid_tcp_checksum() {
+    u_int16_t current_checksum = get_tcp_checksum();
+    calculate_and_set_tcp_checksum();
+    u_int16_t calculated_checksum = get_tcp_checksum();
+    set_tcp_checksum(current_checksum);
+    return current_checksum == calculated_checksum;
+}
+
 void TCPPacket::init() {
     tcp_ = (struct tcphdr*) get_next_header();
     set_tcp_data_offset(sizeof (struct tcphdr) / 4);
@@ -190,7 +202,7 @@ string TCPPacket::to_s() const {
 string TCPPacket::to_s_format() const {
     stringstream s;
     s << IPPacket::to_s_format() << endl
-      << "# tcp sport dport seq_num ack_num header_length URG ACK PSH RST SYN FIN rcv_wnd";
+            << "# tcp sport dport seq_num ack_num header_length URG ACK PSH RST SYN FIN rcv_wnd";
     return s.str();
 }
 
@@ -244,7 +256,7 @@ TCPHeaderOption* TCPPacket::remove_tcp_header_option(u_int8_t kind) {
     GetTCPHeaderOptionsLengthVisitor visitor;
     options_.accept(&visitor);
     set_tcp_data_offset(get_tcp_data_offset() + visitor.get_padded_length());
-    
+
     return option;
 }
 

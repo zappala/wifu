@@ -227,89 +227,89 @@ namespace {
 
     TEST(IPPacket, checksumCalculation) {
         IPPacket p1, p2;
-        p1.calculate_and_set_checksum();
-        p2.calculate_and_set_checksum();
+        p1.calculate_and_set_ip_checksum();
+        p2.calculate_and_set_ip_checksum();
 
         ASSERT_EQ(p1.get_ip_checksum(), p2.get_ip_checksum());
-        ASSERT_TRUE(p1.is_valid_checksum());
-        ASSERT_TRUE(p2.is_valid_checksum());
+        ASSERT_TRUE(p1.is_valid_ip_checksum());
+        ASSERT_TRUE(p2.is_valid_ip_checksum());
 
         // change version
         u_int8_t version = p1.get_ip_version();
         p1.set_ip_version(12);
-        ASSERT_FALSE(p1.is_valid_checksum());
+        ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_version(version);
-        ASSERT_TRUE(p1.is_valid_checksum());
+        ASSERT_TRUE(p1.is_valid_ip_checksum());
 
         // change header length
         u_int8_t length = p1.get_ip_header_length_words();
         p1.set_ip_header_length_words(12);
-        ASSERT_FALSE(p1.is_valid_checksum());
+        ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_header_length_words(length);
-        ASSERT_TRUE(p1.is_valid_checksum());
+        ASSERT_TRUE(p1.is_valid_ip_checksum());
 
         // change tos
         u_int8_t tos = p1.get_ip_tos();
         p1.set_ip_tos(12);
-        ASSERT_FALSE(p1.is_valid_checksum());
+        ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_tos(tos);
-        ASSERT_TRUE(p1.is_valid_checksum());
+        ASSERT_TRUE(p1.is_valid_ip_checksum());
 
         // change datagram length (bytes)
         u_int16_t dlength = p1.get_ip_tot_length();
         p1.set_ip_tot_length(USHRT_MAX);
-        ASSERT_FALSE(p1.is_valid_checksum());
+        ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_tot_length(dlength);
-        ASSERT_TRUE(p1.is_valid_checksum());
+        ASSERT_TRUE(p1.is_valid_ip_checksum());
 
         // change identifier
         u_int16_t id = p1.get_ip_identifier();
         p1.set_ip_identifier(3);
-        ASSERT_FALSE(p1.is_valid_checksum());
+        ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_identifier(id);
-        ASSERT_TRUE(p1.is_valid_checksum());
+        ASSERT_TRUE(p1.is_valid_ip_checksum());
 
         // change fragmentation offset
         u_int16_t frag = p1.get_ip_fragmentation_offset();
         p1.set_ip_fragmentation_offset(3);
-        ASSERT_FALSE(p1.is_valid_checksum());
+        ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_fragmentation_offset(frag);
-        ASSERT_TRUE(p1.is_valid_checksum());
+        ASSERT_TRUE(p1.is_valid_ip_checksum());
 
         // change TTL
         u_int8_t ttl = p1.get_ip_ttl();
         p1.set_ip_ttl(3);
-        ASSERT_FALSE(p1.is_valid_checksum());
+        ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_ttl(ttl);
-        ASSERT_TRUE(p1.is_valid_checksum());
+        ASSERT_TRUE(p1.is_valid_ip_checksum());
 
         // change protocol
         u_int8_t protocol = p1.get_ip_protocol();
         p1.set_ip_protocol(3);
-        ASSERT_FALSE(p1.is_valid_checksum());
+        ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_protocol(protocol);
-        ASSERT_TRUE(p1.is_valid_checksum());
+        ASSERT_TRUE(p1.is_valid_ip_checksum());
 
         // change checksum
         u_int16_t check = p1.get_ip_checksum();
         p1.set_ip_checksum(3);
-        ASSERT_FALSE(p1.is_valid_checksum());
+        ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_checksum(check);
-        ASSERT_TRUE(p1.is_valid_checksum());
+        ASSERT_TRUE(p1.is_valid_ip_checksum());
 
         // change source address
         string source_address = p1.get_ip_source_address_s();
         p1.set_ip_source_address_s("192.168.0.1");
-        ASSERT_FALSE(p1.is_valid_checksum());
+        ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_source_address_s(source_address);
-        ASSERT_TRUE(p1.is_valid_checksum());
+        ASSERT_TRUE(p1.is_valid_ip_checksum());
 
         // change destination address
         string destination_address = p1.get_ip_destination_address_s();
         p1.set_ip_destination_address_s("192.168.0.1");
-        ASSERT_FALSE(p1.is_valid_checksum());
+        ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_destination_address_s(destination_address);
-        ASSERT_TRUE(p1.is_valid_checksum());
+        ASSERT_TRUE(p1.is_valid_ip_checksum());
     }
 }
 

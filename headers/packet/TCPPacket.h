@@ -57,6 +57,10 @@ public:
     u_int16_t get_tcp_urgent_pointer() const;
     void set_tcp_urgent_pointer(u_int16_t urg_ptr);
 
+    void calculate_and_set_tcp_checksum();
+
+    bool is_valid_tcp_checksum();
+
     void init();
 
     bool is_naked_ack();

@@ -18,11 +18,21 @@
 
 using namespace std;
 
+// structure for the IP pseudo header, needed for the UDP and TCP checksum
+
+struct ip_pseudo_header {
+    u_int32_t saddr;
+    u_int32_t daddr;
+    u_int8_t zero;
+    u_int8_t protocol;
+    u_int16_t tot_len;
+};
+
 class IPPacket : public gc {
 public:
 
     IPPacket();
-//    IPPacket(IPPacket&);
+    //    IPPacket(IPPacket&);
     IPPacket(unsigned char* buffer, int length);
 
     ~IPPacket();
@@ -176,9 +186,13 @@ public:
 
     static u_int16_t checksum(u_int16_t* ptr, u_int16_t len);
 
-    virtual void calculate_and_set_checksum();
+    void calculate_and_set_ip_checksum();
 
-    virtual bool is_valid_checksum();
+    bool is_valid_ip_checksum();
+
+    // computes the checksum after the ip header (for tcp or udp)
+    // uses the ip pseudo header
+    u_int16_t compute_next_checksum();
 
     void init();
 
@@ -203,6 +217,6 @@ private:
     bool length_set_;
 };
 
-ostream& operator <<(ostream& os, const IPPacket& packet);
+ostream & operator <<(ostream& os, const IPPacket& packet);
 
 #endif	/* _IPPACKET_H */
