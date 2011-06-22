@@ -43,6 +43,15 @@ void TCPPacket::pack() {
     GetTCPHeaderOptionsDataVisitor visitor(get_options_pointer());
     options_.accept(&visitor);
     visitor.append_padding();
+
+    // TODO: convert options to network byte order
+//    u_int32_t options_size = get_data() - get_options_pointer();
+//    assert(!(options_size % sizeof (u_int32_t)));
+//
+//    for (int i = 0; i < options_size; i += sizeof (u_int32_t)) {
+//        u_int32_t* current = (u_int32_t*) (get_options_pointer() + i);
+//        *current = htonl(*current);
+//    }
 }
 
 u_int32_t TCPPacket::get_tcp_sequence_number() const {
@@ -146,6 +155,7 @@ void TCPPacket::set_tcp_urgent_pointer(u_int16_t urg_ptr) {
 }
 
 void TCPPacket::calculate_and_set_tcp_checksum() {
+    set_tcp_checksum(0);
     set_tcp_checksum(compute_next_checksum());
 }
 
@@ -275,5 +285,5 @@ TCPHeaderOption* TCPPacket::get_option(u_int8_t kind) {
 }
 
 unsigned char* TCPPacket::get_options_pointer() {
-    return get_payload() + get_ip_header_length_bytes() + sizeof (struct tcphdr);
+    return get_next_header() + sizeof (struct tcphdr);
 }

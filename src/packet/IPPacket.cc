@@ -191,32 +191,29 @@ bool IPPacket::is_valid_ip_checksum() {
 
 u_int16_t IPPacket::compute_next_checksum() {
 
-    // We overwrite the current ip header with the pseudo-header,
-    // then put it back after checksum calculation
-
-    // save the current ip_header
-    struct iphdr ip_header;
-    memcpy(&ip_header, ip_, sizeof(ip_));
-
-    unsigned char* header = IPPacket::get_next_header();
-    header -= sizeof(struct ip_pseudo_header);
+    // we overwrite part of the iphdr with the pseudo header, then put the iphdr back
 
     // get length of IP payload
     int length = get_ip_tot_length() - get_ip_header_length_bytes();
 
+    struct iphdr ip;
+    memcpy(&ip, ip_, sizeof(struct iphdr));
+
+    // we can do this because ipdr is bigger than ip_pseudo_header
+    unsigned char* packet = IPPacket::get_next_header() - sizeof(struct ip_pseudo_header);
+
     // setup IP pseudo header
-    struct ip_pseudo_header* pseudo = (struct ip_pseudo_header*) header;
-    pseudo->saddr = ip_header.saddr;
-    pseudo->daddr = ip_header.daddr;
+    struct ip_pseudo_header* pseudo = (struct ip_pseudo_header*) packet;
+    pseudo->saddr = ip.saddr;
+    pseudo->daddr = ip.daddr;
     pseudo->zero = 0;
-    pseudo->protocol = ip_header.protocol;
+    pseudo->protocol = ip.protocol;
     pseudo->tot_len = htons(length);
 
     u_int16_t packet_length = sizeof (struct ip_pseudo_header) + length;
-    u_int16_t sum = IPPacket::checksum((u_int16_t*) header, packet_length);
+    u_int16_t sum = IPPacket::checksum((u_int16_t*) packet, packet_length);
 
-    // put the ip header back
-    memcpy(&ip_, &ip_header, sizeof(ip_));
+    memcpy(ip_, &ip, sizeof(struct iphdr));
 
     return sum;
 }

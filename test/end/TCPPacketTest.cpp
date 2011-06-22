@@ -258,8 +258,150 @@ namespace {
         ASSERT_EQ(value, p.get_tcp_checksum());
 
 
+        // check against a reference implementation
+        // I pulled these values from wireshark - RB
+        u_int32_t ip_header[5] = {
+            ntohl(0x45000034),
+            ntohl(0x2cf64000),
+            ntohl(0x3b0611da),
+            ntohl(0x4a7de069),
+            ntohl(0xc0a81565)
+        };
 
+        memcpy(p.get_payload(), ip_header, sizeof (ip_header));
+
+        u_int32_t tcp_header[8] = {
+            ntohl(0x01bb901c),
+            ntohl(0x6601ce2b),
+            ntohl(0xf7bb8e7e),
+            ntohl(0x80104057),
+            ntohl(0x291e0000),
+            ntohl(0x0101080a),
+            ntohl(0xb57d891b),
+            ntohl(0x0f097272)
+        };
+
+        memcpy(p.get_payload() + sizeof (ip_header), tcp_header, sizeof (tcp_header));
+
+        // test multiple times to ensure that doing one doesn't mess up the other
+        ASSERT_TRUE(p.is_valid_ip_checksum());
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+        ASSERT_TRUE(p.is_valid_ip_checksum());
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change sport
+        u_int16_t sport = p.get_source_port();
+        p.set_source_port(13);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_source_port(sport);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change dport
+        u_int16_t dport = p.get_destination_port();
+        p.set_destination_port(13);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_destination_port(dport);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change sequence number
+        u_int32_t seq = p.get_tcp_sequence_number();
+        p.set_tcp_sequence_number(13);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_tcp_sequence_number(seq);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change ack number
+        u_int32_t ack_num = p.get_tcp_ack_number();
+        p.set_tcp_ack_number(13);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_tcp_ack_number(ack_num);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change header_length
+        u_int16_t len = p.get_tcp_data_offset();
+        p.set_tcp_data_offset(13);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_tcp_data_offset(len);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change urg bit
+        bool urg = p.is_tcp_urg();
+        p.set_tcp_urg(!urg);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_tcp_urg(urg);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change ack bit
+        bool ack = p.is_tcp_ack();
+        p.set_tcp_ack(!ack);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_tcp_ack(ack);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change psh bit
+        bool psh = p.is_tcp_psh();
+        p.set_tcp_psh(!psh);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_tcp_psh(psh);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change rst bit
+        bool rst = p.is_tcp_rst();
+        p.set_tcp_rst(!rst);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_tcp_rst(rst);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change syn bit
+        bool syn = p.is_tcp_syn();
+        p.set_tcp_syn(!syn);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_tcp_syn(syn);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change fin bit
+        bool fin = p.is_tcp_fin();
+        p.set_tcp_fin(!fin);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_tcp_fin(fin);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change receive window
+        u_int16_t win = p.get_tcp_receive_window_size();
+        p.set_tcp_receive_window_size(321);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_tcp_receive_window_size(win);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change tcp checksum
+        u_int16_t check = p.get_tcp_checksum();
+        p.set_tcp_checksum(321);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_tcp_checksum(check);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // change tcp urgent data pointer
+        u_int16_t ptr = p.get_tcp_urgent_pointer();
+        p.set_tcp_urgent_pointer(321);
+        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        p.set_tcp_urgent_pointer(ptr);
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
+        // TODO: change tcp timestamp option
+//        TCPTimestampOption* option = (TCPTimestampOption*) p.get_option(TCPOPT_TIMESTAMP);
+//        assert(option);
+//
+//        cout << ntohl(option->get_timestamp()) << endl;
+//        cout << ntohl(option->get_echo_reply()) << endl;
+//
+//        // ts
+//        u_int32_t ts = option->get_timestamp();
+//        option->set_timestamp();
+//        ASSERT_FALSE(p.is_valid_tcp_checksum());
+//        option->set_timestamp(ts);
+//        ASSERT_TRUE(p.is_valid_tcp_checksum());
         
+        // echo reply
     }
 
     TEST(TCPPacketTest, UrgentPointerTest) {
