@@ -69,6 +69,7 @@
 // must fit in 8 bits
 #define SIMPLE_TCP 206
 #define TCP_TAHOE 207
+#define UDP 217
 
 #define MTU 1500
 #define MAX_TTL 65
@@ -82,6 +83,9 @@
 // RTO values are in seconds
 #define INITIAL_RTO 3.0
 #define MIN_RTO 1.0
+
+// Delayed ACK timeout value in seconds
+#define INITAL_DELAY_TIMEOUT_INTERVAL 0.1
 
 // in seconds
 #define INITIAL_PROBE_TIMEOUT_DURATION 10
@@ -101,6 +105,12 @@
 #define FIN_BYTE std::string(1, 23)
 
 typedef const char * event_name;
+
+//Specific to Delayed ACK
+#define DEFAULT_DELAY_COUNT 2
+
+//Specific to UDP
+#define UDP_HEADER_LENGTH_BYTES 8
 
 /*
  * Represents various priorities.

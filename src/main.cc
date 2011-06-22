@@ -54,6 +54,8 @@
 #include "protocol/SimpleTCP.h"
 #include "protocol/TCPTahoe.h"
 #include "TCPPacketFactory.h"
+#include "protocol/SimpleUDP.h"
+#include "WiFuPacketFactory.h"
 
 //other
 #include "defines.h"
@@ -140,11 +142,35 @@ void register_tcp_tahoe() {
     dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPTahoe::instance());
 }
 
+void register_udp() {
+    ProtocolManager::instance().support(UDP);
+    NetworkInterfaceFactory::instance().create().register_protocol(UDP, new WiFuPacketFactory());
+
+    dispatcher.map_event(type_name(SocketEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(BindEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(ListenEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(ConnectEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(AcceptEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(SendPacketEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(ReceiveEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(SendEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(SendBufferNotFullEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(CloseEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(DeleteSocketEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(SetSocketOptionEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(GetSocketOptionEvent), &SimpleUDP::instance());
+    dispatcher.map_event(type_name(TimerFiredEvent), &SimpleUDP::instance());
+}
+
 void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
     register_simple_tcp();
     register_tcp_tahoe();
-
+    register_udp();
 }
 
 void setup_network_interface(string& type) {
