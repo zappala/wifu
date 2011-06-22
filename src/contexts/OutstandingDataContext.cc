@@ -50,6 +50,8 @@ void OutstandingDataContext::set_snd_una(u_int32_t snd_una) {
 }
 
 u_int32_t OutstandingDataContext::get_num_outstanding() const {
+    cout << "OutstandingDataContext::get_num_outstanding(), snd_nxt: " << get_snd_nxt() << endl;
+    cout << "OutstandingDataContext::get_num_outstanding(), snd_una: " << get_snd_una() << endl;
     return get_snd_nxt() - get_snd_una();
 }
 

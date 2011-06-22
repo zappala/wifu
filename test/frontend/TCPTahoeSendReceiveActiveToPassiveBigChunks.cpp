@@ -143,9 +143,7 @@ void tahoe_active_to_passive_big_chunks(string message) {
         if(index + chunk > message.length()) {
             chunk = message.length() - index;
         }
-
 //        cout << "Chunk size: " << chunk << endl;
-
         const char* data = message.data() + index;
 
         int sent = wifu_send(client, data, chunk, 0);
@@ -193,4 +191,16 @@ TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks10000000) {
 
 TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveBigChunks10000) {
     tahoe_active_to_passive_big_chunks(random_string(10000));
+}
+
+TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveBigChunks100000) {
+    tahoe_active_to_passive_big_chunks(random_string(100000));
+}
+
+TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveBigChunks1000000) {
+    tahoe_active_to_passive_big_chunks(random_string(1000000));
+}
+
+TEST_F(BackEndMockTestDropRandom20Percent, tahoeSendReceiveTestActiveBigChunks1000000) {
+    tahoe_active_to_passive_big_chunks(random_string(1000000));
 }

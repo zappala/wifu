@@ -260,6 +260,13 @@ void TCPTahoeReliabilityState::handle_valid_ack(Context* c, QueueProcessor<Event
 
     u_int32_t num_acked = p->get_tcp_ack_number() - rc->get_snd_una();
     rc->set_snd_una(p->get_tcp_ack_number());
+
+    // In case we get an ack for something later than snd.nxt
+    // (we dropped a packet but subsequent packets got through and we received a cumuliative ack)
+    if(less_than(rc->get_snd_nxt(), rc->get_snd_una())) {
+        rc->set_snd_nxt(rc->get_snd_una());
+    }
+
     s->get_send_buffer().erase(0, num_acked);
 
     // TODO: this may need to move if we decide that we want to open up the send buffer on things other than data acks
