@@ -27,11 +27,14 @@ public:
     void set_snd_una(u_int32_t snd_una);
     
     u_int32_t get_num_outstanding() const;
+
+    u_int32_t get_snd_max() const;
     
 private:
     u_int32_t iss_;
     u_int32_t snd_nxt_;
     u_int32_t snd_una_;
+    u_int32_t snd_max_;
 };
 
 #endif	/* OutstandingDataContext_H */

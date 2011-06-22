@@ -46,10 +46,10 @@ void TCPTahoeBaseCongestionControl::state_send_packet(Context* c, QueueProcessor
         ccc->set_snd_nxt(ccc->get_snd_nxt() + 1);
     }
 
-    if(!ccc->is_data_sent() && p->get_data_length_bytes() > 0) {
+    if (!ccc->is_data_sent() && p->get_data_length_bytes() > 0) {
         ccc->set_data_sent(true);
     }
-    
+
     // we will set snd.nxt for data when we originally send data
 }
 
@@ -62,12 +62,18 @@ void TCPTahoeBaseCongestionControl::state_resend_packet(Context* c, QueueProcess
 }
 
 void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-    //    cout << "DummyCongestionContrller::state_receive_packet()" << endl;
+    cout << "TCPTahoeBaseCongestionControl::state_receive_packet()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    if (p->is_tcp_ack() && between_equal_right(ccc->get_snd_una(), p->get_tcp_ack_number(), ccc->get_snd_nxt())) {
+    if (p->is_tcp_ack() && between_equal_right(ccc->get_snd_una(), p->get_tcp_ack_number(), ccc->get_snd_max())) {
         ccc->set_snd_una(p->get_tcp_ack_number());
+
+        // In case we get an ack for something later than snd.nxt
+        // (we dropped a packet but subsequent packets got through and we received a cumuliative ack)
+        if (less_than(ccc->get_snd_nxt(), ccc->get_snd_una())) {
+            ccc->set_snd_nxt(ccc->get_snd_una());
+        }
 
         // update send window (RFC p. 72)
         if (less_than(ccc->get_snd_wnd1(), p->get_tcp_sequence_number()) ||
@@ -82,6 +88,9 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
         if (ccc->is_data_sent()) {
             set_cwnd(c, q, e);
         }
+
+        cout << "TCPTahoeBaseCongestionControl::state_receive_packet(), num outstanding: " << ccc->get_num_outstanding() << endl;
+        cout << "TCPTahoeBaseCongestionControl::state_receive_packet(), max allowed to send: " << ccc->get_max_allowed_to_send() << endl;
 
         // check to see if there is room to send data
         assert(ccc->get_num_outstanding() <= ccc->get_max_allowed_to_send());
@@ -174,7 +183,7 @@ void TCPTahoeBaseCongestionControl::send_one_packet(Context* c, QueueProcessor<E
 
     q->enqueue(new SendPacketEvent(s, p));
     // TODO: I moved this to relability when we get an ack
-//    q->enqueue(new SendBufferNotFullEvent(s));
+    //    q->enqueue(new SendBufferNotFullEvent(s));
 }
 
 void TCPTahoeBaseCongestionControl::resend_data(Context* c, QueueProcessor<Event*>* q, Event* e) {

@@ -239,9 +239,9 @@ bool TCPTahoeReliabilityState::handle_ack(Context* c, QueueProcessor<Event*>* q,
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    if (p->is_tcp_ack() && between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_nxt())) {
+    if (p->is_tcp_ack() && between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_max())) {
         handle_valid_ack(c, q, e);
-    } else if (p->is_tcp_ack() && less_than(rc->get_snd_nxt(), p->get_tcp_ack_number())) {
+    } else if (p->is_tcp_ack() && less_than(rc->get_snd_max(), p->get_tcp_ack_number())) {
         // invalid ack
         create_and_dispatch_ack(q, e->get_socket());
         return false;
@@ -260,6 +260,13 @@ void TCPTahoeReliabilityState::handle_valid_ack(Context* c, QueueProcessor<Event
 
     u_int32_t num_acked = p->get_tcp_ack_number() - rc->get_snd_una();
     rc->set_snd_una(p->get_tcp_ack_number());
+
+    // In case we get an ack for something later than snd.nxt
+    // (we dropped a packet but subsequent packets got through and we received a cumuliative ack)
+    if(less_than(rc->get_snd_nxt(), rc->get_snd_una())) {
+        rc->set_snd_nxt(rc->get_snd_una());
+    }
+
     s->get_send_buffer().erase(0, num_acked);
 
     // TODO: this may need to move if we decide that we want to open up the send buffer on things other than data acks
