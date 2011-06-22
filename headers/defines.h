@@ -69,7 +69,7 @@
 // must fit in 8 bits
 #define SIMPLE_TCP 206
 #define TCP_TAHOE 207
-#define UDP 208
+#define UDP 217
 
 #define MTU 1500
 #define MAX_TTL 65
@@ -108,6 +108,9 @@ typedef const char * event_name;
 
 //Specific to Delayed ACK
 #define DEFAULT_DELAY_COUNT 2
+
+//Specific to UDP
+#define UDP_HEADER_LENGTH_BYTES 8
 
 /*
  * Represents various priorities.

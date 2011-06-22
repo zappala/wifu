@@ -12,8 +12,10 @@
 #include "events/protocol_events/SendPacketEvent.h"
 #include "events/framework_events/NetworkReceivePacketEvent.h"
 #include "events/framework_events/ResponseEvent.h"
+#include "packet/UDPPacket.h"
 
 #include "contexts/SimpleUDPReliabilityContext.h"
+#include "Math.h"
 
 class SimpleUDPReliabilityState : public State {
 public:
@@ -25,12 +27,14 @@ public:
     virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     virtual void state_receive_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, ReceiveBufferNotEmptyEvent* e);
     virtual void state_receive(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e);
+    virtual void state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e);
 
 private:
     void create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e);
 
     void handle_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
-
+    void send_packets(Context* c, QueueProcessor<Event*>* q, Event* e);
+    void send_one_packet(Context* c, QueueProcessor<Event*>* q, Event* e);
 };
 
 #endif	/* _SIMPLEUDPRELIABILITYSTATE_H */
