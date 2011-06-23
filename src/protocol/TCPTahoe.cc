@@ -53,12 +53,17 @@ void TCPTahoe::icontext_listen(QueueProcessor<Event*>* q, ListenEvent* e) {
 void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
     //    cout << "TCPTahoe::icontext_receive_packet(): " << endl;
 
+
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
     TCPPacket* p = (TCPPacket*) e->get_packet();
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c->get_reliability();
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c->get_connection_manager();
     //    cout << p->to_s() << endl;
+
+    if(!p->is_valid_tcp_checksum()) {
+        return;
+    }
 
     // validate any ack number
     if (p->is_tcp_ack() && !is_valid_ack_number(rc, p)) {
@@ -134,9 +139,8 @@ void TCPTahoe::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent* 
     c->get_connection_manager()->icontext_send_packet(q, e);
     c->get_congestion_control()->icontext_send_packet(q, e);
 
-    //        cout << "TCPTahoe::icontext_send_packet(): " << endl;
-    //    cout << p->to_s() << endl;
-
+    p->pack();
+    p->calculate_and_set_tcp_checksum();
     send_network_packet(e->get_socket(), p);
 }
 
