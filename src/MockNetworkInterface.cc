@@ -22,15 +22,18 @@ void MockNetworkInterface::imodule_network_receive(WiFuPacket* p) {
 }
 
 void MockNetworkInterface::imodule_network_send(Event* e) {
+    cout << "MockNetworkInterface::network_send()" << endl;
     NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
     WiFuPacket* p = event->get_packet();
+    assert(p);
+
     TCPPacket* tcp_packet = (TCPPacket*) p;
     tcp_packet->pack();
 
     int delay = get_delay(tcp_packet);
 
-//    cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
-    assert(p);
+    cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
+    
 //    cout << p->to_s_format() << endl;
 //    cout << p->to_s() << endl;
     logger.log(p);

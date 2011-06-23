@@ -76,12 +76,20 @@ using namespace std;
 #define dispatcher Dispatcher::instance()
 #define optionparser OptionParser::instance()
 
-void main_signal_manager(int signal) {
-    switch (signal) {
+void main_signal_manager(int sig) {
+    switch (sig) {
         case SIGINT:
         case SIGQUIT:
         case SIGTERM:
             MainSemaphore::instance().post();
+            break;
+        case SIGSEGV:
+            signal(SIGSEGV, SIG_DFL);
+            cout << "wifu-end Segmentation Fault" << endl;
+            abort();
+            break;
+        default:
+            break;
     }
 }
 
@@ -89,6 +97,7 @@ void register_signals() {
     signal(SIGINT, main_signal_manager);
     signal(SIGQUIT, main_signal_manager);
     signal(SIGTERM, main_signal_manager);
+    signal(SIGSEGV, main_signal_manager);
 }
 
 void register_simple_tcp() {
@@ -199,10 +208,10 @@ void register_udp() {
 
 void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
-    register_simple_tcp();
+//    register_simple_tcp();
     register_tcp_tahoe();
-    register_tcp_atp();
-    register_udp();
+//    register_tcp_atp();
+//    register_udp();
 }
 
 void setup_network_interface(string& type) {

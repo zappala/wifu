@@ -249,6 +249,82 @@ namespace {
         ASSERT_EQ(value, p.get_tcp_receive_window_size());
     }
 
+    TEST(TCPPacketTest, PacketChecksumTest) {
+        TCPPacket p;
+
+        // check against a reference implementation
+        // I pulled these values from wireshark - RB
+        u_int32_t ip_header[5] = {
+            ntohl(0x450000c0),
+            ntohl(0x5faa4000),
+            ntohl(0x40062ec2),
+            ntohl(0xc0a81516),
+            ntohl(0xc0a81565)
+        };
+
+        memcpy(p.get_payload(), ip_header, sizeof (ip_header));
+
+        u_int32_t tcp_header[8] = {
+            ntohl(0x080103eb),
+            ntohl(0xadae227f),
+            ntohl(0x0701fb9a),
+            ntohl(0x801807d3),
+            ntohl(0xc4d70000),
+            ntohl(0x0101080a),
+            ntohl(0x100be952),
+            ntohl(0x0f9576fb)
+        };
+
+
+        memcpy(p.get_payload() + sizeof (ip_header), tcp_header, sizeof (tcp_header));
+
+        u_int32_t data[35] = {
+            ntohl(0x80000088),
+            ntohl(0xbf3a5db2),
+            ntohl(0x00000001),
+            ntohl(0x00000000),
+            ntohl(0x00000000),
+            ntohl(0x00000000),
+            ntohl(0x00000000),
+            ntohl(0x00000000),
+            ntohl(0x00000000),
+            ntohl(0x00000001),
+            ntohl(0x00000001),
+            ntohl(0x00008180),
+            ntohl(0x00000001),
+            ntohl(0x000003ec),
+            ntohl(0x000003ec),
+            ntohl(0x00000000),
+            ntohl(0x00fda000),
+            ntohl(0x00000000),
+            ntohl(0x00fdf000),
+            ntohl(0x00000000),
+            ntohl(0x00000000),
+            ntohl(0x80897cdc),
+            ntohl(0xc797ae56),
+            ntohl(0x00000000),
+            ntohl(0x0ae62453),
+            ntohl(0x4d8464e9),
+            ntohl(0x00000000),
+            ntohl(0x4e03ad0f),
+            ntohl(0x00000000),
+            ntohl(0x4e03ad0f),
+            ntohl(0x00000000),
+            ntohl(0x00001000),
+            ntohl(0x00000000),
+            ntohl(0x4ddab0a6),
+            ntohl(0x000c8c92)
+        };
+
+        memcpy(p.get_payload() + sizeof (ip_header) + sizeof(tcp_header), data, sizeof (data));
+
+        // test multiple times to ensure that doing one doesn't mess up the other
+        ASSERT_TRUE(p.is_valid_ip_checksum());
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+        ASSERT_TRUE(p.is_valid_ip_checksum());
+        ASSERT_TRUE(p.is_valid_tcp_checksum());
+    }
+
     TEST(TCPPacketTest, ChecksumTest) {
         RandomNumberSet<u_int16_t> random;
         TCPPacket p;
@@ -388,19 +464,19 @@ namespace {
         ASSERT_TRUE(p.is_valid_tcp_checksum());
 
         // TODO: change tcp timestamp option
-//        TCPTimestampOption* option = (TCPTimestampOption*) p.get_option(TCPOPT_TIMESTAMP);
-//        assert(option);
-//
-//        cout << ntohl(option->get_timestamp()) << endl;
-//        cout << ntohl(option->get_echo_reply()) << endl;
-//
-//        // ts
-//        u_int32_t ts = option->get_timestamp();
-//        option->set_timestamp();
-//        ASSERT_FALSE(p.is_valid_tcp_checksum());
-//        option->set_timestamp(ts);
-//        ASSERT_TRUE(p.is_valid_tcp_checksum());
-        
+        //        TCPTimestampOption* option = (TCPTimestampOption*) p.get_option(TCPOPT_TIMESTAMP);
+        //        assert(option);
+        //
+        //        cout << ntohl(option->get_timestamp()) << endl;
+        //        cout << ntohl(option->get_echo_reply()) << endl;
+        //
+        //        // ts
+        //        u_int32_t ts = option->get_timestamp();
+        //        option->set_timestamp();
+        //        ASSERT_FALSE(p.is_valid_tcp_checksum());
+        //        option->set_timestamp(ts);
+        //        ASSERT_TRUE(p.is_valid_tcp_checksum());
+
         // echo reply
     }
 

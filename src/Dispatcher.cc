@@ -36,6 +36,8 @@ void Dispatcher::reset() {
 
 void Dispatcher::process(Event* e) {
     mutex_.wait();
+
+    assert(e);
 //    cout << "Event name: " << type_name(*e) << endl;
 
     itr_ = map_.find(type_name(*e));
@@ -45,7 +47,7 @@ void Dispatcher::process(Event* e) {
         vector<QueueProcessor<Event*>*>* queue_processors = itr_->second;
 
         for (int i = 0; i < queue_processors->size(); i++) {
-//            cout << "Processing: " << type_name(*e) << endl;
+            cout << "Processing: " << type_name(*e) << endl;
             queue_processors->at(i)->enqueue(e);
         }
     }
