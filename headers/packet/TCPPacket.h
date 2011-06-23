@@ -73,8 +73,8 @@ public:
     virtual bool operator ==(const IPPacket& other) const;
     virtual bool operator !=(const IPPacket& other) const;
 
-    void insert_tcp_header_option(TCPHeaderOption* option);
-    TCPHeaderOption* remove_tcp_header_option(u_int8_t kind);
+    virtual void insert_tcp_header_option(TCPHeaderOption* option);
+    virtual TCPHeaderOption* remove_tcp_header_option(u_int8_t kind);
     TCPHeaderOption* get_option(u_int8_t kind);
 
 private:

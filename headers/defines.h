@@ -57,9 +57,13 @@
 #define LEVEL_STRING "level"
 #define ERRNO "errno"
 
+// ATP parameters
+#define ATP_BETA .75
+#define ATP_K 5
+#define ATP_THETA .1
+
 // Wifu defined socket options
 #define TCP_TIMESTAMP 20
-
 
 
 // WIFU_PORT is created from the phone number representaion of W-I-F-U
@@ -69,6 +73,7 @@
 // must fit in 8 bits
 #define SIMPLE_TCP 206
 #define TCP_TAHOE 207
+#define TCP_ATP 208
 #define UDP 217
 
 #define MTU 1500
