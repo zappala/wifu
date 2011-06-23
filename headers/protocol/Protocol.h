@@ -54,6 +54,7 @@
 #include "PriorityQueue.h"
 
 #include "packet/TCPPacket.h"
+#include "packet/ATPPacket.h"
 
 class Protocol : public Module, public IContext {
 public:
