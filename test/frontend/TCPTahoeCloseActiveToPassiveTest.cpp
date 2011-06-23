@@ -164,6 +164,8 @@ void tcp_tahoe_close_active_to_passive_drop_none() {
     // Send
     TCPPacket* syn = get_syn(TCP_TAHOE);
     syn->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
+    syn->pack();
+    syn->calculate_and_set_tcp_checksum();
     expected.add_packet(syn);
     // receive
     expected.add_packet(syn);
@@ -171,6 +173,8 @@ void tcp_tahoe_close_active_to_passive_drop_none() {
     // send
     TCPPacket* synack = get_synack(TCP_TAHOE);
     synack->set_tcp_receive_window_size(MAX_TCP_RECEIVE_WINDOW_SIZE);
+    synack->pack();
+    synack->calculate_and_set_tcp_checksum();
     expected.add_packet(synack);
     // receive
     expected.add_packet(synack);
@@ -182,6 +186,8 @@ void tcp_tahoe_close_active_to_passive_drop_none() {
     ack->set_source_port(1000);
     ack->set_destination_port(5002);
     ack->set_tcp_ack(true);
+    ack->pack();
+    ack->calculate_and_set_tcp_checksum();
 
     // send
     expected.add_packet(ack);
@@ -199,6 +205,8 @@ void tcp_tahoe_close_active_to_passive_drop_none() {
     data_packet->set_tcp_ack_number(2);
     data_packet->insert_tcp_header_option(new TCPTimestampOption());
     data_packet->set_data((unsigned char*) data.c_str(), data.size());
+    data_packet->pack();
+    data_packet->calculate_and_set_tcp_checksum();
 
     // send
     expected.add_packet(data_packet);
@@ -212,7 +220,8 @@ void tcp_tahoe_close_active_to_passive_drop_none() {
     ack_for_data->set_source_port(5002);
     ack_for_data->set_destination_port(1000);
     ack_for_data->set_tcp_ack(true);
-
+    ack_for_data->pack();
+    ack_for_data->calculate_and_set_tcp_checksum();
 
     // send
     expected.add_packet(ack_for_data);
@@ -232,6 +241,8 @@ void tcp_tahoe_close_active_to_passive_drop_none() {
     fin1->set_destination_port(5002);
     fin1->set_tcp_fin(true);
     fin1->set_tcp_ack(true);
+    fin1->pack();
+    fin1->calculate_and_set_tcp_checksum();
 
     // send
     expected.add_packet(fin1);
@@ -246,6 +257,8 @@ void tcp_tahoe_close_active_to_passive_drop_none() {
     ack_for_fin->set_source_port(5002);
     ack_for_fin->set_destination_port(1000);
     ack_for_fin->set_tcp_ack(true);
+    ack_for_fin->pack();
+    ack_for_fin->calculate_and_set_tcp_checksum();
 
     // send
     expected.add_packet(ack_for_fin);
@@ -262,6 +275,8 @@ void tcp_tahoe_close_active_to_passive_drop_none() {
     fin2->set_destination_port(1000);
     fin2->set_tcp_fin(true);
     fin2->set_tcp_ack(true);
+    fin2->pack();
+    fin2->calculate_and_set_tcp_checksum();
 
     // send
     expected.add_packet(fin2);
@@ -276,6 +291,8 @@ void tcp_tahoe_close_active_to_passive_drop_none() {
     ack2->set_source_port(1000);
     ack2->set_destination_port(5002);
     ack2->set_tcp_ack(true);
+    ack2->pack();
+    ack2->calculate_and_set_tcp_checksum();
 
     // send
     expected.add_packet(ack2);

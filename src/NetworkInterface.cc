@@ -39,7 +39,6 @@ void NetworkInterface::imodule_network_receive(WiFuPacket* p) {
 void NetworkInterface::imodule_network_send(Event* e) {
     NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
     // TODO: Check return value (bytes sent)?
-    event->get_packet()->pack();
     sender_.send(event->get_packet());
 }
 

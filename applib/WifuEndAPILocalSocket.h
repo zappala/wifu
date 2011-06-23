@@ -129,11 +129,11 @@ public:
         }
 
         if (!data) {
-            cout << "Socket: " << socket << " is deleted" << endl;
-            cout << "Message: " << message << endl;
+//            cout << "Socket: " << socket << " is deleted" << endl;
+//            cout << "Message: " << message << endl;
 
             //TODO: is this really an error?
-            //assert(data);
+            assert(data);
             return;
         }
 
@@ -489,8 +489,6 @@ public:
         ssize_t bytes_sent = send_to(write_file_, message);
 
         assert(message.length() <= MAX_BUFFER_SIZE);
-        cout << "Message length: " << message.length() << endl;
-        cout << "Bytes sent over unix socket: " << bytes_sent << endl;
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
@@ -518,7 +516,6 @@ public:
      * The return value may also be 0 if the peer performed an orderly shutdown
      */
     ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr, socklen_t *__restrict addr_len) {
-                cout << "wifu_recvfrom()" << endl;
         map<string, string> m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);

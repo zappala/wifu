@@ -18,8 +18,6 @@ void SlowStart::set_cwnd(Context* c, QueueProcessor<Event*>* q, NetworkReceivePa
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     ccc->set_cwnd(ccc->get_cwnd() + (u_int32_t) ccc->get_mss());
 
-    cout << "SlowStart::set_cwnd(), CWND: " << ccc->get_cwnd() << endl;
-
     if (ccc->get_cwnd() > (u_int32_t) ccc->get_ssthreshold()) {
         ccc->set_state(new CongestionAvoidance());
     }

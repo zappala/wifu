@@ -14,8 +14,6 @@ void CongestionAvoidance::set_cwnd(Context* c, QueueProcessor<Event*>* q, Networ
     u_int32_t mss = ccc->get_mss();
     u_int32_t cwnd = ccc->get_cwnd();
 
-    cout << "CongestionAvoidance::set_cwnd, CWND: " << ccc->get_cwnd() << endl;
-
     ccc->set_cwnd(cwnd + (mss * mss / cwnd));
 }
 

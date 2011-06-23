@@ -197,10 +197,10 @@ u_int16_t IPPacket::compute_next_checksum() {
     int length = get_ip_tot_length() - get_ip_header_length_bytes();
 
     struct iphdr ip;
-    memcpy(&ip, ip_, sizeof(struct iphdr));
+    memcpy(&ip, ip_, sizeof (struct iphdr));
 
     // we can do this because ipdr is bigger than ip_pseudo_header
-    unsigned char* packet = IPPacket::get_next_header() - sizeof(struct ip_pseudo_header);
+    unsigned char* packet = IPPacket::get_next_header() - sizeof (struct ip_pseudo_header);
 
     // setup IP pseudo header
     struct ip_pseudo_header* pseudo = (struct ip_pseudo_header*) packet;
@@ -210,10 +210,10 @@ u_int16_t IPPacket::compute_next_checksum() {
     pseudo->protocol = ip.protocol;
     pseudo->tot_len = htons(length);
 
-    u_int16_t packet_length = sizeof (struct ip_pseudo_header) + length;
+    u_int16_t packet_length = sizeof (struct ip_pseudo_header) +length;
     u_int16_t sum = IPPacket::checksum((u_int16_t*) packet, packet_length);
 
-    memcpy(ip_, &ip, sizeof(struct iphdr));
+    memcpy(ip_, &ip, sizeof (struct iphdr));
 
     return sum;
 }
@@ -247,19 +247,25 @@ int IPPacket::max_data_length() const {
 
 string IPPacket::to_s() const {
     stringstream s;
-    s << "ip "
-            << get_ip_source_address_s() << " "
-            << get_ip_destination_address_s() << " "
-            << (int) get_ip_protocol() << " "
-            << get_ip_tot_length() << " "
-            << (int) get_ip_header_length_bytes() << " "
-            << (int) get_ip_ttl();
+    s << "ip" << " ";
+    s << (int) get_ip_version() << " ";
+    s << (int) get_ip_header_length_words() << " ";
+    s << (int) get_ip_tos() << " ";
+    s << get_ip_tot_length() << " ";
+    s << get_ip_identifier() << " ";
+    s << get_ip_fragmentation_offset() << " ";
+    s << (int) get_ip_ttl() << " ";
+    s << (int) get_ip_protocol() << " ";
+    s << get_ip_checksum() << " ";
+    s << get_ip_source_address_s() << " ";
+    s << get_ip_destination_address_s() << " ";
+    
     return s.str();
 }
 
 string IPPacket::to_s_format() const {
     stringstream s;
-    s << "# ip source destination protocol datagram_length ihl ttl";
+    s << "# ip version ihl tos datagram_length id flagsANDfrag_off ttl protocol checksum source destination";
     return s.str();
 }
 

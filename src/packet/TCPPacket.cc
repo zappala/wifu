@@ -198,6 +198,7 @@ string TCPPacket::to_s() const {
             << get_destination_port() << " "
             << get_tcp_sequence_number() << " "
             << get_tcp_ack_number() << " "
+            << get_tcp_data_offset() << " "
             << get_tcp_header_length_bytes() << " "
             << is_tcp_urg() << " "
             << is_tcp_ack() << " "
@@ -205,14 +206,16 @@ string TCPPacket::to_s() const {
             << is_tcp_rst() << " "
             << is_tcp_syn() << " "
             << is_tcp_fin() << " "
-            << get_tcp_receive_window_size();
+            << get_tcp_receive_window_size() << " "
+            << get_tcp_checksum() << " "
+            << get_tcp_urgent_pointer();
     return s.str();
 }
 
 string TCPPacket::to_s_format() const {
     stringstream s;
     s << IPPacket::to_s_format() << endl
-            << "# tcp sport dport seq_num ack_num header_length URG ACK PSH RST SYN FIN rcv_wnd";
+            << "# tcp sport dport seq_num ack_num doff header_length URG ACK PSH RST SYN FIN rcv_wnd checksum urg_ptr";
     return s.str();
 }
 
@@ -227,7 +230,8 @@ bool TCPPacket::operator ==(const IPPacket& other) const {
     bool equal = other_ptr != NULL;
     equal = equal && tcp_->ack == other_ptr->tcp_->ack;
     equal = equal && tcp_->ack_seq == other_ptr->tcp_->ack_seq;
-    equal = equal && tcp_->check == other_ptr->tcp_->check;
+    // TODO: we cannot guarantee equal checksums in the event that timestamps are used
+//    equal = equal && tcp_->check == other_ptr->tcp_->check;
     equal = equal && tcp_->dest == other_ptr->tcp_->dest;
     equal = equal && tcp_->doff == other_ptr->tcp_->doff;
     equal = equal && tcp_->fin == other_ptr->tcp_->fin;
