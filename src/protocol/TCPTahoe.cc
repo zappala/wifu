@@ -67,7 +67,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
 
     // validate any ack number
     if (p->is_tcp_ack() && !is_valid_ack_number(rc, p)) {
-        cout << "INVALID ACK NUMBER" << endl;
+//        cout << "INVALID ACK NUMBER" << endl;
         rc->icontext_receive_packet(q, e);
         return;
     }
@@ -77,7 +77,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
     // We add on the case where no context exists for us to check (RCV.NXT == 0)
     if (!is_valid_sequence_number(rc, p)) {
         // TODO: is this the correct check?
-        cout << "INVALID SEQUENCE NUMBER" << endl;
+//        cout << "INVALID SEQUENCE NUMBER" << endl;
         //        cout << "Current state: " << cmc->get_state_name() << endl;
 
         // See my notes for May 25, 2011 for why this must be - RB
@@ -85,7 +85,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
             cmc->icontext_receive_packet(q, e);
         } else
             if (states_we_can_send_ack_.contains(cmc->get_state_name())) {
-            cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
+//            cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
             // <editor-fold defaultstate="collapsed" desc="Dispatch ACK">
             TCPPacket* response = new TCPPacket();
             response->insert_tcp_header_option(new TCPTimestampOption());
@@ -412,6 +412,6 @@ bool TCPTahoe::is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacke
 }
 
 bool TCPTahoe::is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p) {
-    cout << "TCPTahoe::is_valid_ack_number(), checking: " << rc->get_snd_una() << " <= " << p->get_tcp_ack_number() << " <= " << rc->get_snd_max() << endl;
+//    cout << "TCPTahoe::is_valid_ack_number(), checking: " << rc->get_snd_una() << " <= " << p->get_tcp_ack_number() << " <= " << rc->get_snd_max() << endl;
     return between_equal(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_max());
 }
