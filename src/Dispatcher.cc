@@ -47,7 +47,7 @@ void Dispatcher::process(Event* e) {
         vector<QueueProcessor<Event*>*>* queue_processors = itr_->second;
 
         for (int i = 0; i < queue_processors->size(); i++) {
-            cout << "Processing: " << type_name(*e) << endl;
+//            cout << "Processing: " << type_name(*e) << endl;
             queue_processors->at(i)->enqueue(e);
         }
     }
