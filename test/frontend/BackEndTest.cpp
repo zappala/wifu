@@ -10,7 +10,6 @@ void BackEndTest::TearDown() {
 
 void BackEndTest::start_backend() {
     string commandToExecute = get_command();
-    cout << commandToExecute << endl;
     int value = system(commandToExecute.c_str());
     if (value < 0)
         FAIL() << "Error starting wifu-end";
