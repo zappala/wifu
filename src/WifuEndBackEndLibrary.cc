@@ -93,7 +93,7 @@ void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
     event->put(FILE_STRING, get_file());
     string file = event->get_write_file();
     string response = event->get_response();
-    cout << "Response: " << response << endl;
+//    cout << "Response: " << response << endl;
     send_to(file, response);
 }
 
