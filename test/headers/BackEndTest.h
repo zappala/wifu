@@ -24,6 +24,7 @@ struct var {
     AddressPort* to_bind_;
     string expected_string;
     int countdown_;
+    int rec_buf_;
 };
 
 class BackEndTest : public ::testing::Test {

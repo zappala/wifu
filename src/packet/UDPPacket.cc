@@ -52,7 +52,9 @@ void UDPPacket::set_data(unsigned char* data, int length) {
 
     u_int8_t udp_len = UDP_HEADER_LENGTH_BYTES;
     u_int8_t ip_len = get_ip_header_length_bytes();
+    set_udp_length_bytes(udp_len + length);
     set_ip_tot_length(ip_len + udp_len + length);
+    calculate_and_set_udp_checksum();
 }
 
 int UDPPacket::max_data_length() {

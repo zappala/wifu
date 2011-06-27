@@ -29,7 +29,7 @@ SimpleUDP& SimpleUDP::instance() {
 }
 
 void SimpleUDP::icontext_socket(QueueProcessor<Event*>* q, SocketEvent* e) {
-    cout << "SimpleUDP::icontext_socket()" << endl;
+    //cout << "SimpleUDP::icontext_socket()" << endl;
     Socket* s = e->get_socket();
     map_[s] = new SimpleUDPIContextContainer();
 
@@ -38,7 +38,7 @@ void SimpleUDP::icontext_socket(QueueProcessor<Event*>* q, SocketEvent* e) {
     c->get_reliability()->icontext_socket(q, e);
     //c->get_connection_manager()->icontext_socket(q, e);
     //c->get_congestion_control()->icontext_socket(q, e);
-    cout << "SimpleUDP::icontext_socket() finished." << endl;
+    //cout << "SimpleUDP::icontext_socket() finished." << endl;
 }
 
 void SimpleUDP::icontext_bind(QueueProcessor<Event*>* q, BindEvent* e) {
@@ -64,20 +64,23 @@ void SimpleUDP::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceiv
 
     Socket* s = e->get_socket();
     SimpleUDPIContextContainer* c = map_.find(s)->second;
-    TCPPacket* p = (TCPPacket*) e->get_packet();
+    UDPPacket* p = (UDPPacket*) e->get_packet();
     SimpleUDPReliabilityContext* rc = (SimpleUDPReliabilityContext*) c->get_reliability();
     //ConnectionManagerContext* cmc = (ConnectionManagerContext*) c->get_connection_manager();
     //    cout << p->to_s() << endl;
 
+    //cout << "SimpleUDP::Received a packet, are we lacking a ResponseEvent?\n";
+    //cout << "Packet details: " << p->to_s() << endl;
+    
     rc->icontext_receive_packet(q, e);
-
 }
 
 void SimpleUDP::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent* e) {
     Socket* s = e->get_socket();
     SimpleUDPIContextContainer* c = map_.find(s)->second;
-    TCPPacket* p = (TCPPacket*) e->get_packet();
+    UDPPacket* p = (UDPPacket*) e->get_packet();
 
+    //cout << "SimpleUDP::icontext_send_packet(): verify data: " << p->get_data() << endl;
     c->get_reliability()->icontext_send_packet(q, e);
     //c->get_connection_manager()->icontext_send_packet(q, e);
     //c->get_congestion_control()->icontext_send_packet(q, e);
@@ -90,12 +93,12 @@ void SimpleUDP::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent*
 }
 
 void SimpleUDP::icontext_connect(QueueProcessor<Event*>* q, ConnectEvent* e) {
-    cout << "SimpleUDP::icontext_connect()" << endl;
+    //cout << "SimpleUDP::icontext_connect()" << endl;
     Socket* s = e->get_socket();
     SimpleUDPIContextContainer* c = map_.find(s)->second;
 
     AddressPort* destination = e->get_destination();
-    cout << "This is a print line: " << destination->to_s() << endl;
+    //cout << "This is a print line: " << destination->to_s() << endl;
     s->set_remote_address_port(destination);
     string source = SourceGetter::instance().get_source_address(destination->get_address());
     s->set_local_address_port(new AddressPort(source, s->get_local_address_port()->get_port()));
@@ -103,7 +106,7 @@ void SimpleUDP::icontext_connect(QueueProcessor<Event*>* q, ConnectEvent* e) {
     c->get_reliability()->icontext_connect(q, e);
     //c->get_connection_manager()->icontext_connect(q, e);
     //c->get_congestion_control()->icontext_connect(q, e);
-    cout << "SimpleUDP::icontext_connect() finished." << endl;
+    //cout << "SimpleUDP::icontext_connect() finished." << endl;
 
     ResponseEvent* response = new ResponseEvent(e->get_socket(), e->get_name(), e->get_map()[FILE_STRING]);
             response->put(ERRNO, Utils::itoa(0));
@@ -188,12 +191,12 @@ void SimpleUDP::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
 
     //If we aren't going to call connect(), these would need to be here:
     /*AddressPort* destination = new AddressPort(e->get_map()[ADDRESS_STRING], atoi(e->get_map()[PORT_STRING].c_str()));
-    cout << "This is a print line: " << destination->to_s() << endl;
+    //cout << "This is a print line: " << destination->to_s() << endl;
     s->set_remote_address_port(destination);
     string source = SourceGetter::instance().get_source_address(destination->get_address());
     s->get_local_address_port()->get_port();*/
 
-    cout << "SimpleUDP::icontext_send()\n";
+    //cout << "SimpleUDP::icontext_send()\n";
     if (is_room_in_send_buffer(e)) {
         save_in_buffer_and_send_events(q, e);
     } else {
@@ -205,7 +208,7 @@ void SimpleUDP::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
     //c->get_connection_manager()->icontext_send(q, e);
     //c->get_congestion_control()->icontext_send(q, e);
 
-    cout << "SimpleUDP::icontext_send() finished.\n";
+    //cout << "SimpleUDP::icontext_send() finished.\n";
 }
 
 void SimpleUDP::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
@@ -315,7 +318,7 @@ void SimpleUDP::save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEv
     Socket* s = e->get_socket();
     s->get_send_buffer().append(data, num_bytes_to_send);
 
-    cout << "SimpleUDP::save_in_buffer_and_send_events: Responding to client.\n";
+    //cout << "SimpleUDP::save_in_buffer_and_send_events: Responding to client.\n";
     ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
     response->put(RETURN_VALUE_STRING, Utils::itoa(num_bytes_to_send));
     response->put(ERRNO, Utils::itoa(0));

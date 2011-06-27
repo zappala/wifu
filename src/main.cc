@@ -59,6 +59,7 @@
 #include "TCPPacketFactory.h"
 #include "WiFuPacketFactory.h"
 #include "ATPPacketFactory.h"
+#include "UDPPacketFactory.h"
 
 //other
 #include "defines.h"
@@ -175,7 +176,7 @@ void register_tcp_atp() {
 
 void register_udp() {
     ProtocolManager::instance().support(UDP);
-    NetworkInterfaceFactory::instance().create().register_protocol(UDP, new WiFuPacketFactory());
+    NetworkInterfaceFactory::instance().create().register_protocol(UDP, new UDPPacketFactory());
 
     dispatcher.map_event(type_name(SocketEvent), &SimpleUDP::instance());
     dispatcher.map_event(type_name(BindEvent), &SimpleUDP::instance());
