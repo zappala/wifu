@@ -518,7 +518,7 @@ public:
      * The return value may also be 0 if the peer performed an orderly shutdown
      */
     ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr, socklen_t *__restrict addr_len) {
-                cout << "wifu_recvfrom()" << endl;
+                //cout << "wifu_recvfrom()" << endl;
         map<string, string> m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
