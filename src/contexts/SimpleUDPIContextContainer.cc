@@ -12,6 +12,9 @@ SimpleUDPIContextContainer::SimpleUDPIContextContainer() : saved_send_event_(0),
     //connection_manager_ = new ConnectionManagerContext();
     //congestion_control_ = new SimpleUDPCongestionControlContext(iss);
     reliability_ = new SimpleUDPReliabilityContext();
+    rl_ = new RateLimiterContext();
+    SendRateLimiter* rl_state = (SendRateLimiter*)(((RateLimiterContext*)rl_)->get_state());
+    rl_state->setRate(0, 0);
 }
 
 SimpleUDPIContextContainer::~SimpleUDPIContextContainer() {
@@ -28,6 +31,10 @@ IContext* SimpleUDPIContextContainer::get_congestion_control() {
 
 IContext* SimpleUDPIContextContainer::get_reliability() {
     return reliability_;
+}
+
+IContext* SimpleUDPIContextContainer::get_rate_limiter() {
+    return rl_;
 }
 
 SendEvent* SimpleUDPIContextContainer::get_saved_send_event() {

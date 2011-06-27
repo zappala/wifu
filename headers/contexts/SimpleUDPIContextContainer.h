@@ -15,6 +15,7 @@
 #include "contexts/TCPDelayedACKReliabilityContext.h"*/
 
 #include "contexts/SimpleUDPReliabilityContext.h"
+#include "contexts/RateLimiterContext.h"
 
 #include "events/framework_events/SendEvent.h"
 #include "events/framework_events/CloseEvent.h"
@@ -28,6 +29,7 @@ public:
     IContext* get_connection_manager();
     IContext* get_congestion_control();
     IContext* get_reliability();
+    IContext* get_rate_limiter();
 
     SendEvent* get_saved_send_event();
     void set_saved_send_event(SendEvent* e);
@@ -41,9 +43,10 @@ public:
 
 
 private:
-    IContext* connection_manager_;
-    IContext* congestion_control_;
+    //IContext* connection_manager_;
+    //IContext* congestion_control_;
     IContext* reliability_;
+    IContext* rl_;
 
     SendEvent* saved_send_event_;
     CloseEvent* saved_close_event_;

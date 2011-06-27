@@ -88,8 +88,11 @@ void SimpleUDP::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent*
 //        cout << "SimpleUDP::icontext_send_packet(): " << endl;
     //    cout << p->to_s() << endl;
 
-    //TODO: Support rate limiters!
-    send_network_packet(e->get_socket(), p);
+    //Support rate limiters! This will fire the send_network_packet event at the right time.
+    c->get_rate_limiter()->icontext_send_packet(q,e);
+
+    //Send.  Uncomment if we remove rate limiters.
+    //send_network_packet(e->get_socket(), p);
 }
 
 void SimpleUDP::icontext_connect(QueueProcessor<Event*>* q, ConnectEvent* e) {
@@ -172,6 +175,7 @@ void SimpleUDP::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFired
     c->get_reliability()->icontext_timer_fired_event(q, e);
     //c->get_connection_manager()->icontext_timer_fired_event(q, e);
     //c->get_congestion_control()->icontext_timer_fired_event(q, e);
+    c->get_rate_limiter()->icontext_timer_fired_event(q,e);
 }
 
 void SimpleUDP::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEvent* e) {
