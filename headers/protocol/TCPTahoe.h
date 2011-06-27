@@ -15,11 +15,13 @@
 #include "HashSet.h"
 
 class TCPTahoe : public Protocol {
-private:
-    TCPTahoe(int protocol = TCP_TAHOE);
+protected:
+	TCPTahoe(int protocol = TCP_TAHOE);
 
+	// TODO: Come up with generic IContextContainer
     tr1::unordered_map<Socket*, TCPTahoeIContextContainer*> map_;
 
+private:
     HashSet<string> states_we_can_send_ack_;
 
     bool is_room_in_send_buffer(SendEvent* e);

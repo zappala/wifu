@@ -23,9 +23,9 @@ public:
     TCPTahoeIContextContainer();
     ~TCPTahoeIContextContainer();
 
-    IContext* get_connection_manager();
-    IContext* get_congestion_control();
-    IContext* get_reliability();
+    virtual IContext* get_connection_manager();
+    virtual IContext* get_congestion_control();
+    virtual IContext* get_reliability();
 
     SendEvent* get_saved_send_event();
     void set_saved_send_event(SendEvent* e);

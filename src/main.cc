@@ -53,9 +53,12 @@
 #include "ProtocolManager.h"
 #include "protocol/SimpleTCP.h"
 #include "protocol/TCPTahoe.h"
-#include "TCPPacketFactory.h"
+#include "protocol/TCPATP.h"
 #include "protocol/SimpleUDP.h"
+
+#include "TCPPacketFactory.h"
 #include "WiFuPacketFactory.h"
+#include "ATPPacketFactory.h"
 
 //other
 #include "defines.h"
@@ -142,6 +145,34 @@ void register_tcp_tahoe() {
     dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPTahoe::instance());
 }
 
+void register_tcp_atp() {
+
+    ProtocolManager::instance().support(TCP_ATP);
+    NetworkInterfaceFactory::instance().create().register_protocol(TCP_ATP, new ATPPacketFactory());
+
+    dispatcher.map_event(type_name(SocketEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(BindEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(ListenEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(ConnectEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(AcceptEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(SendPacketEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(TimerFiredEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(ResendPacketEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(ReceiveEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(SendEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(CloseEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(DeleteSocketEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCPATP::instance());
+    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPATP::instance());
+}
+
 void register_udp() {
     ProtocolManager::instance().support(UDP);
     NetworkInterfaceFactory::instance().create().register_protocol(UDP, new WiFuPacketFactory());
@@ -170,6 +201,7 @@ void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
     register_simple_tcp();
     register_tcp_tahoe();
+    register_tcp_atp();
     register_udp();
 }
 
