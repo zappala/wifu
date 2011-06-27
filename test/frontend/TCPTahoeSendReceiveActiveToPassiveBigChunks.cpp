@@ -131,7 +131,7 @@ void tahoe_active_to_passive_big_chunks(string message) {
     cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
     int index = 0;
-    int chunk = 10000;
+    int chunk = 100000;
     int num_sent = 0;
 
 

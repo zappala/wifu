@@ -11,11 +11,15 @@
 #include <fstream>
 #include <stdint.h>
 #include <sys/time.h>
+#include <list>
+
+#include "packet/TCPPacket.h"
 
 #include "packet/WiFuPacket.h"
 #include "exceptions/IOError.h"
 #include "defines.h"
 #include "BinarySemaphore.h"
+#include "PacketLoggerItem.h"
 
 #define LOG_FILENAME "wifu-log.pcap"
 
@@ -57,18 +61,14 @@ private:
 
 	void close_log();
 
-	void set_time();
-
-	void fill_in_file_header();
-
 	void write_file_header();
 
 	const char* file_name_;
 	ofstream fileout_;
-	PcapFileHeader file_header_;
-	PcapPacketHeader packet_header_;
-	timeval time_;
 	BinarySemaphore lock_;
+
+        list<PacketLoggerItem*> items_;
+
 };
 
 #endif /* PACKETLOGGER_H_ */
