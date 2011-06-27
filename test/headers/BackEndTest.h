@@ -23,6 +23,7 @@ struct var {
     Semaphore* done_;
     AddressPort* to_bind_;
     string expected_string;
+    int countdown_;
 };
 
 class BackEndTest : public ::testing::Test {

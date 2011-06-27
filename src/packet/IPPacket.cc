@@ -195,6 +195,7 @@ u_int16_t IPPacket::compute_next_checksum() {
 
     // get length of IP payload
     int length = get_ip_tot_length() - get_ip_header_length_bytes();
+    //cout << "IPPacket::compute_next_checksum(): length = " << length << "\n";
 
     struct iphdr ip;
     memcpy(&ip, ip_, sizeof(struct iphdr));

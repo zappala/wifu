@@ -5,6 +5,8 @@
  * Created on June 22, 2011, 10:48 AM
  */
 
+#include <netinet/udp.h>
+
 #include "UDPPacket.h"
 
 UDPPacket::UDPPacket() : WiFuPacket(), data_set_(false){
@@ -22,13 +24,21 @@ void UDPPacket::init() {
     set_ip_tot_length(get_ip_header_length_bytes() + UDP_HEADER_LENGTH_BYTES);
 }
 
+u_int16_t UDPPacket::get_udp_length_bytes() const {
+    return ntohs(udp_->len);
+}
+
+void UDPPacket::set_udp_length_bytes(u_int16_t newlen) {
+    udp_->len = htons(newlen);
+}
+
 unsigned char* UDPPacket::get_data()
 {
     return get_next_header() + UDP_HEADER_LENGTH_BYTES;
 }
 
-int UDPPacket::get_length_bytes() {
-    return get_ip_tot_length() - get_ip_header_length_bytes();//the following would be the data length: - UDP_HEADER_LENGTH_BYTES;
+int UDPPacket::get_data_length_bytes() {
+    return get_ip_tot_length() - get_ip_header_length_bytes() - UDP_HEADER_LENGTH_BYTES;
 }
 
 void UDPPacket::set_data(unsigned char* data, int length) {
@@ -54,7 +64,7 @@ u_int16_t UDPPacket::get_udp_checksum() const {
 }
 
 void UDPPacket::set_udp_checksum(u_int16_t checksum) {
-    cout << "UDPPacket::set_udp_checksum(): UDP struct is " << udp_ << endl;
+    //cout << "UDPPacket::set_udp_checksum(): UDP struct is " << udp_ << endl;
     udp_->check = checksum;
 }
 
@@ -63,14 +73,16 @@ string UDPPacket::to_s() const {
     s << IPPacket::to_s() << endl
             << "udp "
             << get_source_port() << " "
-            << get_destination_port() << " ";
+            << get_destination_port() << " "
+            << get_udp_length_bytes() << " "
+            << get_udp_checksum();
     return s.str();
 }
 
 string UDPPacket::to_s_format() const {
     stringstream s;
     s << IPPacket::to_s_format() << endl
-      << "# UDP sport dport seq_num ack_num header_length URG ACK PSH RST SYN FIN rcv_wnd";
+      << "# UDP sport dport len checksum";
     return s.str();
 }
 
@@ -86,10 +98,25 @@ bool UDPPacket::operator ==(const IPPacket& other) const {
     equal = equal && udp_->check == other_ptr->udp_->check;
     equal = equal && udp_->dest == other_ptr->udp_->dest;
     equal = equal && udp_->source == other_ptr->udp_->source;
+    equal = equal && udp_->len == other_ptr->udp_->len;
     // TODO: we cannot guarantee what the receive window will be on tests
     //equal = equal && udp_->window == other_ptr->udp_->window;
 
     return equal;
+}
+
+void UDPPacket::calculate_and_set_udp_checksum() {
+    set_udp_checksum(0);
+    set_udp_checksum(compute_next_checksum());
+}
+
+bool UDPPacket::is_valid_udp_checksum() {
+    u_int16_t current_checksum = get_udp_checksum();
+    calculate_and_set_udp_checksum();
+    u_int16_t calculated_checksum = get_udp_checksum();
+    set_udp_checksum(current_checksum);
+    //cout << "UDPPacket::is_valid_udp_checksum(): current checksum is " << current_checksum << ", calculated is " << calculated_checksum << endl;
+    return current_checksum == calculated_checksum;
 }
 
 bool UDPPacket::operator !=(const IPPacket& other) const {

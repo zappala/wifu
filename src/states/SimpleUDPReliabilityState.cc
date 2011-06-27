@@ -64,6 +64,9 @@ void SimpleUDPReliabilityState::send_one_packet(Context* c, QueueProcessor<Event
 
     //ccc->set_snd_nxt(ccc->get_snd_nxt() + data_length);
 
+    cout << "SimpleUDPReliabilityState::send_one_packet(): remote address = " << s->get_remote_address_port()->get_address() << endl;
+    cout << "SimpleUDPReliabilityState::send_one_packet(): remote port = " << s->get_remote_address_port()->get_port() << endl;
+
     AddressPort* destination = s->get_remote_address_port();
     AddressPort* source = s->get_local_address_port();
 
