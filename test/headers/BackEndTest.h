@@ -22,9 +22,18 @@ struct var {
     Semaphore* flag_;
     Semaphore* done_;
     AddressPort* to_bind_;
+    //int countdown_;
+    //int rec_buf_;
     string expected_string;
+};
+
+struct udpvar {
+    Semaphore* sem_;
+    Semaphore* done_;
+    AddressPort* to_bind_;
     int countdown_;
     int rec_buf_;
+    string expected_string;
 };
 
 class BackEndTest : public ::testing::Test {

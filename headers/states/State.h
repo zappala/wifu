@@ -25,6 +25,8 @@
 #include "events/framework_events/SetSocketOptionEvent.h"
 #include "events/framework_events/GetSocketOptionEvent.h"
 
+#include "GarbageCollector.h"
+
 #include <string>
 #include "contexts/Context.h"
 
@@ -32,7 +34,7 @@ using namespace std;
 
 class Context;
 
-class State {
+class State : public gc{
 public:
     State();
 

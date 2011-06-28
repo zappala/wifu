@@ -81,6 +81,8 @@ void* tcp_tahoe_passive_to_active_big_chunks_thread(void* args) {
 void tcp_tahoe_passive_to_active_big_chunks(string message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
+    //cout << "Beginning test." << endl;
+
     pthread_t t;
     struct var v;
     Timer timer;
@@ -100,6 +102,8 @@ void tcp_tahoe_passive_to_active_big_chunks(string message) {
     }
 
     v.sem_->wait();
+
+    //cout << "Creating receiver." << endl;
 
     // Make sure that the thread is in the accept state
     usleep(50000);
