@@ -159,8 +159,8 @@ namespace {
         u_int8_t expected_padding = 2;
 
         struct wifu_tcp_timestamp ts;
-        ts.timestamp_value_ = timestamp;
-        ts.timestamp_echo_reply_ = echo_reply;
+        ts.timestamp_value_ = htonl(timestamp);
+        ts.timestamp_echo_reply_ = htonl(echo_reply);
 
         u_int8_t kind = option.get_kind();
         u_int8_t length = option.get_length();

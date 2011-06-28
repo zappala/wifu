@@ -290,14 +290,14 @@ namespace {
         memcpy(p.get_payload() + sizeof (ip_header) + sizeof(udp_header), data, sizeof (data));
 
         unsigned char* payload = p.get_payload();
-        cout << "Hex dump:\n";
-        hexDump (NULL, payload, sizeof(ip_header) + sizeof(udp_header) + sizeof(data));
+//        cout << "Hex dump:\n";
+//        hexDump (NULL, payload, sizeof(ip_header) + sizeof(udp_header) + sizeof(data));
 
-        cout << "Checksum was: " << p.get_udp_checksum() << "\n";
-
-        cout << "Packet contents: \n" << p.to_s() << "\n";
-
-        cout << "Data: \n" << p.get_data() << "\n";
+//        cout << "Checksum was: " << p.get_udp_checksum() << "\n";
+//
+//        cout << "Packet contents: \n" << p.to_s() << "\n";
+//
+//        cout << "Data: \n" << p.get_data() << "\n";
 
         // test multiple times to ensure that doing one doesn't mess up the other
         ASSERT_TRUE(p.is_valid_ip_checksum());

@@ -1,5 +1,3 @@
-#include <sstream>
-
 #include "packet/TCPTimestampOption.h"
 
 TCPTimestampOption::TCPTimestampOption() : TCPHeaderOption(TCPOPT_TIMESTAMP, TCPOLEN_TIMESTAMP) {
@@ -11,11 +9,11 @@ TCPTimestampOption::~TCPTimestampOption() {
 }
 
 u_int32_t TCPTimestampOption::get_timestamp() {
-    return get_wifu_tcp_timestamp()->timestamp_value_;
+    return ntohl(get_wifu_tcp_timestamp()->timestamp_value_);
 }
 
 u_int32_t TCPTimestampOption::get_echo_reply() {
-    return get_wifu_tcp_timestamp()->timestamp_echo_reply_;
+    return ntohl(get_wifu_tcp_timestamp()->timestamp_echo_reply_);
 }
 
 struct wifu_tcp_timestamp* TCPTimestampOption::get_wifu_tcp_timestamp() {
@@ -23,11 +21,11 @@ struct wifu_tcp_timestamp* TCPTimestampOption::get_wifu_tcp_timestamp() {
 }
 
 void TCPTimestampOption::set_echo_reply(u_int32_t echo) {
-    get_wifu_tcp_timestamp()->timestamp_echo_reply_ = echo;
+    get_wifu_tcp_timestamp()->timestamp_echo_reply_ = htonl(echo);
 }
 
 void TCPTimestampOption::set_timestamp(u_int32_t timestamp) {
-    get_wifu_tcp_timestamp()->timestamp_value_ = timestamp;
+    get_wifu_tcp_timestamp()->timestamp_value_ = htonl(timestamp);
 }
 
 string TCPTimestampOption::to_s() {

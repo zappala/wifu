@@ -61,13 +61,13 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c->get_connection_manager();
     //    cout << p->to_s() << endl;
 
-    if(!p->is_valid_tcp_checksum()) {
+    if (!p->is_valid_tcp_checksum()) {
         return;
     }
 
     // validate any ack number
     if (p->is_tcp_ack() && !is_valid_ack_number(rc, p)) {
-//        cout << "INVALID ACK NUMBER" << endl;
+        //        cout << "INVALID ACK NUMBER" << endl;
         rc->icontext_receive_packet(q, e);
         return;
     }
@@ -77,7 +77,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
     // We add on the case where no context exists for us to check (RCV.NXT == 0)
     if (!is_valid_sequence_number(rc, p)) {
         // TODO: is this the correct check?
-//        cout << "INVALID SEQUENCE NUMBER" << endl;
+        //        cout << "INVALID SEQUENCE NUMBER" << endl;
         //        cout << "Current state: " << cmc->get_state_name() << endl;
 
         // See my notes for May 25, 2011 for why this must be - RB
@@ -85,7 +85,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
             cmc->icontext_receive_packet(q, e);
         } else
             if (states_we_can_send_ack_.contains(cmc->get_state_name())) {
-//            cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
+            //            cout << "INVALID SEQUENCE NUMBER, SENDING ACK" << endl;
             // <editor-fold defaultstate="collapsed" desc="Dispatch ACK">
             TCPPacket* response = new TCPPacket();
             response->insert_tcp_header_option(new TCPTimestampOption());
@@ -226,9 +226,11 @@ void TCPTahoe::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEve
 void TCPTahoe::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = map_.find(s)->second;
+    
+    int available_space = get_available_room_in_send_buffer(e);
 
-    if (is_room_in_send_buffer(e)) {
-        save_in_buffer_and_send_events(q, e);
+    if (available_space > 0) {
+        save_in_buffer_and_send_events(q, e, available_space);
     } else {
         c->set_saved_send_event(e);
     }
@@ -288,9 +290,10 @@ void TCPTahoe::icontext_send_buffer_not_full(QueueProcessor<Event*>* q, SendBuff
     TCPTahoeIContextContainer* c = map_.find(s)->second;
 
     SendEvent* saved_send_event = c->get_saved_send_event();
+    int available_space = saved_send_event ? get_available_room_in_send_buffer(saved_send_event) : -1;
 
-    if (saved_send_event && is_room_in_send_buffer(saved_send_event)) {
-        save_in_buffer_and_send_events(q, saved_send_event);
+    if (available_space > 0) {
+        save_in_buffer_and_send_events(q, saved_send_event, available_space);
         c->set_saved_send_event(0);
     }
 
@@ -339,21 +342,22 @@ void TCPTahoe::icontext_get_socket_option(QueueProcessor<Event*>* q, GetSocketOp
     c->get_congestion_control()->icontext_get_socket_option(q, e);
 }
 
-bool TCPTahoe::is_room_in_send_buffer(SendEvent* e) {
+int TCPTahoe::get_available_room_in_send_buffer(SendEvent* e) {
     Socket* s = e->get_socket();
-    int num_bytes_to_send = e->data_length();
-    return s->get_send_buffer().size() + num_bytes_to_send <= MAX_BUFFER_SIZE;
+    int available = MAX_BUFFER_SIZE - s->get_send_buffer().size();
+    assert(0 <= available);
+    return available;
 }
 
-void TCPTahoe::save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e) {
-    int num_bytes_to_send = e->data_length();
+void TCPTahoe::save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e, int available_room_in_send_buffer) {
     const char* data = (const char*) e->get_data();
 
     Socket* s = e->get_socket();
-    s->get_send_buffer().append(data, num_bytes_to_send);
+    int num_to_insert = min(available_room_in_send_buffer, (int) e->data_length());
+    s->get_send_buffer().append(data, num_to_insert);
 
     ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-    response->put(RETURN_VALUE_STRING, Utils::itoa(num_bytes_to_send));
+    response->put(RETURN_VALUE_STRING, Utils::itoa(num_to_insert));
     response->put(ERRNO, Utils::itoa(0));
 
     dispatch(response);
@@ -412,6 +416,6 @@ bool TCPTahoe::is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacke
 }
 
 bool TCPTahoe::is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p) {
-//    cout << "TCPTahoe::is_valid_ack_number(), checking: " << rc->get_snd_una() << " <= " << p->get_tcp_ack_number() << " <= " << rc->get_snd_max() << endl;
+    //    cout << "TCPTahoe::is_valid_ack_number(), checking: " << rc->get_snd_una() << " <= " << p->get_tcp_ack_number() << " <= " << rc->get_snd_max() << endl;
     return between_equal(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_max());
 }

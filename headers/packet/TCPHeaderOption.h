@@ -16,6 +16,7 @@
 #define TCP_HEADER_OPTION_MAX_SIZE 40
 
 // TODO: do we need to do anything with byte ordering in this or any derived classes?
+// TODO: Yes, all items that are stored which are bigger than 16 bits will need to be saved in network byte order.
 
 class TCPHeaderOption : public gc {
 public:

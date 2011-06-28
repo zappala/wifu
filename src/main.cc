@@ -87,6 +87,14 @@ void main_signal_manager(int signal) {
         case SIGQUIT:
         case SIGTERM:
             MainSemaphore::instance().post();
+            break;
+        case SIGSEGV:
+            signal(SIGSEGV, SIG_DFL);
+            cout << "wifu-end Segmentation Fault" << endl;
+            abort();
+            break;
+        default:
+            break;
     }
 }
 
@@ -94,6 +102,7 @@ void register_signals() {
     signal(SIGINT, main_signal_manager);
     signal(SIGQUIT, main_signal_manager);
     signal(SIGTERM, main_signal_manager);
+    signal(SIGSEGV, main_signal_manager);
 }
 
 void register_simple_tcp() {

@@ -143,13 +143,11 @@ void tahoe_active_to_passive_big_chunks(string message) {
         if(index + chunk > message.length()) {
             chunk = message.length() - index;
         }
-//        cout << "Chunk size: " << chunk << endl;
         const char* data = message.data() + index;
 
         int sent = wifu_send(client, data, chunk, 0);
-        ASSERT_EQ(chunk, sent);
         num_sent += sent;
-        index += chunk;
+        index += sent;
     }
     send_timer.stop();
     cout << "Duration (us) to send: " << message.size() << " bytes on localhost: " << send_timer.get_duration_microseconds() << endl;

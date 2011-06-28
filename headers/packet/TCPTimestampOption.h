@@ -11,6 +11,8 @@
 #include "TCPHeaderOption.h"
 #include "Utils.h"
 #include <netinet/tcp.h>
+#include <netinet/in.h>
+#include <sstream>
 
 struct wifu_tcp_timestamp {
     u_int32_t timestamp_value_;

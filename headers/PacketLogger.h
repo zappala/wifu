@@ -11,11 +11,15 @@
 #include <fstream>
 #include <stdint.h>
 #include <sys/time.h>
+#include <list>
+
+#include "packet/TCPPacket.h"
 
 #include "packet/WiFuPacket.h"
 #include "exceptions/IOError.h"
 #include "defines.h"
 #include "BinarySemaphore.h"
+#include "PacketLoggerItem.h"
 
 #define LOG_FILENAME "wifu-log.pcap"
 
@@ -52,23 +56,31 @@ public:
 
 	void log(WiFuPacket* packet);
 
+        void flush();
+
+        /**
+         * Determines when to flush all saved packets to disk every count packets
+         * Default is flush count of 1 (write each packet to disk) and should be changed to perform better.
+         * @param count The number of packets to save before flushing to disk
+         */
+        void set_flush_value(int count);
+
 private:
 	PacketLogger();
 
 	void close_log();
 
-	void set_time();
-
-	void fill_in_file_header();
-
 	void write_file_header();
+
+        
 
 	const char* file_name_;
 	ofstream fileout_;
-	PcapFileHeader file_header_;
-	PcapPacketHeader packet_header_;
-	timeval time_;
 	BinarySemaphore lock_;
+
+        list<PacketLoggerItem*> items_;
+        int flush_count_;
+
 };
 
 #endif /* PACKETLOGGER_H_ */

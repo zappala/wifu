@@ -25,16 +25,16 @@
 #include "events/framework_events/SetSocketOptionEvent.h"
 #include "events/framework_events/GetSocketOptionEvent.h"
 
-#include "GarbageCollector.h"
-
 #include <string>
 #include "contexts/Context.h"
+
+#include "GarbageCollector.h"
 
 using namespace std;
 
 class Context;
 
-class State : public gc{
+class State : public gc {
 public:
     State();
 
