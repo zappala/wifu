@@ -11,21 +11,17 @@
 #include "contexts/TCPTahoeCongestionControlContext.h"
 #include "contexts/TCPTahoeReliabilityContext.h"
 #include "contexts/ConnectionManagerContext.h"
-//You can delete this one...
-#include "contexts/TCPDelayedACKReliabilityContext.h"
 
 #include "events/framework_events/SendEvent.h"
 #include "events/framework_events/CloseEvent.h"
 #include "events/framework_events/NetworkReceivePacketEvent.h"
 
-class TCPTahoeIContextContainer : public gc {
+#include "BasicIContextContainer.h"
+
+class TCPTahoeIContextContainer : public BasicIContextContainer {
 public:
     TCPTahoeIContextContainer();
     ~TCPTahoeIContextContainer();
-
-    virtual IContext* get_connection_manager();
-    virtual IContext* get_congestion_control();
-    virtual IContext* get_reliability();
 
     SendEvent* get_saved_send_event();
     void set_saved_send_event(SendEvent* e);
@@ -39,10 +35,6 @@ public:
     
 
 private:
-    IContext* connection_manager_;
-    IContext* congestion_control_;
-    IContext* reliability_;
-
     SendEvent* saved_send_event_;
     CloseEvent* saved_close_event_;
     NetworkReceivePacketEvent* fin_;

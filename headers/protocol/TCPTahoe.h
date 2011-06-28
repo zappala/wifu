@@ -13,13 +13,18 @@
 #include "contexts/TCPTahoeIContextContainer.h"
 #include "Math.h"
 #include "HashSet.h"
+#include "IContextContainerFactory.h"
+#include "TCPTahoeIContextContainerFactory.h"
+#include "contexts/BasicIContextContainer.h"
 
 class TCPTahoe : public Protocol {
-protected:
-	TCPTahoe(int protocol = TCP_TAHOE);
+private:
+    IContextContainerFactory* factory_;
 
-	// TODO: Come up with generic IContextContainer
-    tr1::unordered_map<Socket*, TCPTahoeIContextContainer*> map_;
+protected:
+    TCPTahoe(int protocol = TCP_TAHOE, IContextContainerFactory* factory = new TCPTahoeIContextContainerFactory());
+
+    tr1::unordered_map<Socket*, BasicIContextContainer*> map_;
 
     HashSet<string> states_we_can_send_ack_;
 

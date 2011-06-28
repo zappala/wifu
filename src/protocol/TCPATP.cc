@@ -26,7 +26,7 @@ void TCPATP::icontext_socket(QueueProcessor<Event*>* q, SocketEvent* e){
     Socket* s = e->get_socket();
     map_[s] = new ATPIContextContainer();
 
-    TCPTahoeIContextContainer* c = map_.find(s)->second;
+    BasicIContextContainer* c = map_.find(s)->second;
 
     c->get_reliability()->icontext_socket(q, e);
     c->get_connection_manager()->icontext_socket(q, e);
@@ -37,7 +37,7 @@ void TCPATP::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent* e)
     cout << "TCPATP::icontext_send_packet() : entered" << endl;
 
     Socket* s = e->get_socket();
-    TCPTahoeIContextContainer* c = map_.find(s)->second;
+    BasicIContextContainer* c = map_.find(s)->second;
 
     c->get_reliability()->icontext_send_packet(q, e);
     c->get_connection_manager()->icontext_send_packet(q, e);
@@ -59,10 +59,10 @@ void TCPATP::icontext_new_connection_initiated(QueueProcessor<Event*>* q, Connec
     Socket* listening_socket = e->get_socket();
     Socket* new_socket = e->get_new_socket();
 
-    TCPTahoeIContextContainer* listening_cc = map_.find(listening_socket)->second;
+    BasicIContextContainer* listening_cc = map_.find(listening_socket)->second;
     map_[new_socket] = listening_cc;
 
-    TCPTahoeIContextContainer* new_cc = new ATPIContextContainer();
+    BasicIContextContainer* new_cc = new ATPIContextContainer();
     map_[listening_socket] = new_cc;
 
     new_cc->get_reliability()->icontext_new_connection_initiated(q, e);
