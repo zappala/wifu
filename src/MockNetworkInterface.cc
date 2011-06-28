@@ -25,22 +25,52 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
 //    cout << "MockNetworkInterface::network_send()" << endl;
     NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
     WiFuPacket* p = event->get_packet();
-    assert(p);
+    int delay = 0;
 
-    TCPPacket* tcp_packet = (TCPPacket*) p;
-    tcp_packet->pack();
+    if(p->get_ip_protocol() == UDP)
+    {
+        ++udp_seq_;
+        //UDPPacket* udp_packet = (UDPPacket*) p;
 
-    int delay = get_delay(tcp_packet);
+        if (percent_ > 0) {
+            int random = rand() % 100 + 1;
+            if (random <= percent_) {
+                delay = -1;
+            }
+        } else if (!control_nums_to_delay_.empty()) {
+            pair<pair<int, int>, int> numbers = control_nums_to_delay_.front();
+            int seq = numbers.first.first;
+            //UDP will simply ignore ACKs and repurpose the seq num to be which packets the sender drops (first, second, etc.).
+            //int ack = numbers.first.second;
 
-//    cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
-    
-//    cout << p->to_s_format() << endl;
-//    cout << p->to_s() << endl;
+            if (seq == -1) {
+                percent_ = numbers.second;
+            }
+
+            if (udp_seq_ == seq) {
+                // erase front
+                control_nums_to_delay_.erase(control_nums_to_delay_.begin());
+                delay = numbers.second;
+            }
+        }
+    }
+    else
+    {
+        TCPPacket* tcp_packet = (TCPPacket*) p;
+        tcp_packet->pack();
+
+        delay = get_delay(tcp_packet);
+    }
+
+    //    cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
+        assert(p);
+    //    cout << p->to_s_format() << endl;
+    //    cout << p->to_s() << endl;
     logger.log(p);
     // drop the packet
     //    cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
     if (delay == -1) {
-//        cout << "MockNetworkInterface::network_send(), Dropping packet" << endl;
+        cout << "MockNetworkInterface::network_send(), Dropping packet" << endl;
         return;
     }
 
@@ -49,7 +79,9 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
     if (delay > 0) {
         // delay is in microseconds
         TimeoutEvent* timer = new TimeoutEvent(fake_socket_, 0, delay * 1000);
-        delayed_[timer] = tcp_packet;
+        //delayed_[timer] = tcp_packet;
+        //delayed_[timer] = (TCPPacket*)p;
+        delayed_[timer] = p;
         Dispatcher::instance().enqueue(timer);
         return;
     }
@@ -85,7 +117,7 @@ void MockNetworkInterface::receive(WiFuPacket* p) {
 void MockNetworkInterface::imodule_timer_fired(Event* e) {
     TimerFiredEvent* event = (TimerFiredEvent*) e;
 
-    map<TimeoutEvent*, TCPPacket*>::iterator itr = delayed_.find(event->get_timeout_event());
+    map<TimeoutEvent*, WiFuPacket*>::iterator itr = delayed_.find(event->get_timeout_event());
     if (itr != delayed_.end()) {
         //        cout << "MockNetworkInterface::timer_fired()" << endl;
         receive(itr->second);
@@ -93,7 +125,7 @@ void MockNetworkInterface::imodule_timer_fired(Event* e) {
     }
 }
 
-MockNetworkInterface::MockNetworkInterface() : INetworkInterface() {
+MockNetworkInterface::MockNetworkInterface() : INetworkInterface(), udp_seq_(0) {
     read_config_file();
 
     srand(time(NULL));

@@ -13,6 +13,8 @@
 #include "defines.h"
 #include <netinet/udp.h>
 
+using namespace std;
+
 class UDPPacket : public WiFuPacket{
 public:
     UDPPacket();
@@ -24,8 +26,14 @@ public:
     u_int16_t get_udp_checksum() const;
     void set_udp_checksum(u_int16_t checksum);
 
+    void calculate_and_set_udp_checksum();
+    bool is_valid_udp_checksum();
+
     virtual unsigned char* get_data();
-    virtual int get_length_bytes();
+    virtual int get_data_length_bytes();
+
+    virtual u_int16_t get_udp_length_bytes() const;
+    virtual void set_udp_length_bytes(u_int16_t newlen);
 
     virtual void set_data(unsigned char* data, int length);
 

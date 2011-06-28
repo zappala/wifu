@@ -8,12 +8,13 @@
 #include "contexts/SimpleUDPIContextContainer.h"
 
 SimpleUDPIContextContainer::SimpleUDPIContextContainer() : saved_send_event_(0), saved_close_event_(0), fin_(0) {
-    u_int32_t iss = 1;
+    
     //connection_manager_ = new ConnectionManagerContext();
     //congestion_control_ = new SimpleUDPCongestionControlContext(iss);
-    reliability_ = new SimpleUDPReliabilityContext(iss);
-    //Just testing some stuff, Randy...go ahead and delete this without feeling the need to kill me...
-    //reliability_ = new TCPDelayedACKReliabilityContext(iss);
+    reliability_ = new SimpleUDPReliabilityContext();
+    rl_ = new RateLimiterContext();
+    SendRateLimiter* rl_state = (SendRateLimiter*)(((RateLimiterContext*)rl_)->get_state());
+    rl_state->setRate(0, 0);
 }
 
 SimpleUDPIContextContainer::~SimpleUDPIContextContainer() {
@@ -30,6 +31,10 @@ IContext* SimpleUDPIContextContainer::get_congestion_control() {
 
 IContext* SimpleUDPIContextContainer::get_reliability() {
     return reliability_;
+}
+
+IContext* SimpleUDPIContextContainer::get_rate_limiter() {
+    return rl_;
 }
 
 SendEvent* SimpleUDPIContextContainer::get_saved_send_event() {

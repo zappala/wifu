@@ -6,6 +6,7 @@ RawSocketSender::RawSocketSender() {
 }
 
 ssize_t RawSocketSender::send(WiFuPacket* p) {
+    //cout << "RawSocketSender::send(): sending packet:\n" << p->to_s() << endl;
     int ret = sendto(socket_,
             p->get_payload(),
             p->get_ip_tot_length(),

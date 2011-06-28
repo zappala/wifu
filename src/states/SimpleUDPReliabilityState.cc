@@ -28,12 +28,12 @@ void SimpleUDPReliabilityState::state_send_packet(Context* c, QueueProcessor<Eve
 }
 
 void SimpleUDPReliabilityState::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
-    cout << "SimpleUDPReliabilityState::state_send_buffer_not_empty(), sending packets" << endl;
+    //cout << "SimpleUDPReliabilityState::state_send_buffer_not_empty(), sending packets" << endl;
     send_packets(c, q, e);
 }
 
 void SimpleUDPReliabilityState::send_packets(Context* c, QueueProcessor<Event*>* q, Event* e) {
-    cout << "SimpleUDPReliabilityState::send_packets()" << endl;
+    //cout << "SimpleUDPReliabilityState::send_packets()" << endl;
 
     Socket* s = e->get_socket();
     string& send_buffer = s->get_send_buffer();
@@ -46,7 +46,7 @@ void SimpleUDPReliabilityState::send_packets(Context* c, QueueProcessor<Event*>*
 
 void SimpleUDPReliabilityState::send_one_packet(Context* c, QueueProcessor<Event*>* q, Event* e) {
 
-    cout << "SimpleUDPReliabilityState::send_one_packet()" << endl;
+    //cout << "SimpleUDPReliabilityState::send_one_packet()" << endl;
     //SimpleUDPReliabilityState* ccc = (SimpleUDPReliabilityState*) c;
     Socket* s = e->get_socket();
 
@@ -63,6 +63,9 @@ void SimpleUDPReliabilityState::send_one_packet(Context* c, QueueProcessor<Event
     const char* data = send_buffer.data();
 
     //ccc->set_snd_nxt(ccc->get_snd_nxt() + data_length);
+
+    //cout << "SimpleUDPReliabilityState::send_one_packet(): remote address = " << s->get_remote_address_port()->get_address() << endl;
+    //cout << "SimpleUDPReliabilityState::send_one_packet(): remote port = " << s->get_remote_address_port()->get_port() << endl;
 
     AddressPort* destination = s->get_remote_address_port();
     AddressPort* source = s->get_local_address_port();
@@ -90,6 +93,7 @@ void SimpleUDPReliabilityState::state_timer_fired(Context* c, QueueProcessor<Eve
 }
 
 void SimpleUDPReliabilityState::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+    //cout << "SimpleUDPReliabilityState::state_receive_packet(): received packet.\n";
     UDPPacket* p = (UDPPacket*) e->get_packet();
 
     //TODO: How do we return data?
@@ -105,6 +109,7 @@ void SimpleUDPReliabilityState::state_receive_buffer_not_empty(Context* c, Queue
     Socket* s = e->get_socket();
 
     if (rc->get_receive_event() && !s->get_receive_buffer().empty()) {
+        //cout << "SimpleUDPReliabilityState::state_receive_buffer_not_empty(): dispatching data to saved receive event marker.\n";
         create_and_dispatch_received_data(c, q, rc->get_receive_event());
         rc->set_receive_event(0);
     }
@@ -115,15 +120,17 @@ void SimpleUDPReliabilityState::state_receive(Context* c, QueueProcessor<Event*>
     Socket* s = e->get_socket();
 
     if (!s->get_receive_buffer().empty()) {
+        //cout << "SimpleUDPReliabilityState::state_receive(): buffer not empty.\n";
         create_and_dispatch_received_data(c, q, e);
     } else {
+        //cout << "SimpleUDPReliabilityState::state_receive(): buffer empty, setting a receive event marker.\n";
         assert(!rc->get_receive_event());
         rc->set_receive_event(e);
     }
 }
 
 void SimpleUDPReliabilityState::create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
-    SimpleUDPReliabilityContext* rc = (SimpleUDPReliabilityContext*) c;
+    //SimpleUDPReliabilityContext* rc = (SimpleUDPReliabilityContext*) c;
     Socket* s = e->get_socket();
     int buffer_size = e->get_receive_buffer_size();
 
@@ -141,6 +148,7 @@ void SimpleUDPReliabilityState::create_and_dispatch_received_data(Context* c, Qu
     response->put(RETURN_VALUE_STRING, Utils::itoa(data.size()));
     response->put(ERRNO, Utils::itoa(0));
 
+    //cout << "SimpleUDPReliabilityState::create_and_dispatch_received_data(): dispatching ResponseEvent.\n";
     Dispatcher::instance().enqueue(response);
     q->enqueue(new ReceiveBufferNotFullEvent(s));
 }
@@ -150,6 +158,8 @@ void SimpleUDPReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* 
     UDPPacket* p = (UDPPacket*) e->get_packet();
     Socket* s = e->get_socket();
 
+    //cout << "SimpleUDPReliabilityState::handle_data(): putting packet data in receive buffer.\n";
+
     string& receive_buffer = s->get_receive_buffer();
     u_int32_t before_rcv_buffer_size = receive_buffer.size();
     receive_buffer.append((const char*)p->get_data());
@@ -157,7 +167,9 @@ void SimpleUDPReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* 
     u_int32_t amount_put_in_receive_buffer = after_receive_buffer_size - before_rcv_buffer_size;
     assert(amount_put_in_receive_buffer >= 0);
 
+    //cout << "SimpleUDPReliabilityState::handle_data(): Data size = " << amount_put_in_receive_buffer << endl;
     if (amount_put_in_receive_buffer > 0) {
+        //cout << "SimpleUDPReliabilityState::handle_data(): enquing ReceiveBufferNotEmptyEvent.\n";
         q->enqueue(new ReceiveBufferNotEmptyEvent(s));
     }
 }

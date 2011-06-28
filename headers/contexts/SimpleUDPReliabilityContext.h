@@ -10,7 +10,8 @@
 
 #include <sys/types.h>
 
-#include "OutstandingDataContext.h"
+//#include "OutstandingDataContext.h"
+#include "Context.h"
 #include "states/SimpleUDPReliabilityState.h"
 
 #include "events/framework_events/TimeoutEvent.h"
@@ -20,19 +21,19 @@
 #include "defines.h"
 
 
-class SimpleUDPReliabilityContext : public OutstandingDataContext {
+class SimpleUDPReliabilityContext : public Context{
 public:
-    SimpleUDPReliabilityContext(u_int32_t iss);
+    SimpleUDPReliabilityContext();
     virtual ~SimpleUDPReliabilityContext();
 
     bool is_initialized();
     void set_initialized();
 
-    u_int32_t get_rcv_nxt();
-    void set_rcv_nxt(u_int32_t rcv_nxt);
-
-    u_int16_t get_rcv_wnd();
-    void set_rcv_wnd(u_int16_t rcv_wnd);
+//    u_int32_t get_rcv_nxt();
+//    void set_rcv_nxt(u_int32_t rcv_nxt);
+//
+//    u_int16_t get_rcv_wnd();
+//    void set_rcv_wnd(u_int16_t rcv_wnd);
 //
 //    TimeoutEvent* get_timeout_event();
 //    void set_timeout_event(TimeoutEvent* e);

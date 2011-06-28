@@ -20,19 +20,23 @@ void NetworkInterface::imodule_network_receive(WiFuPacket* p) {
     AddressPort* remote = p->get_source_address_port();
     AddressPort* local = p->get_dest_address_port();
 
+    //cout << "Network receiving packet: " << p->to_s() << endl;
     Socket* s = SocketCollection::instance().get_by_local_and_remote_ap(local, remote);
 
     if (!s) {
+        //cout << "Trying to find socket...\n";
         s = SocketCollection::instance().get_by_local_ap(local);
     }
 
     if (!s) {
         // No bound local socket
         //TODO: should it really just return like this or should it throw an exception? -Scott
+        //cout << "Dropping packet, we didn't find a valid socket...\n";
         return;
     }
 
     Event* e = new NetworkReceivePacketEvent(s, p);
+    //cout << "NetworkInterface::imodule_network_receive: dispatching NetworkReceivePacketEvent.\n";
     Dispatcher::instance().enqueue(e);
 }
 

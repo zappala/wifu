@@ -14,7 +14,7 @@
 
 #include "../headers/packet/ATPPacket.h"
 
-void hexDump (char *desc, void *addr, int len);
+//void hexDump (char *desc, void *addr, int len);
 void binDump (char *desc, void *addr, int len);
 
 // TODO: Look at TCPPacektTest.cpp for things to test
@@ -636,7 +636,7 @@ void binDump (char *desc, void *addr, int len) {
 
 
 
-void hexDump (char *desc, void *addr, int len) {
+/*void hexDump (char *desc, void *addr, int len) {
     int i;
     unsigned char buff[17];       // stores the ASCII data
     unsigned char *pc = (unsigned char*)addr;     // cast to make the code cleaner.
@@ -678,5 +678,5 @@ void hexDump (char *desc, void *addr, int len) {
 
     // And print the final ASCII bit.
     printf ("  %s\n", buff);
-}
+}*/
 

@@ -7,6 +7,7 @@
 
 #include "protocol/SimpleUDP.h"
 #include "MockNetworkInterface.h"
+#include "SourceGetter.h"
 
 SimpleUDP::SimpleUDP(int protocol) : Protocol(protocol) {
     /*states_we_can_send_ack_.insert(type_name(Established));
@@ -28,7 +29,7 @@ SimpleUDP& SimpleUDP::instance() {
 }
 
 void SimpleUDP::icontext_socket(QueueProcessor<Event*>* q, SocketEvent* e) {
-    //    cout << "SimpleUDP::icontext_socket()" << endl;
+    //cout << "SimpleUDP::icontext_socket()" << endl;
     Socket* s = e->get_socket();
     map_[s] = new SimpleUDPIContextContainer();
 
@@ -37,6 +38,7 @@ void SimpleUDP::icontext_socket(QueueProcessor<Event*>* q, SocketEvent* e) {
     c->get_reliability()->icontext_socket(q, e);
     //c->get_connection_manager()->icontext_socket(q, e);
     //c->get_congestion_control()->icontext_socket(q, e);
+    //cout << "SimpleUDP::icontext_socket() finished." << endl;
 }
 
 void SimpleUDP::icontext_bind(QueueProcessor<Event*>* q, BindEvent* e) {
@@ -62,20 +64,23 @@ void SimpleUDP::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceiv
 
     Socket* s = e->get_socket();
     SimpleUDPIContextContainer* c = map_.find(s)->second;
-    TCPPacket* p = (TCPPacket*) e->get_packet();
+    UDPPacket* p = (UDPPacket*) e->get_packet();
     SimpleUDPReliabilityContext* rc = (SimpleUDPReliabilityContext*) c->get_reliability();
     //ConnectionManagerContext* cmc = (ConnectionManagerContext*) c->get_connection_manager();
     //    cout << p->to_s() << endl;
 
+    //cout << "SimpleUDP::Received a packet, are we lacking a ResponseEvent?\n";
+    //cout << "Packet details: " << p->to_s() << endl;
+    
     rc->icontext_receive_packet(q, e);
-
 }
 
 void SimpleUDP::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent* e) {
     Socket* s = e->get_socket();
     SimpleUDPIContextContainer* c = map_.find(s)->second;
-    TCPPacket* p = (TCPPacket*) e->get_packet();
+    UDPPacket* p = (UDPPacket*) e->get_packet();
 
+    //cout << "SimpleUDP::icontext_send_packet(): verify data: " << p->get_data() << endl;
     c->get_reliability()->icontext_send_packet(q, e);
     //c->get_connection_manager()->icontext_send_packet(q, e);
     //c->get_congestion_control()->icontext_send_packet(q, e);
@@ -83,17 +88,34 @@ void SimpleUDP::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent*
 //        cout << "SimpleUDP::icontext_send_packet(): " << endl;
     //    cout << p->to_s() << endl;
 
-    //TODO: Support rate limiters!
-    send_network_packet(e->get_socket(), p);
+    //Support rate limiters! This will fire the send_network_packet event at the right time.
+    c->get_rate_limiter()->icontext_send_packet(q,e);
+
+    //Send.  Uncomment if we remove rate limiters.
+    //send_network_packet(e->get_socket(), p);
 }
 
 void SimpleUDP::icontext_connect(QueueProcessor<Event*>* q, ConnectEvent* e) {
+    //cout << "SimpleUDP::icontext_connect()" << endl;
     Socket* s = e->get_socket();
     SimpleUDPIContextContainer* c = map_.find(s)->second;
+
+    AddressPort* destination = e->get_destination();
+    //cout << "This is a print line: " << destination->to_s() << endl;
+    s->set_remote_address_port(destination);
+    string source = SourceGetter::instance().get_source_address(destination->get_address());
+    s->set_local_address_port(new AddressPort(source, s->get_local_address_port()->get_port()));
 
     c->get_reliability()->icontext_connect(q, e);
     //c->get_connection_manager()->icontext_connect(q, e);
     //c->get_congestion_control()->icontext_connect(q, e);
+    //cout << "SimpleUDP::icontext_connect() finished." << endl;
+
+    ResponseEvent* response = new ResponseEvent(e->get_socket(), e->get_name(), e->get_map()[FILE_STRING]);
+            response->put(ERRNO, Utils::itoa(0));
+            response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+
+    dispatch(response);
 }
 
 void SimpleUDP::icontext_accept(QueueProcessor<Event*>* q, AcceptEvent* e) {
@@ -130,7 +152,7 @@ void SimpleUDP::icontext_new_connection_initiated(QueueProcessor<Event*>* q, Con
 }
 
 void SimpleUDP::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
-//    Socket* s = e->get_socket();
+    Socket* s = e->get_socket();
 //    SimpleUDPIContextContainer* c = map_.find(s)->second;
 //
 //
@@ -140,10 +162,10 @@ void SimpleUDP::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
 //        c->set_saved_close_event(e);
 //    }
 //
-//    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-//    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
-//    response->put(ERRNO, Utils::itoa(0));
-//    dispatch(response);
+    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+    response->put(ERRNO, Utils::itoa(0));
+    dispatch(response);
 }
 
 void SimpleUDP::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFiredEvent* e) {
@@ -153,6 +175,7 @@ void SimpleUDP::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFired
     c->get_reliability()->icontext_timer_fired_event(q, e);
     //c->get_connection_manager()->icontext_timer_fired_event(q, e);
     //c->get_congestion_control()->icontext_timer_fired_event(q, e);
+    c->get_rate_limiter()->icontext_timer_fired_event(q,e);
 }
 
 void SimpleUDP::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEvent* e) {
@@ -170,6 +193,14 @@ void SimpleUDP::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
     Socket* s = e->get_socket();
     SimpleUDPIContextContainer* c = map_.find(s)->second;
 
+    //If we aren't going to call connect(), these would need to be here:
+    /*AddressPort* destination = new AddressPort(e->get_map()[ADDRESS_STRING], atoi(e->get_map()[PORT_STRING].c_str()));
+    //cout << "This is a print line: " << destination->to_s() << endl;
+    s->set_remote_address_port(destination);
+    string source = SourceGetter::instance().get_source_address(destination->get_address());
+    s->get_local_address_port()->get_port();*/
+
+    //cout << "SimpleUDP::icontext_send()\n";
     if (is_room_in_send_buffer(e)) {
         save_in_buffer_and_send_events(q, e);
     } else {
@@ -180,6 +211,8 @@ void SimpleUDP::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
     c->get_reliability()->icontext_send(q, e);
     //c->get_connection_manager()->icontext_send(q, e);
     //c->get_congestion_control()->icontext_send(q, e);
+
+    //cout << "SimpleUDP::icontext_send() finished.\n";
 }
 
 void SimpleUDP::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
@@ -289,6 +322,7 @@ void SimpleUDP::save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEv
     Socket* s = e->get_socket();
     s->get_send_buffer().append(data, num_bytes_to_send);
 
+    //cout << "SimpleUDP::save_in_buffer_and_send_events: Responding to client.\n";
     ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
     response->put(RETURN_VALUE_STRING, Utils::itoa(num_bytes_to_send));
     response->put(ERRNO, Utils::itoa(0));

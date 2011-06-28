@@ -7,7 +7,7 @@
 
 #include "contexts/SimpleUDPReliabilityContext.h"
 
-SimpleUDPReliabilityContext::SimpleUDPReliabilityContext(u_int32_t iss) : OutstandingDataContext(iss), initialized_(false), rcv_nxt_(0), receive_event_(0) {
+SimpleUDPReliabilityContext::SimpleUDPReliabilityContext() : Context(), initialized_(false), rcv_nxt_(0), receive_event_(0) {
     set_state(new SimpleUDPReliabilityState());
 }
 
@@ -23,13 +23,13 @@ void SimpleUDPReliabilityContext::set_initialized() {
     initialized_ = true;
 }
 
-u_int32_t SimpleUDPReliabilityContext::get_rcv_nxt() {
-    return rcv_nxt_;
-}
-
-void SimpleUDPReliabilityContext::set_rcv_nxt(u_int32_t rcv_nxt) {
-    rcv_nxt_ = rcv_nxt;
-}
+//u_int32_t SimpleUDPReliabilityContext::get_rcv_nxt() {
+//    return rcv_nxt_;
+//}
+//
+//void SimpleUDPReliabilityContext::set_rcv_nxt(u_int32_t rcv_nxt) {
+//    rcv_nxt_ = rcv_nxt;
+//}
 //
 //u_int16_t SimpleUDPReliabilityContext::get_rcv_wnd() {
 //    return rcv_wnd_;

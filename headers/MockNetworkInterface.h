@@ -61,9 +61,11 @@ private:
 
     int percent_;
 
-    map<TimeoutEvent*, TCPPacket*> delayed_;
+    map<TimeoutEvent*, WiFuPacket*> delayed_;
 
     Socket* fake_socket_;
+
+    int udp_seq_;
 };
 
 #endif	/* _MOCKNETWORKINTERFACE_H */

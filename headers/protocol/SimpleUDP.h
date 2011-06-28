@@ -18,7 +18,7 @@ private:
 
     tr1::unordered_map<Socket*, SimpleUDPIContextContainer*> map_;
 
-    HashSet<string> states_we_can_send_ack_;
+    //HashSet<string> states_we_can_send_ack_;
 
     bool is_room_in_send_buffer(SendEvent* e);
     void save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e);
