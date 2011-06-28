@@ -63,12 +63,13 @@ void* tcp_tahoe_passive_to_active_big_chunks_thread(void* args) {
         const char* data = message.data() + index;
 
         int sent = wifu_send(connection, data, chunk, 0);
-        EXPECT_EQ(chunk, sent);
         num_sent += sent;
-        index += chunk;
+        index += sent;
     }
 
     EXPECT_EQ(message.length(), num_sent);
+
+    cout << "Done Sending data" << endl;
 
     wifu_close(connection);
     wifu_close(server);

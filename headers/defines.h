@@ -117,6 +117,8 @@ typedef const char * event_name;
 //Specific to UDP
 #define UDP_HEADER_LENGTH_BYTES 8
 
+#define FAKE_ETHERNET_HEADER_SIZE 14
+
 /*
  * Represents various priorities.
  * The lower the number, the higher the priority.

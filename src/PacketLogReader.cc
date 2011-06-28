@@ -22,16 +22,19 @@ NetworkTrace* PacketLogReader::get_trace() {
         while (more_packets_to_read()) {
             read_in_packet_header();
 
-            if (get_packet_header_pointer()->incl_len <= MTU)
+            if (get_packet_header_pointer()->incl_len <= MTU + FAKE_ETHERNET_HEADER_SIZE) {
                 filein_.read(packet_payload_, get_packet_header_pointer()->incl_len);
-            else
+            } else {
                 throw MalformedPacketException();
+            }
 
-            iphdr* header = reinterpret_cast<iphdr*> (packet_payload_);
+
+
+            iphdr* header = reinterpret_cast<iphdr*> (packet_payload_ + FAKE_ETHERNET_HEADER_SIZE);
             int protocol = header->protocol;
 
             WiFuPacket* packet = get_new_packet(protocol);
-            memcpy(packet->get_payload(), packet_payload_, get_packet_header_pointer()->incl_len);
+            memcpy(packet->get_payload(), packet_payload_ + FAKE_ETHERNET_HEADER_SIZE, packet->get_ip_tot_length());
 
             trace->add_packet(packet);
         }
@@ -96,7 +99,7 @@ WiFuPacket* PacketLogReader::get_new_packet(int protocol) {
         case TCP_TAHOE:
             return new TCPPacket();
         case TCP_ATP:
-        	return new ATPPacket();
+            return new ATPPacket();
         case 0:
             throw PacketProtocolNotSetException();
         default:

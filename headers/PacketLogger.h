@@ -56,6 +56,15 @@ public:
 
 	void log(WiFuPacket* packet);
 
+        void flush();
+
+        /**
+         * Determines when to flush all saved packets to disk every count packets
+         * Default is flush count of 1 (write each packet to disk) and should be changed to perform better.
+         * @param count The number of packets to save before flushing to disk
+         */
+        void set_flush_value(int count);
+
 private:
 	PacketLogger();
 
@@ -63,11 +72,14 @@ private:
 
 	void write_file_header();
 
+        
+
 	const char* file_name_;
 	ofstream fileout_;
 	BinarySemaphore lock_;
 
         list<PacketLoggerItem*> items_;
+        int flush_count_;
 
 };
 

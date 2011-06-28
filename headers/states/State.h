@@ -28,11 +28,13 @@
 #include <string>
 #include "contexts/Context.h"
 
+#include "GarbageCollector.h"
+
 using namespace std;
 
 class Context;
 
-class State {
+class State : public gc {
 public:
     State();
 
