@@ -77,6 +77,7 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
         // delay is in microseconds
         TimeoutEvent* timer = new TimeoutEvent(fake_socket_, 0, delay * 1000);
         //delayed_[timer] = tcp_packet;
+        //delayed_[timer] = (TCPPacket*)p;
         delayed_[timer] = p;
         Dispatcher::instance().enqueue(timer);
         return;

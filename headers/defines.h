@@ -75,6 +75,13 @@
 #define TCP_TAHOE 207
 #define TCP_ATP 208
 #define UDP 217
+#define TCP_DELAYEDACK 209
+#define TCP_FEW 210
+#define TCP_AP 211
+#define TCP_AP_FEW 212
+#define TCP_AP_DELAYEDACK 213
+#define TCP_FEW_DELAYEDACK 214
+#define TCP_AP_FEW_DELAYEDACK 215
 
 #define MTU 1500
 #define MAX_TTL 65
