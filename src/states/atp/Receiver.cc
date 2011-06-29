@@ -8,12 +8,9 @@
 #include "../../../headers/states/atp/Receiver.h"
 
 Receiver::Receiver() {
-	// TODO Auto-generated constructor stub
-
 }
 
 Receiver::~Receiver() {
-	// TODO Auto-generated destructor stub
 }
 
 void Receiver::state_enter(Context* c){
@@ -29,18 +26,12 @@ void Receiver::state_exit(Context* c){
 
 
 void Receiver::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e){
-	cout << "Receiver::state_receive_packet: entered" << endl;
-
 	ATPCongestionControlContext* ccc = (ATPCongestionControlContext*) c;
-	ATPPacket* packet = (ATPPacket*) e->get_packet();
+	ATPPacket* packet = dynamic_cast<ATPPacket *>(e->get_packet());
+	assert(packet != 0);
 
-	cout << "-------PACKET-------" << endl;
-	cout << "SYN: " << packet->is_tcp_syn() << endl;
-	cout << "ACK: " << packet->is_tcp_ack() << endl;
-	cout << "MAX DELAY: " << packet->get_atp_max_delay() << endl;
-	cout << "AVG DELAY: " << packet->get_atp_average_delay() << endl;
-	cout << "data: " << packet->get_data() << endl;
-	cout << "--------------------" << endl;
+	cout << "Receiver::state_receive_packet:" << endl;
+	printPacket(packet);
 
 
 
@@ -56,6 +47,7 @@ void Receiver::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Netwo
 
 	u_int32_t max_delay = packet->get_atp_max_delay();
 	u_int32_t previous_delay = ccc->get_average_delay();
+
 	double new_delay = calculateDelay(max_delay, previous_delay, ATP_BETA);
 	ccc->set_average_delay(new_delay);
 }
@@ -64,12 +56,14 @@ void Receiver::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPack
 	cout << "Receiver::state_send_packet: entered" << endl;
 
 	ATPCongestionControlContext* ccc = (ATPCongestionControlContext*) c;
-	ATPPacket* packet = (ATPPacket*) e->get_packet();
+	ATPPacket* packet = ATPPacket::convert_to_atp_packet(e->get_packet());
+	assert(packet != 0);
 
 	if(packet->is_tcp_ack()){
 		cout << "Receiver::state_send_packet: marking packet with delay (" << ccc->get_average_delay() << ")" << endl;
 
 		packet->set_atp_average_delay(ccc->get_average_delay());
+		send_packet(packet, e->get_socket());
 	}
 
 }
@@ -78,3 +72,4 @@ void Receiver::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPack
 double Receiver::calculateDelay(u_int32_t max, u_int32_t previous, double beta){
 	return (beta * previous + (1 - beta) * max);
 }
+

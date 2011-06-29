@@ -8,14 +8,12 @@
 #ifndef WAITING_H_
 #define WAITING_H_
 
-#include "contexts/ATPCongestionControlContext.h"
-#include "State.h"
+#include "TCPATPCongestionControl.h"
+
 #include "Sender.h"
 #include "Receiver.h"
 
-#include "packet/ATPPacket.h"
-
-class Waiting: public State {
+class Waiting: public TCPATPCongestionControl {
 public:
 	Waiting();
 	virtual ~Waiting();
@@ -23,7 +21,11 @@ public:
     virtual void state_enter(Context* c);
     virtual void state_exit(Context* c);
 
+    virtual void state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e);
+
     virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
+
+private:
 
 };
 

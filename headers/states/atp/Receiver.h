@@ -8,14 +8,12 @@
 #ifndef RECEIVEDATA_H_
 #define RECEIVEDATA_H_
 
-#include "State.h"
+#include "TCPATPCongestionControl.h"
+
 #include "contexts/ATPCongestionControlContext.h"
 
-#include "packet/ATPPacket.h"
 
-
-
-class Receiver: public State {
+class Receiver: public TCPATPCongestionControl {
 public:
 	Receiver();
 	virtual ~Receiver();

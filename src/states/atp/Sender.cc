@@ -7,13 +7,10 @@
 
 #include "../../../headers/states/atp/Sender.h"
 
-Sender::Sender() : SendRateLimiter() {
-	// TODO Auto-generated constructor stub
-
+Sender::Sender() {
 }
 
 Sender::~Sender() {
-	// TODO Auto-generated destructor stub
 }
 
 void Sender::state_enter(Context* c){
@@ -34,21 +31,17 @@ void Sender::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Network
 	cout << "Sender::state_receive_packet: entered" << endl;
 
 	ATPCongestionControlContext* ccc = (ATPCongestionControlContext*) c;
-	ATPPacket* packet = (ATPPacket*) e->get_packet();
 
-	cout << "-------PACKET-------" << endl;
-	cout << "SYN: " << packet->is_tcp_syn() << endl;
-	cout << "ACK: " << packet->is_tcp_ack() << endl;
-	cout << "MAX DELAY: " << packet->get_atp_max_delay() << endl;
-	cout << "AVG DELAY: " << packet->get_atp_average_delay() << endl;
-	cout << "data: " << packet->get_data() << endl;
-	cout << "--------------------" << endl;
+	ATPPacket* packet = dynamic_cast<ATPPacket *>(e->get_packet());
+	assert(packet != 0);
 
+	cout << "Sender::state_receive_packet:" << endl;
+	printPacket(packet);
 
 	// Don't care about the packet if it is not an ACK
 	// TODO: Maybe I want to know the delay of FIN packets
-	if(!packet->is_tcp_ack()){
-		cout << "Sender::state_receive_packet: didn't receive an ACK, don't care about it" << endl;
+	if(!packet->is_tcp_ack() || !between_equal_right(ccc->get_snd_una(), packet->get_tcp_ack_number(), ccc->get_snd_max())){
+		cout << "Sender::state_receive_packet: didn't receive an ACK or it is out of order" << endl;
 		return;
 	}
 
@@ -61,13 +54,62 @@ void Sender::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Network
 		return;
 	}
 
+	//cout << "Sender::state_receive_packet : updating window size" << endl;
+	//update_send_window(c, packet);
+
+
+	ccc->set_snd_una(packet->get_tcp_ack_number());
+
+	ccc->set_receiver_window_size(packet->get_tcp_receive_window_size());
+
+	update_sending_rate(c, packet);
+
+}
+
+void Sender::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e){
+	cout << "Sender::state_send_packet: entered" << endl;
+
+	ATPPacket* packet = ATPPacket::convert_to_atp_packet(e->get_packet());
+	assert(packet != 0);
+
+	super::state_send_packet(c, q, e);
+}
+
+void Sender::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
+	cout << "Sender::state_send_buffer_not_empty" << endl;
+	send_packets(c, q, e);
+}
+
+void Sender::state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e) {
+	//send_packets(c, q, e);
+}
+
+void Sender::update_send_window(Context * c, ATPPacket * p){
+	ATPCongestionControlContext* ccc = (ATPCongestionControlContext* )c;
+
+    // update send window (RFC p. 72)
+    if (less_than(ccc->get_snd_wnd1(), p->get_tcp_sequence_number()) ||
+            (ccc->get_snd_wnd1() == p->get_tcp_sequence_number() &&
+            less_than_or_equal(ccc->get_snd_wnd2(), p->get_tcp_ack_number()))) {
+
+        ccc->set_snd_wnd(p->get_tcp_receive_window_size());
+        ccc->set_snd_wnd1(p->get_tcp_sequence_number());
+        ccc->set_snd_wnd2(p->get_tcp_ack_number());
+    }
+}
+
+void Sender::update_sending_rate(Context * c, ATPPacket * p){
+	ATPCongestionControlContext* ccc = (ATPCongestionControlContext* )c;
+
 	u_int32_t average_delay = ccc->get_average_delay();
 	long int current_delay = getNanoseconds();
 
-	// TODO: make sure data types are correct here
-	double average_rate = 1 / average_delay;
-	double current_rate = 1 / current_delay;
+	cout << "Average delay = " << average_delay << endl;
+	cout << "Current delay = " << current_delay << endl;
 
+	// TODO: make sure data types are correct here
+	double average_rate = average_delay == 0 ? 0 : 1 / average_delay;
+	double current_rate = current_delay == 0 ? 0 : 1 / current_delay;
 
 	if(current_rate > average_rate){
 		cout << "Sender::state_receive_packet: decreasing sending rate" << endl;
@@ -83,20 +125,8 @@ void Sender::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Network
 		current_rate = current_rate + ((average_rate - current_rate) / ATP_K);
 		setRate(0, 1/current_rate);
 	}
+	else{
+		cout << "Sender::state_receive_packet: rate is staying the same" << endl;
+	}
 }
 
-void Sender::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e){
-	cout << "Sender::state_send_packet: entered" << endl;
-
-	ATPPacket* packet = (ATPPacket*) e->get_packet();
-
-	cout << "-------PACKET-------" << endl;
-	cout << "SYN: " << packet->is_tcp_syn() << endl;
-	cout << "ACK: " << packet->is_tcp_ack() << endl;
-	cout << "MAX DELAY: " << packet->get_atp_max_delay() << endl;
-	cout << "AVG DELAY: " << packet->get_atp_average_delay() << endl;
-	cout << "data: " << packet->get_data() << endl;
-	cout << "--------------------" << endl;
-
-	super::state_send_packet(c, q, e);
-}
