@@ -8,7 +8,14 @@ void compare_traces(NetworkTrace& expected) {
 }
 
 TCPPacket* get_base_tcp_packet(int protocol) {
-    TCPPacket* p = new TCPPacket();
+	TCPPacket* p;
+	if(protocol == TCP_ATP){
+		p = new ATPPacket();
+	}
+	else{
+		p = new TCPPacket();
+	}
+
     p->set_ip_protocol(protocol);
     p->set_ip_source_address_s("127.0.0.1");
     p->set_ip_destination_address_s("127.0.0.1");
