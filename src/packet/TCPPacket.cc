@@ -39,19 +39,9 @@ void TCPPacket::set_data(unsigned char* data, int length) {
 }
 
 void TCPPacket::pack() {
-    //    cout << "TCPPacket::pack()" << endl;
     GetTCPHeaderOptionsDataVisitor visitor(get_options_pointer());
     options_.accept(&visitor);
     visitor.append_padding();
-
-    // TODO: convert options to network byte order
-//    u_int32_t options_size = get_data() - get_options_pointer();
-//    assert(!(options_size % sizeof (u_int32_t)));
-//
-//    for (int i = 0; i < options_size; i += sizeof (u_int32_t)) {
-//        u_int32_t* current = (u_int32_t*) (get_options_pointer() + i);
-//        *current = htonl(*current);
-//    }
 }
 
 u_int32_t TCPPacket::get_tcp_sequence_number() const {
@@ -231,7 +221,7 @@ bool TCPPacket::operator ==(const IPPacket& other) const {
     equal = equal && tcp_->ack == other_ptr->tcp_->ack;
     equal = equal && tcp_->ack_seq == other_ptr->tcp_->ack_seq;
     // TODO: we cannot guarantee equal checksums in the event that timestamps are used
-//    equal = equal && tcp_->check == other_ptr->tcp_->check;
+    //    equal = equal && tcp_->check == other_ptr->tcp_->check;
     equal = equal && tcp_->dest == other_ptr->tcp_->dest;
     equal = equal && tcp_->doff == other_ptr->tcp_->doff;
     equal = equal && tcp_->fin == other_ptr->tcp_->fin;
@@ -276,7 +266,6 @@ TCPHeaderOption* TCPPacket::remove_tcp_header_option(u_int8_t kind) {
 
 TCPHeaderOption* TCPPacket::get_option(u_int8_t kind) {
     //TODO: parse options from payload if doff != sizeof(tcphdr) / 4 && options is empty
-
     if (options_.empty() && get_tcp_data_offset() > sizeof (tcphdr) / 4) {
         // unparsed options
         u_int8_t length = (get_tcp_data_offset() - (sizeof (tcphdr) / 4)) * 4;

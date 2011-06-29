@@ -30,7 +30,6 @@ public:
             //cout << "String capacity: " << data.capacity() << endl;
 
         }
-        cout << "Random string successfully generated.\n";
         return data;
     }
 };

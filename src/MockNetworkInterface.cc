@@ -3,12 +3,13 @@
 
 #define logger PacketLogger::instance()
 
-MockNetworkInterface& MockNetworkInterface::instance(){
+MockNetworkInterface& MockNetworkInterface::instance() {
     static MockNetworkInterface instance_;
     return instance_;
 }
 
 MockNetworkInterface::~MockNetworkInterface() {
+
 }
 
 void MockNetworkInterface::start() {
@@ -21,6 +22,7 @@ void MockNetworkInterface::imodule_network_receive(WiFuPacket* p) {
 }
 
 void MockNetworkInterface::imodule_network_send(Event* e) {
+//    cout << "MockNetworkInterface::network_send()" << endl;
     NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
     WiFuPacket* p = event->get_packet();
     int delay = 0;
@@ -56,6 +58,7 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
     {
         TCPPacket* tcp_packet = (TCPPacket*) p;
         tcp_packet->pack();
+
         delay = get_delay(tcp_packet);
     }
 
@@ -67,7 +70,7 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
     // drop the packet
     //    cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
     if (delay == -1) {
-        cout << "MockNetworkInterface::network_send(), Dropping packet" << endl;
+//        cout << "MockNetworkInterface::network_send(), Dropping packet" << endl;
         return;
     }
 

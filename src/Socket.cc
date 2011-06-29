@@ -1,4 +1,5 @@
 #include "Socket.h"
+#include "defines.h"
 
 Socket::Socket(int domain,
         int type,
@@ -14,6 +15,9 @@ Socket::Socket(int domain,
     remote_(remote),
     is_passive_(false) {
 
+    send_buffer_.reserve(MAX_BUFFER_SIZE);
+    receive_buffer_.reserve(MAX_BUFFER_SIZE);
+    resend_buffer_.reserve(MAX_BUFFER_SIZE);
 }
 
 Socket::~Socket() {

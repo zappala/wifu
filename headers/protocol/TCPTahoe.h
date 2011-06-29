@@ -13,23 +13,27 @@
 #include "contexts/TCPTahoeIContextContainer.h"
 #include "Math.h"
 #include "HashSet.h"
+#include "IContextContainerFactory.h"
+#include "TCPTahoeIContextContainerFactory.h"
+#include "contexts/BasicIContextContainer.h"
 
 class TCPTahoe : public Protocol {
-protected:
-	TCPTahoe(int protocol = TCP_TAHOE);
+private:
+    IContextContainerFactory* factory_;
 
-	// TODO: Come up with generic IContextContainer
-    tr1::unordered_map<Socket*, TCPTahoeIContextContainer*> map_;
+protected:
+    TCPTahoe(int protocol = TCP_TAHOE, IContextContainerFactory* factory = new TCPTahoeIContextContainerFactory());
+
+    tr1::unordered_map<Socket*, BasicIContextContainer*> map_;
 
     HashSet<string> states_we_can_send_ack_;
 
-    bool is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacket* p);
-    bool is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p);
-    bool is_room_in_send_buffer(SendEvent* e);
-    void save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e);
+    int get_available_room_in_send_buffer(SendEvent* e);
+    void save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e, int available_room_in_send_buffer);
     void create_and_dispatch_received_data(QueueProcessor<Event*>* q, ReceiveEvent* e);
 
-
+    bool is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacket* p);
+    bool is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p);
 
 public:
     static TCPTahoe& instance();

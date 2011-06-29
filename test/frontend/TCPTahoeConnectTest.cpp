@@ -86,6 +86,7 @@ void tcp_tahoe_connect_test() {
 
     cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
     sleep(5);
+
 }
 
 TEST_F(BackEndTest, TCPTahoeConnectTest) {

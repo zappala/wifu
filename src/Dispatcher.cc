@@ -36,6 +36,8 @@ void Dispatcher::reset() {
 
 void Dispatcher::process(Event* e) {
     mutex_.wait();
+
+    assert(e);
 //    cout << "Event name: " << type_name(*e) << endl;
 
     itr_ = map_.find(type_name(*e));

@@ -1,26 +1,14 @@
 #include "contexts/TCPTahoeIContextContainer.h"
 
-TCPTahoeIContextContainer::TCPTahoeIContextContainer() : saved_send_event_(0), saved_close_event_(0), fin_(0) {
+TCPTahoeIContextContainer::TCPTahoeIContextContainer() : BasicIContextContainer(), saved_send_event_(0), saved_close_event_(0), fin_(0) {
     u_int32_t iss = 1;
-    connection_manager_ = new ConnectionManagerContext();
-    congestion_control_ = new TCPTahoeCongestionControlContext(iss);
-    reliability_ = new TCPTahoeReliabilityContext(iss);
+    set_congestion_control(new TCPTahoeCongestionControlContext(iss));
+    set_connection_manager(new ConnectionManagerContext());
+    set_reliability(new TCPTahoeReliabilityContext(iss));
 }
 
 TCPTahoeIContextContainer::~TCPTahoeIContextContainer() {
 
-}
-
-IContext* TCPTahoeIContextContainer::get_connection_manager() {
-    return connection_manager_;
-}
-
-IContext* TCPTahoeIContextContainer::get_congestion_control() {
-    return congestion_control_;
-}
-
-IContext* TCPTahoeIContextContainer::get_reliability() {
-    return reliability_;
 }
 
 SendEvent* TCPTahoeIContextContainer::get_saved_send_event() {

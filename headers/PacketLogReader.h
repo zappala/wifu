@@ -51,7 +51,7 @@ private:
 
 	char pcap_file_header_buffer_[sizeof(PcapFileHeader)];
 	char pcap_packet_header_buffer_[sizeof(PcapPacketHeader)];
-	char packet_payload_[MTU];
+	char packet_payload_[MTU + FAKE_ETHERNET_HEADER_SIZE];
 
 };
 
