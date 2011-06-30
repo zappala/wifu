@@ -25,6 +25,7 @@ struct var {
     //int countdown_;
     //int rec_buf_;
     string expected_string;
+    int protocol_;
 };
 
 struct udpvar {

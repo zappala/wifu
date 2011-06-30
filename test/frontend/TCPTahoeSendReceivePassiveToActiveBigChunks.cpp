@@ -1,25 +1,4 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <cmath>
-#include <stdlib.h>
-#include <stdio.h>
-#include <netinet/in.h>
-#include <string.h>
-
-#include "gtest/gtest.h"
-#include "../applib/wifu_socket.h"
-#include "../headers/defines.h"
-#include "../headers/AddressPort.h"
-#include "../headers/GarbageCollector.h"
-#include "../headers/Semaphore.h"
-#include "Timer.h"
-#include "../headers/RandomStringGenerator.h"
-
-#include "../headers/BackEndTest.h"
-
-#include "../headers/PacketTraceHelper.h"
-#include "Utils.h"
+#include "../headers/TCPTahoeSendReceivePassiveToActiveBigChunks.h"
 
 void* tcp_tahoe_passive_to_active_big_chunks_thread(void* args) {
 
@@ -30,7 +9,7 @@ void* tcp_tahoe_passive_to_active_big_chunks_thread(void* args) {
     string message = v->expected_string;
 
     // Create server
-    int server = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
+    int server = wifu_socket(AF_INET, SOCK_STREAM, v->protocol_);
     int result = wifu_bind(server, (const struct sockaddr *) to_bind->get_network_struct_ptr(), sizeof (struct sockaddr_in));
     EXPECT_EQ(0, result);
     result = wifu_listen(server, 5);
@@ -79,7 +58,7 @@ void* tcp_tahoe_passive_to_active_big_chunks_thread(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void tcp_tahoe_passive_to_active_big_chunks(string message) {
+void tcp_tahoe_passive_to_active_big_chunks(int protocol, string message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
     //cout << "Beginning test." << endl;
@@ -93,6 +72,7 @@ void tcp_tahoe_passive_to_active_big_chunks(string message) {
     v.sem_ = new Semaphore();
     v.sem_->init(0);
     v.to_bind_ = new AddressPort("127.0.0.1", 5002);
+    v.protocol_ = protocol;
 
     //Specify the number of bytes to send here.
     v.expected_string = message;
@@ -112,7 +92,7 @@ void tcp_tahoe_passive_to_active_big_chunks(string message) {
     // Create client
 
     timer.start();
-    client = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
+    client = wifu_socket(AF_INET, SOCK_STREAM, protocol);
     result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     timer.stop();
     EXPECT_EQ(0, result);
@@ -145,41 +125,41 @@ void tcp_tahoe_passive_to_active_big_chunks(string message) {
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestPassiveToActiveBigChunks1000) {
-    tcp_tahoe_passive_to_active_big_chunks(random_string(1000));
+    tcp_tahoe_passive_to_active_big_chunks(TCP_TAHOE, random_string(1000));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestPassiveToActiveBigChunks10000) {
-    tcp_tahoe_passive_to_active_big_chunks(random_string(10000));
+    tcp_tahoe_passive_to_active_big_chunks(TCP_TAHOE, random_string(10000));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestPassiveToActiveBigChunks65535) {
-    tcp_tahoe_passive_to_active_big_chunks(random_string(65535));
+    tcp_tahoe_passive_to_active_big_chunks(TCP_TAHOE, random_string(65535));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestPassiveToActiveBigChunks87380) {
-    tcp_tahoe_passive_to_active_big_chunks(random_string(87380));
+    tcp_tahoe_passive_to_active_big_chunks(TCP_TAHOE, random_string(87380));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestPassiveToActiveBigChunks100000) {
-    tcp_tahoe_passive_to_active_big_chunks(random_string(100000));
+    tcp_tahoe_passive_to_active_big_chunks(TCP_TAHOE, random_string(100000));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestPassiveToActiveBigChunks1000000) {
-    tcp_tahoe_passive_to_active_big_chunks(random_string(1000000));
+    tcp_tahoe_passive_to_active_big_chunks(TCP_TAHOE, random_string(1000000));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestPassiveToActiveBigChunks10000000) {
-    tcp_tahoe_passive_to_active_big_chunks(random_string(10000000));
+    tcp_tahoe_passive_to_active_big_chunks(TCP_TAHOE, random_string(10000000));
 }
 
 TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestPassiveToActiveBigChunks10000) {
-    tcp_tahoe_passive_to_active_big_chunks(random_string(10000));
+    tcp_tahoe_passive_to_active_big_chunks(TCP_TAHOE, random_string(10000));
 }
 
 TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestPassiveToActiveBigChunks100000) {
-    tcp_tahoe_passive_to_active_big_chunks(random_string(100000));
+    tcp_tahoe_passive_to_active_big_chunks(TCP_TAHOE, random_string(100000));
 }
 
 TEST_F(BackEndMockTestDropRandom20Percent, tahoeSendReceiveTestPassiveToActiveBigChunks100000) {
-    tcp_tahoe_passive_to_active_big_chunks(random_string(100000));
+    tcp_tahoe_passive_to_active_big_chunks(TCP_TAHOE, random_string(100000));
 }
