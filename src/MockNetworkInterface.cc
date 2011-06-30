@@ -27,6 +27,8 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
     WiFuPacket* p = event->get_packet();
     int delay = 0;
 
+    p->calculate_and_set_ip_checksum();
+
     if(p->get_ip_protocol() == UDP)
     {
         ++udp_seq_;
