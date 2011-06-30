@@ -139,7 +139,7 @@ void tahoe_active_to_passive_big_chunks(int protocol, string message) {
 }
 
 TEST_F(BackEndTest, tahoeSendReceiveTestActiveBigChunks100000) {
-    tahoe_active_to_passive_big_chunks(random_string(100000));
+    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(100000));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks1000) {

@@ -14,7 +14,7 @@ void TCPDelayedACKReliabilityState::state_timer_fired(Context* c, QueueProcessor
 
     if (rc->get_timeout_event() == e->get_timeout_event()) {
         rc->set_rto(rc->get_rto() * 2);
-        resend_data(c, q, s);
+        resend_data(c, q, s, TIMEOUT);
     }
     else if (rc->get_ack_timeout_event() == e->get_timeout_event()) {
         //TODO: force sending an ACK
