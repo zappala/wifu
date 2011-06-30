@@ -35,7 +35,7 @@ public:
     virtual void state_receive_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, ReceiveBufferNotEmptyEvent* e);
     virtual void state_receive(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e);
 
-private:
+protected:
     void start_timer(Context* c, Socket* s);
     void reset_timer(Context* c, Socket* s);
     void cancel_timer(Context* c, Socket* s);
