@@ -6,15 +6,9 @@
  */
 
 #include "contexts/OutstandingDataContext.h"
-#include "Math.h"
+
 
 OutstandingDataContext::OutstandingDataContext(u_int32_t iss) : iss_(iss), snd_nxt_(0), snd_una_(0), snd_max_(0) {
-}
-
-OutstandingDataContext::OutstandingDataContext(const OutstandingDataContext& orig) {
-    iss_ = orig.iss_;
-    snd_nxt_ = orig.snd_nxt_;
-    snd_una_ = orig.snd_una_;
 }
 
 OutstandingDataContext::~OutstandingDataContext() {

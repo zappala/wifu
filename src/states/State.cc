@@ -2,7 +2,7 @@
  * State.cc
  *
  *  Created on: Mar 5, 2011
- *      Author: erickson
+ *  Author: erickson
  */
 
 #include "states/State.h"
