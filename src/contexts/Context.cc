@@ -81,14 +81,6 @@ void Context::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
     get_state()->state_send(this, q, e);
 }
 
-bool Context::icontext_can_send(Socket* s) {
-    return get_state()->state_can_send(this, s);
-}
-
-bool Context::icontext_can_receive(Socket* s) {
-    return get_state()->state_can_receive(this, s);
-}
-
 void Context::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
     get_state()->state_receive(this, q, e);
 }
@@ -119,4 +111,12 @@ void Context::icontext_set_socket_option(QueueProcessor<Event*>* q, SetSocketOpt
 
 void Context::icontext_get_socket_option(QueueProcessor<Event*>* q, GetSocketOptionEvent* e) {
     get_state()->state_get_socket_option(this, q, e);
+}
+
+bool Context::icontext_can_send(Socket* s) {
+    return get_state()->state_can_send(this, s);
+}
+
+bool Context::icontext_can_receive(Socket* s) {
+    return get_state()->state_can_receive(this, s);
 }

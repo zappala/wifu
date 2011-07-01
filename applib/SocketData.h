@@ -28,9 +28,10 @@ class SocketData {
 public:
 
     /**
-     * Constructor
-     * Initializes a new SocketData object
-     * Sets the internal Semaphore object to 0
+     * Constructor.
+     * Initializes a new SocketData object.
+     * Sets the internal Semaphore object to 0.
+     * Sets the internal flag object to 1.
      *
      * @see Semaphore
      */
@@ -43,14 +44,14 @@ public:
     }
 
     /**
-     * Destructor
+     * Destructor.
      */
     virtual ~SocketData() {
         delete sem_;
     }
 
     /**
-     * @return A pointer to the internal Semaphore
+     * @return A pointer to the internal Semaphore.
      *
      * @see Semaphore
      */
@@ -58,36 +59,41 @@ public:
         return sem_;
     }
 
+    /**
+     * 
+     * @return A pointer to the internal flag object.
+     */
     Semaphore* get_flag() {
         return flag_;
     }
 
     /**
-     * @return the return value of the current socket API call
+     * @return the return value of the current socket API call.
      */
     int& get_return_value() {
         return return_value_;
     }
 
     /**
-     * Sets the return value of the current socket API call
-     * This method will be called in WifuEndAPILocalSocket::receive()
+     * Sets the return value of the current socket API call.
+     * This method will be called in WifuEndAPILocalSocket::receive().
      *
-     * @param new_value The return value to save
+     * @param new_value The return value to save.
      *
-     * @see WifuEndAPILocalSocket::receive()
+     * @see WifuEndAPILocalSocket::receive().
      */
     void set_return_value(int new_value) {
         this->return_value_ = new_value;
     }
 
     /**
-     * Sets the payload returned from the back-end on any API call that needs the payload, for example wifu_receive()
-     * This method will be called in WifuEndAPILocalSocket::receive()
+     * Sets the payload returned from the back-end on any API call that needs the payload, for example wifu_receive().
+     * This method will be called in WifuEndAPILocalSocket::receive().
      *
-     * @param payload The payload to save
+     * @param payload The payload to save.
+     * @param length The length of payload.
      *
-     * @see WifuEndAPILocalSocket::receive()
+     * @see WifuEndAPILocalSocket::receive().
      */
     void set_payload(string& payload, size_t length) {
         memcpy(payload_, payload.data(), length);
@@ -95,41 +101,41 @@ public:
     }
 
     /**
-     * Sets the length of the payload returned from the back-end on any API call that needs the payload, for example wifu_receive()
-     * This method will be called in WifuEndAPILocalSocket::receive()
+     * Sets the length of the payload returned from the back-end on any API call that needs the payload, for example wifu_receive().
+     * This method will be called in WifuEndAPILocalSocket::receive().
      *
-     * @param length The length of payload
+     * @param length The length of payload.
      *
-     * @see WifuEndAPILocalSocket::receive()
+     * @see WifuEndAPILocalSocket::receive().
      */
     void set_payload_length(int length) {
         payload_length_ = length;
     }
 
     /**
-     * Gets the payload returned from the back-end
-     * This could be called in wifu_receive()
+     * Gets the payload returned from the back-end.
+     * This could be called in wifu_receive().
      *
-     * @return A pointer to the payload as returned by the back-end
+     * @return A pointer to the payload as returned by the back-end.
      */
     unsigned char* get_payload() {
         return payload_;
     }
 
     /**
-     * Gets the payload length returned from the back-end
-     * This could be called in wifu_receive()
+     * Gets the payload length returned from the back-end.
+     * This could be called in wifu_receive().
      *
-     * @return The length of the payload as returned by the back-end
+     * @return The length of the payload as returned by the back-end.
      */
     int get_payload_length() {
         return payload_length_;
     }
 
     /**
-     * Stores the ERRNO value as returned by the back-end
+     * Stores the ERRNO value as returned by the back-end.
      *
-     * @param error The value ERRNO should be set
+     * @param error The value ERRNO should be set.
      */
     void set_error(int error) {
         this->error_ = error;
@@ -160,9 +166,9 @@ public:
     }
 
     /**
-     * @return The length of the sockaddr object internal to the AddressPort object
+     * @return The length of the sockaddr object internal to the AddressPort object.
      *
-     * @see SocketData::get_address_port()
+     * @see SocketData::get_address_port().
      */
     socklen_t get_address_port_length() {
         return sizeof(* get_address_port()->get_network_struct_ptr());
@@ -170,35 +176,40 @@ public:
 
 private:
     /**
-     * The return value of any method call in the wifu_socket API
+     * The return value of any method call in the wifu_socket API.
      */
     int return_value_;
 
     /**
-     * The value ERRNO should be set to upon returning from any call in the wifu_socket API
+     * The value ERRNO should be set to upon returning from any call in the wifu_socket API.
      */
     int error_;
 
     /**
-     * The internal Semaphore used to control access and responses to wifu_socket API calls
+     * The internal Semaphore used to control access and responses to wifu_socket API calls.
+     * This is used in conjunction with sem_.
      */
     Semaphore* sem_;
 
     /**
-     * Buffer which will store the payload from the back-end (on calls like recv())
+     * Buffer which will store the payload from the back-end (on calls like recv()).
      */
     unsigned char payload_[MAX_BUFFER_SIZE];
 
     /**
-     * The length of the payload
+     * The length of the payload.
      */
     int payload_length_;
 
     /**
-     * The AddressPort returned from the back-end (on calls like accept())
+     * The AddressPort returned from the back-end (on calls like accept()).
      */
     AddressPort* address_;
 
+    /**
+     * Used to coordinate the sending and receiving of messages to and from the back end.
+     * This is used in conjunction with sem_.
+     */
     Semaphore* flag_;
 
     
