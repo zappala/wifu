@@ -26,13 +26,8 @@ void Established::state_enter(Context* c) {
             response->put(RETURN_VALUE_STRING, Utils::itoa(0));
             Dispatcher::instance().enqueue(response);
             break;
-
         case ESTABLISHED:
-//            cout << "Established::enter(), Established" << endl;
-            break;
         case PASSIVE_OPEN:
-//            cout << "Established::enter(), Passive Open" << endl;
-            break;
         default:
             break;
     }

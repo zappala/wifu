@@ -4,6 +4,10 @@ ConnectionManagerContext::ConnectionManagerContext() : Context() {
     set_state(new Closed());
 }
 
+ConnectionManagerContext::~ConnectionManagerContext() {
+    
+}
+
 // Non-state methods
 
 int ConnectionManagerContext::get_back_log() {
