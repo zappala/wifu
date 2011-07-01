@@ -1,19 +1,19 @@
 all:
-	./waf configure -j4
-	./waf build -j4
-	./waf install -j4
+	./waf configure -j4 -p
+	./waf build -j4 -p
+	./waf install -j4 -p
 
 clean:
-	./waf uninstall -j4
-	./waf clean -j4
-	./waf distclean -j4
+	./waf uninstall -j4 -p
+	./waf clean -j4 -p
+	./waf distclean -j4 -p
 
 mesh:
-	./waf configure -j4 --32
-	./waf build -j4 --32
-	./waf install -j4 --32
+	./waf configure -j4  -p --32
+	./waf build -j4  -p --32
+	./waf install -j4  -p --32
 
 debug:
-	./waf configure -j4
-	./waf build -j4 --debug
-	./waf install -j4 --debug
+	./waf configure -j4  -p
+	./waf build -j4  -p --debug
+	./waf install -j4  -p --debug

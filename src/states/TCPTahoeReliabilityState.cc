@@ -62,7 +62,8 @@ void TCPTahoeReliabilityState::state_receive(Context* c, QueueProcessor<Event*>*
     }
 }
 
-void TCPTahoeReliabilityState::create_and_dispatch_ack(QueueProcessor<Event*>* q, Socket* s) {
+void TCPTahoeReliabilityState::create_and_dispatch_ack(Context* c, QueueProcessor<Event*>* q, Event* e) {
+    Socket* s = e->get_socket();
     TCPPacket* response = new TCPPacket();
     response->insert_tcp_header_option(new TCPTimestampOption());
 
@@ -248,7 +249,7 @@ bool TCPTahoeReliabilityState::handle_ack(Context* c, QueueProcessor<Event*>* q,
         handle_valid_ack(c, q, e);
     } else if (less_than(rc->get_snd_max(), p->get_tcp_ack_number())) {
         // invalid ack
-        create_and_dispatch_ack(q, e->get_socket());
+        create_and_dispatch_ack(c, q, e);
         return false;
     } else if (between_equal_left(p->get_tcp_ack_number(), rc->get_snd_una(), rc->get_snd_nxt())) {
         handle_duplicate_ack(c, q, e);
@@ -362,6 +363,6 @@ void TCPTahoeReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q
         rc->get_receive_window().remove(p);
     }
 
-    create_and_dispatch_ack(q, s);
+    create_and_dispatch_ack(c, q, e);
 }
 // </editor-fold>
