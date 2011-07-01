@@ -7,7 +7,7 @@
 
 #include "contexts/TCPDelayedACKReliabilityContext.h"
 
-TCPDelayedACKReliabilityContext::TCPDelayedACKReliabilityContext(u_int32_t iss) : TCPTahoeReliabilityContext(iss), delay_timeout_interval_(INITAL_DELAY_TIMEOUT_INTERVAL), delay_count_(DEFAULT_DELAY_COUNT), delay1_(1), delay2_(3), delay3_(3), delay4_(4), l1_threshold_(20), l2_threshold_(200), l3_threshold_(2000) , ack_timer_(0){
+TCPDelayedACKReliabilityContext::TCPDelayedACKReliabilityContext(u_int32_t iss) : TCPTahoeReliabilityContext(iss), delay_timeout_interval_(INITAL_DELAY_TIMEOUT_INTERVAL), delay_count_(DEFAULT_DELAY_COUNT), delay1_(1), delay2_(3), delay3_(3), delay4_(4), l1_threshold_(20), l2_threshold_(200), l3_threshold_(2000) , ack_timer_(0), cur_ack_count_(0){
     set_state(new TCPDelayedACKReliabilityState());
 }
 
@@ -93,4 +93,12 @@ u_int16_t TCPDelayedACKReliabilityContext::get_delay4(){
 
 void TCPDelayedACKReliabilityContext::set_delay4(u_int16_t delay){
     delay4_ = delay;
+}
+
+u_int16_t TCPDelayedACKReliabilityContext::get_cur_ack_count() {
+    return cur_ack_count_;
+}
+
+void TCPDelayedACKReliabilityContext::set_cur_ack_count(u_int16_t count) {
+    cur_ack_count_ = count;
 }

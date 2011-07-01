@@ -28,10 +28,6 @@ protected:
     void handle_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
 
     u_int16_t get_delay_based_on_seq_num(Context* c, u_int32_t seqnum);
-
-private:
-    u_int16_t cur_ack_count_;
-    u_int32_t ack_timeout_delay;
     
 };
 

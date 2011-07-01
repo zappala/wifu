@@ -77,7 +77,6 @@ void TCPTahoeReliabilityState::create_and_dispatch_ack(Context* c, QueueProcesso
     response->set_source_port(source->get_port());
 
     response->set_data((unsigned char*) "", 0);
-
     SendPacketEvent* event = new SendPacketEvent(s, response);
     q->enqueue(event);
 }
@@ -115,7 +114,7 @@ void TCPTahoeReliabilityState::cancel_timer(Context* c, Socket* s) {
 
 void TCPTahoeReliabilityState::resend_data(Context* c, QueueProcessor<Event*>* q, Socket* s, ResendReason reason) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
-    //cout << "TCPTahoeReliabilityState::resend_data resending: " << rc ->get_snd_una() << endl;
+    cout << "TCPTahoeReliabilityState::resend_data resending: " << rc ->get_snd_una() << endl;
     rc->set_snd_nxt(rc->get_snd_una());
     q->enqueue(new ResendPacketEvent(s, reason));
 }
