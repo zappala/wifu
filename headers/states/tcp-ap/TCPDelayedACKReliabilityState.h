@@ -23,7 +23,7 @@ protected:
     //void reset_ack_timer(Context* c, Socket* s);
     void cancel_ack_timer(Context* c, Socket* s);
 
-    void create_and_dispatch_ack(Context* c, QueueProcessor<Event*>* q, Socket* s);
+    void create_and_dispatch_ack(Context* c, QueueProcessor<Event*>* q, Event* e);
 
     void handle_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
 
