@@ -69,7 +69,7 @@ protected:
     virtual void handle_control_bits(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     virtual void handle_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     // </editor-fold>
-    
+
 };
 
 #endif	/* TCPTAHOERELIABILITYSTATE_H */
