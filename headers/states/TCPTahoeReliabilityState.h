@@ -42,7 +42,7 @@ protected:
     virtual void update_rto(Context* c, TCPTimestampOption* ts);
     virtual void resend_data(Context* c, QueueProcessor<Event*>* q, Socket* s, ResendReason reason);
     virtual void create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e);
-    virtual void create_and_dispatch_ack(QueueProcessor<Event*>* q, Socket* s);
+    virtual void create_and_dispatch_ack(Context* c, QueueProcessor<Event*>* q, Socket* s);
 
     // <editor-fold defaultstate="collapsed" desc="state_send_packet() helper functions">
     virtual void set_sequence_number_and_update_window_variables(Context* c, TCPPacket* p);

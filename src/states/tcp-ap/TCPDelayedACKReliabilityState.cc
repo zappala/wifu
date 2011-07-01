@@ -12,21 +12,20 @@ void TCPDelayedACKReliabilityState::state_timer_fired(Context* c, QueueProcessor
     TCPDelayedACKReliabilityContext* rc = (TCPDelayedACKReliabilityContext*) c;
     Socket* s = e->get_socket();
 
-    if (rc->get_timeout_event() == e->get_timeout_event()) {
-        rc->set_rto(rc->get_rto() * 2);
-        resend_data(c, q, s, TIMEOUT);
-    }
-    else if (rc->get_ack_timeout_event() == e->get_timeout_event()) {
-        //TODO: force sending an ACK
+    this->TCPTahoeReliabilityState::state_timer_fired(c, q, e);
+
+    if (rc->get_ack_timeout_event() == e->get_timeout_event()) {
+        //force sending an ACK
         cout << "TCPDelayedACKReliabilityState::state_timer_fired(): sending delayed ACK\n";
-        create_and_dispatch_ack(q, s);
+        //TODO: Should we send an ACK immediately, or should we aggregate this with the rest?
+        this->TCPTahoeReliabilityState::create_and_dispatch_ack(c, q, s);
     }
 }
 
 void TCPDelayedACKReliabilityState::start_ack_timer(Context* c, Socket* s) {
     TCPDelayedACKReliabilityContext* rc = (TCPDelayedACKReliabilityContext*) c;
     cout << "TCPDelayedACKReliabilityState::start_ack_timer() on socket: " << s << endl;
-    cout << "TCPDelayedACKReliabilityState::start_ack_timer() using timeout value: " << rc->get_delay_timeout_interval() << "\n";
+    //cout << "TCPDelayedACKReliabilityState::start_ack_timer() using timeout value: " << rc->get_delay_timeout_interval() << "\n";
     // only start the timer if it is not already running
     if (!rc->get_timeout_event()) {
         double seconds;
@@ -58,30 +57,18 @@ void TCPDelayedACKReliabilityState::cancel_ack_timer(Context* c, Socket* s) {
 void TCPDelayedACKReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
     TCPDelayedACKReliabilityContext* rc = (TCPDelayedACKReliabilityContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
-    Socket* s = e->get_socket();
+    
+    //Make sure we figure out the correct delay for this packet
+    rc->set_delay_count(get_delay_based_on_seq_num(rc, p->get_tcp_sequence_number()));
 
-    int num_inserted = rc->get_receive_window().insert(p);
-    if (rc->get_rcv_wnd() - num_inserted >= 0) {
+    //Do all the regular stuff
+    this->TCPTahoeReliabilityState::handle_data(c, q, e);
+}
 
-        rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
-        string& receive_buffer = s->get_receive_buffer();
-        u_int32_t before_rcv_buffer_size = receive_buffer.size();
-        rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
-        u_int32_t after_receive_buffer_size = receive_buffer.size();
-        u_int32_t amount_put_in_receive_buffer = after_receive_buffer_size - before_rcv_buffer_size;
-        assert(amount_put_in_receive_buffer >= 0);
-
-        if (amount_put_in_receive_buffer > 0) {
-            rc->set_rcv_nxt(rc->get_rcv_nxt() + amount_put_in_receive_buffer);
-            q->enqueue(new ReceiveBufferNotEmptyEvent(s));
-        }
-    } else {
-        // I don't think we should get here.
-        // I ran some tests with the assert on and it never asserted.
-        // But just in case...
-        //assert(false);
-        rc->get_receive_window().remove(p);
-    }
+void TCPDelayedACKReliabilityState::create_and_dispatch_ack(Context* c, QueueProcessor<Event*>* q, Socket* s) {
+    TCPDelayedACKReliabilityContext* rc = (TCPDelayedACKReliabilityContext*) c;
+    //TCPPacket* p = (TCPPacket*) e->get_packet();
+    //Socket* s = e->get_socket();
 
     //CHANGE FROM TCP:
     //We delay our ACKs based on delay_count_ OR a timeout value.
@@ -90,22 +77,44 @@ void TCPDelayedACKReliabilityState::handle_data(Context* c, QueueProcessor<Event
     cur_ack_count_ += 1;
 
     //Just make sure we're using a delay.
-    if(rc->get_delay_count() <= 0) {
+    /*if(rc->get_delay_count() <= 0) {
         create_and_dispatch_ack(q, s);
         return;
-    }
+    }*/
+
     cout << "TCPDelayedACKReliabilityState::handle_data(): using a delay of " << rc->get_delay_count() << "ACKs.\n";
+    cout << "TCPDelayedACKReliabilityState::handle_data(): currently have " << cur_ack_count_ << "\n";
     //we have enough data packets, send an an ACK
     if(cur_ack_count_ >= rc->get_delay_count()){
         cout << "TCPDelayedACKReliabilityState::handle_data(): count reached, sending ACK\n";
-        create_and_dispatch_ack(q, s);
+        this->TCPTahoeReliabilityState::create_and_dispatch_ack(c, q, s);
         //reset our local count
         cur_ack_count_ = 0;
-        cancel_ack_timer(c, s);
+        if(rc->get_delay_count() > 1){
+            cancel_ack_timer(c, s);
+        }
     }
     //Check to see if we have a timer going; if not, we'll need one now
     else if(rc->get_ack_timeout_event() == 0) {
         cout << "TCPDelayedACKReliabilityState::handle_data(): starting ACK timer\n";
         start_ack_timer(c, s);
+    }
+}
+
+u_int16_t TCPDelayedACKReliabilityState::get_delay_based_on_seq_num(Context* c, u_int32_t seqnum) {
+    TCPDelayedACKReliabilityContext* rc = (TCPDelayedACKReliabilityContext*) c;
+
+
+    if(seqnum < rc->get_l1_threshold()){
+        return rc->get_delay1();
+    }
+    if(seqnum >= rc->get_l1_threshold() && seqnum < rc->get_l2_threshold()){
+        return rc->get_delay2();
+    }
+    if(seqnum >= rc->get_l2_threshold() && seqnum < rc->get_l3_threshold()){
+        return rc->get_delay3();
+    }
+    if(seqnum >= rc->get_l3_threshold()){
+        return rc->get_delay4();
     }
 }

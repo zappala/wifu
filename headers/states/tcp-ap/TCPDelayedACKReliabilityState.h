@@ -23,7 +23,11 @@ protected:
     //void reset_ack_timer(Context* c, Socket* s);
     void cancel_ack_timer(Context* c, Socket* s);
 
+    void create_and_dispatch_ack(Context* c, QueueProcessor<Event*>* q, Socket* s);
+
     void handle_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
+
+    u_int16_t get_delay_based_on_seq_num(Context* c, u_int32_t seqnum);
 
 private:
     u_int16_t cur_ack_count_;
