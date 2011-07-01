@@ -22,10 +22,11 @@ class State;
 
 /**
  * Base context for all finite state machines in WiFu.
+ * It is an interface to the world to access this FSM.
  * It keeps track of the current state and delegates requests to its current state.
  * This class delegates all responsibility to the current state's corresponding method.
  * It is up to the specific State implementations to handle any requests.
- * For information on the state pattern see http://sourcemaking.com/design_patterns/state which contains a good tutorial.
+ * For information on the state pattern see http://sourcemaking.com/design_patterns/state which contains good examples.
  *
  * @see IContext
  * @see State
