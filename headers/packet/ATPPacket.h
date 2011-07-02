@@ -16,6 +16,8 @@ public:
 
 	ATPPacket();
 
+	ATPPacket(TCPPacket* p);
+
 	~ATPPacket();
 
 	void init();
@@ -77,7 +79,7 @@ public:
     virtual int max_data_length();
 
 
-    virtual string to_s();
+    virtual string to_s() const;
     virtual string to_s_format() const;
 
     virtual bool operator ==(const IPPacket& other) const;
@@ -94,6 +96,8 @@ public:
      * was deleted. It then calls the parent class method.
      */
     TCPHeaderOption* remove_tcp_header_option(u_int8_t kind);
+
+    static ATPPacket * convert_to_atp_packet(WiFuPacket * wp);
 
 private:
     /**

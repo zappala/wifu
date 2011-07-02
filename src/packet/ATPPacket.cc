@@ -12,6 +12,18 @@ ATPPacket::ATPPacket() : super(), data_set_(false) {
 	init();
 }
 
+
+// WARNING: Only to be used when data size is 0
+ATPPacket::ATPPacket(TCPPacket * p){
+	super::init();
+
+	// copy over all information from old packet
+	memcpy(get_payload(), p->get_payload(), MTU);
+	update_header();
+	set_ip_tot_length(get_ip_header_length_bytes() + get_tcp_header_length_bytes() + get_atp_header_length_bytes());
+
+}
+
 ATPPacket::~ATPPacket() {
 
 }
@@ -61,8 +73,6 @@ void ATPPacket::set_data(unsigned char* data, int length){
 
 void ATPPacket::pack(){
 	move_atp_header();
-    set_ip_tot_length(get_ip_header_length_bytes() + get_tcp_header_length_bytes() + get_atp_header_length_bytes());
-
 	super::pack();
 }
 
@@ -75,25 +85,26 @@ unsigned char* ATPPacket::get_atp_header(){
 
 u_int32_t ATPPacket::get_atp_max_delay(){
 	update_header();
-	return atp_->max_delay;
+	return ntohl(atp_->max_delay);
 }
 
 
 void ATPPacket::set_atp_max_delay(u_int32_t delay){
 	update_header();
-	atp_->max_delay = delay;
+	atp_->max_delay = htonl(delay);
 }
 
 
 u_int32_t ATPPacket::get_atp_average_delay(){
 	update_header();
-	return atp_->average_delay;
+	return ntohl(atp_->average_delay);
 }
 
 
 void ATPPacket::set_atp_average_delay(u_int32_t delay){
 	update_header();
-	atp_->average_delay = delay;
+
+	atp_->average_delay = htonl(delay);
 }
 
 
@@ -106,12 +117,12 @@ int ATPPacket::max_data_length(){
 }
 
 
-string ATPPacket::to_s(){
+string ATPPacket::to_s() const{
     stringstream s;
     s << super::to_s() << endl
             << "atp "
-            << get_atp_max_delay() << " "
-            << get_atp_average_delay();
+            << atp_->max_delay << " "
+            << atp_->average_delay;
     return s.str();
 }
 
@@ -132,12 +143,48 @@ bool ATPPacket::operator ==(const IPPacket& other) const {
 	ATPPacket const* other_ptr = dynamic_cast<ATPPacket const*> (&other);
 
 	bool equal = other_ptr != NULL;
-	equal = equal && atp_->average_delay == other_ptr->atp_->average_delay;
-	equal = equal && atp_->max_delay == other_ptr->atp_->max_delay;
+
+	// TODO: Put this back when done testing
+	//equal = equal && atp_->average_delay == other_ptr->atp_->average_delay;
+	//equal = equal && atp_->max_delay == other_ptr->atp_->max_delay;
 
 	return equal;
 }
 
+ATPPacket * ATPPacket::convert_to_atp_packet(WiFuPacket * wp){
+	assert(wp != NULL);
+
+	TCPPacket * p = dynamic_cast<TCPPacket *>(wp);
+	if(p == NULL){
+		cout << "ATPPacket::convert_to_atp_packet : not even a TCPPacket, can't do much about that" << endl;
+		return NULL;
+	}
+
+	// Need to make sure to pack in all the TCP options before I convert it
+	p->pack();
+
+	// trying to convert it the easy way
+	 ATPPacket* packet = dynamic_cast<ATPPacket *>(p);
+	if(packet != NULL){
+
+		//cout << "ATPPacket::convert_to_atp_packet : converted using dynamic casting" << endl;
+		return packet;
+	}
+
+	// if that doesn't work we have to do it the hard way
+	if(p->get_data_length_bytes() == 0){
+		//cout << "ATPPacket::convert_to_atp_packet : does not have data, creating new object" << endl;
+
+		ATPPacket* temp = new ATPPacket(p);
+
+		return temp;
+
+	}
+
+	// If nothing else works then just return NULL, like with dynamic_cast
+	return NULL;
+
+}
 
 bool ATPPacket::operator !=(const IPPacket& other) const {
 	return !(*this == other);
