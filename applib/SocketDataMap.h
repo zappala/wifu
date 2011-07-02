@@ -16,8 +16,8 @@
 using namespace std;
 
 /**
- * Singleton map of socket id (int) to SocketData object
- * This object is thread-safe
+ * Singleton map of socket id (int) to SocketData object.
+ * This object is thread-safe.
  *
  * @see SocketData
  */
@@ -25,8 +25,8 @@ class SocketDataMap {
 private:
 
     /**
-     * Constructor
-     * Sets the internal mutex to 1
+     * Constructor.
+     * Sets the internal mutex to 1.
      */
     SocketDataMap() {
         mutex_.init(1);
@@ -34,7 +34,7 @@ private:
 
     /**
      * Empty copy constructor.  Should never be called.
-     * @param other The SocketDataMap to copy
+     * @param other The SocketDataMap to copy.
      */
     SocketDataMap(SocketDataMap const& other) {
         assert(false);
@@ -42,7 +42,7 @@ private:
 
     /**
      * Empty assignment operator.  Should never be called.
-     * @param other The SocketDataMap to copy
+     * @param other The SocketDataMap to copy.
      */
     SocketDataMap & operator=(SocketDataMap const& other) {
         assert(false);
@@ -59,14 +59,14 @@ private:
     Semaphore mutex_;
 
     /**
-     * Iterator for data_
+     * Iterator for data_.
      */
     map<int, SocketData*>::iterator itr_;
 
 public:
 
     /**
-     * Destructor
+     * Destructor.
      * Because this class is a Singleton and the instance is static, this will be called upon exiting the program.
      * This calls delete on all SocketData pointers saved inside this data structure.
      */
@@ -80,7 +80,7 @@ public:
     }
 
     /**
-     * @return The static instance of this SocketDataMap
+     * @return The static instance of this SocketDataMap.
      */
     static SocketDataMap& instance() {
         static SocketDataMap instance_;
@@ -106,8 +106,8 @@ public:
      * Associates key with value.
      * If key already exists, the value is is associated with is overwriten with value.
      *
-     * @param key The socket id of value
-     * @param value Pointer to a SocketData object to associate with key
+     * @param key The socket id of value.
+     * @param value Pointer to a SocketData object to associate with key.
      */
     void put(int key, SocketData* value) {
         mutex_.wait();
@@ -140,7 +140,7 @@ public:
     }
 
     /**
-     * @return The number of key-value pairs
+     * @return The number of key-value pairs.
      */
     int size() {
         mutex_.wait();

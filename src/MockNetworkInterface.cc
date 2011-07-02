@@ -27,6 +27,8 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
     WiFuPacket* p = event->get_packet();
     int delay = 0;
 
+    p->calculate_and_set_ip_checksum();
+
     if(p->get_ip_protocol() == UDP)
     {
         ++udp_seq_;
@@ -103,6 +105,12 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
 }
 
 void MockNetworkInterface::receive(WiFuPacket* p) {
+
+    if(!p->is_valid_ip_checksum()) {
+        return;
+    }
+
+
     AddressPort* local = p->get_dest_address_port();
     AddressPort* remote = p->get_source_address_port();
 

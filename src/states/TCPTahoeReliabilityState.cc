@@ -62,7 +62,8 @@ void TCPTahoeReliabilityState::state_receive(Context* c, QueueProcessor<Event*>*
     }
 }
 
-void TCPTahoeReliabilityState::create_and_dispatch_ack(QueueProcessor<Event*>* q, Socket* s) {
+void TCPTahoeReliabilityState::create_and_dispatch_ack(Context* c, QueueProcessor<Event*>* q, Event* e) {
+    Socket* s = e->get_socket();
     TCPPacket* response = new TCPPacket();
     response->insert_tcp_header_option(new TCPTimestampOption());
 
@@ -76,7 +77,6 @@ void TCPTahoeReliabilityState::create_and_dispatch_ack(QueueProcessor<Event*>* q
     response->set_source_port(source->get_port());
 
     response->set_data((unsigned char*) "", 0);
-
     SendPacketEvent* event = new SendPacketEvent(s, response);
     q->enqueue(event);
 }
@@ -239,20 +239,24 @@ bool TCPTahoeReliabilityState::handle_ack(Context* c, QueueProcessor<Event*>* q,
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    if (p->is_tcp_ack() && between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_max())) {
+    if (!p->is_tcp_ack()) {
+        return true;
+    }
+
+    if (between_equal_right(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_max())) {
         handle_valid_ack(c, q, e);
-    } else if (p->is_tcp_ack() && less_than(rc->get_snd_max(), p->get_tcp_ack_number())) {
+    } else if (less_than(rc->get_snd_max(), p->get_tcp_ack_number())) {
         // invalid ack
-        create_and_dispatch_ack(q, e->get_socket());
+        create_and_dispatch_ack(c, q, e);
         return false;
-    } else if (p->is_tcp_ack() && between_equal_left(p->get_tcp_ack_number(), rc->get_snd_una(), rc->get_snd_nxt())) {
+    } else if (between_equal_left(p->get_tcp_ack_number(), rc->get_snd_una(), rc->get_snd_nxt())) {
         handle_duplicate_ack(c, q, e);
     }
     return true;
 }
 
-void TCPTahoeReliabilityState::handle_valid_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-//    cout << "TCPTahoeReliabilityState::handle_valid_ack() Socket: " << e->get_socket() << endl;
+void TCPTahoeReliabilityState::handle_valid_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent * e) {
+    //    cout << "TCPTahoeReliabilityState::handle_valid_ack() Socket: " << e->get_socket() << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();
@@ -263,7 +267,7 @@ void TCPTahoeReliabilityState::handle_valid_ack(Context* c, QueueProcessor<Event
 
     // In case we get an ack for something later than snd.nxt
     // (we dropped a packet but subsequent packets got through and we received a cumuliative ack)
-    if(less_than(rc->get_snd_nxt(), rc->get_snd_una())) {
+    if (less_than(rc->get_snd_nxt(), rc->get_snd_una())) {
         rc->set_snd_nxt(rc->get_snd_una());
     }
 
@@ -286,7 +290,7 @@ void TCPTahoeReliabilityState::handle_valid_ack(Context* c, QueueProcessor<Event
     }
 }
 
-void TCPTahoeReliabilityState::handle_duplicate_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+void TCPTahoeReliabilityState::handle_duplicate_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent * e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
@@ -298,7 +302,7 @@ void TCPTahoeReliabilityState::handle_duplicate_ack(Context* c, QueueProcessor<E
     }
     if (rc->get_duplicates() == 3) {
         rc->set_duplicates(0);
-//        cout << "Three duplicate acks, resending data" << endl;
+        //        cout << "Three duplicate acks, resending data" << endl;
 
         // I read the following three lines of comments from inet/src/transport/tcp/flavours/TCPTahoe.cc
         // Do not restart REXMIT timer.
@@ -308,7 +312,7 @@ void TCPTahoeReliabilityState::handle_duplicate_ack(Context* c, QueueProcessor<E
     }
 }
 
-void TCPTahoeReliabilityState::handle_control_bits_and_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+void TCPTahoeReliabilityState::handle_control_bits_and_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent * e) {
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
     if (p->is_tcp_syn() || p->is_tcp_fin()) {
@@ -318,7 +322,7 @@ void TCPTahoeReliabilityState::handle_control_bits_and_data(Context* c, QueuePro
     }
 }
 
-void TCPTahoeReliabilityState::handle_control_bits(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+void TCPTahoeReliabilityState::handle_control_bits(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent * e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
@@ -328,7 +332,7 @@ void TCPTahoeReliabilityState::handle_control_bits(Context* c, QueueProcessor<Ev
     }
 }
 
-void TCPTahoeReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+void TCPTahoeReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent * e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();
@@ -337,7 +341,7 @@ void TCPTahoeReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q
     if (rc->get_rcv_wnd() - num_inserted >= 0) {
 
         rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
-//        cout << "TCPTahoeReliabilityState::handle_data(), receive window size: " << rc->get_rcv_wnd() << endl;
+        //        cout << "TCPTahoeReliabilityState::handle_data(), receive window size: " << rc->get_rcv_wnd() << endl;
         string& receive_buffer = s->get_receive_buffer();
         u_int32_t before_rcv_buffer_size = receive_buffer.size();
         rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
@@ -357,6 +361,6 @@ void TCPTahoeReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q
         rc->get_receive_window().remove(p);
     }
 
-    create_and_dispatch_ack(q, s);
+    create_and_dispatch_ack(c, q, e);
 }
 // </editor-fold>

@@ -1,26 +1,4 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <cmath>
-#include <stdlib.h>
-#include <stdio.h>
-#include <netinet/in.h>
-#include <string.h>
-
-#include "gtest/gtest.h"
-#include "../applib/wifu_socket.h"
-#include "../headers/defines.h"
-#include "../headers/AddressPort.h"
-#include "../headers/GarbageCollector.h"
-#include "../headers/Semaphore.h"
-#include "Timer.h"
-#include "../headers/RandomStringGenerator.h"
-#include "../headers/packet/TCPPacket.h"
-
-#include "../headers/BackEndTest.h"
-
-#include "../headers/PacketTraceHelper.h"
-#include "Utils.h"
+#include "../headers/TCPTahoeSendReceiveActiveToPassive.h"
 
 void* tahoe_active_to_passive_thread_with_close(void* args) {
 
@@ -34,7 +12,7 @@ void* tahoe_active_to_passive_thread_with_close(void* args) {
     string expected = v->expected_string;
 
     // Create server
-    int server = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
+    int server = wifu_socket(AF_INET, SOCK_STREAM, v->protocol_);
     int result = wifu_bind(server, (const struct sockaddr *) to_bind->get_network_struct_ptr(), sizeof (struct sockaddr_in));
     EXPECT_EQ(0, result);
     result = wifu_listen(server, 5);
@@ -89,7 +67,7 @@ void* tahoe_active_to_passive_thread_with_close(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void tahoe_active_to_passive_test_with_close(string message) {
+void tahoe_active_to_passive_test_with_close(int protocol, string message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
     pthread_t t;
@@ -105,6 +83,7 @@ void tahoe_active_to_passive_test_with_close(string message) {
     v.flag_->init(0);
     v.done_->init(0);
     v.to_bind_ = new AddressPort("127.0.0.1", 5002);
+    v.protocol_ = protocol;
 
     //Specify the number of bytes to send here.
     v.expected_string = message;
@@ -123,7 +102,7 @@ void tahoe_active_to_passive_test_with_close(string message) {
 
     // Create client
     timer.start();
-    client = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
+    client = wifu_socket(AF_INET, SOCK_STREAM, protocol);
     result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     timer.stop();
     ASSERT_EQ(0, result);
@@ -156,69 +135,69 @@ void tahoe_active_to_passive_test_with_close(string message) {
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive1) {
-    tahoe_active_to_passive_test_with_close(random_string(1));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(1));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive5) {
-    tahoe_active_to_passive_test_with_close(random_string(5));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(5));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive10) {
-    tahoe_active_to_passive_test_with_close(random_string(10));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(10));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive20) {
-    tahoe_active_to_passive_test_with_close(random_string(20));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(20));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive100) {
-    tahoe_active_to_passive_test_with_close(random_string(100));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(100));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive1000) {
-    tahoe_active_to_passive_test_with_close(random_string(1000));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(1000));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive2000) {
-    tahoe_active_to_passive_test_with_close(random_string(2000));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(2000));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive5000) {
-    tahoe_active_to_passive_test_with_close(random_string(5000));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(5000));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive50000) {
-    tahoe_active_to_passive_test_with_close(random_string(50000));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(50000));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveToPassive100000) {
-    tahoe_active_to_passive_test_with_close(random_string(100000));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(100000));
 }
 
 TEST_F(BackEndMockTestDrop32, tahoeSendReceiveTestActiveToPassiveDrop32) {
-    tahoe_active_to_passive_test_with_close(random_string(500));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(500));
 }
 
 TEST_F(BackEndMockTestDrop22Drop22, tahoeSendReceiveTestActiveToPassiveDrop32) {
-    tahoe_active_to_passive_test_with_close(random_string(500));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(500));
 }
 
 TEST_F(BackEndMockTestDropRandom1Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(50000));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(50000));
 }
 
 TEST_F(BackEndMockTestDropRandom5Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(50000));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(50000));
 }
 
 TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(50000));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(50000));
 }
 
 TEST_F(BackEndMockTestDropRandom20Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(50000));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(50000));
 }
 
 TEST_F(BackEndMockTestDropRandom30Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(random_string(50000));
+    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(50000));
 }

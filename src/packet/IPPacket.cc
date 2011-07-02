@@ -272,7 +272,22 @@ string IPPacket::to_s_format() const {
 
 bool IPPacket::operator ==(const IPPacket& other) const {
     //cout << "IPPacket::operator ==()" << endl;
-    return !memcmp(payload_, other.payload_, sizeof (struct iphdr));
+
+    IPPacket const* other_ptr = dynamic_cast<IPPacket const*> (&other);
+
+    bool equal = other_ptr != NULL;
+    equal = equal && ip_->daddr == other_ptr->ip_->daddr;
+    equal = equal && ip_->frag_off == other_ptr->ip_->frag_off;
+    equal = equal && ip_->id == other_ptr->ip_->id;
+    equal = equal && ip_->ihl == other_ptr->ip_->ihl;
+    equal = equal && ip_->protocol == other_ptr->ip_->protocol;
+    equal = equal && ip_->saddr == other_ptr->ip_->saddr;
+    equal = equal && ip_->tos == other_ptr->ip_->tos;
+    equal = equal && ip_->tot_len == other_ptr->ip_->tot_len;
+    equal = equal && ip_->ttl == other_ptr->ip_->ttl;
+    equal = equal && ip_->version == other_ptr->ip_->version;
+
+    return equal;
 }
 
 bool IPPacket::operator !=(const IPPacket& other) const {

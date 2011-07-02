@@ -89,8 +89,8 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
             set_cwnd(c, q, e);
         }
 
-//        cout << "TCPTahoeBaseCongestionControl::state_receive_packet(), num outstanding: " << ccc->get_num_outstanding() << endl;
-//        cout << "TCPTahoeBaseCongestionControl::state_receive_packet(), max allowed to send: " << ccc->get_max_allowed_to_send() << endl;
+        //cout << "TCPTahoeBaseCongestionControl::state_receive_packet(), num outstanding: " << ccc->get_num_outstanding() << endl;
+        //cout << "TCPTahoeBaseCongestionControl::state_receive_packet(), max allowed to send: " << ccc->get_max_allowed_to_send() << endl;
 
         // check to see if there is room to send data
         assert(ccc->get_num_outstanding() <= ccc->get_max_allowed_to_send());

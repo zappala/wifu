@@ -7,44 +7,12 @@
 
 #include "contexts/TCPDelayedACKReliabilityContext.h"
 
-TCPDelayedACKReliabilityContext::TCPDelayedACKReliabilityContext(u_int32_t iss) : OutstandingDataContext(iss), initialized_(false), rcv_nxt_(0), rcv_wnd_(MAX_TCP_RECEIVE_WINDOW_SIZE), timer_(0), duplicate_ack_number_(0), duplicates_(0), receive_event_(0), rto_(INITIAL_RTO), delay_timeout_interval_(INITAL_DELAY_TIMEOUT_INTERVAL), srtt_(-1.0), rttvar_(-1.0), delay_count_(DEFAULT_DELAY_COUNT) {
+TCPDelayedACKReliabilityContext::TCPDelayedACKReliabilityContext(u_int32_t iss) : TCPTahoeReliabilityContext(iss), delay_timeout_interval_(INITAL_DELAY_TIMEOUT_INTERVAL), delay_count_(DEFAULT_DELAY_COUNT), delay1_(1), delay2_(3), delay3_(3), delay4_(4), l1_threshold_(20), l2_threshold_(200), l3_threshold_(2000) , ack_timer_(0), cur_ack_count_(0){
     set_state(new TCPDelayedACKReliabilityState());
 }
 
 TCPDelayedACKReliabilityContext::~TCPDelayedACKReliabilityContext() {
 
-}
-
-bool TCPDelayedACKReliabilityContext::is_initialized() {
-    return initialized_;
-}
-
-void TCPDelayedACKReliabilityContext::set_initialized() {
-    initialized_ = true;
-}
-
-u_int32_t TCPDelayedACKReliabilityContext::get_rcv_nxt() {
-    return rcv_nxt_;
-}
-
-void TCPDelayedACKReliabilityContext::set_rcv_nxt(u_int32_t rcv_nxt) {
-    rcv_nxt_ = rcv_nxt;
-}
-
-u_int16_t TCPDelayedACKReliabilityContext::get_rcv_wnd() {
-    return rcv_wnd_;
-}
-
-void TCPDelayedACKReliabilityContext::set_rcv_wnd(u_int16_t rcv_wnd) {
-    rcv_wnd_ = rcv_wnd;
-}
-
-TimeoutEvent* TCPDelayedACKReliabilityContext::get_timeout_event() {
-    return timer_;
-}
-
-void TCPDelayedACKReliabilityContext::set_timeout_event(TimeoutEvent* e) {
-    timer_ = e;
 }
 
 TimeoutEvent* TCPDelayedACKReliabilityContext::get_ack_timeout_event() {
@@ -53,66 +21,6 @@ TimeoutEvent* TCPDelayedACKReliabilityContext::get_ack_timeout_event() {
 
 void TCPDelayedACKReliabilityContext::set_ack_timeout_event(TimeoutEvent* e) {
     ack_timer_ = e;
-}
-
-double TCPDelayedACKReliabilityContext::get_rto() {
-    return rto_;
-}
-
-void TCPDelayedACKReliabilityContext::set_rto(double rto) {
-    rto_ = rto;
-}
-
-u_int32_t TCPDelayedACKReliabilityContext::get_duplicate_ack_number() {
-    return duplicate_ack_number_;
-}
-
-void TCPDelayedACKReliabilityContext::set_duplicate_ack_number(u_int32_t num) {
-    duplicate_ack_number_ = num;
-}
-
-int TCPDelayedACKReliabilityContext::get_duplicates() {
-    return duplicates_;
-}
-
-void TCPDelayedACKReliabilityContext::set_duplicates(int duplicates) {
-    duplicates_ = duplicates;
-}
-
-TCPPacketBuffer& TCPDelayedACKReliabilityContext::get_receive_window() {
-    return receive_window_;
-}
-
-ReceiveEvent* TCPDelayedACKReliabilityContext::get_receive_event() {
-    return receive_event_;
-}
-
-void TCPDelayedACKReliabilityContext::set_receive_event(ReceiveEvent* e) {
-    receive_event_ = e;
-}
-
-u_int32_t TCPDelayedACKReliabilityContext::get_echo_reply() {
-    return echo_reply_;
-}
-
-void TCPDelayedACKReliabilityContext::set_echo_reply(u_int32_t echo_reply) {
-    echo_reply_ = echo_reply;
-}
-
-double TCPDelayedACKReliabilityContext::get_srtt() {
-    return srtt_;
-}
-
-void TCPDelayedACKReliabilityContext::set_srtt(double srtt) {
-    srtt_ = srtt;
-}
-
-double TCPDelayedACKReliabilityContext::get_rttvar() {
-    return rttvar_;
-}
-
-void TCPDelayedACKReliabilityContext::set_rttvar(double rttvar) {
-    rttvar_ = rttvar;
 }
 
 u_int16_t TCPDelayedACKReliabilityContext::get_delay_count(){
@@ -129,4 +37,68 @@ double TCPDelayedACKReliabilityContext::get_delay_timeout_interval(){
 
 void TCPDelayedACKReliabilityContext::set_delay_timeout_interval(double seconds) {
     delay_timeout_interval_ = seconds;
+}
+
+u_int32_t TCPDelayedACKReliabilityContext::get_l1_threshold(){
+    return l1_threshold_;
+}
+
+void TCPDelayedACKReliabilityContext::set_l1_threshold(u_int32_t l1){
+    l1_threshold_ = l1;
+}
+
+u_int32_t TCPDelayedACKReliabilityContext::get_l2_threshold(){
+    return l2_threshold_;
+}
+
+void TCPDelayedACKReliabilityContext::set_l2_threshold(u_int32_t l2){
+    l2_threshold_ = l2;
+}
+
+u_int32_t TCPDelayedACKReliabilityContext::get_l3_threshold(){
+    return l3_threshold_;
+}
+
+void TCPDelayedACKReliabilityContext::set_l3_threshold(u_int32_t l3){
+    l3_threshold_ = l3;
+}
+
+u_int16_t TCPDelayedACKReliabilityContext::get_delay1(){
+    return delay1_;
+}
+
+void TCPDelayedACKReliabilityContext::set_delay1(u_int16_t delay){
+    delay1_ = delay;
+}
+
+u_int16_t TCPDelayedACKReliabilityContext::get_delay2(){
+    return delay2_;
+}
+
+void TCPDelayedACKReliabilityContext::set_delay2(u_int16_t delay){
+    delay2_ = delay;
+}
+
+u_int16_t TCPDelayedACKReliabilityContext::get_delay3(){
+    return delay3_;
+}
+
+void TCPDelayedACKReliabilityContext::set_delay3(u_int16_t delay){
+    delay3_ = delay;
+}
+
+u_int16_t TCPDelayedACKReliabilityContext::get_delay4(){
+    return delay4_;
+}
+
+void TCPDelayedACKReliabilityContext::set_delay4(u_int16_t delay){
+    delay4_ = delay;
+}
+
+u_int16_t TCPDelayedACKReliabilityContext::get_cur_ack_count() {
+    return cur_ack_count_;
+}
+
+void TCPDelayedACKReliabilityContext::set_cur_ack_count(u_int16_t count) {
+    cur_ack_count_ = count;
 }
