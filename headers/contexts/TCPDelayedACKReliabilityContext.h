@@ -45,7 +45,9 @@ public:
 
     u_int16_t get_delay4();
     void set_delay4(u_int16_t delay);
-    
+
+    u_int16_t get_cur_ack_count();
+    void set_cur_ack_count(u_int16_t count);
 private:
 
     u_int16_t delay_count_;
@@ -61,6 +63,8 @@ private:
     u_int16_t delay2_;
     u_int16_t delay3_;
     u_int16_t delay4_;
+
+    u_int16_t cur_ack_count_;
 };
 
 #endif	/* _TCPDELAYEDACKRELIABILITYCONTEXT_H */

@@ -18,6 +18,7 @@ void TCPDelayedACKReliabilityState::state_timer_fired(Context* c, QueueProcessor
         //force sending an ACK
         cout << "TCPDelayedACKReliabilityState::state_timer_fired(): sending delayed ACK\n";
         //TODO: Should we send an ACK immediately, or should we aggregate this with the rest?
+        rc->set_cur_ack_count(0);
         this->TCPTahoeReliabilityState::create_and_dispatch_ack(c, q, e);
     }
 }
@@ -75,7 +76,7 @@ void TCPDelayedACKReliabilityState::create_and_dispatch_ack(Context* c, QueuePro
     //We delay our ACKs based on delay_count_ OR a timeout value.
 
     cout << "TCPDelayedACKReliabilityState::handle_data(): entering Delayed ACK section\n";
-    cur_ack_count_ += 1;
+    rc->set_cur_ack_count(rc->get_cur_ack_count() + 1);
 
     //Just make sure we're using a delay.
     /*if(rc->get_delay_count() <= 0) {
@@ -84,13 +85,13 @@ void TCPDelayedACKReliabilityState::create_and_dispatch_ack(Context* c, QueuePro
     }*/
 
     cout << "TCPDelayedACKReliabilityState::handle_data(): using a delay of " << rc->get_delay_count() << "ACKs.\n";
-    cout << "TCPDelayedACKReliabilityState::handle_data(): currently have " << cur_ack_count_ << "\n";
+    cout << "TCPDelayedACKReliabilityState::handle_data(): currently have " << rc->get_cur_ack_count() << "\n";
     //we have enough data packets, send an an ACK
-    if(cur_ack_count_ >= rc->get_delay_count()){
+    if(rc->get_cur_ack_count() >= rc->get_delay_count()){
         cout << "TCPDelayedACKReliabilityState::handle_data(): count reached, sending ACK\n";
         this->TCPTahoeReliabilityState::create_and_dispatch_ack(c, q, e);
         //reset our local count
-        cur_ack_count_ = 0;
+        rc->set_cur_ack_count(0);
         if(rc->get_delay_count() > 1){
             cancel_ack_timer(c, s);
         }
