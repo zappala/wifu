@@ -9,7 +9,6 @@
 #define SENDERACK_H_
 
 #include "TCPATPCongestionControl.h"
-
 #include "contexts/ATPCongestionControlContext.h"
 
 class Sender: public TCPATPCongestionControl {
@@ -23,12 +22,10 @@ public:
     virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     virtual void state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e);
     virtual void state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e);
-    virtual void state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e);
 
 private:
     typedef TCPATPCongestionControl super;
 
-    void update_send_window(Context * c, ATPPacket * p);
     void update_sending_rate(Context * c, ATPPacket * p);
 
 

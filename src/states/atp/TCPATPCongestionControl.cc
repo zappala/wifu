@@ -10,35 +10,53 @@
 // must be here to avoid circular dependencies
 #include "contexts/ATPCongestionControlContext.h"
 
-TCPATPCongestionControl::TCPATPCongestionControl() : canSend_(1), sendSeconds_(0), sendNanos_(0), waitingTimeout_(0) {
-    queue_ = new Queue<WiFuPacket*>();
+
+//#define PRINT_DEBUG
+//#define PRINT_PACKET
+
+#ifdef PRINT_DEBUG
+	#define DEBUG(str) cout << str << endl;
+#else
+	#define DEBUG(str)
+#endif
+
+#ifdef PRINT_PACKET
+	#define DEBUG_PACKET(str) cout << str << endl;
+#else
+	#define DEBUG_PACKET(str)
+#endif
+
+TCPATPCongestionControl::TCPATPCongestionControl() : canSend_(1), sendSeconds_(0), sendMicros_(0), waitingTimeout_(0) {
+    send_queue_ = new Queue<WiFuPacket*>();
 }
 
 TCPATPCongestionControl::~TCPATPCongestionControl() {
-    delete queue_;
+    delete send_queue_;
 }
 
 //rate of 1 packet per (seconds + nanoseconds)
 
-void TCPATPCongestionControl::setRate(int seconds, long int nanoseconds) {
-	cout << "Rate getting set to: " << seconds << ", " << nanoseconds << endl;
+void TCPATPCongestionControl::setDelay(int seconds, long int microseconds) {
+	DEBUG("Delay getting set to: " << seconds << ", " << microseconds);
+
+	assert(seconds != 0 || microseconds != 0);
     sendSeconds_ = seconds;
-    sendNanos_ = nanoseconds;
+    sendMicros_ = microseconds;
 }
 
 int TCPATPCongestionControl::getSeconds() {
     return sendSeconds_;
 }
 
-long int TCPATPCongestionControl::getNanoseconds() {
-    return sendNanos_;
+long int TCPATPCongestionControl::getMicroseconds() {
+    return sendMicros_;
 }
 
 void TCPATPCongestionControl::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e) {
-    cout << "TCPATPCongestionControl::send_packet: Entered\n";
+    DEBUG("TCPATPCongestionControl::state_send_packet : rate = " << sendSeconds_ << ", " << sendMicros_);
 
-    //if (canSend_) {
-    //    canSend_ = 0;
+    if (canSend_) {
+        canSend_ = 0;
 
 
 		ATPPacket* packet = ATPPacket::convert_to_atp_packet(e->get_packet());
@@ -48,67 +66,76 @@ void TCPATPCongestionControl::state_send_packet(Context* c, QueueProcessor<Event
 		TCPTimestampOption * option = (TCPTimestampOption *)packet->get_option(8);
         option->set_timestamp();
 
+        DEBUG("TCPATPCongestionControl::send_packet: Sending packet");
         send_packet(packet, e->get_socket());
 
-        cout << "TCPATPCongestionControl::send_packet: Sending packet" << endl;
 
         setTimer(e->get_socket());
-    /*}
+    }
     else {
-        // enqueue to send later
-        queue_->enqueue(e->get_packet());
-    }*/
+    	DEBUG("TCPATPCongestionControl::state_send_packet : adding another to packet to queue (" << send_queue_->size() << ")");
+        DEBUG("\t with data: " << e->get_packet()->get_data());
+    	// enqueue to send later
+        send_queue_->enqueue(e->get_packet());
+    }
 }
 
 void TCPATPCongestionControl::state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e){
     ATPCongestionControlContext* ccc = (ATPCongestionControlContext*) c;
 
+    DEBUG("TCPATPCongestionControl::state_resend_packet");
+
 	ccc->set_snd_nxt(ccc->get_snd_una());
+
+	// Clear out old queue since I will need to resend from UNA
+	send_queue_->clear();
+
     resend_data(c, q, e);
+
+    // Fill queue back up with data from buffer
+    send_packets(c, q, e);
 }
 
 void TCPATPCongestionControl::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
-    cout << "TCPATPCongestionControl::timer_fired: got timer" << endl;
+    //cout << "TCPATPCongestionControl::timer_fired: got timer" << endl;
 
     //make sure this is ours
     if (waitingTimeout_ == 0 || e->get_timeout_event() != waitingTimeout_) {
-        cout << "TCPATPCongestionControl::timer_fired: not my timer" << endl;
+        DEBUG("TCPATPCongestionControl::timer_fired: not my timer");
         return;
     }
 
     //if data to send, dispatch the NetworkSendPacketEvent
-    if (!queue_->is_empty()) {
-        cout << "SendRateLimiter::timer_fired: sending queued data " << endl;
+    if (!send_queue_->is_empty()) {
+        DEBUG("SendRateLimiter::timer_fired: sending queued data ");
 
         //send packet
-    	ATPPacket* packet = dynamic_cast<ATPPacket *>(queue_->dequeue());
+
+    	ATPPacket* packet = ATPPacket::convert_to_atp_packet(send_queue_->dequeue());
     	assert(packet != 0);
 
     	send_packet(packet, e->get_socket());
         setTimer(e->get_socket());
     }
     else {
-    	cout << "SendRateLimiter::timer_fired: nothing to send " << endl;
+    	DEBUG("SendRateLimiter::timer_fired: nothing to send ");
         canSend_ = 1;
         waitingTimeout_ = 0;
     }
 }
 
 void TCPATPCongestionControl::setTimer(Socket* s) {
-    // TODO: Turn timer back on
-
-	//TimeoutEvent* timeout_event = new TimeoutEvent(s, sendSeconds_, sendNanos_);
-    //waitingTimeout_ = timeout_event;
-    //Dispatcher::instance().enqueue(timeout_event);
+	// converting sendMicros_ into nanoseconds
+	TimeoutEvent* timeout_event = new TimeoutEvent(s, sendSeconds_, sendMicros_ * 1000);
+    waitingTimeout_ = timeout_event;
+    Dispatcher::instance().enqueue(timeout_event);
 }
 
 void TCPATPCongestionControl::send_packet(ATPPacket* p, Socket* s){
 
+	DEBUG("SENDING DATA: " << p->get_data());
     p->pack();
     p->calculate_and_set_tcp_checksum();
-
-	//TCPTimestampOption* ts = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
-	//cout << ts->get_echo_reply() << endl;
 
     printPacket(p);
 
@@ -117,28 +144,21 @@ void TCPATPCongestionControl::send_packet(ATPPacket* p, Socket* s){
 }
 
 void TCPATPCongestionControl::send_packets(Context* c, QueueProcessor<Event*>* q, Event* e) {
-	cout << "TCPATPCongestionControl::send_packets" << endl;
+	//cout << "TCPATPCongestionControl::send_packets" << endl;
 
 	ATPCongestionControlContext* ccc = (ATPCongestionControlContext* )c;
 	Socket* s = e->get_socket();
     string& send_buffer = s->get_send_buffer();
 
-    // TODO: Do I send as much data as I can per packet?
-    //			-> No! Send what the receiver is able to receive
-    // TODO: Do I need to keep track of what data I have already sent?
-
-    cout << "Send buffer size: " << send_buffer.size() << endl;
-    cout << "Number of outstanding packets: " << ccc->get_num_outstanding() << endl;
-    cout << "Receiver window size: " << ccc->get_receiver_window_size() << endl;
-
-    while (((int)send_buffer.size() > (int)ccc->get_num_outstanding()) && ((int)ccc->get_receiver_window_size() > (int) ccc->get_num_outstanding())) {
-    	cout << "TCPATPCongestionControl::send_packets : sending delay packet" << endl;
+	DEBUG("TCPATPCongestionControl::send_packets : sending packets:");
+	//(int) send_buffer.size() - (int) ccc->get_num_outstanding() > 0 && ccc->get_num_outstanding() < ccc->get_snd_wnd()
+    while (((int)send_buffer.size() > (int)ccc->get_num_outstanding())) {
     	delay_send_packets(c, q, e);
     }
 }
 
 void TCPATPCongestionControl::delay_send_packets(Context* c, QueueProcessor<Event*>* q, Event* e) {
-	cout << "TCPATPCongestionControl::delay_send_packet()" << endl;
+	//cout << "TCPATPCongestionControl::delay_send_packet()" << endl;
 
 	ATPCongestionControlContext* ccc = (ATPCongestionControlContext* )c;
 	Socket* s = e->get_socket();
@@ -149,13 +169,13 @@ void TCPATPCongestionControl::delay_send_packets(Context* c, QueueProcessor<Even
 	// We actually may have sent data already but if SND.UNA changes due to a drop we will treat it as if we never sent it.
 	int index = ccc->get_num_outstanding();
 
+	//cout << "UNA: " << ccc->get_snd_una() << endl;
+	//cout << "NXT: " << ccc->get_snd_nxt() << endl;
+
 	ATPPacket* p = new ATPPacket();
 	p->insert_tcp_header_option(new TCPTimestampOption());
 
-	// TODO: Make sure this is correct
-	// packet, window, buffer
-	int data_length = min(min((int)ccc->get_receiver_window_size() - index, (int)p->max_data_length()), (int)send_buffer.size() - index);
-
+	int data_length = get_send_data_length(c, e, p);
 	assert(data_length > 0);
 
 	const char* data = (send_buffer.data() + index);
@@ -172,14 +192,18 @@ void TCPATPCongestionControl::delay_send_packets(Context* c, QueueProcessor<Even
 	p->set_source_port(source->get_port());
 
 	p->set_data((unsigned char*) data, data_length);
-
 	assert(p->get_data_length_bytes() > 0);
+
+	//cout << "TCPATPCongestionControl::delay_send_packets : data being sent: " << p->get_data() << endl;
+	DEBUG("UNA: " << ccc->get_snd_una());
+	DEBUG("NXT: " << ccc->get_snd_nxt());
 
 	q->enqueue(new SendPacketEvent(s, p));
 }
 
+
 void TCPATPCongestionControl::resend_data(Context* c, QueueProcessor<Event*>* q, Event* e) {
-    cout << "TCPTahoeBaseCongestionControl::resend_data()" << endl;
+    DEBUG("TCPTahoeBaseCongestionControl::resend_data()");
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
 
@@ -231,17 +255,32 @@ void TCPATPCongestionControl::resend_data(Context* c, QueueProcessor<Event*>* q,
 }
 
 void TCPATPCongestionControl::printPacket(ATPPacket* packet){
-	cout << "-------PACKET-------" << endl;
-	cout << "SYN: " << packet->is_tcp_syn() << endl;
-	cout << "ACK: " << packet->is_tcp_ack() << endl;
-	cout << "FIN: " << packet->is_tcp_fin() << endl;
-	cout << "SEQ: " << packet->get_tcp_sequence_number() << endl;
-	cout << "MAX DELAY: " << packet->get_atp_max_delay() << endl;
-	cout << "AVG DELAY: " << packet->get_atp_average_delay() << endl;
-	cout << "data length: " << packet->get_data_length_bytes() << endl;
-	cout << "data: " << packet->get_data() << endl;
-	cout << "--------------------" << endl;
+	DEBUG_PACKET("-------PACKET-------");
+	DEBUG_PACKET("SYN: " << packet->is_tcp_syn());
+	DEBUG_PACKET("ACK: " << packet->is_tcp_ack());
+	DEBUG_PACKET("FIN: " << packet->is_tcp_fin());
+	DEBUG_PACKET("SEQ #: " << packet->get_tcp_sequence_number());
+	DEBUG_PACKET("ACK #: " << packet->get_tcp_ack_number());
+	DEBUG_PACKET("MAX DELAY: " << packet->get_atp_max_delay());
+	DEBUG_PACKET("AVG DELAY: " << packet->get_atp_average_delay());
+	DEBUG_PACKET("data length: " << packet->get_data_length_bytes());
+	DEBUG_PACKET("data: " << packet->get_data());
+	DEBUG_PACKET("--------------------");
 }
+
+int TCPATPCongestionControl::get_send_data_length(Context* c, Event* e, WiFuPacket* p) {
+    ATPCongestionControlContext* ccc = (ATPCongestionControlContext*) c;
+    string& send_buffer = e->get_socket()->get_send_buffer();
+
+    // TODO: Should i really be considering receiver window size? I am delaying sending so who knows
+    // what the window size will be when the packet actually gets sent
+
+    // Takes into account receiver window size, packets max size, data in the send buffer
+	//return min((int)ccc->get_snd_wnd(), min(p->max_data_length(), (int) send_buffer.size() - (int) ccc->get_num_outstanding()));
+
+    return min(p->max_data_length(), (int) send_buffer.size() - (int) ccc->get_num_outstanding());
+}
+
 
 int TCPATPCongestionControl::get_resend_data_length(Context* c, Event* e, WiFuPacket* p) {
     ATPCongestionControlContext* ccc = (ATPCongestionControlContext*) c;
@@ -256,46 +295,30 @@ int TCPATPCongestionControl::get_resend_data_length(Context* c, Event* e, WiFuPa
     return data_length;
 }
 
-void TCPATPCongestionControl::hexDump (char *desc, void *addr, int len) {
-    int i;
-    unsigned char buff[17];       // stores the ASCII data
-    unsigned char *pc = (unsigned char*)addr;     // cast to make the code cleaner.
+void TCPATPCongestionControl::update_context(Context* c, ATPPacket* packet){
+	ATPCongestionControlContext* ccc = (ATPCongestionControlContext*) c;
 
-    // Output description if given.
-    if (desc != NULL)
-        printf ("%s:\n", desc);
+	ccc->set_snd_una(packet->get_tcp_ack_number());
 
-    // Process every byte in the data.
-    for (i = 0; i < len; i++) {
-
-    	// Multiple of 16 means new line (with line offset).
-        if ((i % 16) == 0) {
-
-        	// Just don't print ASCII for the zeroth line.
-            if (i != 0)
-                printf ("  %s\n", buff);
-
-            // Output the offset.
-            printf ("  %04x ", i);
-        }
-
-        // Now the hex code for the specific character.
-        printf (" %02x", pc[i]);
-
-        // And store a printable ASCII character for later.
-        if ((pc[i] < 0x20) || (pc[i] > 0x7e))
-            buff[i % 16] = '.';
-        else
-            buff[i % 16] = pc[i];
-        buff[(i % 16) + 1] = '\0';
+    // In case we get an ack for something later than snd.nxt
+    // (we dropped a packet but subsequent packets got through and we received a cumulative ack)
+    if (less_than(ccc->get_snd_nxt(), ccc->get_snd_una())) {
+    	DEBUG("TCPATPCongestionControl::update_context : NXT is less than UNA, must have received cum ACK");
+        ccc->set_snd_nxt(ccc->get_snd_una());
     }
 
-    // Pad out last line if not exactly 16 characters.
-    while ((i % 16) != 0) {
-        printf ("   ");
-        i++;
+    // update send window (RFC p. 72)
+    if (less_than(ccc->get_snd_wnd1(), packet->get_tcp_sequence_number()) ||
+            (ccc->get_snd_wnd1() == packet->get_tcp_sequence_number() &&
+            less_than_or_equal(ccc->get_snd_wnd2(), packet->get_tcp_ack_number()))) {
+
+        ccc->set_snd_wnd(packet->get_tcp_receive_window_size());
+        ccc->set_snd_wnd1(packet->get_tcp_sequence_number());
+        ccc->set_snd_wnd2(packet->get_tcp_ack_number());
     }
 
-    // And print the final ASCII bit.
-    printf ("  %s\n", buff);
+    DEBUG("---- updating context ----");
+    DEBUG("snd window: " << ccc->get_snd_wnd());
+	DEBUG("UNA: " << ccc->get_snd_una());
+	DEBUG("NXT: " << ccc->get_snd_nxt());
 }

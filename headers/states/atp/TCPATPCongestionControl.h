@@ -21,18 +21,18 @@
 #include "contexts/Context.h"
 #include "Queue.h"
 
-#include "State.h"
+#include "states/State.h"
 
 class TCPATPCongestionControl: public State {
 public:
 	TCPATPCongestionControl();
 	virtual ~TCPATPCongestionControl();
 
-	void setRate(int seconds,  long int nanoseconds);
+	void setDelay(int seconds,  long int nanoseconds);
 
 	int getSeconds();
 
-	long int getNanoseconds();
+	long int getMicroseconds();
 
 	virtual void state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e);
     virtual void state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e);
@@ -42,23 +42,22 @@ protected:
 	void send_packet(ATPPacket* p, Socket* s);
 	void send_packets(Context* c, QueueProcessor<Event*>* q, Event* e);
 	void delay_send_packets(Context* c, QueueProcessor<Event*>* q, Event* e);
+	void update_context(Context* c, ATPPacket* packet);
 	void printPacket(ATPPacket* packet);
-
-    void hexDump (char *desc, void *addr, int len);
-
-
 
 
 private:
     bool canSend_;
     int sendSeconds_;
-    long int sendNanos_;
+    long int sendMicros_;
     TimeoutEvent* waitingTimeout_;
-    Queue<WiFuPacket*>* queue_;
+    Queue<WiFuPacket*>* send_queue_;
 
     void setTimer(Socket* s);
 	int get_resend_data_length(Context* c, Event* e, WiFuPacket* p);
+	int get_send_data_length(Context* c, Event* e, WiFuPacket* p);
 	void resend_data(Context* c, QueueProcessor<Event*>* q, Event* e);
+
 
 
 

@@ -9,7 +9,6 @@
 #define RECEIVEDATA_H_
 
 #include "TCPATPCongestionControl.h"
-
 #include "contexts/ATPCongestionControlContext.h"
 
 
@@ -21,12 +20,14 @@ public:
     virtual void state_enter(Context* c);
     virtual void state_exit(Context* c);
 
+    virtual void state_receive(Context*, QueueProcessor<Event*>* q, ReceiveEvent*);
+
     virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     virtual void state_send_packet(Context*, QueueProcessor<Event*>* q, SendPacketEvent* e);
 
 
 private:
-    double calculateDelay(u_int32_t max, u_int32_t previous, double beta);
+    u_int32_t calculateDelay(u_int32_t max, u_int32_t previous, double beta);
 
 };
 

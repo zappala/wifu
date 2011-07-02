@@ -7,6 +7,14 @@
 
 #include "../../headers/states/atp/Waiting.h"
 
+//#define PRINT_DEBUG
+
+#ifdef PRINT_DEBUG
+	#define DEBUG(str) cout << str << endl;
+#else
+	#define DEBUG(str)
+#endif
+
 Waiting::Waiting() {
 }
 
@@ -20,7 +28,7 @@ void Waiting::state_exit(Context* c){
 }
 
 void Waiting::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e){
-	cout << "Waiting::state_send_packet : sending SYN packet" << endl;
+	DEBUG("Waiting::state_send_packet : sending SYN packet");
 
 	ATPPacket* packet = ATPPacket::convert_to_atp_packet(e->get_packet());
 	assert(packet != 0);
@@ -38,22 +46,22 @@ void Waiting::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Networ
 	assert(packet != 0);
 
 
-	cout << "Waiting::state_receive_packet:" << endl;
+	DEBUG("Waiting::state_receive_packet:");
 	printPacket(packet);
 
 	if(packet->is_tcp_ack() && packet->is_tcp_syn()){
-		cout << "Waiting::state_receive_packet: received SYN + ACK packet (creating Sender)" << endl;
+		DEBUG("Waiting::state_receive_packet: received SYN + ACK packet (creating Sender)");
 
 		// Starting the sender
+		update_context(c, packet);
 		ccc->set_average_delay(packet->get_atp_average_delay());
-		ccc->set_receiver_window_size(packet->get_tcp_receive_window_size());
-
 		ccc->set_state(new Sender());
 	}
 	else if(packet->is_tcp_syn()){
-		cout << "Waiting::state_receive_packet: received SYN packet (creating Receiver)" << endl;
+		DEBUG("Waiting::state_receive_packet: received SYN packet (creating Receiver)");
 
 		// Starting the receiver
+		ccc->get_time_difference();
 		ccc->set_max_delay(packet->get_atp_max_delay());
 		ccc->set_state(new Receiver());
 	}
