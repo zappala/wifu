@@ -9,27 +9,27 @@
 #define TCP_ATP_H_
 
 #include "contexts/ATPIContextContainer.h"
-
+#include "IContextContainerFactory.h"
+#include "ATPIContextContainerFactory.h"
+#include "contexts/BasicIContextContainer.h"
 
 #include "TCPTahoe.h"
 
 class TCPATP: public TCPTahoe {
+private:
+    IContextContainerFactory* factory_;
 
 protected:
-    TCPATP(int protocol = TCP_ATP);
+    TCPATP(int protocol = TCP_ATP, IContextContainerFactory* factory = new ATPIContextContainerFactory());
 
 public:
 	virtual ~TCPATP();
 
 	static TCPATP& instance();
 
-    virtual void icontext_socket(QueueProcessor<Event*>* q, SocketEvent* e);
-
     virtual void icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
 
     virtual void icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent* e);
-
-    virtual void icontext_new_connection_initiated(QueueProcessor<Event*>* q, ConnectionInitiatedEvent* e);
 
 };
 

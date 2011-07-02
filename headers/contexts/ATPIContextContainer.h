@@ -16,7 +16,6 @@ public:
 	ATPIContextContainer();
 	virtual ~ATPIContextContainer();
 
-    virtual IContext* get_congestion_control();
 
 private:
     IContext* congestion_control_;

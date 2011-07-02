@@ -5,18 +5,13 @@
  *      Author: philipbl
  */
 
-#include "../../headers/contexts/ATPIContextContainer.h"
+#include "contexts/ATPIContextContainer.h"
 
 ATPIContextContainer::ATPIContextContainer() : TCPTahoeIContextContainer() {
-    congestion_control_ = new ATPCongestionControlContext(1);
+	u_int32_t iss = 1;
+	set_congestion_control(new ATPCongestionControlContext(iss));
 }
 
 ATPIContextContainer::~ATPIContextContainer() {
 
 }
-
-
-IContext* ATPIContextContainer::get_congestion_control() {
-    return congestion_control_;
-}
-

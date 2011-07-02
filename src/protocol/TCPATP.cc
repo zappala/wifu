@@ -7,7 +7,16 @@
 
 #include "../../headers/protocol/TCPATP.h"
 
-TCPATP::TCPATP(int protocol) : TCPTahoe(protocol){
+//#define PRINT_DEBUG
+
+
+#ifdef PRINT_DEBUG
+	#define DEBUG(str) cout << str << endl;
+#else
+	#define DEBUG(str)
+#endif
+
+TCPATP::TCPATP(int protocol, IContextContainerFactory* factory) : TCPTahoe(protocol, factory){
 
 }
 
@@ -19,38 +28,24 @@ TCPATP& TCPATP::instance() {
     return instance_;
 }
 
-
-void TCPATP::icontext_socket(QueueProcessor<Event*>* q, SocketEvent* e){
-    cout << "\nTCPATP::icontext_socket()" << endl;
-
-    Socket* s = e->get_socket();
-    map_[s] = new ATPIContextContainer();
-
-    BasicIContextContainer* c = map_.find(s)->second;
-
-    c->get_reliability()->icontext_socket(q, e);
-    c->get_connection_manager()->icontext_socket(q, e);
-    c->get_congestion_control()->icontext_socket(q, e);
-}
-
 void TCPATP::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-    cout << "\nTCPATP::icontext_receive_packet()" << endl;
+    DEBUG("\nTCPATP::icontext_receive_packet()");
 
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    TCPTahoeIContextContainer* c = map_.find(s)->second;
+    TCPTahoeIContextContainer* c = (TCPTahoeIContextContainer*) map_.find(s)->second;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c->get_reliability();
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c->get_connection_manager();
 
     if(!p->is_valid_tcp_checksum()) {
-    	cout << "INVALID CHECKSUM" << endl;
+    	DEBUG("INVALID CHECKSUM");
         return;
     }
 
     // validate any ack number
     if (p->is_tcp_ack() && !is_valid_ack_number(rc, p)) {
-        cout << "INVALID ACK NUMBER" << endl;
+        DEBUG("INVALID ACK NUMBER");
         rc->icontext_receive_packet(q, e);
         return;
     }
@@ -63,7 +58,7 @@ void TCPATP::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePa
     // We add on the case where no context exists for us to check (RCV.NXT == 0)
     if (!is_valid_sequence_number(rc, p)) {
         // TODO: is this the correct check?
-        cout << "INVALID SEQUENCE NUMBER" << endl;
+        DEBUG("INVALID SEQUENCE NUMBER");
 
         // See my notes for May 25, 2011 for why this must be - RB
         if (!strcmp(cmc->get_state_name().c_str(), type_name(TimeWait))) {
@@ -117,7 +112,7 @@ void TCPATP::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePa
 }
 
 void TCPATP::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent* e) {
-    cout << "\nTCPATP::icontext_send_packet()" << endl;
+    DEBUG("\nTCPATP::icontext_send_packet()");
 
     Socket* s = e->get_socket();
     BasicIContextContainer* c = map_.find(s)->second;
@@ -129,21 +124,3 @@ void TCPATP::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent* e)
     c->get_congestion_control()->icontext_send_packet(q, e);
 
 }
-
-void TCPATP::icontext_new_connection_initiated(QueueProcessor<Event*>* q, ConnectionInitiatedEvent* e){
-    cout << "\nTCPATP::icontext_new_connection_initiated()" << endl;
-
-    Socket* listening_socket = e->get_socket();
-    Socket* new_socket = e->get_new_socket();
-
-    BasicIContextContainer* listening_cc = map_.find(listening_socket)->second;
-    map_[new_socket] = listening_cc;
-
-    BasicIContextContainer* new_cc = new ATPIContextContainer();
-    map_[listening_socket] = new_cc;
-
-    new_cc->get_reliability()->icontext_new_connection_initiated(q, e);
-    new_cc->get_connection_manager()->icontext_new_connection_initiated(q, e);
-    new_cc->get_congestion_control()->icontext_new_connection_initiated(q, e);
-}
-
