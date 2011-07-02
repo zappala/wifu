@@ -114,7 +114,6 @@ void TCPTahoeReliabilityState::cancel_timer(Context* c, Socket* s) {
 
 void TCPTahoeReliabilityState::resend_data(Context* c, QueueProcessor<Event*>* q, Socket* s, ResendReason reason) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
-    cout << "TCPTahoeReliabilityState::resend_data resending: " << rc ->get_snd_una() << endl;
     rc->set_snd_nxt(rc->get_snd_una());
     q->enqueue(new ResendPacketEvent(s, reason));
 }
