@@ -14,6 +14,7 @@
 #include "INetworkInterface.h"
 #include "events/framework_events/NetworkReceivePacketEvent.h"
 #include "packet/TCPPacket.h"
+#include "packet/ATPPacket.h"
 #include "OptionParser.h"
 #include "exceptions/IllegalStateException.h"
 #include "exceptions/IOError.h"

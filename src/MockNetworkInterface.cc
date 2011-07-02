@@ -22,7 +22,7 @@ void MockNetworkInterface::imodule_network_receive(WiFuPacket* p) {
 }
 
 void MockNetworkInterface::imodule_network_send(Event* e) {
-//    cout << "MockNetworkInterface::network_send()" << endl;
+    //cout << "MockNetworkInterface::network_send()" << endl;
     NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
     WiFuPacket* p = event->get_packet();
     int delay = 0;
@@ -54,6 +54,17 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
             }
         }
     }
+    else if(p->get_ip_protocol() == TCP_ATP){
+    	ATPPacket* packet = dynamic_cast<ATPPacket *>(p);
+    	assert(packet != 0);
+
+    	// max delay > 250 seems to work always
+    	packet->set_atp_max_delay(rand() % 1000 + 250);
+    	packet->calculate_and_set_tcp_checksum();
+
+    	delay = get_delay(packet);
+
+    }
     else
     {
         TCPPacket* tcp_packet = (TCPPacket*) p;
@@ -70,13 +81,15 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
     // drop the packet
     //    cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
     if (delay == -1) {
-//        cout << "MockNetworkInterface::network_send(), Dropping packet" << endl;
+        //cout << "MockNetworkInterface::network_send(), Dropping packet" << endl;
         return;
     }
 
     //    cout << "MockNetworkInterface::network_send(), Before sleep" << endl;
 
     if (delay > 0) {
+        //cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
+
         // delay is in microseconds
         TimeoutEvent* timer = new TimeoutEvent(fake_socket_, 0, delay * 1000);
         //delayed_[timer] = tcp_packet;
