@@ -12,6 +12,8 @@
 #include "Socket.h"
 #include "IModule.h"
 
+using namespace std;
+
 /**
  * Event which notifies that a specific Socket's receive buffer is not full.
  *
