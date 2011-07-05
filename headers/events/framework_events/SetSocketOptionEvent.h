@@ -11,12 +11,47 @@
 #include "SocketOptionEvent.h"
 #include "Socket.h"
 
+using namespace std;
+
+/**
+ * Represents a setsockopt() call by the application.
+ *
+ * @see Event
+ * @see FrameworkEvent
+ * @see LibraryEvent
+ * @see SocketOptionEvent
+ *
+ */
 class SetSocketOptionEvent : public SocketOptionEvent {
 public:
+
+    /**
+     * Constructs a SetSocketOptionEvent.
+     *
+     * @param message Message received from the front end library containing the information about the setsockopt() BSD socket API call and some bookkeeping information.
+     * @param file The file associated with a Unix socket to write any response to the application.
+     * @param s The Socket object to which this Event belongs.
+     */
     SetSocketOptionEvent(string& message, string& file, Socket* s);
+
+    /**
+     * Destructor.
+     */
     virtual ~SetSocketOptionEvent();
 
+    /**
+     * Calls IModule::imodule_library_set_socket_option() and passes this SetSocketOptionEvent in as the argument.
+     *
+     * @param m The module which to call IModule::imodule_library_set_socket_option() on.
+     * @see Event::execute()
+     * @see IModule
+     * @see IModule::imodule_library_set_socket_option()
+     */
     void execute(IModule* m);
+
+    /**
+     * @return The value to set the option to.
+     */
     string& get_option_value();
 
     /**

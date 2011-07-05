@@ -10,7 +10,7 @@ void SendEvent::execute(IModule* m) {
 
 unsigned char * SendEvent::get_data() {
     if (data_ == 0) {
-        data_ = (unsigned char*) get_map().at(BUFFER_STRING).c_str();
+        data_ = (unsigned char*) get_map().at(BUFFER_STRING).data();
     }
     return data_;
 }
@@ -20,9 +20,5 @@ ssize_t SendEvent::data_length() {
         data_length_ = atoi(get_map().at(N_STRING).c_str());
     }
 
-    // TODO: move this test to testing
-    int string_size = get_map().at(BUFFER_STRING).size();
-    assert(string_size == data_length_);
-    
     return data_length_;
 }

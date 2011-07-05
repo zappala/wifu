@@ -4,6 +4,10 @@ ReceiveEvent::ReceiveEvent(string& message, string& file, Socket* s) : LibraryEv
 
 }
 
+ReceiveEvent::~ReceiveEvent() {
+    
+}
+
 void ReceiveEvent::execute(IModule* m) {
     m->imodule_library_receive(this);
 }
