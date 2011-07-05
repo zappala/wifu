@@ -18,27 +18,82 @@
 
 using namespace std;
 
+/**
+ * Event that is interpreted by WiFuEndBackEndLibrary and converted to a message to be passed over a Unix socket to the front end.
+ * This Event will cause the BSD socket call to return for a single socket.
+ * This is Event is the only Event used to communicate information from the back end to the front end.
+ *
+ * @see Event
+ * @see FrameworkEvent
+ * @see WiFuEntBackEndLibrary
+ */
 class ResponseEvent : public FrameworkEvent {
 public:
+
+    /**
+     * Constructs a ResponseEvent
+     * @param socket The Socket object to which this Event belongs.
+     * @param name Name of the BSD socket function which we are responding to (socket, bind, listend, recv, etc.).
+     * @param file The location of the file the Unix socket is going to receive this response on.
+     */
     ResponseEvent(Socket* socket, string& name, string& file);
 
+    /**
+     * Destructor.
+     */
     virtual ~ResponseEvent();
 
+    /**
+     * @return A query string-like message to be passed over a Unix socket to the front end.
+     */
     string get_response();
 
+    /**
+     * Inserts a key-value pair into the response.
+     * @param key The key of the pair.
+     * @param value The value of the pair.
+     */
     void put(string key, string value);
 
+    /**
+     * Inserts a key-value pair into the response.
+     * @param key The key of the pair.
+     * @param value The value of the pair.
+     */
     void put(const char* key, string value);
 
+    /**
+     * Calls IModule::imodule_library_response() and passes this ResponseEvent in as the argument.
+     * WifuEndBackEndLibrary should be the only IModule using this method.
+     *
+     * @param m The module which to call IModule::imodule_library_response() on.
+     * @see Event::execute()
+     * @see IModule
+     * @see IModule::imodule_library_response()
+     * @see WifuEndBackEndLibrary::imodule_library_response()
+     */
     void execute(IModule* m);
 
+    /**
+     * @return A reference to the file used by a Unix socket that this ResponseEvent will send to.
+     */
     string get_write_file();
 
-    string& get_value(string key);
-
 private:
+
+    /**
+     * Name of the BSD socket function we are responding to.
+     */
     string name_;
+
+    /**
+     * The file used by a Unix socket that this ResponseEvent will send to.
+     */
     string file_;
+
+    /**
+     * A map of the key-value pairs to send to the front end.
+     */
     map<string, string> m_;
             
 };

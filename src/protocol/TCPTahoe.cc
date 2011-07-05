@@ -368,6 +368,7 @@ void TCPTahoe::create_and_dispatch_received_data(QueueProcessor<Event*>* q, Rece
     Socket* s = e->get_socket();
     int buffer_size = e->get_receive_buffer_size();
 
+    // TODO: fix this to remove an extra data copy
     string data = s->get_receive_buffer().substr(0, buffer_size);
     s->get_receive_buffer().erase(0, data.size());
 
