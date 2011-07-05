@@ -1,15 +1,15 @@
 #include "events/framework_events/TimeoutEvent.h"
 
 TimeoutEvent::TimeoutEvent(Socket* socket, int seconds, long int nanoseconds) : FrameworkEvent(socket) {
-	Utils::get_timespec_future_time(seconds, nanoseconds, &timer_);
+    Utils::get_timespec_future_time(seconds, nanoseconds, &timer_);
 }
 
 struct timespec& TimeoutEvent::get_timeout_time() {
-	return timer_;
+    return timer_;
 }
 
 void TimeoutEvent::execute(IModule* m) {
-	m->imodule_timeout(this);
+    m->imodule_timeout(this);
 }
 
 string TimeoutEvent::to_s() {

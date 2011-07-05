@@ -12,7 +12,12 @@
 
 /**
  * Event which represents the expiration of a TimeoutEvent.
+ * 
+ * @see Event
+ * @see TimerEvent
  * @see TimeoutEvent
+ * @see CancelTimerEvent
+ * @see TimeoutManager
  */
 class TimerFiredEvent : public TimerEvent {
 public:
@@ -29,10 +34,13 @@ public:
     virtual ~TimerFiredEvent();
 
     /**
-     * Will call timer_fired() on m.
+     * Calls IModule::imodule_timer_fired() and passes this TimerFiredEvent in as the argument.
+     * It is important that IModules understand that many timers will be going off and they need to keep track of the TimeoutEvent (pointer) they send and compare them with the one inside this TimerFiredEvent.
      *
-     * @param m The IModule which to call timer_fired() on.
-     * @see IModule::timer_fired()
+     * @param m The module which to call IModule::imodule_timer_fired() on.
+     * @see Event::execute()
+     * @see IModule
+     * @see IModule::imodule_timer_fired()
      */
     void execute(IModule* m);
 

@@ -22,6 +22,11 @@ using namespace std;
 
 /**
  * Event which represents a timeout at some point in the future.
+ *
+ * @see Event
+ * @see TimeoutManager
+ * @see CancelTimerEvent
+ * @see TimerFiredEvent
  */
 class TimeoutEvent : public FrameworkEvent {
 public:
@@ -41,10 +46,12 @@ public:
     struct timespec & get_timeout_time();
 
     /**
-     * Will call timeout() on m.
+     * Calls IModule::imodule_timeout() and passes this TimeoutEvent in as the argument.
      *
-     * @param m The IModule which to call timeout() on.
-     * @see IModule::timeout()
+     * @param m The module which to call IModule::imodule_timeout() on.
+     * @see Event::execute()
+     * @see IModule
+     * @see IModule::imodule_timeout()
      */
     void execute(IModule* m);
 
@@ -54,6 +61,7 @@ public:
     string to_s();
 
 private:
+    
     /**
      * Holds the absolute time when this TimeoutEvent should time out.
      */
