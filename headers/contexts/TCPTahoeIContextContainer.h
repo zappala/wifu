@@ -83,9 +83,15 @@ private:
     SendEvent* saved_send_event_;
 
     /**
-     * 
+     * When an application calls close(), a CloseEvent is generated on the back-end.
+     * If the send buffer is not empty we must hang onto this event as it initiates a close.
      */
     CloseEvent* saved_close_event_;
+
+    /**
+     * When we receive a FIN we know the other host is done sending data.
+     * However, we do not want to process the received FIN until the receive buffer is empty so we don't notify the application that we should close before we have delivered all data to the application.
+     */
     NetworkReceivePacketEvent* fin_;
 };
 
