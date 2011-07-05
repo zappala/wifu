@@ -12,7 +12,7 @@
 #include "IContext.h"
 
 /**
- * Stores three different IContect pointers.
+ * Stores three different IContext pointers.
  * Provides getters and setters for a connection manager, reliabiliy, and congestion control IContext implementation.
  *
  * @see IContext
