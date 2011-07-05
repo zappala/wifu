@@ -24,7 +24,7 @@ class ReceiveBufferNotEmptyEvent : public ProtocolEvent {
 public:
 
     /**
-     * Constructs a ReceiveBufferNotEmptyEvent
+     * Constructs a ReceiveBufferNotEmptyEvent.
      * @param s The Socket object to which this Event belongs and whose receive buffer is not empty.
      */
     ReceiveBufferNotEmptyEvent(Socket* s);
