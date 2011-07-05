@@ -1,6 +1,6 @@
 #include "contexts/TCPTahoeCongestionControlContext.h"
 
-TCPTahoeCongestionControlContext::TCPTahoeCongestionControlContext(u_int32_t iss) : OutstandingDataContext(iss), probe_timer_(0), probe_timer_duration_(INITIAL_PROBE_TIMEOUT_DURATION), cwnd_(USHRT_MAX), ssthreashold_(USHRT_MAX), data_sent_(false) {
+TCPTahoeCongestionControlContext::TCPTahoeCongestionControlContext(u_int32_t iss) : OutstandingDataContext(iss), probe_timer_(0), probe_timer_duration_(INITIAL_PROBE_TIMEOUT_DURATION), cwnd_(USHRT_MAX), ssthreshold_(USHRT_MAX), data_sent_(false) {
     // TODO: replace this with the MSS tcp header option
     TCPPacket p;
     TCPTimestampOption o;
@@ -62,11 +62,11 @@ void TCPTahoeCongestionControlContext::set_cwnd(u_int32_t cwnd) {
 }
 
 u_int16_t TCPTahoeCongestionControlContext::get_ssthreshold() const {
-    return ssthreashold_;
+    return ssthreshold_;
 }
 
 void TCPTahoeCongestionControlContext::set_ssthreshold(u_int16_t ssthreashold) {
-    ssthreashold_ = ssthreashold;
+    ssthreshold_ = ssthreashold;
 }
 
 u_int32_t TCPTahoeCongestionControlContext::get_max_allowed_to_send() const {
