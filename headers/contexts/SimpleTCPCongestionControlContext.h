@@ -23,20 +23,55 @@
 
 using namespace std;
 
+/**
+ * Context of SimpleTCP's congestion control FSM.
+ */
 class SimpleTCPCongestionControlContext : public Context {
 public:
+    
+    /**
+     * Contstructor.
+     * Initializes current state to SimpleTCPCongestionControl.
+     */
     SimpleTCPCongestionControlContext();
+
+    /**
+     * Destructor.
+     */
     virtual ~SimpleTCPCongestionControlContext();
 
+    /**
+     * @return The number of packets (not bytes) that have not yet been acknowledged.
+     */
     int get_num_outstanding();
+
+    /**
+     * Saves the number of packets (not bytes) that have not yet been acknowledged.
+     * @param outstanding The value to save.
+     */
     void set_num_outstanding(int outstanding);
 
+    /**
+     * @return The last sent sequence number marking the packet (not byte(s)) last sent.
+     */
     u_int32_t get_last_sent_sequence_number();
+
+    /**
+     * Saves the last sent packet's sequence number.
+     * @param last_sent_seq The value to save.
+     */
     void set_last_sent_sequence_number(u_int32_t last_sent_seq);
 
 
 private:
+    /**
+     * The number of packets that are outstanding.
+     */
     int outstanding_;
+
+    /**
+     * The last sent sequence number marking the packet last sent.
+     */
     u_int32_t last_sent_sequence_number_;
 
 };

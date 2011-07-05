@@ -18,24 +18,73 @@
 
 #include "BasicIContextContainer.h"
 
+/**
+ * Keeps track of the state for each connection.
+ * It contains three FSM: connection management, reliability, and congestion control.
+ * Also houses additional protocol information to help glue the FSM together.
+ */
 class TCPTahoeIContextContainer : public BasicIContextContainer {
 public:
+
+    /**
+     * Constructor.
+     * Sets the initial send sequence number to 1.
+     * Creates new contexts for each of the three FSM.
+     */
     TCPTahoeIContextContainer();
+
+    /**
+     * Destructor.
+     */
     ~TCPTahoeIContextContainer();
 
+    /**
+     * @return The saved SendEvent if any, NULL otherwise.
+     */
     SendEvent* get_saved_send_event();
+
+    /**
+     * Saves e.
+     * e should be non-null iff the send buffer is full and must wait to put data into it.
+     * @param e The SendEvent representing an application call to send() or sendto() whose data cannot be put into the send buffer because it is full.
+     */
     void set_saved_send_event(SendEvent* e);
 
+    /**
+     * @return The saved CloseEvent if any, NULL otherwise.
+     */
     CloseEvent* get_saved_close_event();
+
+    /**
+     * Saves e.
+     * e should only be saved iff the application calls close() and the send buffer is empty.
+     * @param e The CloseEvent representing an application close().
+     */
     void set_saved_close_event(CloseEvent* e);
 
+    /**
+     * @return The saved packet containing a FIN if any, NULL otherwise.
+     */
     NetworkReceivePacketEvent* get_saved_fin();
+
+    /**
+     * Saves e.
+     * e should only be saved iff we have received a FIN (contained in e) and the receive window is less than its starting value.
+     * @param e The NetworkReceivePacketEvent containing a FIN.
+     */
     void set_saved_fin(NetworkReceivePacketEvent* e);
 
-    
-
 private:
+    /**
+     * When an application calls send() or sendto(), a SendEvent is generated on the back-end.
+     * If the send buffer is full, send() and sendto() block.
+     * To mimic the block, we must save the SendEvent without returning a response to the front end.
+     */
     SendEvent* saved_send_event_;
+
+    /**
+     * 
+     */
     CloseEvent* saved_close_event_;
     NetworkReceivePacketEvent* fin_;
 };
