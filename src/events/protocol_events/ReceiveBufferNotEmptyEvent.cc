@@ -4,6 +4,10 @@ ReceiveBufferNotEmptyEvent::ReceiveBufferNotEmptyEvent(Socket* s) : ProtocolEven
 
 }
 
+ReceiveBufferNotEmptyEvent::~ReceiveBufferNotEmptyEvent() {
+    
+}
+
 void ReceiveBufferNotEmptyEvent::execute(IModule* m) {
     m->imodule_receive_buffer_not_empty(this);
 }
