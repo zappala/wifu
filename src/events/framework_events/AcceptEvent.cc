@@ -1,9 +1,13 @@
 #include "events/framework_events/AcceptEvent.h"
 
-AcceptEvent::AcceptEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {}
+AcceptEvent::AcceptEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {
 
-AcceptEvent::~AcceptEvent() {}
+}
+
+AcceptEvent::~AcceptEvent() {
+
+}
 
 void AcceptEvent::execute(IModule* m) {
-	m->imodule_library_accept(this);
+    m->imodule_library_accept(this);
 }
