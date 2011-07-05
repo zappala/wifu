@@ -16,6 +16,8 @@
 #include "exceptions/WiFuException.h"
 #include "defines.h"
 
+using namespace std;
+
 class IModule;
 
 //TODO: do we get destructors with gc?

@@ -8,13 +8,13 @@ ConnectionEstablishedEvent::ConnectionEstablishedEvent(AcceptEvent* e, Socket* n
 ConnectionEstablishedEvent::~ConnectionEstablishedEvent() {}
 
 void ConnectionEstablishedEvent::execute(IModule* m) {
-	m->imodule_connection_established(this);
+    m->imodule_connection_established(this);
 }
 
 Socket* ConnectionEstablishedEvent::get_new_socket() {
-	return new_socket_;
+    return new_socket_;
 }
 
 AcceptEvent* ConnectionEstablishedEvent::get_accept_event() {
-	return event_;
+    return event_;
 }

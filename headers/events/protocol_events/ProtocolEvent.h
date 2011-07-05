@@ -15,6 +15,7 @@
  * Represents an Event with a HIGH priority.
  * Certain Protocols may need to ensure that they process all ProtocolEvents before processing another FrameworkEvent.
  * Events such as an application request and receiving packets are of lower priority than receiving information about a buffer (being empty or full).
+ * ProtocolEvent objects should not be dispatched to the dispatcher; rather, they should be directly enqueued to a specific QueueProcessor.
  *
  * @see Event
  * @see ProtocolEvent
