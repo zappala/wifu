@@ -1,5 +1,5 @@
 /* 
- * File:   DeltaClock.h
+ * File:   TimeoutEventManager.h
  * Author: rbuck
  *
  * Created on October 21, 2010, 12:41 PM

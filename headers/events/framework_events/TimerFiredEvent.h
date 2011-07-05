@@ -43,7 +43,6 @@ public:
      * @see IModule::imodule_timer_fired()
      */
     void execute(IModule* m);
-
 };
 
 #endif	/* _TIMERFIREDEVENT_H */
