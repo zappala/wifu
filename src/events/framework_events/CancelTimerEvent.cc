@@ -1,9 +1,13 @@
 #include "events/framework_events/CancelTimerEvent.h"
 
-CancelTimerEvent::CancelTimerEvent(TimeoutEvent* event) : TimerEvent(event) {}
+CancelTimerEvent::CancelTimerEvent(TimeoutEvent* event) : TimerEvent(event) {
 
-CancelTimerEvent::~CancelTimerEvent() {}
+}
+
+CancelTimerEvent::~CancelTimerEvent() {
+
+}
 
 void CancelTimerEvent::execute(IModule* m) {
-	m->imodule_cancel_timer(this);
+    m->imodule_cancel_timer(this);
 }

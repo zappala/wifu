@@ -81,22 +81,6 @@ public:
     }
 
     /**
-     * Called when e's execute() method determines that this IModule should respond to a udp send action.
-     *
-     * @param e The event which triggered a udp send action.
-     */
-    virtual void imodule_udp_send(Event* e) {
-    }
-
-    /**
-     * Called when e's execute() method determines that this IModule should respond to a udp receive action.
-     *
-     * @param e The event which triggered a udp send action.
-     */
-    virtual void imodule_udp_receive(Event* e) {
-    }
-
-    /**
      * Called when e's execute() method determines that this IModule should respond to a send action.
      *
      * @param e The event which triggered a send action.
@@ -240,9 +224,6 @@ public:
     virtual void imodule_delete_socket(Event* e) {
 
     }
-
-
-
 };
 
 #endif	/* _IMODULE_H */
