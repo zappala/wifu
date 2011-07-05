@@ -43,6 +43,7 @@ public:
      * @param m The module which to call IModule::imodule_library_accept() on.
      * @see Event::execute()
      * @see IModule
+     * @see IModule::imodule_library_accept()
      */
     void execute(IModule* m);
 
