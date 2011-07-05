@@ -35,7 +35,7 @@ public:
      * It parses the message into key value pairs and stores them in a map for easy access.
      * 
      * @param message Message received from the front end library containing the information about the specific BSD socket API call.
-     * @param file The file to write any response to the application.  Represents a Unix socket.
+     * @param file The file associated with a Unix socket to write any response to the application.
      * @param socket The Socket object to which this Event belongs.
      *
      * @see Event
