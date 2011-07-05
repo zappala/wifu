@@ -3,7 +3,7 @@
 Event::Event(Socket* s, Priority p) : socket_(s), priority_(p) {
 }
 
-Event::Event() : socket_(0) {
+Event::Event() : socket_(0), priority_(LOW) {
 }
 
 Event::~Event() {

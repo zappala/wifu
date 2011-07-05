@@ -54,6 +54,7 @@ public:
 
     /**
      * @return A pointer to the socket to which this Event belongs.
+     * @throw WiFuException if NULL would be returned.
      */
     Socket* get_socket();
 
