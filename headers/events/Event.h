@@ -22,6 +22,7 @@ class IModule;
 
 /**
  * Represents an Event which IModule objects will receive and react to.
+ * @see IModule
  */
 class Event : public gc {
 public:
@@ -34,7 +35,7 @@ public:
     Event(Socket* s, Priority p);
 
     /**
-     * Constructs an Event object.
+     * Constructs an Event object used only for testing.
      */
     Event();
 
@@ -52,14 +53,25 @@ public:
     virtual void execute(IModule* m) = 0;
 
     /**
-     * @return A pointer to the socket.
+     * @return A pointer to the socket to which this Event belongs.
      */
     Socket* get_socket();
 
-    void set_socket(Socket*);
-    
+    /**
+     * Saves the socket to which this Event belongs.
+     * @param s The Socket to which this Event belongs.
+     */
+    void set_socket(Socket* s);
+
+    /**
+     * @return The Priority of this Event for use in any priority queues.
+     */
     Priority get_priority();
 
+    /**
+     * Sets the Priority of this Event for use in any priority queues.
+     * @param priority The Priority of this Event for use in any priority queues.
+     */
     void set_priority(Priority priority);
 
 private:
