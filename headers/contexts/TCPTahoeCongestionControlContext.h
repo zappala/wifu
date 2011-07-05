@@ -90,27 +90,27 @@ public:
     void set_snd_wnd2(u_int32_t snd_wnd2);
 
     /**
-     * From RFC 793 around page 42.
+     * From RFC 793 around page 42 and RFC 1122.
      * @return The probe timer used to determine when a sender should query a zero receive window.
      * If it has not been set, NULL is returned.
      */
     TimeoutEvent* get_probe_timer() const;
 
     /**
-     * From RFC 793 around page 42.
+     * From RFC 793 around page 42 and RFC 1122.
      * Saves e as the probe timer.
      * @param e TimeoutEvent representing the probe timer to save.
      */
     void set_probe_timer(TimeoutEvent* e);
 
     /**
-     * From RFC 793 around page 42.
+     * From RFC 793 around page 42 and RFC 1122.
      * @return The duration (in seconds) the sending TCP should wait after receiving a zero in the receive window and before it should send a probe packet.
      */
     int get_probe_timer_duration() const;
 
     /**
-     * From RFC 793 around page 42.
+     * From RFC 793 around page 42 and RFC 1122.
      * Sets the duration (in seconds) the sending TCP should wait after receiving a zero in the receive window and before it should send a probe packet.
      * @param duration The length of time the sending TCP should wait after receiving a zero in the receive window and before it should send a probe packet.
      */
@@ -218,13 +218,14 @@ private:
 
     /**
      * Timer which keeps track of when we should send a probe packet AFTER being notified that the receiver's receive window is 0.
-     * For more information see RFC 793 around page 42.
+     * For more information see RFC 793 around page 42 and RFC 1122.
      */
     TimeoutEvent* probe_timer_;
 
     /**
      * Duration we wait after receving a zero sized receive window before sending a probe packet
      * According to RFC 793 it should be initially set to 2 minutes.
+     * Also see RFC 1122.
      * We store it here as seconds.
      */
     int probe_timer_duration_;

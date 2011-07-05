@@ -26,6 +26,7 @@
  * Currently, TCP Tahoe's reliability FSM has only one state: TCPTahoeReliabilityState.
  *
  * @see TCPTahoeReliabilityState
+ * @see OutstandingDataContext
  */
 class TCPTahoeReliabilityContext : public OutstandingDataContext {
 public:
@@ -55,22 +56,26 @@ public:
     void set_initialized();
 
     /**
+     * From RFC 793.
      * @return The next in order expected byte.
      */
     u_int32_t get_rcv_nxt();
 
     /**
+     * From RFC 793.
      * Saves RCV_NXT.
      * @param rcv_nxt The next in order expected byte.
      */
     void set_rcv_nxt(u_int32_t rcv_nxt);
 
     /**
+     * From RFC 793.
      * @return The number of bytes that the receiver is willing to accept.
      */
     u_int16_t get_rcv_wnd();
 
     /**
+     * From RFC 793.
      * Saves RCV_WND.
      * @param rcv_wnd The number of bytes that the receiver is willing to accept.
      */
@@ -88,41 +93,47 @@ public:
     void set_timeout_event(TimeoutEvent* e);
 
     /**
+     * From RFC 2988.
      * @return The current retransmission timeout value in seconds.
      */
     double get_rto();
 
     /**
+     * From RFC 2988.
      * Saves the retansmission timeout to rto seconds.
      * @param rto The value to save in seconds of the retransmission timeout.
      */
     void set_rto(double rto);
 
     /**
+     * From RFC 2001 (fast retransmit).
      * @return The latest ack numer we have receieved.
      * This is used to compare to an incoming ack to see if we have seen it before or not.
      */
     u_int32_t get_duplicate_ack_number();
 
     /**
+     * From RFC 2001 (fast retransmit).
      * Saves num as the latest ack number that we have seen.
      * @param num The latest ack number we have received.
      */
     void set_duplicate_ack_number(u_int32_t num);
 
     /**
+     * From RFC 2001 (fast retransmit).
      * @return The number of duplicate acks we have seen.
      */
     int get_duplicates();
 
     /**
+     * From RFC 2001 (fast retransmit).
      * Sets the number of duplicate acks we have seen to duplicates.
      * @param duplicates The number of duplicate acks we have seen.
      */
     void set_duplicates(int duplicates);
 
     /**
-     * @return Reference to the TCPPacketBuffer object which is the receive window.
+     * @return Reference to the TCPPacketBuffer object which buffers and orders data.
      * @see TCPPacketBuffer
      */
     TCPPacketBuffer& get_receive_window();
@@ -139,33 +150,39 @@ public:
     void set_receive_event(ReceiveEvent* e);
 
     /**
+     * From RFC 1323.
      * @return The latest timestamp value we have received.
      */
     u_int32_t get_echo_reply();
 
     /**
-     *  Saves the latest timestamp value we have received.
+     * From RFC 1323.
+     * Saves the latest timestamp value we have received.
      * @param ts Timestamp value from the latest ack we have received.
      */
     void set_echo_reply(u_int32_t ts);
 
     /**
+     * RFC 2988.
      * @return The smoothed RTT.
      */
     double get_srtt();
 
     /**
+     * RFC 2988.
      * Saves the smoothed RTT.
      * @param srtt The smoothed RTT.
      */
     void set_srtt(double srtt);
 
     /**
+     * RFC 2988.
      * @return The RTT variance.
      */
     double get_rttvar();
 
     /**
+     * RFC 2988.
      * Saves the RTT variance.
      * @param rttvar The RTT variance.
      */
@@ -179,11 +196,13 @@ private:
     bool initialized_;
 
     /**
+     * RFC 793.
      * Sequence number of the next expected in order byte.
      */
     u_int32_t rcv_nxt_;
 
     /**
+     * RFC 793.
      * Number of bytes that this receiver can currently buffer.
      */
     u_int16_t rcv_wnd_;
@@ -199,16 +218,18 @@ private:
     ReceiveEvent* receive_event_;
 
     /**
+     * RFC 2988.
      * Time in seconds for the next timeout
      */
     double rto_;
 
     /**
-     * The latest ack number we have received.
+     * The latest ack number we have received to update duplicates_.
      */
     u_int32_t duplicate_ack_number_;
 
     /**
+     * From RFC 2001 (fast retransmit).
      * The number of consecutive ack numbers received that have been identicle.
      */
     int duplicates_;
@@ -219,17 +240,20 @@ private:
     TCPPacketBuffer receive_window_;
 
     /**
+     * From RFC 1323.
      * Latest timestamp value we have received.
      * It will be inserted in every outgoing packet in the echo reply field which supports the timestamp option.
      */
     u_int32_t echo_reply_;
 
     /**
+     * RFC 2988.
      * Smoothed RTT in seconds.
      */
     double srtt_;
 
     /**
+     * RFC 2988.
      * RTT variance in seconds.
      */
     double rttvar_;
