@@ -61,7 +61,7 @@ bool between(u_int32_t left, u_int32_t number, u_int32_t right);
  * This allows a window of about two gigabytes.
  *
  * For example: lhs = 0 and rhs = UINT_MAX / 2 == true, but
- *              lsh = 0 and rhs = UINT_MAX / 2 + 1 == false
+ *              lhs = 0 and rhs = UINT_MAX / 2 + 1 == false
  *
  * @param lhs LHS of the equation
  * @param rhs RHS of the equation
