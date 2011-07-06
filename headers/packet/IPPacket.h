@@ -10,24 +10,51 @@
 
 #include <arpa/inet.h>
 #include <netinet/ip.h>
-#include "defines.h"
-#include "GarbageCollector.h"
 #include <sstream>
 #include <string.h>
 #include <iostream>
 
+#include "defines.h"
+#include "GarbageCollector.h"
+
 using namespace std;
 
-// structure for the IP pseudo header, needed for the UDP and TCP checksum
-
+/**
+ * Pseudo header used in computing TCP and UDP checksums.
+ * For more information see: http://www.tcpipguide.com/free/t_TCPChecksumCalculationandtheTCPPseudoHeader-2.htm which has a nice tutorial.
+ * Note that computing the TCP and UDP checksums uses this pseudo header.
+ */
 struct ip_pseudo_header {
+
+    /**
+     * Source address.
+     */
     u_int32_t saddr;
+
+    /**
+     * Destination address.
+     */
     u_int32_t daddr;
+
+    /**
+     * Padding (zeros).
+     */
     u_int8_t zero;
+
+    /**
+     * The protocol field from the IP header.
+     */
     u_int8_t protocol;
+
+    /**
+     * Length of the transport layer header and the data (Total length minus the IP header length).
+     */
     u_int16_t tot_len;
 };
 
+/**
+ * 
+ */
 class IPPacket : public gc {
 public:
 
