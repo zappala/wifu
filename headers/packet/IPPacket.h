@@ -25,7 +25,6 @@ using namespace std;
  * Note that computing the TCP and UDP checksums uses this pseudo header.
  */
 struct ip_pseudo_header {
-
     /**
      * Source address.
      */
@@ -55,6 +54,9 @@ struct ip_pseudo_header {
 /**
  * Represents an IPPacket with a header and payload.
  * It is intended that underlying protocols (such as TCP) will inherit from this class to create their own packet type.
+ * All header variables 16 bits and bigger are stored in network byte order.
+ * Conversion occurs to network byte order when each variable is set and from network byte order when a variable is accessed.
+ * This means that programmers need not worry about conversion themselves.
  *
  * @see WiFuPacket
  * @see TCPPacket
@@ -68,132 +70,200 @@ public:
      */
     IPPacket();
 
+    /**
+     * Destructor.
+     */
     ~IPPacket();
 
+    /**
+     * @return The first byte of this packet's payload (this is also the first byte of the ip header).
+     */
     unsigned char* get_payload();
 
+    /**
+     * Returns the first data byte after all headers.
+     * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
+     * 
+     * @return the first data byte after all headers.
+     */
     virtual unsigned char* get_data();
 
+    /**
+     * Returns the length of the data AFTER the ip header.
+     * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
+     *
+     * @return The length of the data AFTER the ip header.
+     */
     virtual int get_data_length_bytes();
 
+    /**
+     * First, copies length bytes from data into the buffer of this packet and
+     * second, sets the IPPacket total length field.
+     *
+     * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
+     * Namely, data must be set after any headers AND they must call IPPacket::set_ip_tot_length().
+     *
+     * @param data Pointer to a buffer containing data.
+     * @param length Length of data in bytes.
+     *
+     * @see IPPacket::set_ip_tot_length()
+     */
     virtual void set_data(unsigned char* data, int length);
 
+    /**
+     * Finalizer method to call before a packet is sent.
+     * It is intended to use for things like header options where it is unkown how many or how long each one will be for each packet.
+     * It would be expensive to shift the data each time an option is inserted or removed.
+     * A programmer could store the options in a data structure and insert them all at once via this function.
+     * 
+     * The default implementation is empty.
+     *
+     * Child classes SHOULD override this method.
+     *
+     * @see TCPPacket::pack()
+     */
     virtual void pack();
 
+    /**
+     * @return A pointer to the byte following the ip header.
+     */
     unsigned char* get_next_header();
 
     /**
-     * Gets the IP version of this packet
+     * @return The IP version of this packet.
      */
     u_int8_t get_ip_version() const;
 
     /**
-     * Sets the IP version of this packet
+     * Sets the IP version of this packet.
+     *
+     * @param version The version to set.
      */
     void set_ip_version(u_int8_t version);
 
     /**
-     * Gets the IP header length of this packet, in bytes
+     * @return The IP header length of this packet, in bytes.
      */
     u_int8_t get_ip_header_length_bytes() const;
 
     /**
-     * Gets the IP header length of this packet, in 32 bit words
+     * @return The IP header length of this packet, in 32-bit words.
      */
     u_int8_t get_ip_header_length_words() const;
 
     /**
-     * Sets the length of the IP header of this packet, in 32 bit words
+     * Sets the length of the IP header of this packet, in 32-bit words.
+     *
+     * @param ihl The Internet header length to set.
      */
     void set_ip_header_length_words(u_int8_t ihl);
 
     /**
-     * Gets the IP TOS of this packet
+     * @return The IP type of service of this packet.
      */
     u_int8_t get_ip_tos() const;
 
     /**
-     * Sets the IP TOS of this packet
+     * Sets the IP type of service of this packet.
+     *
+     * @tos The type of service to set.
      */
     void set_ip_tos(u_int8_t tos);
 
     /**
-     * Gets the IP datagram length of this packet
+     * @return The IP datagram length of this packet in bytes.  This includes all headers and all data.
      */
     u_int16_t get_ip_tot_length() const;
 
     /**
-     * Sets the IP datagram length of this packet
+     * Sets the IP datagram length of this packet in bytes.  This includes all headers and all data.
+     * This function MUST be called before a packet can be sent.
+     *
+     * @param length The IP datagram length in bytes to set.
      */
     void set_ip_tot_length(u_int16_t length);
 
     /**
-     * Gets the IP identifier of this packet
+     * @return The IP identifier of this packet.
      */
     u_int16_t get_ip_identifier() const;
 
     /**
-     * Sets the IP identifier of this packet
+     * Sets the IP identifier of this packet.
+     *
+     * @param identifier The id of this packet to set.
      */
     void set_ip_identifier(u_int16_t identifier);
 
     /**
-     * Gets the IP fragmentation offset of this packet
+     * @return The IP fragmentation offset of this packet.
      */
     u_int16_t get_ip_fragmentation_offset() const;
 
     /**
-     * Sets the IP fragmentation offset of this packet
+     * Sets the IP fragmentation offset of this packet.
+     *
+     * @param frag_off The IP fragmentation offset to set.
      */
     void set_ip_fragmentation_offset(u_int16_t frag_off);
 
     /**
-     * Gets the IP TTL of this packet
+     * @return The IP time to live (TTL) of this packet.
      */
     u_int8_t get_ip_ttl() const;
 
     /**
-     * Sets the IP TTL of this packet
+     * Sets the IP time to live (TTL) of this packet.
+     *
+     * @param ttl The time to live to set.
      */
     void set_ip_ttl(u_int8_t ttl);
 
     /**
-     * Gets the IP protocol of this packet
+     * @return The underlying protocol of this packet (TCP, UDP, etc.).
      */
     u_int8_t get_ip_protocol() const;
 
     /**
-     * Sets the IP protocol of this packet
+     * Sets the underlying protocol of this packet (TCP, UDP, etc.).
+     *
+     * @param protocol The underlying protocol to set.
      */
     void set_ip_protocol(u_int8_t protocol);
 
     /**
-     * Gets the IP checksum of this packet
+     * @return The IP checksum of the this packet.  (This is never stored in network byte order.)
      */
     u_int16_t get_ip_checksum() const;
 
     /**
-     * Sets the IP checksum of this packet
+     * Sets the IP checksum of this packet.  (This is never stored in network byte order.)
+     *
+     * @param checkusm The IP checksum of this packet.
      */
     void set_ip_checksum(u_int16_t checksum);
 
     /**
-     * Gets the source IP address of this packet
+     * @return The source IP address of this packet.
      */
     u_int32_t get_ip_source_address() const;
 
     /**
-     * Sets the source IP address of this packet
+     * Sets the source IP address of this packet.
+     *
+     * @param sadder The source IP address of this packet.
      */
     void set_ip_source_address(u_int32_t saddr);
 
     /**
-     * Gets a string representation of the source IP address of this packet
+     * @return A human-readable (e.g. 127.0.0.1) string representation of the source IP address of this packet.
      */
     string get_ip_source_address_s() const;
 
     /**
-     * Sets a string representation of the source IP address of this packet
+     * Sets a string representation of the source IP address of this packet.
+     *
+     * @param saddr A human-readable (e.g. 127.0.0.1) string representation of the source IP address of this packet.
      */
     void set_ip_source_address_s(string saddr);
 
