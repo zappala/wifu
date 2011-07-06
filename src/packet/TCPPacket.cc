@@ -4,14 +4,6 @@ TCPPacket::TCPPacket() : WiFuPacket(), data_set_(false) {
     init();
 }
 
-//TCPPacket::TCPPacket(IPPacket& p) : WiFuPacket(p) {
-//    init();
-//}
-//
-//TCPPacket::TCPPacket(unsigned char* buffer, int length) : WiFuPacket(buffer, length) {
-//    init();
-//}
-
 TCPPacket::~TCPPacket() {
 
 }

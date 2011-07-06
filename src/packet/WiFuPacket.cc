@@ -4,14 +4,6 @@ WiFuPacket::WiFuPacket() : IPPacket() {
     init();
 }
 
-//WiFuPacket::WiFuPacket(IPPacket& p) : IPPacket(p) {
-//    init();
-//}
-//
-//WiFuPacket::WiFuPacket(unsigned char* buffer, int length) : IPPacket(buffer, length) {
-//    init();
-//}
-
 WiFuPacket::~WiFuPacket() {
 
 }
@@ -91,19 +83,19 @@ string WiFuPacket::to_s_format() const {
 }
 
 bool WiFuPacket::operator ==(const IPPacket& other) const {
-//    cout << "WiFuPacket::operator ==()" << endl;
+    //    cout << "WiFuPacket::operator ==()" << endl;
     if (!this->IPPacket::operator ==(other)) {
         return false;
     }
 
-    WiFuPacket const* other_ptr = dynamic_cast<WiFuPacket const*>(&other);
+    WiFuPacket const* other_ptr = dynamic_cast<WiFuPacket const*> (&other);
 
     return other_ptr != NULL &&
-           ports_->dport == other_ptr->ports_->dport &&
-           ports_->sport == other_ptr->ports_->sport;
+            ports_->dport == other_ptr->ports_->dport &&
+            ports_->sport == other_ptr->ports_->sport;
 }
 
 bool WiFuPacket::operator !=(const IPPacket& other) const {
-//    cout << "WiFuPacket::operator !=()" << endl;
+    //    cout << "WiFuPacket::operator !=()" << endl;
     return !(*this == other);
 }

@@ -13,16 +13,34 @@
 
 using namespace std;
 
+/**
+ * Provides structure for ports.
+ */
 struct wifu_packet_header {
+
+    /**
+     * Source port.
+     */
     u_int16_t sport;
+
+    /**
+     * Destination port.
+     */
     u_int16_t dport;
 };
 
+/**
+ * Base class that enforces the useage of a source port followed by a destination port immediately following the IP header.
+ * This ensures that all protocols using WiFu must use ports.
+ * We need ports to multiplex/demulitplex packets coming and going over the network interface.
+ *
+ * @see IPPacket
+ * @see TCPPacket
+ */
 class WiFuPacket : public IPPacket {
 public:
     WiFuPacket();
-//    WiFuPacket(IPPacket&);
-//    WiFuPacket(unsigned char* buffer, int length);
+
     ~WiFuPacket();
 
     virtual unsigned char* get_data();
@@ -56,7 +74,7 @@ public:
     
     AddressPort* get_dest_address_port();
 
-    void init();
+    
 
     virtual int max_data_length();
 
@@ -67,6 +85,9 @@ public:
     virtual bool operator !=(const IPPacket& other) const;
 
 private:
+
+    void init();
+    
     struct wifu_packet_header* ports_;
     AddressPort* source_;
     AddressPort* dest_;
