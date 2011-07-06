@@ -125,7 +125,7 @@ string IPPacket::get_ip_source_address_s() const {
     return string(ip_addr_source);
 }
 
-void IPPacket::set_ip_source_address_s(string saddr) {
+void IPPacket::set_ip_source_address_s(string& saddr) {
     inet_pton(AF_INET, saddr.c_str(), &ip_->saddr);
 }
 
@@ -144,7 +144,7 @@ string IPPacket::get_ip_destination_address_s() const {
     return string(ip_addr_dest);
 }
 
-void IPPacket::set_ip_destination_address_s(string daddr) {
+void IPPacket::set_ip_destination_address_s(string& daddr) {
     inet_pton(AF_INET, daddr.c_str(), &ip_->daddr);
 }
 
@@ -259,7 +259,7 @@ string IPPacket::to_s_format() const {
     return s.str();
 }
 
-bool IPPacket::operator ==(const IPPacket& other) const {
+bool IPPacket::operator==(const IPPacket& other) const {
     //cout << "IPPacket::operator ==()" << endl;
 
     IPPacket const* other_ptr = dynamic_cast<IPPacket const*> (&other);
@@ -279,11 +279,11 @@ bool IPPacket::operator ==(const IPPacket& other) const {
     return equal;
 }
 
-bool IPPacket::operator !=(const IPPacket& other) const {
+bool IPPacket::operator!=(const IPPacket& other) const {
     //cout << "IPPacket::operator !=()" << endl;
     return !(*this == other);
 }
 
-ostream & operator <<(ostream& os, const IPPacket& packet) {
+ostream & operator<<(ostream& os, const IPPacket& packet) {
     return os << packet.to_s_format() << endl << packet.to_s();
 }

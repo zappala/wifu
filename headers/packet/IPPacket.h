@@ -58,6 +58,9 @@ struct ip_pseudo_header {
  * Conversion occurs to network byte order when each variable is set and from network byte order when a variable is accessed.
  * This means that programmers need not worry about conversion themselves.
  *
+ * There are a lot of virtual methods.  Most of which MUST be overridden by children classes.
+ * Some of these which must be overridden MUST call the parent version of the method in their implementation.
+ *
  * @see WiFuPacket
  * @see TCPPacket
  */
@@ -67,6 +70,8 @@ public:
     /**
      * Default Constructor.
      * Sets IP version to 4, IP header length to 5 (32 bit words), IP total length to 20, and the TTL to MAX_TTL (65).
+     *
+     * @see IPPacket::init()
      */
     IPPacket();
 
@@ -265,61 +270,160 @@ public:
      *
      * @param saddr A human-readable (e.g. 127.0.0.1) string representation of the source IP address of this packet.
      */
-    void set_ip_source_address_s(string saddr);
+    void set_ip_source_address_s(string& saddr);
 
     /**
-     * Gets the destination IP address of this packet
+     * @return The destination IP address of this packet.
      */
     u_int32_t get_ip_destination_address() const;
 
     /**
-     * Sets the destination IP address of this packet
+     * Sets the destination IP address of this packet.
+     *
+     * @param The destination IP address of this packet.
      */
     void set_ip_destination_address(u_int32_t daddr);
 
     /**
-     * Gets a string representation of the destination IP address of this packet
+     * @return A human-readable (e.g. 127.0.0.1) string representation of the destination IP address of this packet.
      */
     string get_ip_destination_address_s() const;
 
     /**
-     * Sets a string representation of the destination IP address of this packet
+     * Sets a string representation of the destination IP address of this packet.
+     *
+     * @param daddr A human-readable (e.g. 127.0.0.1) string representation of the destination IP address of this packet.
      */
-    void set_ip_destination_address_s(string daddr);
+    void set_ip_destination_address_s(string& daddr);
 
+    /**
+     * Computes the 16-bit one's complement of the one's complement sum of all 16-bit words in buffer pointed to by ptr.
+     *
+     * @param ptr Pointer to data to compute the checksum over.
+     * @param len Length of data to compute the checksum over.
+     * 
+     * @return The 16-bit one's complement of the one's complement sum of all 16-bit words in buffer pointed to by ptr.
+     */
     static u_int16_t checksum(u_int16_t* ptr, u_int16_t len);
 
+    /**
+     * Calculates and sets the IP checksum.
+     * The IP checksum is only computed over the IP header.
+     */
     void calculate_and_set_ip_checksum();
 
+    /**
+     * Validates that the current checksum is correct.
+     * This method has no side-effects.
+     *
+     * @return True of the current checksum is corrrect, false otherwise.
+     */
     bool is_valid_ip_checksum();
 
-    // computes the checksum after the ip header (for tcp or udp)
-    // uses the ip pseudo header
+    /**
+     * Computes the checksum after the ip header for protocols that use the pseudo header.
+     * @return The next checksum for protocols that use the pseudo header.
+     */
     u_int16_t compute_next_checksum();
 
-    void init();
-
+    /**
+     * @return True iff IPPacket::set_ip_tot_length() has been called, false otherwise.
+     * Calling IPPacket::set_data() calls IPPacket::set_ip_tot_length().
+     *
+     * @see IPPacket::set_ip_tot_length()
+     * @see IPPacket::set_data()
+     */
     bool length_is_set() const;
 
+    /**
+     * @return A string representation of the fields in the ip header.
+     *
+     * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
+     * A child class MUST call IPPacket::to_s() first and append the next protocol's header data on the next line.
+     *
+     * @see IPPacket::to_s_format()
+     */
     virtual string to_s() const;
 
+    /**
+     * @return A string representing the names of the values produced by IPPacket::to_s().
+     *
+     * A child class MUST call IPPacket::to_s() first and append the next protocol's header names on the next line.
+     *
+     * @see IPPacket::to_s()
+     */
     virtual string to_s_format() const;
 
     /**
-     * @return MTU less the packet header(s)
+     * Returns the maximum number of bytes that this packet can handler after the ip header.
+     * For an ip packet this is MTU minus the ip header length.
+     * 
+     * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
+     *
+     * @return The maximum number of bytes that this packet can handler after the ip header.
      */
     virtual int max_data_length() const;
 
-    virtual bool operator ==(const IPPacket& other) const;
+    /**
+     * Compares this IPPacket with other and returns whether they are equal or not.
+     *
+     * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol equallity AND ip equallity.
+     *
+     * @param other IPPacket to compare with this IPPacket
+     * @return True if every field in the headers are equal in this IPPacket and other, false otherwise.
+     * Note, we do not compare the checksum value and don't need to as the checksum is computed over the exact same fields we are comparing.
+     *
+     * @see IPPacket::operator!=
+     *
+     */
+    virtual bool operator==(const IPPacket& other) const;
 
-    virtual bool operator !=(const IPPacket& other) const;
+    /**
+     * Compares this IPPacket with other and returns whether they are not equal.
+     *
+     * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol equallity AND ip inequallity.
+     *
+     * @param other IPPacket to compare with this IPPacket
+     * @return the opposite of IPPacket::operator ==
+     *
+     * @see IPPacket::operator==
+     */
+    virtual bool operator!=(const IPPacket& other) const;
 
 private:
+
+
+    /**
+     * Initializes this IPPacket.
+     * Sets IP version to 4, IP header length to 5 (32 bit words), IP total length to 20, and the TTL to MAX_TTL (65).
+     *
+     * @see IPPacket::IPPacket()
+     */
+    void init();
+
+    /**
+     * Payload of this packet.  This is where all headers and data are stored for all protocols.
+     */
     unsigned char payload_[MTU];
+
+    /**
+     * Pointer to the IP header.
+     */
     struct iphdr* ip_;
+
+    /**
+     * Used to tell whether the length has been set.
+     * We need to know the length when we send packets over the network because we send IPPacket::get_ip_tot_length() bytes when we actually send the data.
+     */
     bool length_set_;
 };
 
+/**
+ * Stream operator for an IPPacket.
+ * @param os ostream to write to.
+ * @param packet An IPPacket to output.
+ * @return packet's version of IPPacket::to_s_format(), followed by IPPacket::to_s().
+ */
 ostream & operator <<(ostream& os, const IPPacket& packet);
 
 #endif	/* _IPPACKET_H */
