@@ -1,7 +1,5 @@
 #include "SocketCollection.h"
 
-
-
 SocketCollection::SocketCollection() {
     reset();
 }
@@ -100,11 +98,12 @@ void SocketCollection::accept(Visitor* v) {
 }
 
 void SocketCollection::update(Observable* o) {
-    // TODO: assert that o is an instance of Socket*
     update_mutex_->wait();
-    Socket* s = (Socket*) o;
-    remove(s);
-    push(s);
+    if (typeid (*o) == typeid (Socket)) {
+        Socket* s = static_cast<Socket*>(o);
+        remove(s);
+        push(s);
+    }
     update_mutex_->post();
 }
 

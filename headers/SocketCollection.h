@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <tr1/unordered_map>
 #include <string>
+#include <typeinfo>
 
 #include "Socket.h"
 #include "visitors/Visitable.h"
