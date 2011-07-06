@@ -9,16 +9,14 @@
 
 
 ATPPacket::ATPPacket() : super(), data_set_(false) {
-	init();
 }
 
 
 // WARNING: Only to be used when data size is 0
-ATPPacket::ATPPacket(TCPPacket * p){
-	super::init();
+ATPPacket::ATPPacket(TCPPacket * p) : super() {
 
 	// copy over all information from old packet
-	memcpy(get_payload(), p->get_payload(), MTU);
+	memcpy(get_payload(), p->get_payload(), p->get_ip_tot_length());
 	update_header();
 	set_ip_tot_length(get_ip_header_length_bytes() + get_tcp_header_length_bytes() + get_atp_header_length_bytes());
 
@@ -29,7 +27,6 @@ ATPPacket::~ATPPacket() {
 }
 
 void ATPPacket::init() {
-	super::init();
 
 	update_header();
     set_ip_tot_length(get_ip_header_length_bytes() + get_tcp_header_length_bytes() + get_atp_header_length_bytes());

@@ -313,10 +313,10 @@ public:
     void calculate_and_set_ip_checksum();
 
     /**
-     * Validates that the current checksum is correct.
+     * Validates that the current IP checksum is correct.
      * This method has no side-effects.
      *
-     * @return True of the current checksum is corrrect, false otherwise.
+     * @return True of the current IP checksum is corrrect, false otherwise.
      */
     bool is_valid_ip_checksum();
 

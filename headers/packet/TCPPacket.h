@@ -201,19 +201,55 @@ public:
      */
     void set_tcp_fin(bool fin);
 
-
+    /**
+     * @return The TCP receive window size.
+     */
     u_int16_t get_tcp_receive_window_size() const;
+
+    /**
+     * Sets the TCP receive window size.
+     * @param window The host byte ordered receive window size to set.
+     */
     void set_tcp_receive_window_size(u_int16_t window);
+
+    /**
+     * @return The TCP checksum.
+     */
     u_int16_t get_tcp_checksum() const;
+
+    /**
+     * Sets the TCP checksum.
+     * @param checksum The checksum to set.
+     */
     void set_tcp_checksum(u_int16_t checksum);
+
+    /**
+     * @return The TCP urgent pointer.
+     */
     u_int16_t get_tcp_urgent_pointer() const;
+
+    /**
+     * Sets the TCP urgent pointer.
+     * @param urg_ptr The host byte ordered urgent pointer to set.
+     */
     void set_tcp_urgent_pointer(u_int16_t urg_ptr);
 
+    /**
+     * Calculates and sets the TCP checksum.
+     * The TCP checksum is computed over the pseudo header, TCP header, and the TCP data.
+     * @see RFC 793.
+     */
     void calculate_and_set_tcp_checksum();
 
+    /**
+     * Validates that the current TCP checksum is correct.
+     * This method has no side-effects.
+     *
+     * @return True of the current TCP checksum is corrrect, false otherwise.
+     */
     bool is_valid_tcp_checksum();
 
-    void init();
+    
 
     bool is_naked_ack();
 
@@ -228,6 +264,13 @@ public:
     virtual void insert_tcp_header_option(TCPHeaderOption* option);
     virtual TCPHeaderOption* remove_tcp_header_option(u_int8_t kind);
     TCPHeaderOption* get_option(u_int8_t kind);
+
+protected:
+
+    /**
+     * 
+     */
+    void init();
 
 private:
 
