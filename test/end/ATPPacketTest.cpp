@@ -432,12 +432,14 @@ TEST(ATPPacketTest, AddTCPTimestampHeaderOption) {
    ATPPacket p;
 
    p.set_ip_checksum(1);
-   p.set_ip_destination_address_s("192.168.0.2");
+   string daddr = "192.168.0.2";
+   p.set_ip_destination_address_s(daddr);
    p.set_ip_fragmentation_offset(3);
    p.set_ip_identifier(4);
    p.set_ip_header_length_words(5);
    p.set_ip_protocol(6);
-   p.set_ip_source_address_s("192.168.0.1");
+   string saddr = "192.168.0.1";
+   p.set_ip_source_address_s(saddr);
    p.set_ip_tos(8);
    p.set_ip_ttl(10);
    p.set_ip_version(11);

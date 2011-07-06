@@ -59,7 +59,8 @@ WiFuPacket* make_packet(string& data) {
     p->set_ip_header_length_words(5);
     p->set_ip_version(4);
     p->set_ip_tos(0);
-    p->set_ip_destination_address_s("127.0.0.1");
+    string daddr = "127.0.0.1";
+    p->set_ip_destination_address_s(daddr);
     p->set_destination_port(5000);
     p->set_ip_protocol(100);
     p->set_source_port(5001);

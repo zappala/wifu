@@ -302,14 +302,16 @@ namespace {
 
         // change source address
         string source_address = p1.get_ip_source_address_s();
-        p1.set_ip_source_address_s("192.168.0.1");
+        string saddr = "192.168.0.1";
+        p1.set_ip_source_address_s(saddr);
         ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_source_address_s(source_address);
         ASSERT_TRUE(p1.is_valid_ip_checksum());
 
         // change destination address
         string destination_address = p1.get_ip_destination_address_s();
-        p1.set_ip_destination_address_s("192.168.0.1");
+        string daddr ="192.168.0.1";
+        p1.set_ip_destination_address_s(daddr);
         ASSERT_FALSE(p1.is_valid_ip_checksum());
         p1.set_ip_destination_address_s(destination_address);
         ASSERT_TRUE(p1.is_valid_ip_checksum());
