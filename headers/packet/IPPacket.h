@@ -367,7 +367,7 @@ public:
     /**
      * Compares this IPPacket with other and returns whether they are equal or not.
      *
-     * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol equallity AND ip equallity.
+     * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol equallity AND IP equallity.
      *
      * @param other IPPacket to compare with this IPPacket
      * @return True if every field in the headers are equal in this IPPacket and other, false otherwise.
@@ -378,7 +378,7 @@ public:
     /**
      * Compares this IPPacket with other and returns whether they are not equal.
      *
-     * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol equallity AND ip inequallity.
+     * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol inequallity AND IP inequallity.
      *
      * @param other IPPacket to compare with this IPPacket
      * @return the opposite of IPPacket::operator==

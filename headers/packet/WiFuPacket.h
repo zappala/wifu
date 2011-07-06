@@ -136,12 +136,14 @@ public:
     AddressPort* get_dest_address_port();
 
     /**
-     * Returns the maximum number of bytes that this packet can store after the IP header.
+     * Returns the maximum number of bytes that this packet can store after the IP and WiFu headers.
      * For WiFu packet this is MTU minus the IP and WiFu header lengths.
      *
      * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
      *
-     * @return The maximum number of bytes that this packet can store after the IP header.
+     * @return The maximum number of bytes that this packet can store after the IP and WiFu headers.
+     *
+     * @see IPPacket::max_data_length()
      */
     virtual int max_data_length();
 
@@ -170,7 +172,7 @@ public:
      * Compares this WiFuPacket with other and returns whether they are equal or not.
      * First, it checks the IPPacket header for equallity; second, it checks to ensure that it is a WiFuPacket, and finally it checks the WiFuPacket header.
      *
-     * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol equallity AND ip equallity.
+     * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol equallity AND IP equallity.
      *
      * @param other IPPacket (which is actually a WiFuPacket) to compare with this WiFuPacket
      * @return True if every field in the IP and WiFu headers are equal in this WiFuPacket and other, false otherwise.
@@ -183,7 +185,7 @@ public:
     /**
      * Compares this WiFuPacket with other and returns whether they are not equal.
      *
-     * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol equallity AND ip inequallity.
+     * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol inequallity AND IP inequallity.
      *
      * @param other IPPacket to compare with this WiFuPacket
      * @return the opposite of WiFuPacket::operator==
