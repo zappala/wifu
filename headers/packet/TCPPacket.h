@@ -249,36 +249,130 @@ public:
      */
     bool is_valid_tcp_checksum();
 
-    
-
+    /**
+     * A naked ack is deemed to be a TCP packet with no data AND only the ACK bit is set.
+     * @return True if this TCPPacket is a naked ack, false otherwise.
+     */
     bool is_naked_ack();
 
+    /**
+     * Returns the maximum number of bytes that this packet can store after the IP and TCP headers.
+     * For TCPPacket this is MTU minus the IP and TCP header lengths (including any TCP header options).
+     *
+     * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
+     *
+     * @return The maximum number of bytes that this packet can store after the IP and TCP headers.
+     *
+     * @see IPPacket::max_data_length()
+     * @see WiFuPacket::max_data_length()
+     */
     virtual int max_data_length();
 
+    /**
+     * @return A string representation of the fields in the IP and TCP headers.
+     *
+     * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
+     * A child class MUST call TCPPacket::to_s() first and append the next protocol's header data on the next line.
+     *
+     * @see IPPacket::to_s()
+     * @see WiFuPacket::to_s()
+     * @see TCPPacket::to_s_format()
+     */
     virtual string to_s() const;
-    virtual string to_s_format() const;
-
-    virtual bool operator ==(const IPPacket& other) const;
-    virtual bool operator !=(const IPPacket& other) const;
-
-    virtual void insert_tcp_header_option(TCPHeaderOption* option);
-    virtual TCPHeaderOption* remove_tcp_header_option(u_int8_t kind);
-    TCPHeaderOption* get_option(u_int8_t kind);
-
-protected:
 
     /**
-     * 
+     * @return A string representing the names of the values produced by TCPPacket::to_s().
+     *
+     * A child class MUST call TCPPacket::to_s() first and append the next protocol's header names (which must contain ports) on the next line.
+     *
+     * @see IPPacket::to_s_format()
+     * @see WiFuPacket::to_s_format()
+     * @see TCPPacket::to_s()
      */
-    void init();
+    virtual string to_s_format() const;
+
+    /**
+     * Compares this TCPPacket with other and returns whether they are equal or not.
+     * First, it checks the IPPacket and WiFuPacket headers for equallity; second, it checks to ensure that it is a TCPPacket, and finally it checks the TCPPacket header.
+     *
+     * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol equallity AND IP and WiFu equallity.
+     *
+     * @param other IPPacket (which is actually a TCPPacket) to compare with this WiFuPacket
+     * @return True if every field in the IP, WiFu, and TCP headers are equal in this WiFuPacket and other, false otherwise.
+     * Note, we do not compare the TCP checksum value or any TCP options.
+     *
+     * @see IPPacket::operator==
+     * @see WiFuPacket::operator==
+     */
+    virtual bool operator ==(const IPPacket& other) const;
+
+    /**
+     * Compares this TCPPacket with other and returns whether they are not equal.
+     *
+     * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol inequallity AND IP inequallity.
+     *
+     * @param other IPPacket to compare with this TCPPPacket
+     * @return the opposite of TCPPacket::operator==
+     */
+    virtual bool operator !=(const IPPacket& other) const;
+
+    /**
+     * Inserts option into the collection of options.
+     * Note that this does not actually insert the option into the header.
+     * Options are inserted upon calling TCPPacket::pack()
+     * 
+     * @param option The TCPHeaderOption to insert.
+     */
+    virtual void insert_tcp_header_option(TCPHeaderOption* option);
+
+    /**
+     * Removes kind from the TCPHeader options.
+     * @param kind The option kind to remove.
+     * @return The option removed, NULL if it was not in the collection.
+     * @see TCPPacket::insert_tcp_header_option()
+     */
+    virtual TCPHeaderOption* remove_tcp_header_option(u_int8_t kind);
+
+    /**
+     * Returns the option denoted by kind if it exists.
+     * This function parses the TCP header options if this packet was not created by this application (e.g. it was received over the network).
+     * 
+     * @param kind The integer found in netinet/tcp.h which denotes the option kind.  All options begin with "TCPOPT_".
+     * @return The TCPHeaderOption denoted by kind if it exists, NULL otherwise.
+     */
+    TCPHeaderOption* get_option(u_int8_t kind);
+
 
 private:
 
+    /**
+     * Sets the TCP header to immediately follow the IP header.
+     * Sets the TCP data offset to 5 (32-bit words).
+     * Sets the IP total length to IP plus TCP header lengths.
+     *
+     * @see TCPPacket::TCPPacket()
+     */
+    void init();
+
+    /**
+     * @return A pointer immediately following the main TCP header (where the TCP options begin).
+     */
     unsigned char* get_options_pointer();
 
+    /**
+     * Pointer to the TCP header.
+     */
     struct tcphdr* tcp_;
 
+    /**
+     * Collection of TCPHeaderOption objects to insert as TCP options.
+     */
     TCPHeaderOptionCollection options_;
+
+    /**
+     * Used to tell whether we have called TCPPacket::set_data() or not.
+     * We can only call this method once.
+     */
     bool data_set_;
 };
 
