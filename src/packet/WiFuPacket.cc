@@ -18,7 +18,7 @@ int WiFuPacket::get_data_length_bytes() {
 
 void WiFuPacket::set_data(unsigned char* data, int length) {
     memcpy(get_data(), data, length);
-    set_ip_tot_length(get_ip_header_length_bytes() + sizeof (struct wifu_packet_header) +length);
+    set_ip_tot_length(get_ip_header_length_bytes() + sizeof (struct wifu_packet_header) + length);
 }
 
 void WiFuPacket::pack() {

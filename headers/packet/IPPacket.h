@@ -86,23 +86,23 @@ public:
     unsigned char* get_payload();
 
     /**
-     * Returns the first data byte after all headers.
+     * Returns the first data byte after the IP header.
      * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
      * 
-     * @return the first data byte after all headers.
+     * @return The first data byte after the IP header.
      */
     virtual unsigned char* get_data();
 
     /**
-     * Returns the length of the data AFTER the ip header.
+     * Returns the length of the data AFTER the IP header.
      * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
      *
-     * @return The length of the data AFTER the ip header.
+     * @return The length of the data AFTER the IP header.
      */
     virtual int get_data_length_bytes();
 
     /**
-     * First, copies length bytes from data into the buffer of this packet and
+     * First, copies length bytes from data into the buffer after the IP header of this packet and
      * second, sets the IPPacket total length field.
      *
      * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
@@ -336,7 +336,7 @@ public:
     bool length_is_set() const;
 
     /**
-     * @return A string representation of the fields in the ip header.
+     * @return A string representation of the fields in the IP header.
      *
      * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
      * A child class MUST call IPPacket::to_s() first and append the next protocol's header data on the next line.
@@ -348,19 +348,19 @@ public:
     /**
      * @return A string representing the names of the values produced by IPPacket::to_s().
      *
-     * A child class MUST call IPPacket::to_s() first and append the next protocol's header names on the next line.
+     * A child class MUST call IPPacket::to_s_format() first and append the next protocol's header names on the next line.
      *
      * @see IPPacket::to_s()
      */
     virtual string to_s_format() const;
 
     /**
-     * Returns the maximum number of bytes that this packet can handler after the ip header.
-     * For an ip packet this is MTU minus the ip header length.
+     * Returns the maximum number of bytes that this packet can store after the IP header.
+     * For an IP packet this is MTU minus the IP header length.
      * 
      * Child classes MUST override this method to ensure that they account for any underlying protocol headers.
      *
-     * @return The maximum number of bytes that this packet can handler after the ip header.
+     * @return The maximum number of bytes that this packet can store after the IP header.
      */
     virtual int max_data_length() const;
 
@@ -372,9 +372,6 @@ public:
      * @param other IPPacket to compare with this IPPacket
      * @return True if every field in the headers are equal in this IPPacket and other, false otherwise.
      * Note, we do not compare the checksum value and don't need to as the checksum is computed over the exact same fields we are comparing.
-     *
-     * @see IPPacket::operator!=
-     *
      */
     virtual bool operator==(const IPPacket& other) const;
 
@@ -384,9 +381,7 @@ public:
      * Child classes MUST override this method first calling the parent (this) function to ensure that they account for any underlying protocol equallity AND ip inequallity.
      *
      * @param other IPPacket to compare with this IPPacket
-     * @return the opposite of IPPacket::operator ==
-     *
-     * @see IPPacket::operator==
+     * @return the opposite of IPPacket::operator==
      */
     virtual bool operator!=(const IPPacket& other) const;
 
