@@ -16,8 +16,6 @@ public:
 
 	ATPPacket();
 
-	ATPPacket(TCPPacket* p);
-
 	~ATPPacket();
 
 	void init();
@@ -99,19 +97,18 @@ public:
 
     static ATPPacket * convert_to_atp_packet(WiFuPacket * wp);
 
+    /**
+     * Updates where the header pointer points to.
+     */
+    void update_header();
+
 private:
+    ATPPacket(TCPPacket* p);
     /**
      * Moves the atp header to a new location in memory based on what
      * tcp_data_offset is set to.
      */
     void move_atp_header();
-
-
-
-    /**
-     * Updates where the header pointer points to.
-     */
-    void update_header();
 
     /** The atp structure data structure */
 	struct atp_packet_header {
