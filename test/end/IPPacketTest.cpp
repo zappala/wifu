@@ -98,17 +98,20 @@ namespace {
     //    }
 
     TEST_F(IPPacketTest, GetPayload) {
-        IPPacket p(get_buffer(), length());
+        IPPacket p;
+        memcpy(p.get_payload(), get_buffer(), length());
         ASSERT_TRUE(!memcmp(get_buffer(), p.get_payload(), length()));
     }
 
     TEST_F(IPPacketTest, GetData) {
-        IPPacket p(get_buffer(), length());
+        IPPacket p;
+        memcpy(p.get_payload(), get_buffer(), length());
         ASSERT_TRUE(!strncmp(get_data(), (const char*) p.get_data(), strlen(get_data())));
     }
 
     TEST_F(IPPacketTest, GetNextHeader) {
-        IPPacket p(get_buffer(), length());
+        IPPacket p;
+        memcpy(p.get_payload(), get_buffer(), length());
         ASSERT_TRUE(!strncmp(get_data(), (const char*) p.get_next_header(), strlen(get_data())));
     }
 

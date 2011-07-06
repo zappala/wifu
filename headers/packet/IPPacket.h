@@ -53,14 +53,20 @@ struct ip_pseudo_header {
 };
 
 /**
- * 
+ * Represents an IPPacket with a header and payload.
+ * It is intended that underlying protocols (such as TCP) will inherit from this class to create their own packet type.
+ *
+ * @see WiFuPacket
+ * @see TCPPacket
  */
 class IPPacket : public gc {
 public:
 
+    /**
+     * Default Constructor.
+     * Sets IP version to 4, IP header length to 5 (32 bit words), IP total length to 20, and the TTL to MAX_TTL (65).
+     */
     IPPacket();
-    //    IPPacket(IPPacket&);
-    IPPacket(unsigned char* buffer, int length);
 
     ~IPPacket();
 

@@ -4,19 +4,8 @@ IPPacket::IPPacket() : length_set_(false) {
     init();
 }
 
-//IPPacket::IPPacket(IPPacket& p) : length_set_(false) {
-//    ip_ = (struct iphdr*) payload_;
-//
-//    memcpy(payload_, p.payload_, p.get_ip_tot_length());
-//}
-
-IPPacket::IPPacket(unsigned char* buffer, int length) : length_set_(false) {
-    ip_ = (struct iphdr*) payload_;
-
-    memcpy(payload_, buffer, length);
-}
-
 IPPacket::~IPPacket() {
+    
 }
 
 unsigned char* IPPacket::get_payload() {
