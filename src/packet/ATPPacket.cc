@@ -9,11 +9,13 @@
 
 
 ATPPacket::ATPPacket() : super(), data_set_(false) {
+	init();
 }
 
 
 // WARNING: Only to be used when data size is 0
 ATPPacket::ATPPacket(TCPPacket * p) : super() {
+	assert(p->get_data_length_bytes() == 0);
 
 	// copy over all information from old packet
 	memcpy(get_payload(), p->get_payload(), p->get_ip_tot_length());
@@ -27,13 +29,12 @@ ATPPacket::~ATPPacket() {
 }
 
 void ATPPacket::init() {
-
 	update_header();
     set_ip_tot_length(get_ip_header_length_bytes() + get_tcp_header_length_bytes() + get_atp_header_length_bytes());
 
     // set structure to zeros
-    atp_->average_delay = 0;
-    atp_->max_delay = 0;
+    set_atp_average_delay(0);
+    set_atp_max_delay(0);
 }
 
 
@@ -43,10 +44,6 @@ unsigned char* ATPPacket::get_data(){
 
 
 int ATPPacket::get_data_length_bytes(){
-	if(!data_set_){
-	    set_ip_tot_length(get_ip_header_length_bytes() + get_tcp_header_length_bytes() + get_atp_header_length_bytes());
-	}
-
 	return super::get_data_length_bytes() - get_atp_header_length_bytes();
 }
 
@@ -118,8 +115,8 @@ string ATPPacket::to_s() const{
     stringstream s;
     s << super::to_s() << endl
             << "atp "
-            << atp_->max_delay << " "
-            << atp_->average_delay;
+            << ntohl(atp_->max_delay) << " "
+            << ntohl(atp_->average_delay);
     return s.str();
 }
 
