@@ -7,8 +7,10 @@
 
 #include "exceptions/WiFuException.h"
 
-WiFuException::WiFuException(const char* message) : message_(message) {}
+WiFuException::WiFuException(const char* message) : message_(message) {
 
-const char* WiFuException::what() const throw() {
-	return message_;
+}
+
+const char* WiFuException::what() const throw () {
+    return message_;
 }

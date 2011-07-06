@@ -13,14 +13,28 @@
 
 using namespace std;
 
+/**
+ * General exception with customizable message.
+ */
 class WiFuException : public exception {
 public:
-	WiFuException(const char* message);
+    /**
+     * Constructs a WiFuException
+     * @param message The message to return if this exception is thrown.
+     */
+    WiFuException(const char* message);
 
-	virtual const char* what() const throw();
+    /**
+     * @return A customized message.
+     */
+    virtual const char* what() const throw ();
 
 private:
-	const char* message_;
+
+    /**
+     * Custom message to throw.
+     */
+    const char* message_;
 
 };
 

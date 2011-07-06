@@ -12,9 +12,16 @@
 
 using namespace std;
 
+/**
+ * Thrown when we are in an illegal state.
+ */
 class IllegalStateException : public exception {
 public:
-	virtual const char* what() const throw();
+
+    /**
+     * @return IllegalStateException specific error message.
+     */
+    virtual const char* what() const throw ();
 };
 
 #endif	/* _ILLEGALSTATEEXCEPTION_H */

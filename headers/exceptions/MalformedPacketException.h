@@ -5,9 +5,15 @@
 
 using namespace std;
 
+/**
+ * Thrown when a WiFuPacket is found to be malformed.
+ */
 class MalformedPacketException : public exception {
 public:
-	virtual const char* what() const throw();
+    /**
+     * @return MalformedPacketException specific error message.
+     */
+    virtual const char* what() const throw ();
 };
 
 #endif

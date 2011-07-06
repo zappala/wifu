@@ -12,9 +12,15 @@
 
 using namespace std;
 
+/**
+ * Represents an I/O exception.
+ */
 class IOError : public exception {
 public:
-	virtual const char* what() const throw();
+    /**
+     * @return IOError specific error message.
+     */
+    virtual const char* what() const throw ();
 };
 
 #endif	/* _IOERROR_H */

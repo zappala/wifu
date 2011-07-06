@@ -12,9 +12,15 @@
 
 using namespace std;
 
+/**
+ * Thrown when we try to access the IPPacket's protocol has not been set and we are trying to read a log.
+ */
 class PacketProtocolNotSetException : public exception {
 public:
-	virtual const char* what() const throw();
+    /**
+     * @return PacketProtocolNotSetException specific error message.
+     */
+    virtual const char* what() const throw ();
 };
 
 #endif /* PACKETPROTOCOLNOTSETEXCEPTION_H_ */
