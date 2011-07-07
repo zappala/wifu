@@ -10,7 +10,6 @@
 
 #include "gtest/gtest.h"
 #include "OptionParser.h"
-#include <string>
 
 using namespace std;
 
@@ -30,8 +29,8 @@ namespace {
 
         parser.parse(3, args, long_options);
 
-        string network = "network";
-        string standard = "standard";
+        gcstring network = "network";
+        gcstring standard = "standard";
 
 
         ASSERT_TRUE(parser.present(network));

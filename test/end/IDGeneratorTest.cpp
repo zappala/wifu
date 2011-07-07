@@ -12,7 +12,6 @@
 #include "PortManager.h"
 
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include "gtest/gtest.h"

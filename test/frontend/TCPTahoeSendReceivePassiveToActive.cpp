@@ -6,7 +6,7 @@ void* tahoe_passive_to_active_thread(void* args) {
     AddressPort* to_bind = v->to_bind_;
     Semaphore* sem = v->sem_;
 
-    string message = v->expected_string;
+    gcstring message = v->expected_string;
 
     // Create server
     int server = wifu_socket(AF_INET, SOCK_STREAM, v->protocol_);
@@ -25,8 +25,8 @@ void* tahoe_passive_to_active_thread(void* args) {
     }
 
     AddressPort ap(&addr);
-    string address("127.0.0.1");
-    string res = ap.get_address();
+    gcstring address("127.0.0.1");
+    gcstring res = ap.get_address();
     EXPECT_EQ(address, res);
 //    cout << "Connected to: " << ap.to_s() << endl;
 
@@ -55,7 +55,7 @@ void* tahoe_passive_to_active_thread(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void tahoe_passive_to_active_send_receive_test(int protocol, string message) {
+void tahoe_passive_to_active_send_receive_test(int protocol, gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
     pthread_t t;
@@ -95,8 +95,8 @@ void tahoe_passive_to_active_send_receive_test(int protocol, string message) {
     int size = 1500;
     char buffer[size];
 
-    string expected = v.expected_string;
-    string all_received = "";
+    gcstring expected = v.expected_string;
+    gcstring all_received = "";
 
     while(true) {
         memset(buffer, 0, size);
@@ -107,7 +107,7 @@ void tahoe_passive_to_active_send_receive_test(int protocol, string message) {
             break;
         }
 
-        string actual(buffer);
+        gcstring actual(buffer);
         all_received.append(actual);
     }
 

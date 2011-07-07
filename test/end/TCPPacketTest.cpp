@@ -522,13 +522,13 @@ namespace {
         TCPPacket p;
 
         p.set_ip_checksum(1);
-        string daddr = "192.168.0.2";
+        gcstring daddr = "192.168.0.2";
         p.set_ip_destination_address_s(daddr);
         p.set_ip_fragmentation_offset(3);
         p.set_ip_identifier(4);
         p.set_ip_header_length_words(5);
         p.set_ip_protocol(6);
-        string saddr = "192.168.0.1";
+        gcstring saddr = "192.168.0.1";
         p.set_ip_source_address_s(saddr);
         p.set_ip_tos(8);
         p.set_ip_ttl(10);

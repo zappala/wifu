@@ -13,7 +13,7 @@ namespace {
 
     TEST(TCPPacketBufferTest, simple) {
         TCPPacketBuffer buffer;
-        string data = "This is the data";
+        gcstring data = "This is the data";
         u_int32_t sequence_number = 1;
         buffer.set_first_sequence_number(sequence_number);
         TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(sequence_number, data);
@@ -22,7 +22,7 @@ namespace {
         int expected = data.size();
 
         ASSERT_EQ(expected, actual);
-        string b;
+        gcstring b;
         buffer.get_continuous_data(sequence_number, b);
         ASSERT_EQ(data, b);
 
@@ -34,7 +34,7 @@ namespace {
 
     TEST(TCPPacketBufferTest, twoBackToBack) {
         TCPPacketBuffer buffer;
-        string data = "This is the data";
+        gcstring data = "This is the data";
         u_int32_t sequence_number = 1;
         buffer.set_first_sequence_number(sequence_number);
         u_int32_t next_seq_number = sequence_number + data.size();
@@ -49,9 +49,9 @@ namespace {
         actual = buffer.insert(p2);
         ASSERT_EQ(expected, actual);
 
-        string expected_data = data;
+        gcstring expected_data = data;
         expected_data.append(data);
-        string b;
+        gcstring b;
         buffer.get_continuous_data(sequence_number, b);
         ASSERT_EQ(expected_data, b);
 
@@ -69,9 +69,9 @@ namespace {
         TCPPacketBuffer buffer;
         //                     10        20        30
         //             123456789012345678901234567890123456
-        string data = "This is the data. ";
-        string data2 = "is more data";
-        string data3 = "This is more d";
+        gcstring data = "This is the data. ";
+        gcstring data2 = "is more data";
+        gcstring data3 = "This is more d";
 
         u_int32_t data_seq_num = 1;
         buffer.set_first_sequence_number(data_seq_num);
@@ -90,8 +90,8 @@ namespace {
         expected = data2.size();
         ASSERT_EQ(expected, actual);
 
-        string expected_data = data;
-        string b;
+        gcstring expected_data = data;
+        gcstring b;
         buffer.get_continuous_data(data_seq_num, b);
         ASSERT_EQ(expected_data, b);
 
@@ -126,9 +126,9 @@ namespace {
         TCPPacketBuffer buffer;
         //                     10        20        30
         //             123456789012345678901234567890123456
-        string data = "This is the data. ";
-        string data2 = "is more data";
-        string data3 = "This ";
+        gcstring data = "This is the data. ";
+        gcstring data2 = "is more data";
+        gcstring data3 = "This ";
 
         u_int32_t data_seq_num = 1;
         buffer.set_first_sequence_number(data_seq_num);
@@ -147,8 +147,8 @@ namespace {
         expected = data2.size();
         ASSERT_EQ(expected, actual);
 
-        string expected_data = data;
-        string b;
+        gcstring expected_data = data;
+        gcstring b;
         buffer.get_continuous_data(data_seq_num, b);
         ASSERT_EQ(expected_data, b);
 
@@ -182,9 +182,9 @@ namespace {
         TCPPacketBuffer buffer;
         //                     10        20        30        40        50
         //             123456789012345678901234567890123456789012345678901234
-        string data = "This is the data. ";
-        string data2 = "is more data";
-        string data3 = "This is more data than I ever wanted.";
+        gcstring data = "This is the data. ";
+        gcstring data2 = "is more data";
+        gcstring data3 = "This is more data than I ever wanted.";
 
         u_int32_t data_seq_num = 1;
         buffer.set_first_sequence_number(data_seq_num);
@@ -203,8 +203,8 @@ namespace {
         expected = data2.size();
         ASSERT_EQ(expected, actual);
 
-        string expected_data = data;
-        string b;
+        gcstring expected_data = data;
+        gcstring b;
         buffer.get_continuous_data(data_seq_num, b);
         ASSERT_EQ(expected_data, b);
 
@@ -235,9 +235,9 @@ namespace {
         TCPPacketBuffer buffer;
         //                     10        20        30        40        50
         //             123456789012345678901234567890123456789012345678901234
-        string data = "This is the data. ";
-        string data2 = "is more data";
-        string data3 = "This is more data than I ever wanted.";
+        gcstring data = "This is the data. ";
+        gcstring data2 = "is more data";
+        gcstring data3 = "This is more data than I ever wanted.";
 
         u_int32_t data_seq_num = 1;
         buffer.set_first_sequence_number(data_seq_num);
@@ -260,8 +260,8 @@ namespace {
         expected = 25;
         ASSERT_EQ(expected, actual);
 
-        string expected_data = data.append(data3);
-        string b;
+        gcstring expected_data = data.append(data3);
+        gcstring b;
         buffer.get_continuous_data(data_seq_num, b);
         ASSERT_EQ(expected_data, b);
 
@@ -278,10 +278,10 @@ namespace {
         TCPPacketBuffer buffer;
         //                     10        20        30        40        50
         //             1234567890123456789012345678901234567890123456789012345
-        string data = "This is the data. ";
-        string data2 = "is more data";
-        string data3 = "I ever";
-        string data4 = "This is more data than I ever wanted.";
+        gcstring data = "This is the data. ";
+        gcstring data2 = "is more data";
+        gcstring data3 = "I ever";
+        gcstring data4 = "This is more data than I ever wanted.";
 
         u_int32_t data_seq_num = 1;
         buffer.set_first_sequence_number(data_seq_num);
@@ -310,8 +310,8 @@ namespace {
         expected = data4.size() - data2.size() - data3.size();
         ASSERT_EQ(expected, actual);
 
-        string expected_data = data.append(data4);
-        string b;
+        gcstring expected_data = data.append(data4);
+        gcstring b;
         buffer.get_continuous_data(data_seq_num, b);
         ASSERT_EQ(expected_data, b);
 
@@ -328,10 +328,10 @@ namespace {
         TCPPacketBuffer buffer;
         //                     10        20        30        40        50
         //             123456789012345678901234567890123456789012345678901234
-        string data = "This is the data. ";
-        string data2 = "is more data";
-        string data3 = "I ever wanted.";
-        string data4 = "This is more data than I ever wa";
+        gcstring data = "This is the data. ";
+        gcstring data2 = "is more data";
+        gcstring data3 = "I ever wanted.";
+        gcstring data4 = "This is more data than I ever wa";
 
         u_int32_t data_seq_num = 1;
         buffer.set_first_sequence_number(data_seq_num);
@@ -360,8 +360,8 @@ namespace {
         expected = data4.size() - data2.size() - 9;
         ASSERT_EQ(expected, actual);
 
-        string expected_data = data.append(data4).append("nted.");
-        string b;
+        gcstring expected_data = data.append(data4).append("nted.");
+        gcstring b;
         buffer.get_continuous_data(data_seq_num, b);
         ASSERT_EQ(expected_data, b);
 
@@ -378,10 +378,10 @@ namespace {
         TCPPacketBuffer buffer;
         //                     10        20        30        40        50
         //             12345678901234567890123456789012345678901234567890123456
-        string data = "This is the data. ";
-        string data2 = "is more data";
-        string data3 = "I ever wanted.";
-        string data4 = "is the data. This is more data than I ever wa";
+        gcstring data = "This is the data. ";
+        gcstring data2 = "is more data";
+        gcstring data3 = "I ever wanted.";
+        gcstring data4 = "is the data. This is more data than I ever wa";
 
         u_int32_t data_seq_num = 1;
         buffer.set_first_sequence_number(data_seq_num);
@@ -406,8 +406,8 @@ namespace {
         expected = data3.size();
         ASSERT_EQ(expected, actual);
 
-        string expected_data = data;
-        string b;
+        gcstring expected_data = data;
+        gcstring b;
         buffer.get_continuous_data(data_seq_num, b);
         ASSERT_EQ(expected_data, b);
 
@@ -436,7 +436,7 @@ namespace {
         TCPPacketBuffer buffer;
         //                     10        20        30        40        50
         //             123456789012345678901234567890123456789012345678901234
-        string data = "This is the data. ";
+        gcstring data = "This is the data. ";
 
         u_int32_t data_seq_num = 1;
         buffer.set_first_sequence_number(data_seq_num);
@@ -451,8 +451,8 @@ namespace {
         expected = 0;
         ASSERT_EQ(expected, actual);
 
-        string expected_data = data;
-        string b;
+        gcstring expected_data = data;
+        gcstring b;
         buffer.get_continuous_data(data_seq_num, b);
         ASSERT_EQ(expected_data, b);
 
@@ -469,8 +469,8 @@ namespace {
         TCPPacketBuffer buffer;
         //                      10        20        30        40        50
         //              123456789012345678901234567890123456789012345678901234
-        string data = "This is the data. ";
-        string data2 = "This is the";
+        gcstring data = "This is the data. ";
+        gcstring data2 = "This is the";
 
         u_int32_t data_seq_num = 1;
         buffer.set_first_sequence_number(data_seq_num);
@@ -486,8 +486,8 @@ namespace {
         expected = 0;
         ASSERT_EQ(expected, actual);
 
-        string expected_data = data;
-        string b;
+        gcstring expected_data = data;
+        gcstring b;
         buffer.get_continuous_data(data_seq_num, b);
         ASSERT_EQ(expected_data, b);
 
@@ -504,8 +504,8 @@ namespace {
         TCPPacketBuffer buffer;
         //                      10        20        30        40        50
         //              123456789012345678901234567890123456789012345678901234
-        string data = "This is the";
-        string data2 = "This is the data.";
+        gcstring data = "This is the";
+        gcstring data2 = "This is the data.";
 
         u_int32_t data_seq_num = 1;
         buffer.set_first_sequence_number(data_seq_num);
@@ -521,8 +521,8 @@ namespace {
         expected = data2.size() - data.size();
         ASSERT_EQ(expected, actual);
 
-        string expected_data = data2;
-        string b;
+        gcstring expected_data = data2;
+        gcstring b;
         buffer.get_continuous_data(data_seq_num, b);
         ASSERT_EQ(expected_data, b);
 
@@ -548,7 +548,7 @@ namespace {
 
         // start at sequence #0
         // The index in the string is equal to the sequence number
-        string expected = RandomStringGenerator::get_data(total);
+        gcstring expected = RandomStringGenerator::get_data(total);
         int total_inserted = 0;
 
 
@@ -564,7 +564,7 @@ namespace {
             if (length == 0) {
                 continue;
             }
-            string s = expected.substr(sequence_number, length);
+            gcstring s = expected.substr(sequence_number, length);
 
             TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(sequence_number, s);
             int count = buffer.insert(p);
@@ -576,7 +576,7 @@ namespace {
             }
         }
 
-        string b;
+        gcstring b;
         buffer.get_continuous_data(0, b);
         ASSERT_EQ(expected, b);
         ASSERT_EQ(expected.length(), total_inserted);
@@ -594,12 +594,12 @@ namespace {
 
         // start at sequence #0
         // The index in the string is equal to the sequence number
-        string expected = RandomStringGenerator::get_data(total);
+        gcstring expected = RandomStringGenerator::get_data(total);
         int total_inserted = 0;
         int total_removed = 0;
 
         int nxt = 0;
-        string actual = "";
+        gcstring actual = "";
 
         while (bits.any()) {
             int sequence_number = (rand() % total) + nxt;
@@ -618,7 +618,7 @@ namespace {
                 continue;
             }
 
-            string s = expected.substr(sequence_number, length);
+            gcstring s = expected.substr(sequence_number, length);
 
             TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(sequence_number, s);
             int count = buffer.insert(p);
@@ -656,15 +656,15 @@ namespace {
 
         // start at sequence #0
         // The index in the string is equal to the sequence number
-        string expected = RandomStringGenerator::get_data(num_bytes);
+        gcstring expected = RandomStringGenerator::get_data(num_bytes);
         //        cout << "Expected: " << expected << endl;
         int total_inserted = 0;
         int total_removed = 0;
-        string actual = "";
+        gcstring actual = "";
 
         // Insert first packet
         int data_seq_num = 0;
-        string data = expected.substr(data_seq_num, 1);
+        gcstring data = expected.substr(data_seq_num, 1);
         TCPPacket* p0 = HelperFunctions::get_tcp_packet_with_data(data_seq_num, data);
         total_inserted += buffer.insert(p0);
         //        cout << "Inserting: " << data << endl;
@@ -732,7 +732,7 @@ namespace {
 
     TEST(TCPPacketBufferTest, remove) {
         TCPPacketBuffer buffer;
-        string data = "This is the data";
+        gcstring data = "This is the data";
         u_int32_t sequence_number = 1;
         buffer.set_first_sequence_number(sequence_number);
         TCPPacket* p = HelperFunctions::get_tcp_packet_with_data(sequence_number, data);

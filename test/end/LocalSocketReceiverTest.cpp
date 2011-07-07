@@ -15,9 +15,9 @@ using namespace std;
 
 namespace {
 
-	TEST(LocalSocketReceiver, all) {
-		SUCCEED();
-	}
+    TEST(LocalSocketReceiver, all) {
+        SUCCEED();
+    }
 
 }
 

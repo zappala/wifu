@@ -9,7 +9,6 @@
 #define	_WIFUENDAPITEST_H
 
 #include <iostream>
-#include <string>
 #include <vector>
 #include <unistd.h>
 #include "../headers/defines.h"
@@ -29,7 +28,7 @@ namespace {
     class LocalSocketFullDuplexImpl : public LocalSocketFullDuplex {
     public:
 
-        LocalSocketFullDuplexImpl(string& file) : LocalSocketFullDuplex(file) {
+        LocalSocketFullDuplexImpl(gcstring& file) : LocalSocketFullDuplex(file) {
             socket_id_ = 10;
             bind_return_val_ = 100;
             listen_return_val_ = 1000;
@@ -42,14 +41,14 @@ namespace {
 
         }
 
-        void receive(string& message) {
+        void receive(gcstring& message) {
             //cout << "Request:\t" << message << endl;
-            map<string, string> m;
+            map<gcstring, gcstring> m;
             QueryStringParser::parse(message, m);
 
-            map<string, string> response;
+            map<gcstring, gcstring> response;
             response[FILE_STRING] = get_file();
-            string name = m[NAME_STRING];
+            gcstring name = m[NAME_STRING];
             response[SOCKET_STRING] = m[SOCKET_STRING];
 
             if (!name.compare(WIFU_SOCKET_NAME)) {
@@ -91,7 +90,7 @@ namespace {
                 response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
             } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
                 int return_val = SO_BINDTODEVICE;
-                string value = "Value";
+                gcstring value = "Value";
                 response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
                 response[BUFFER_STRING] = value;
             } else if (!name.compare(WIFU_SETSOCKOPT_NAME)) {
@@ -99,15 +98,15 @@ namespace {
                 response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
             }
 
-            string response_message = QueryStringParser::create(name, response);
+            gcstring response_message = QueryStringParser::create(name, response);
             send_to(m[FILE_STRING], response_message);
         }
 
-        string& get_last_message() {
+        gcstring& get_last_message() {
             return last_message_;
         }
 
-        string& get_recv_message() {
+        gcstring& get_recv_message() {
             return recv_message_;
         }
 
@@ -116,8 +115,8 @@ namespace {
         }
 
     private:
-        string last_message_;
-        string recv_message_;
+        gcstring last_message_;
+        gcstring recv_message_;
         int socket_id_;
         int bind_return_val_;
         int listen_return_val_;
@@ -126,7 +125,7 @@ namespace {
 
     TEST(WifuSocketTest, allTests) {
         // wifu_socket()
-        string file("/tmp/WS");
+        gcstring file("/tmp/WS");
         LocalSocketFullDuplexImpl localSocket(file);
 
         int socket = wifu_socket(1000, 1000, SIMPLE_TCP);
@@ -136,7 +135,7 @@ namespace {
         ASSERT_EQ(expected, result);
 
         // wifu_bind()
-        string address("127.0.0.1");
+        gcstring address("127.0.0.1");
         int port = 5000;
         AddressPort ap(address, port);
         expected = 100;
@@ -166,7 +165,7 @@ namespace {
 
 
         // wifu_send()
-        string send_message = "This is the message to send";
+        gcstring send_message = "This is the message to send";
         expected = send_message.size();
         result = wifu_send(socket, send_message.c_str(), send_message.size(), 0);
         ASSERT_EQ(expected, result);
@@ -180,7 +179,7 @@ namespace {
         ASSERT_EQ(send_message, localSocket.get_last_message());
 
         // wifu_recv()
-        string message = localSocket.get_recv_message();
+        gcstring message = localSocket.get_recv_message();
         expected = localSocket.get_recv_message().size();
 
         for (int i = 1; i <= 50; i++) {
@@ -188,7 +187,7 @@ namespace {
             localSocket.reset();
 
             char buf[i + 1];
-            string result_string = "";
+            gcstring result_string = "";
 
             while (1) {
                 memset(buf, 0, i + 1);
@@ -210,7 +209,7 @@ namespace {
             localSocket.reset();
 
             char buf[i + 1];
-            string result_string = "";
+            gcstring result_string = "";
 
             while (1) {
                 memset(buf, 0, i + 1);

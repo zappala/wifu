@@ -26,7 +26,7 @@ namespace {
         sc.clear();
         Socket * sockets[count];
 
-        string address = "192.168.0.1";
+        gcstring address = "192.168.0.1";
 
         for (int i = 0; i < count; i++) {
             int port = i;
@@ -53,7 +53,7 @@ namespace {
         sc.clear();
         Socket * sockets[count];
 
-        string address = "192.168.0.1";
+        gcstring address = "192.168.0.1";
 
         for (int i = 0; i < count; i++) {
             int port = i;
@@ -83,8 +83,8 @@ namespace {
         int port = 5000;
 
         for (int i = 0; i < count; i++) {
-            string subnet = Utils::itoa(i);
-            string address = "192.168.0.";
+            gcstring subnet = Utils::itoa(i);
+            gcstring address = "192.168.0.";
             address.append(subnet);
 
             AddressPort* local = new AddressPort(address, port);
@@ -93,8 +93,8 @@ namespace {
         }
 
         for (int i = count; i < count; i++) {
-            string address = Utils::itoa(i);
-            string rest = ".168.0.1";
+            gcstring address = Utils::itoa(i);
+            gcstring rest = ".168.0.1";
 
             address.append(rest);
 
@@ -118,8 +118,8 @@ namespace {
         int port = 5000;
 
         for (int i = 0; i < count; i++) {
-            string subnet = Utils::itoa(i);
-            string address = "192.168.0.";
+            gcstring subnet = Utils::itoa(i);
+            gcstring address = "192.168.0.";
             address.append(subnet);
 
             AddressPort* local = new AddressPort(address, port);
@@ -128,8 +128,8 @@ namespace {
         }
 
         for (int i = count; i < count; i++) {
-            string subnet = Utils::itoa(i);
-            string address = "192.168.0.";
+            gcstring subnet = Utils::itoa(i);
+            gcstring address = "192.168.0.";
             address.append(subnet);
 
             AddressPort to_check(address, port);

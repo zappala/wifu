@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
@@ -33,7 +32,7 @@ void* udp_active_to_passive_thread_with_close(void* args) {
     int countdown = v->countdown_;
     int rec_buf = v->rec_buf_;
 
-    string expected = v->expected_string;
+    gcstring expected = v->expected_string;
 
     // Create server
     int server = wifu_socket(AF_INET, SOCK_DGRAM, UDP);
@@ -48,8 +47,8 @@ void* udp_active_to_passive_thread_with_close(void* args) {
     sem->post();
 
     /*AddressPort ap(&addr);
-    string address("127.0.0.1");
-    string res = ap.get_address();
+    gcstring address("127.0.0.1");
+    gcstring res = ap.get_address();
     EXPECT_EQ(address, res);*/
     //    cout << "Connected to: " << ap.to_s() << endl;
 
@@ -57,7 +56,7 @@ void* udp_active_to_passive_thread_with_close(void* args) {
 
     int size = 500000;
     char buffer[size];
-    string all_received = "";
+    gcstring all_received = "";
     struct sockaddr_in addr;
     socklen_t addrlen = sizeof(addr);
 
@@ -69,7 +68,7 @@ void* udp_active_to_passive_thread_with_close(void* args) {
         int return_value = wifu_recvfrom(server, &buffer, rec_buf, 0, (struct sockaddr *)&addr, &addrlen);
         //cout << "UDP test: retval from recvfrom is " << return_value << ".\n";
 
-        string actual(buffer);
+        gcstring actual(buffer);
         all_received.append(actual);
 
         //cout << "So far, we got: " << all_received << endl;
@@ -92,7 +91,7 @@ void* udp_active_to_passive_thread_with_close(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void udp_active_to_passive_test_with_close(string message) {
+void udp_active_to_passive_test_with_close(gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
     pthread_t t;
@@ -147,7 +146,7 @@ void udp_active_to_passive_test_with_close(string message) {
 
     struct sockaddr_in* addr = to_connect.get_network_struct_ptr();
     //u_int32_t address = (u_int32_t)addr->sin_addr;
-    string address = to_connect.get_address();
+    gcstring address = to_connect.get_address();
     u_int16_t port = (u_int16_t)addr->sin_port;
 
     //cout << "Dest. address: " << address << endl;
@@ -175,10 +174,10 @@ void udp_active_to_passive_test_with_close(string message) {
  * @param message The message that should arrive
  *
  */
-void udp_active_to_passive_test_with_drop(string message) {
+void udp_active_to_passive_test_with_drop(gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
-    string dummymsg = "This should not arrive.";
+    gcstring dummymsg = "This should not arrive.";
     pthread_t t;
     struct udpvar v;
     Timer timer;
@@ -231,7 +230,7 @@ void udp_active_to_passive_test_with_drop(string message) {
 
     struct sockaddr_in* addr = to_connect.get_network_struct_ptr();
     //u_int32_t address = (u_int32_t)addr->sin_addr;
-    //string address = to_connect.get_address();
+    //gcstring address = to_connect.get_address();
     //u_int16_t port = (u_int16_t)addr->sin_port;
 
     //cout << "Dest. address: " << address << endl;
@@ -330,7 +329,7 @@ TEST_F(BackEndTest, UDPSendReceiveTestActiveToPassive1000) {
 //causes the test tahoeSendReceiveTestPassiveToActiveBigChunks10000000
 //in TCPTahoeSendReceivePassiveToActiveBigChunks.cpp to segfault
 //when creating the (very large) random string if we don't reserve the
-//memory using string.reserve() first.
+//memory using gcstring.reserve() first.
 //There can be only one?
 //TEST_F(BackEndMockTestDrop10, UDPDropFirstPacketTest) {
 //    udp_active_to_passive_test_with_drop("Hier stehe ich; ich kann nichts anders!");

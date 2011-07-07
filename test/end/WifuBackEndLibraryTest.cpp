@@ -15,9 +15,9 @@ using namespace std;
 
 namespace {
 
-	TEST(WifuEndBackEndLibraryTest, all) {
+    TEST(WifuEndBackEndLibraryTest, all) {
 
-	}
+    }
 
 }
 

@@ -51,7 +51,7 @@ namespace {
         RawSocketSender sender;
     };
 
-    WiFuPacket * make_packet(int protocol, string & data, AddressPort* source, AddressPort* dest) {
+    WiFuPacket * make_packet(int protocol, gcstring & data, AddressPort* source, AddressPort* dest) {
         WiFuPacket* p = new WiFuPacket();
         p->set_ip_destination_address_s(dest->get_address());
         p->set_destination_port(dest->get_port());
@@ -87,7 +87,7 @@ namespace {
         // only by local address/port
         int time = 0;
         for (int i = 0; i < num_packets; i++) {
-        	string data = random_string(packet_size);
+        	gcstring data = random_string(packet_size);
 
             Timer t;
             t.start();
@@ -98,8 +98,8 @@ namespace {
             t.stop();
             time += t.get_duration_microseconds();
 
-            string expected = data;
-            string actual = (const char*) fnm.p->get_data();
+            gcstring expected = data;
+            gcstring actual = (const char*) fnm.p->get_data();
             ASSERT_EQ(expected, actual);
             ASSERT_EQ(packet_size, fnm.p->get_data_length_bytes());
             ASSERT_TRUE(*dest == *(fnm.p->get_dest_address_port()));
@@ -113,7 +113,7 @@ namespace {
         time = 0;
         for (int i = 0; i < num_packets; i++) {
 
-            string data = random_string(packet_size);
+            gcstring data = random_string(packet_size);
 
             Timer t;
             t.start();
@@ -124,8 +124,8 @@ namespace {
             t.stop();
             time += t.get_duration_microseconds();
 
-            string expected = data;
-            string actual = (const char*) fnm.p->get_data();
+            gcstring expected = data;
+            gcstring actual = (const char*) fnm.p->get_data();
             ASSERT_EQ(expected, actual);
             ASSERT_EQ(packet_size, fnm.p->get_data_length_bytes());
             ASSERT_TRUE(*dest == *(fnm.p->get_dest_address_port()));
@@ -155,7 +155,7 @@ namespace {
 
 		//This tests for an "unbound" local socket in the NetworkInterface
 		//TODO: I don't know if this is a realistic test for an unbound socket, so it may need to be modified -Scott
-		string data = random_string(packet_size);
+		gcstring data = random_string(packet_size);
 		WiFuPacket* worthlessPacket = make_packet(protocol, data, source, dest);
 		NetworkSendPacketEvent* event = new NetworkSendPacketEvent(socket, worthlessPacket);
 		dispatcher.enqueue(event);

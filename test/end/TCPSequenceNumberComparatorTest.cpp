@@ -15,7 +15,7 @@ namespace {
     TEST(TCPSequenceNumberComparator, compareSequenceNumbers) {
         PriorityQueue<TCPPacket*, TCPSequenceNumberComparator> q;
 
-        string data = "This is the data";
+        gcstring data = "This is the data";
         for (int i = 0; i < 1000; i++) {
             q.enqueue(HelperFunctions::get_tcp_packet_with_data(rand(), data));
         }

@@ -9,7 +9,6 @@
 #define	SOCKETDATAMAPTEST_H
 
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include "gtest/gtest.h"

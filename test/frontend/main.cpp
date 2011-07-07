@@ -6,7 +6,6 @@
  */
 
 #include "gtest/gtest.h"
-#include <string>
 #include <signal.h>
 
 using namespace std;
@@ -15,10 +14,10 @@ void change_dir() {
     int size = 1000;
     char buf[size];
     getcwd(buf, size);
-    string path = buf;
-    string bin = "bin";
+    gcstring path = buf;
+    gcstring bin = "bin";
 
-    if (path.find(bin) == string::npos) {
+    if (path.find(bin) == gcstring::npos) {
         chdir(bin.c_str());
     }
 }

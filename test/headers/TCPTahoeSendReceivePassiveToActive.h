@@ -9,7 +9,6 @@
 #define	_TCPTAHOESENDRECEIVEPASSIVETOACTIVE_H
 
 #include <iostream>
-#include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
@@ -33,7 +32,7 @@
 
 void* tahoe_passive_to_active_thread(void* args);
 
-void tahoe_passive_to_active_send_receive_test(int protocol, string message);
+void tahoe_passive_to_active_send_receive_test(int protocol, gcstring message);
 
 #endif	/* _TCPTAHOESENDRECEIVEPASSIVETOACTIVE_H */
 

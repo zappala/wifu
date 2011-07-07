@@ -1,7 +1,6 @@
 #ifndef SOCKETOPTIONSTEST
 #define SOCKETOPTIONSTEST
 #include <iostream>
-#include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
@@ -24,7 +23,7 @@ namespace {
 
         int level = 0;
         int optname = 0;
-        string optvalue = "hello";
+        gcstring optvalue = "hello";
         socklen_t optlen = optvalue.size();
 
         int return_val = wifu_setsockopt(fd, level, optname, optvalue.c_str(), optlen);
@@ -36,7 +35,7 @@ namespace {
         socklen_t len = BUFFER_SIZE;
 
         return_val = wifu_getsockopt(fd, level, optname, buffer, &len);
-        string result = (const char*) buffer;
+        gcstring result = (const char*) buffer;
 
         EXPECT_EQ(0, return_val);
         EXPECT_EQ(optvalue, result);
@@ -118,7 +117,7 @@ namespace {
         int fd = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
 
         for (int i = 0; i < 1000; i++) {
-            string optval = rand() % 2 == 1 ? "on" : "off";
+            gcstring optval = rand() % 2 == 1 ? "on" : "off";
             socklen_t optlen = optval.length();
 
             int return_val = wifu_setsockopt(fd, SOL_TCP, 5, optval.c_str(), optlen);
@@ -130,7 +129,7 @@ namespace {
 
             return_val = wifu_getsockopt(fd, SOL_TCP, 5, buffer, &len);
 
-            string actual((const char*) buffer);
+            gcstring actual((const char*) buffer);
             EXPECT_EQ(0, return_val);
             EXPECT_EQ(optval, actual);
             EXPECT_EQ(len, optlen);

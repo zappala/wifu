@@ -10,7 +10,6 @@
 
 
 #include <iostream>
-#include <string>
 #include <vector>
 #include <time.h>
 #include <math.h>
@@ -28,7 +27,7 @@ namespace {
     class LocalSocketFullDuplexImpl1 : public LocalSocketFullDuplex {
     public:
 
-        LocalSocketFullDuplexImpl1(string& file) : LocalSocketFullDuplex(file) {
+        LocalSocketFullDuplexImpl1(gcstring& file) : LocalSocketFullDuplex(file) {
 
         }
 
@@ -36,27 +35,27 @@ namespace {
 
         }
 
-        void receive(string& message) {
+        void receive(gcstring& message) {
             last_received_ = message;
         }
 
-        string& get_last_received() {
+        gcstring& get_last_received() {
             return last_received_;
         }
 
     private:
-        string last_received_;
+        gcstring last_received_;
 
     };
 
     TEST(LocalSocketFullDuplexTest, all) {
 
         RandomNumberSet<u_int16_t> numbers;
-        string file1("/tmp/LSFDF1");
+        gcstring file1("/tmp/LSFDF1");
         file1.append(Utils::itoa(numbers.get()));
         LocalSocketFullDuplexImpl1 s1(file1);
 
-        string message = "This is a test message";
+        gcstring message = "This is a test message";
 
         ssize_t sent = s1.send_to(file1, message);
 

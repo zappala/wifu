@@ -9,7 +9,7 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
     Semaphore* flag = v->flag_;
     Semaphore* done = v->done_;
 
-    string expected = v->expected_string;
+    gcstring expected = v->expected_string;
 
     // Create server
     int server = wifu_socket(AF_INET, SOCK_STREAM, v->protocol_);
@@ -33,8 +33,8 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
 
 
     AddressPort ap(&addr);
-    string address("127.0.0.1");
-    string res = ap.get_address();
+    gcstring address("127.0.0.1");
+    gcstring res = ap.get_address();
     EXPECT_EQ(address, res);
     //    cout << "Connected to: " << ap.to_s() << endl;
 
@@ -42,7 +42,7 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
 
     int size = 50000;
     char buffer[size];
-    string all_received = "";
+    gcstring all_received = "";
 
     while (true) {
 
@@ -54,7 +54,7 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
             break;
         }
 
-        string actual(buffer);
+        gcstring actual(buffer);
         all_received.append(actual);
     }
     wifu_close(connection);
@@ -67,7 +67,7 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void tahoe_active_to_passive_big_chunks(int protocol, string message) {
+void tahoe_active_to_passive_big_chunks(int protocol, gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
     pthread_t t;

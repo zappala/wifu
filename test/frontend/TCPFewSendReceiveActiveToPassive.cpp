@@ -9,7 +9,7 @@
 //    Semaphore* flag = v->flag_;
 //    Semaphore* done = v->done_;
 //
-//    string expected = v->expected_string;
+//    gcstring expected = v->expected_string;
 //
 //    // Create server
 //    int server = wifu_socket(AF_INET, SOCK_STREAM, TCP_FEW);
@@ -33,8 +33,8 @@
 //
 //
 //    AddressPort ap(&addr);
-//    string address("127.0.0.1");
-//    string res = ap.get_address();
+//    gcstring address("127.0.0.1");
+//    gcstring res = ap.get_address();
 //    EXPECT_EQ(address, res);
 //    //    cout << "Connected to: " << ap.to_s() << endl;
 //
@@ -43,7 +43,7 @@
 //    int size = 500000;
 //    char buffer[size];
 //    memset(buffer, 0, size);
-//    string all_received = "";
+//    gcstring all_received = "";
 //
 //    while (true) {
 //        int return_value = wifu_recv(connection, &buffer, 1, 0);
@@ -53,7 +53,7 @@
 //            break;
 //        }
 //
-//        string actual(buffer);
+//        gcstring actual(buffer);
 //        all_received.append(actual);
 //    }
 //    wifu_close(connection);
@@ -67,7 +67,7 @@
 // * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
 // *
 // */
-//void few_active_to_passive_test_with_close(string message) {
+//void few_active_to_passive_test_with_close(gcstring message) {
 //    AddressPort to_connect("127.0.0.1", 5002);
 //
 //    pthread_t t;

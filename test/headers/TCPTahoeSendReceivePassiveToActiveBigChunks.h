@@ -9,7 +9,6 @@
 #define	_TCPTAHOESENDRECEIVEPASSIVETOACTIVEBIGCHUNKS_H
 
 #include <iostream>
-#include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
@@ -31,7 +30,7 @@
 #include "../headers/PacketTraceHelper.h"
 #include "Utils.h"
 
-void tcp_tahoe_passive_to_active_big_chunks(int protocol, string message);
+void tcp_tahoe_passive_to_active_big_chunks(int protocol, gcstring message);
 
 void* tcp_tahoe_passive_to_active_big_chunks_thread(void* args);
 

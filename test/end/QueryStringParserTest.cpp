@@ -9,7 +9,6 @@
 #define	QUERYSTRINGPARSERTEST_H
 
 #include <iostream>
-#include <string>
 #include <map>
 #include <stdlib.h>
 
@@ -24,11 +23,11 @@ namespace {
 
         char buf[(sizeof (int) *8 + 1)];
 
-        string name = "name";
-        map<string, string> values;
+        gcstring name = "name";
+        map<gcstring, gcstring> values;
 
-        string result = QueryStringParser::create(name, values);
-        string expected = "name?";
+        gcstring result = QueryStringParser::create(name, values);
+        gcstring expected = "name?";
         ASSERT_EQ(expected, result);
 
         values["a"] = "a";
@@ -51,12 +50,12 @@ namespace {
 
     TEST(QueryStringParserTest, moreCreate) {
 
-        map<string, string> values;
-        string query = "name?a=9&b=bob&c=1234&";
+        map<gcstring, gcstring> values;
+        gcstring query = "name?a=9&b=bob&c=1234&";
 
         QueryStringParser::parse(query, values);
 
-        string expected = "name";
+        gcstring expected = "name";
         ASSERT_EQ(expected, values["name"]);
 
         expected = "9";

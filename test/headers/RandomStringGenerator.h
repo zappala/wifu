@@ -14,8 +14,8 @@ using namespace std;
 
 class RandomStringGenerator {
 public:
-    static string get_data(int packet_size) {
-        string data = "";
+    static gcstring get_data(int packet_size) {
+        gcstring data = "";
         //We shouldn't need to do this...but just in case of fragmented memory
         data.reserve(packet_size);
         for (int i = 0; i < packet_size; i++) {
@@ -24,7 +24,7 @@ public:
             clock_gettime(CLOCK_REALTIME, &ts);
             srand(ts.tv_nsec);
             char c = (rand() % 26) + 'a';
-            string s(1, c);
+            gcstring s(1, c);
             data.append(s);
             //cout << "Data length: " << data.length() << endl;
             //cout << "String capacity: " << data.capacity() << endl;

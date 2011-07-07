@@ -23,14 +23,14 @@ namespace {
     // Also, we need to test it on the mesh nodes (or another machine with more than one interface)
 
     TEST(SourceGetter, LocalHost) {
-        string destination = "127.0.0.1";
-        string expected = "127.0.0.1";
-        string result = sg.get_source_address(destination);
+        gcstring destination = "127.0.0.1";
+        gcstring expected = "127.0.0.1";
+        gcstring result = sg.get_source_address(destination);
         ASSERT_EQ(expected, result);
     }
 
-    string get_ip_address() {
-        string address;
+    gcstring get_ip_address() {
+        gcstring address;
 
         int s = socket(AF_INET, SOCK_DGRAM, 0);
         if (s <= 0) {
@@ -49,23 +49,23 @@ namespace {
     }
 
     TEST(SourceGetter, AddressResolve) {
-        string expected = get_ip_address();
+        gcstring expected = get_ip_address();
         for (int i = 1; i < 8; i++) {
             char buffer[1000];
             memset(buffer, 0, 1000);
             sprintf(buffer, "192.168.21.10%d", i);
 
-            string destination = buffer;
-            string result = sg.get_source_address(destination);
+            gcstring destination = buffer;
+            gcstring result = sg.get_source_address(destination);
             ASSERT_EQ(expected, result);
         }
     }
 
     TEST(SourceGetter, AddressResolveCache) {
         // No way to ensure we hit the cache...
-        string destination = "192.168.21.102";
-        string expected = get_ip_address();
-        string result = sg.get_source_address(destination);
+        gcstring destination = "192.168.21.102";
+        gcstring expected = get_ip_address();
+        gcstring result = sg.get_source_address(destination);
         ASSERT_EQ(expected, result);
     }
 }

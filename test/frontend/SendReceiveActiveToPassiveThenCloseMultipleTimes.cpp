@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
@@ -29,7 +28,7 @@ void* active_to_passive_thread_with_close_multiple(void* args) {
     Semaphore* flag = v->flag_;
     Semaphore* done = v->done_;
 
-    string expected = v->expected_string;
+    gcstring expected = v->expected_string;
 
     // Create server
     int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
@@ -47,14 +46,14 @@ void* active_to_passive_thread_with_close_multiple(void* args) {
         flag->post();
 
         AddressPort ap(&addr);
-        string address("127.0.0.1");
-        string res = ap.get_address();
+        gcstring address("127.0.0.1");
+        gcstring res = ap.get_address();
         EXPECT_EQ(address, res);
 
         int size = 50000;
         char buffer[size];
         memset(buffer, 0, size);
-        string all_received = "";
+        gcstring all_received = "";
 
         while (true) {
             int return_value = wifu_recv(connection, &buffer, 1, 0);
@@ -62,7 +61,7 @@ void* active_to_passive_thread_with_close_multiple(void* args) {
                 break;
             }
 
-            string actual(buffer);
+            gcstring actual(buffer);
             all_received.append(actual);
         }
         wifu_close(connection);
@@ -75,7 +74,7 @@ void* active_to_passive_thread_with_close_multiple(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void active_to_passive_test_with_close_multiple(string message) {
+void active_to_passive_test_with_close_multiple(gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
     pthread_t t;

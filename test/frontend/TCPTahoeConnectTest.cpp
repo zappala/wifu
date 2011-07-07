@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
@@ -45,8 +44,8 @@ void* tcp_tahoe_test_thread(void* args) {
     }
 
     AddressPort ap(&addr);
-    string address("127.0.0.1");
-    string res = ap.get_address();
+    gcstring address("127.0.0.1");
+    gcstring res = ap.get_address();
     EXPECT_EQ(address, res);
     cout << "Connected to: " << ap.to_s() << endl;
 

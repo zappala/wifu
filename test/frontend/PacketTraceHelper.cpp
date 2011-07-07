@@ -17,8 +17,8 @@ TCPPacket* get_base_tcp_packet(int protocol) {
 	}
 
     p->set_ip_protocol(protocol);
-    string saddr = "127.0.0.1";
-    string daddr = saddr;
+    gcstring saddr = "127.0.0.1";
+    gcstring daddr = saddr;
     p->set_ip_source_address_s(saddr);
     p->set_ip_destination_address_s(daddr);
     return p;

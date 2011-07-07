@@ -10,7 +10,7 @@
 #include "../headers/BackEndTest.h"
 
 TEST_F(BackEndTest, UDPSocketTest) {
-    ASSERT_TRUE(sizeof(struct udphdr) == UDP_HEADER_LENGTH_BYTES);
+    ASSERT_TRUE(sizeof (struct udphdr) == UDP_HEADER_LENGTH_BYTES);
 
     for (int i = 0; i < 100; i++) {
         // Check valid
@@ -24,9 +24,9 @@ TEST_F(BackEndTest, UDPSocketTest) {
 }
 
 TEST_F(BackEndTest, UDPSendTest) {
-    
+
 }
 
 TEST_F(BackEndTest, UDPReceiveTest) {
-    
+
 }

@@ -9,7 +9,6 @@
 #define	_TCPTAHOESENDRECEIVEACTIVETOPASSIVEBIGCHUNKS_H
 
 #include <iostream>
-#include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
@@ -33,7 +32,7 @@
 #include "Utils.h"
 
 void* tahoe_active_to_passive_big_chunks_thread(void* args);
-void tahoe_active_to_passive_big_chunks(int protocol, string message);
+void tahoe_active_to_passive_big_chunks(int protocol, gcstring message);
 
 #endif	/* _TCPTAHOESENDRECEIVEACTIVETOPASSIVEBIGCHUNKS_H */
 

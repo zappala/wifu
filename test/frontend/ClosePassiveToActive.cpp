@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
@@ -27,7 +26,7 @@ void* close_send_receive_thread(void* args) {
     AddressPort* to_bind = v->to_bind_;
     Semaphore* sem = v->sem_;
 
-    string message = v->expected_string;
+    gcstring message = v->expected_string;
 
     // Create server
     int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
@@ -46,8 +45,8 @@ void* close_send_receive_thread(void* args) {
     }
 
     AddressPort ap(&addr);
-    string address("127.0.0.1");
-    string res = ap.get_address();
+    gcstring address("127.0.0.1");
+    gcstring res = ap.get_address();
     EXPECT_EQ(address, res);
 //    cout << "Connected to: " << ap.to_s() << endl;
 
@@ -75,7 +74,7 @@ void* close_send_receive_thread(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void close_send_receive_test(string message) {
+void close_send_receive_test(gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
     pthread_t t;
@@ -114,8 +113,8 @@ void close_send_receive_test(string message) {
     int size = 1500;
     char buffer[size];
     memset(buffer, 0, size);
-    string expected = v.expected_string;
-    string all_received = "";
+    gcstring expected = v.expected_string;
+    gcstring all_received = "";
 
     while(true) {
 
@@ -125,7 +124,7 @@ void close_send_receive_test(string message) {
             break;
         }
 
-        string actual(buffer);
+        gcstring actual(buffer);
         all_received.append(actual);
 
     }
@@ -137,7 +136,7 @@ void close_send_receive_test(string message) {
 }
 void close_passive_to_active_drop_none() {
     // <editor-fold defaultstate="collapsed" desc="setup">
-    string data = random_string(1);
+    gcstring data = random_string(1);
     close_send_receive_test(data);
 
     NetworkTrace expected;
@@ -251,7 +250,7 @@ TEST_F(BackEndMockTestDropNone, closeTestPassiveToActive) {
 
 void close_passive_to_active_drop_first_fin() {
     // <editor-fold defaultstate="collapsed" desc="setup">
-    string data = random_string(1);
+    gcstring data = random_string(1);
     close_send_receive_test(data);
 
     NetworkTrace expected;
@@ -367,7 +366,7 @@ TEST_F(BackEndMockTestDrop34, closeTestPassiveToActiveDrop34) {
 
 void close_passive_to_active_drop_first_ack() {
     // <editor-fold defaultstate="collapsed" desc="setup">
-    string data = random_string(1);
+    gcstring data = random_string(1);
     close_send_receive_test(data);
 
     NetworkTrace expected;
@@ -479,7 +478,7 @@ TEST_F(BackEndMockTestDrop44, closeTestPassiveToActiveDrop44) {
 
 void close_passive_to_active_drop_second_fin() {
     // <editor-fold defaultstate="collapsed" desc="setup">
-    string data = random_string(1);
+    gcstring data = random_string(1);
     close_send_receive_test(data);
 
     NetworkTrace expected;
@@ -595,7 +594,7 @@ TEST_F(BackEndMockTestDrop54, closeTestPassiveToActiveDrop54) {
 
 void close_passive_to_active_drop_second_ack() {
     // <editor-fold defaultstate="collapsed" desc="setup">
-    string data = random_string(1);
+    gcstring data = random_string(1);
     close_send_receive_test(data);
 
     NetworkTrace expected;
@@ -717,7 +716,7 @@ TEST_F(BackEndMockTestDrop46, closeTestPassiveToActiveDrop46) {
 
 void close_passive_to_active_drop_first_ack_and_second_fin() {
     // <editor-fold defaultstate="collapsed" desc="setup">
-    string data = random_string(1);
+    gcstring data = random_string(1);
     close_send_receive_test(data);
 
     NetworkTrace expected;

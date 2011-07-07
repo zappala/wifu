@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
@@ -28,7 +27,7 @@ void* active_to_passive_thread(void* args) {
     AddressPort* to_bind = v->to_bind_;
     Semaphore* sem = v->sem_;
 
-    string expected = v->expected_string;
+    gcstring expected = v->expected_string;
 
     // Create server
     int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
@@ -47,10 +46,10 @@ void* active_to_passive_thread(void* args) {
     }
 
     AddressPort ap(&addr);
-    string address("127.0.0.1");
+    gcstring address("127.0.0.1");
     //TODO: move this into real network test
-//    string address("192.168.21.103");
-    string res = ap.get_address();
+//    gcstring address("192.168.21.103");
+    gcstring res = ap.get_address();
     EXPECT_EQ(address, res);
     //    cout << "Connected to: " << ap.to_s() << endl;
 
@@ -59,13 +58,13 @@ void* active_to_passive_thread(void* args) {
     int size = 50000;
     char buffer[size];
     memset(buffer, 0, size);
-    string all_received = "";
+    gcstring all_received = "";
 
     for (int count = 0; count < expected.length(); ++count) {
 
-        string exp = expected.substr(count, 1);
+        gcstring exp = expected.substr(count, 1);
         int return_value = wifu_recv(connection, &buffer, 1, 0);
-        string actual(buffer);
+        gcstring actual(buffer);
         all_received.append(actual);
 
 
@@ -82,7 +81,7 @@ void* active_to_passive_thread(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void active_to_passive_test(string message) {
+void active_to_passive_test(gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
     //use below for over-the-network tests; TODO: break out into separate test function
 //    AddressPort to_connect("192.168.21.103", 5002);
@@ -177,7 +176,7 @@ TEST_F(BackEndTest, sendReceiveTestActiveToPassiveReal) {
 }
 
 void drop_ack_send_data() {
-    string data = random_string(1);
+    gcstring data = random_string(1);
     active_to_passive_test(data);
 
     NetworkTrace expected;
@@ -231,7 +230,7 @@ TEST_F(BackEndMockTestDrop22, sendReceiveTestActiveToPassive22) {
 }
 
 void drop_ack_and_data() {
-    string data = random_string(1);
+    gcstring data = random_string(1);
     active_to_passive_test(data);
 
     NetworkTrace expected;
@@ -292,7 +291,7 @@ TEST_F(BackEndMockTestDrop22Drop32, sendReceiveTestActiveToPassive22and32) {
 }
 
 void drop_first_data_packet() {
-    string data = random_string(1);
+    gcstring data = random_string(1);
     active_to_passive_test(data);
     sleep(2);
 
@@ -350,7 +349,7 @@ TEST_F(BackEndMockTestDrop32, sendReceiveTestActiveToPassive32) {
 }
 
 void drop_first_data_ack() {
-    string data = random_string(1);
+    gcstring data = random_string(1);
     active_to_passive_test(data);
     sleep(2);
 

@@ -210,7 +210,7 @@ namespace {
 
     TEST(UtilsTest, itoa) {
         stringstream converter;
-        string result;
+        gcstring result;
         int intMax = numeric_limits<int>::max();
         int intMin = numeric_limits<int>::min();
         int oneHundred = 100;
@@ -248,10 +248,10 @@ namespace {
 
     TEST(UtilsTest, read_file) {
 
-        string file = "test_file";
-        vector<string> results = Utils::read_file(file);
+        gcstring file = "test_file";
+        vector<gcstring> results = Utils::read_file(file);
 
-        vector<string> expected;
+        vector<gcstring> expected;
         expected.push_back("line one");
         expected.push_back("line two");
         expected.push_back("this is a longer line");
@@ -260,29 +260,29 @@ namespace {
         ASSERT_EQ(expected.size(), results.size());
 
         for (int i = 0; i < results.size(); i++) {
-            string exp = expected[i];
-            string actual = results[i];
+            gcstring exp = expected[i];
+            gcstring actual = results[i];
 
             ASSERT_EQ(exp, actual);
         }
     }
 
     TEST(UtilsTest, tokenize) {
-        vector<string> expected;
+        vector<gcstring> expected;
         expected.push_back("This");
         expected.push_back("is");
         expected.push_back("a");
         expected.push_back("line");
 
-        string line = "This is a line";
-        string delims = " ";
-        vector<string> results = Utils::tokenize(line, delims);
+        gcstring line = "This is a line";
+        gcstring delims = " ";
+        vector<gcstring> results = Utils::tokenize(line, delims);
 
         ASSERT_EQ(expected.size(), results.size());
 
         for (int i = 0; i < expected.size(); i++) {
-            string exp = expected[i];
-            string actual = results[i];
+            gcstring exp = expected[i];
+            gcstring actual = results[i];
 
             ASSERT_EQ(exp, actual);
         }

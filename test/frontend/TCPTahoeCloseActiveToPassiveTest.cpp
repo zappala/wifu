@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
@@ -30,7 +29,7 @@ void* tahoe_close_active_to_passive_thread(void* args) {
     Semaphore* flag = v->flag_;
     Semaphore* done = v->done_;
 
-    string expected = v->expected_string;
+    gcstring expected = v->expected_string;
 
     // Create server
     int server = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
@@ -50,15 +49,15 @@ void* tahoe_close_active_to_passive_thread(void* args) {
     }
 
     AddressPort ap(&addr);
-    string address("127.0.0.1");
-    string res = ap.get_address();
+    gcstring address("127.0.0.1");
+    gcstring res = ap.get_address();
     EXPECT_EQ(address, res);
     //    cout << "Connected to: " << ap.to_s() << endl;
 
     int size = 50000;
     char buffer[size];
     memset(buffer, 0, size);
-    string all_received = "";
+    gcstring all_received = "";
 
     flag->post();
 
@@ -74,7 +73,7 @@ void* tahoe_close_active_to_passive_thread(void* args) {
         //        cout << "Num receive: " << return_value << endl;
         EXPECT_EQ(1, return_value);
 
-        string actual(buffer);
+        gcstring actual(buffer);
         all_received.append(actual);
     }
     wifu_close(connection);
@@ -88,7 +87,7 @@ void* tahoe_close_active_to_passive_thread(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void tahoe_lose_active_to_passive_test(string message) {
+void tahoe_lose_active_to_passive_test(gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
     pthread_t t;
@@ -155,7 +154,7 @@ void tahoe_lose_active_to_passive_test(string message) {
 
 void tcp_tahoe_close_active_to_passive_drop_none() {
     // <editor-fold defaultstate="collapsed" desc="setup">
-    string data = random_string(1);
+    gcstring data = random_string(1);
     tahoe_lose_active_to_passive_test(data);
 
     NetworkTrace expected;
@@ -308,7 +307,7 @@ TEST_F(BackEndMockTestDropNone, tahoeCloseTestActiveToPassive) {
 
 void tcp_tahoe_close_active_to_passive_drop_first_fin() {
     // <editor-fold defaultstate="collapsed" desc="setup">
-    string data = random_string(1);
+    gcstring data = random_string(1);
     tahoe_lose_active_to_passive_test(data);
 
     NetworkTrace expected;
@@ -446,7 +445,7 @@ TEST_F(BackEndMockTestDrop32, tahoeCloseTestActiveToPassiveDropFirstFin) {
 
 void tcp_tahoe_close_active_to_passive_drop_first_ack() {
     // <editor-fold defaultstate="collapsed" desc="setup">
-    string data = random_string(1);
+    gcstring data = random_string(1);
     tahoe_lose_active_to_passive_test(data);
 
     NetworkTrace expected;
@@ -580,7 +579,7 @@ TEST_F(BackEndMockTestDrop24, tahoeCloseTestActiveToPassiveDropFirstAck) {
 
 void tcp_tahoe_close_active_to_passive_drop_second_fin() {
     // <editor-fold defaultstate="collapsed" desc="setup">
-    string data = random_string(1);
+    gcstring data = random_string(1);
     tahoe_lose_active_to_passive_test(data);
 
     NetworkTrace expected;
@@ -718,7 +717,7 @@ TEST_F(BackEndMockTestDropSecond24, tahoeCloseTestActiveToPassiveDropSecondFin) 
 
 void tcp_tahoe_close_active_to_passive_drop_second_ack() {
     // <editor-fold defaultstate="collapsed" desc="setup">
-    string data = random_string(1);
+    gcstring data = random_string(1);
     tahoe_lose_active_to_passive_test(data);
 
     NetworkTrace expected;
@@ -862,7 +861,7 @@ TEST_F(BackEndMockTestDrop43, tahoeCloseTestActiveToPassiveDropSecondAck) {
 
 void tcp_tahoe_close_active_to_passive_drop_first_ack_and_second_fin() {
     // <editor-fold defaultstate="collapsed" desc="setup">
-    string data = random_string(1);
+    gcstring data = random_string(1);
     tahoe_lose_active_to_passive_test(data);
 
     NetworkTrace expected;

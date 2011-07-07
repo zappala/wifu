@@ -15,9 +15,9 @@ using namespace std;
 
 namespace {
 
-	TEST(TimeoutEventManagerSemaphore, all) {
-		SUCCEED();
-	}
+    TEST(TimeoutEventManagerSemaphore, all) {
+        SUCCEED();
+    }
 
 }
 

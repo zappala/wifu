@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <cmath>
 #include <stdlib.h>
@@ -27,7 +26,7 @@ void* send_receive_thread(void* args) {
     AddressPort* to_bind = v->to_bind_;
     Semaphore* sem = v->sem_;
 
-    string message = v->expected_string;
+    gcstring message = v->expected_string;
 
     // Create server
     int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
@@ -46,8 +45,8 @@ void* send_receive_thread(void* args) {
     }
 
     AddressPort ap(&addr);
-    string address("127.0.0.1");
-    string res = ap.get_address();
+    gcstring address("127.0.0.1");
+    gcstring res = ap.get_address();
     EXPECT_EQ(address, res);
 //    cout << "Connected to: " << ap.to_s() << endl;
 
@@ -74,7 +73,7 @@ void* send_receive_thread(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void send_receive_test(string message) {
+void send_receive_test(gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
     pthread_t t;
@@ -114,14 +113,14 @@ void send_receive_test(string message) {
     int size = 1500;
     char buffer[size];
     memset(buffer, 0, size);
-    string expected = v.expected_string;
-    string all_received = "";
+    gcstring expected = v.expected_string;
+    gcstring all_received = "";
 
     for (int count = 0; count < expected.length(); ++count) {
 
-        string exp = expected.substr(count, 1);
+        gcstring exp = expected.substr(count, 1);
         int return_value = wifu_recv(client, &buffer, 1, 0);
-        string actual(buffer);
+        gcstring actual(buffer);
         all_received.append(actual);
 
 
@@ -165,7 +164,7 @@ TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActive50000) {
 }
 
 void drop_ack_send_data_passive_to_active() {
-    string data = random_string(1);
+    gcstring data = random_string(1);
 
     send_receive_test(data);
 
@@ -229,7 +228,7 @@ TEST_F(BackEndMockTestDrop22, sendReceiveTestPassiveToActiveDrop22) {
 }
 
 void drop_first_data_packet_passive_to_active() {
-    string data = random_string(1);
+    gcstring data = random_string(1);
     send_receive_test(data);
 
     NetworkTrace expected;
@@ -286,7 +285,7 @@ TEST_F(BackEndMockTestDrop23, sendReceiveTestPassiveToActiveDrop23) {
 }
 
 void drop_first_data_ack_packet_passive_to_active() {
-    string data = random_string(1);
+    gcstring data = random_string(1);
     send_receive_test(data);
 
     NetworkTrace expected;

@@ -14,45 +14,50 @@ using namespace std;
 
 namespace {
 
-	class StubEvent : public Event {
-	public:
-		StubEvent() : Event() {}
-		void execute(IModule* m) {}
-	};
+    class StubEvent : public Event {
+    public:
 
-	class StubQueueProcessor : public QueueProcessor<Event*> {
-	public:
-		int received;
+        StubEvent() : Event() {
+        }
 
-		StubQueueProcessor() : QueueProcessor<Event*>() {
-			received = 0;
-		}
+        void execute(IModule* m) {
+        }
+    };
 
-		void enqueue(Event* object, bool signal = false) {
-			++received;
-		}
+    class StubQueueProcessor : public QueueProcessor<Event*> {
+    public:
+        int received;
 
-		void process(Event* object) {}
+        StubQueueProcessor() : QueueProcessor<Event*>() {
+            received = 0;
+        }
 
-	};
+        void enqueue(Event* object, bool signal = false) {
+            ++received;
+        }
 
-	TEST(Module, dispatch) {
-//		Module module;
-//		Dispatcher::instance().reset();
-//		StubQueueProcessor qp;
-//		StubEvent* event = new StubEvent();
-//
-//		Dispatcher::instance().map_event(type_name(StubEvent), &qp);
-//		Dispatcher::instance().start_processing();
-//
-//		ASSERT_EQ(0, qp.received);
-//
-//		module.dispatch(event);
-//		usleep(1000);
-//
-//		ASSERT_EQ(1, qp.received);
-//
-//		Dispatcher::instance().reset();
-	}
+        void process(Event* object) {
+        }
+
+    };
+
+    TEST(Module, dispatch) {
+        //		Module module;
+        //		Dispatcher::instance().reset();
+        //		StubQueueProcessor qp;
+        //		StubEvent* event = new StubEvent();
+        //
+        //		Dispatcher::instance().map_event(type_name(StubEvent), &qp);
+        //		Dispatcher::instance().start_processing();
+        //
+        //		ASSERT_EQ(0, qp.received);
+        //
+        //		module.dispatch(event);
+        //		usleep(1000);
+        //
+        //		ASSERT_EQ(1, qp.received);
+        //
+        //		Dispatcher::instance().reset();
+    }
 
 }

@@ -39,7 +39,7 @@ public:
         return ap_;
     }
 
-    string& get_message() {
+    gcstring& get_message() {
         return message_;
     }
 
@@ -49,17 +49,17 @@ public:
 
 private:
     AddressPort* ap_;
-    string message_;
+    gcstring message_;
     Semaphore sem_;
 };
 
-WiFuPacket* make_packet(string& data) {
+WiFuPacket* make_packet(gcstring& data) {
     WiFuPacket* p = new WiFuPacket();
 
     p->set_ip_header_length_words(5);
     p->set_ip_version(4);
     p->set_ip_tos(0);
-    string daddr = "127.0.0.1";
+    gcstring daddr = "127.0.0.1";
     p->set_ip_destination_address_s(daddr);
     p->set_destination_port(5000);
     p->set_ip_protocol(100);
@@ -84,7 +84,7 @@ namespace {
         listener.start(&callback);
 
         for (int i = 0; i < 100; i++) {
-            string data = random_string(1000);
+            gcstring data = random_string(1000);
             sender.send(make_packet(data));
             callback.get_sem().wait();
             ASSERT_EQ(data, callback.get_message());

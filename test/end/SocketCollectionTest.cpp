@@ -121,7 +121,7 @@ namespace {
         for (int i = 0; i < number; i++) {
             sockets[i] = new Socket(i, i, i);
             mysleep();
-            string address = "192.0.0.";
+            gcstring address = "192.0.0.";
             int n = i % 255;
             address.append(Utils::itoa(n));
             aps[i] = new AddressPort(address, i);
@@ -160,8 +160,8 @@ namespace {
         for (int i = 0; i < number; i++) {
             sockets[i] = new Socket(i, i, i);
             mysleep();
-            string local_address = "192.0.0.";
-            string remote_address = "192.1.1.";
+            gcstring local_address = "192.0.0.";
+            gcstring remote_address = "192.1.1.";
             int n = i % 255;
             local_address.append(Utils::itoa(n));
             remote_address.append(Utils::itoa(n));
@@ -203,8 +203,8 @@ namespace {
         for (int i = 0; i < number; i++) {
             sockets[i] = new Socket(i, i, i);
             mysleep();
-            string local_address = "192.0.0.";
-            string remote_address = "192.1.1.";
+            gcstring local_address = "192.0.0.";
+            gcstring remote_address = "192.1.1.";
             int n = i % 255;
             local_address.append(Utils::itoa(n));
             remote_address.append(Utils::itoa(n));

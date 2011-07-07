@@ -9,7 +9,6 @@
 #define	_ADDRESSPORTTEST_H
 
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include "gtest/gtest.h"
@@ -21,7 +20,7 @@ using namespace std;
 namespace {
 
     TEST(AddressPort, StringConstructor) {
-        string address("127.0.0.1");
+        gcstring address("127.0.0.1");
         int port = 5000;
 
         AddressPort ap(address, port);
@@ -36,14 +35,14 @@ namespace {
 
         AddressPort ap(address, port);
 
-        ASSERT_EQ(string(address), ap.get_address());
+        ASSERT_EQ(gcstring(address), ap.get_address());
         ASSERT_EQ(port, ap.get_port());
 
         ASSERT_THROW(AddressPort("", 0), InvalidAddressException);
     }
 
     TEST(AddressPort, SockaddrConstructor) {
-        string address("127.0.0.1");
+        gcstring address("127.0.0.1");
         int port = 5000;
 
         struct sockaddr_in addr;
@@ -61,7 +60,7 @@ namespace {
     }
 
     TEST(AddressPort, CopyConstructor) {
-        string address("127.0.0.1");
+        gcstring address("127.0.0.1");
         int port = 5000;
 
         AddressPort ap(address, port);
@@ -73,7 +72,7 @@ namespace {
     }
 
     TEST(AddressPort, AssignmentOperator) {
-    	string address("1.1.1.1");
+    	gcstring address("1.1.1.1");
     	int port = 1;
 
     	AddressPort one(address, port);
@@ -86,7 +85,7 @@ namespace {
     }
 
     TEST(AddressPort, OperatorEqualsConstructor) {
-        string address("127.0.0.1");
+        gcstring address("127.0.0.1");
         int port = 5000;
 
         AddressPort ap(address, port);
@@ -103,7 +102,7 @@ namespace {
     }
 
     TEST(AddressPort, OperatorNotEqualsConstructor) {
-        string address("127.0.0.1");
+        gcstring address("127.0.0.1");
         int port = 5000;
 
         AddressPort ap(address, port);
@@ -121,9 +120,9 @@ namespace {
 
     TEST(AddressPort, ToString) {
 
-        string expected = "Address: 127.0.0.1 Port: 5000";
+        gcstring expected = "Address: 127.0.0.1 Port: 5000";
 
-        string address("127.0.0.1");
+        gcstring address("127.0.0.1");
         int port = 5000;
 
         AddressPort ap(address, port);
