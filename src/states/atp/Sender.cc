@@ -9,7 +9,6 @@
 
 //#define PRINT_DEBUG
 
-
 #ifdef PRINT_DEBUG
 	#define DEBUG(str) cout << str << endl;
 #else
@@ -45,6 +44,17 @@ void Sender::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Network
 	DEBUG("Sender::state_receive_packet:");
 	printPacket(packet);
 
+	if(packet->is_tcp_ack() && packet->get_data_length_bytes() > 0){
+		// if it receives something that is not an ACK then it should
+		// be in Receiver state instead
+
+		DEBUG("Sender::state_receive_packet : did not receive an ACK, going into Receiver state");
+
+		Receiver* receiver = new Receiver();
+		ccc->set_state(receiver);
+		receiver->state_receive_packet(c, q, e);
+	}
+
 	// Don't care about the packet if it is not an ACK
 	if(!packet->is_tcp_ack() || !between_equal_right(ccc->get_snd_una(), packet->get_tcp_ack_number(), ccc->get_snd_max())){
 		DEBUG("Sender::state_receive_packet: didn't receive an ACK or it is out of order");
@@ -64,7 +74,7 @@ void Sender::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacket
 }
 
 void Sender::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
-	//cout << "Sender::state_send_buffer_not_empty" << endl;
+	DEBUG("Sender::state_send_buffer_not_empty");
 	send_packets(c, q, e);
 }
 

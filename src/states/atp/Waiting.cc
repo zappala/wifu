@@ -61,7 +61,6 @@ void Waiting::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Networ
 		DEBUG("Waiting::state_receive_packet: received SYN packet (creating Receiver)");
 
 		// Starting the receiver
-		ccc->get_time_difference();
 		ccc->set_max_delay(packet->get_atp_max_delay());
 		ccc->set_state(new Receiver());
 	}

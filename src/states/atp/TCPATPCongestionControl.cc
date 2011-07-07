@@ -5,7 +5,7 @@
  *      Author: philipbl
  */
 
-#include "../../../headers/states/atp/TCPATPCongestionControl.h"
+#include "states/atp/TCPATPCongestionControl.h"
 
 // must be here to avoid circular dependencies
 #include "contexts/ATPCongestionControlContext.h"
@@ -39,7 +39,14 @@ TCPATPCongestionControl::~TCPATPCongestionControl() {
 void TCPATPCongestionControl::setDelay(int seconds, long int microseconds) {
 	DEBUG("Delay getting set to: " << seconds << ", " << microseconds);
 
-	assert(seconds != 0 || microseconds != 0);
+	//assert(seconds != 0 || microseconds != 0);
+
+	if(seconds == 0 && microseconds == 0){
+		cout << "WARNING: seconds and microseconds is 0!" << endl;
+	}
+
+	//cout << "\t\tSetting rate to: " << seconds << ", " << microseconds << endl;
+
     sendSeconds_ = seconds;
     sendMicros_ = microseconds;
 }
@@ -90,6 +97,7 @@ void TCPATPCongestionControl::state_resend_packet(Context* c, QueueProcessor<Eve
 	// Clear out old queue since I will need to resend from UNA
 	send_queue_->clear();
 
+	// resends SYN, ACKSYN, FIN packets
     resend_data(c, q, e);
 
     // Fill queue back up with data from buffer
@@ -151,8 +159,8 @@ void TCPATPCongestionControl::send_packets(Context* c, QueueProcessor<Event*>* q
     string& send_buffer = s->get_send_buffer();
 
 	DEBUG("TCPATPCongestionControl::send_packets : sending packets:");
-	//(int) send_buffer.size() - (int) ccc->get_num_outstanding() > 0 && ccc->get_num_outstanding() < ccc->get_snd_wnd()
-    while (((int)send_buffer.size() > (int)ccc->get_num_outstanding())) {
+
+	while (((int)send_buffer.size() > (int)ccc->get_num_outstanding())) {
     	delay_send_packets(c, q, e);
     }
 }
@@ -236,7 +244,7 @@ void TCPATPCongestionControl::resend_data(Context* c, QueueProcessor<Event*>* q,
     if (control_bit) {
         //                cout << "Control bit set, setting snd_nxt to snd.una + 1" << endl;
         p->set_data((unsigned char*) "", 0);
-    } else {
+    } /*else {
         // TODO: change this to use the string::data() method instead of substr() so we can avoid the copy
         int length = get_resend_data_length(c, e, p);
         if (!send_buffer.compare(send_buffer.size() - 1, 1, FIN_BYTE.c_str())) {
@@ -246,7 +254,7 @@ void TCPATPCongestionControl::resend_data(Context* c, QueueProcessor<Event*>* q,
         p->set_data((unsigned char*) send_buffer.data(), length);
         assert(p->get_data_length_bytes() > 0);
     }
-
+	*/
     u_int32_t length = (p->is_tcp_syn() || p->is_tcp_fin()) ? 1 : p->get_data_length_bytes();
     ccc->set_snd_nxt(ccc->get_snd_una() + length);
 
