@@ -30,10 +30,8 @@ private:
 
     SocketCollection(const SocketCollection& other);
 
-    map<gcstring, Socket*> collection_;
-    map<gcstring, Socket*>::iterator itr_;
-    //tr1::unordered_map<gcstring, Socket*, gcstring_hash, gcstring_eq, gc_allocator<gcstring> > collection_;
-    //tr1::unordered_map<gcstring, Socket*, gcstring_hash, gcstring_eq, gc_allocator<gcstring> >::iterator itr_;
+    map<gcstring, Socket*, std::less<gcstring>, gc_allocator<std::pair<const gcstring, Socket*> > >collection_;
+    map<gcstring, Socket*, std::less<gcstring>, gc_allocator<std::pair<const gcstring, Socket*> > >::iterator itr_;
     Semaphore* mutex_;
     Semaphore* update_mutex_;
 

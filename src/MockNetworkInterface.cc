@@ -191,13 +191,13 @@ void MockNetworkInterface::read_config_file() {
 
     try {
 
-        vector<gcstring> lines = Utils::read_file(file);
+        vector<gcstring, gc_allocator<gcstring> > lines = Utils::read_file(file);
         gcstring delim = " ";
 
         for (int i = 0; i < lines.size(); ++i) {
             gcstring current = lines[i];
 
-            vector<gcstring> tokens = Utils::tokenize(current, delim);
+            vector<gcstring, gc_allocator<gcstring> > tokens = Utils::tokenize(current, delim);
             assert(tokens.size() == 3);
 
             int ack = atoi(tokens[0].c_str());

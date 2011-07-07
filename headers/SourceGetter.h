@@ -49,7 +49,7 @@ public:
 private:
     SourceGetter();
     in_addr_t get_bitmask(const char* interface);
-    int get_address_info(vector<address_info>& info);
+    int get_address_info(vector<struct address_info, gc_allocator<struct address_info> >& info);
     int read_response(int sock, char* buffer, int seq);
     void parse_routes(struct nlmsghdr* headder, struct address_info* info);
 
@@ -58,7 +58,7 @@ private:
     map<gcstring, gcstring>::iterator cache_itr_;
     int netlink_socket_;
     int udp_socket_;
-    vector<struct address_info> infos_;
+    vector<struct address_info, gc_allocator<struct address_info> > infos_;
 
 };
 

@@ -9,7 +9,6 @@
 #define	_ADDRESSPORTTEST_H
 
 #include <iostream>
-#include <vector>
 
 #include "gtest/gtest.h"
 #include "AddressPort.h"

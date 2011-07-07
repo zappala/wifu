@@ -9,13 +9,13 @@ Dispatcher::~Dispatcher() {
     reset();
 }
 
-void Dispatcher::map_event(event_name name, QueueProcessor<Event*>* q) {
+void Dispatcher::map_event(event_name name, EventQPPointer q) {
     mutex_.wait();
     if (map_.find(name) == map_.end()) {
-        map_[name] = new vector<QueueProcessor<Event*>*>;
+        map_[name] = new vector<EventQPPointer>;
     }
 
-    vector<QueueProcessor<Event*>*>::iterator itr = find(map_[name]->begin(), map_[name]->end(), q);
+    vector<EventQPPointer>::iterator itr = find(map_[name]->begin(), map_[name]->end(), q);
     if (itr == map_[name]->end()) {
         map_[name]->push_back(q);
     }
@@ -24,11 +24,11 @@ void Dispatcher::map_event(event_name name, QueueProcessor<Event*>* q) {
 
 void Dispatcher::reset() {
     mutex_.wait();
-    tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*>::iterator itr = map_.begin();
-    while (itr != map_.end()) {
-        vector<QueueProcessor<Event*>*>* v = itr->second;
+    itr_ = map_.begin();
+    while (itr_ != map_.end()) {
+        QPVectorPointer v = itr_->second;
         delete v;
-        ++itr;
+        ++itr_;
     }
     map_.clear();
     mutex_.post();
@@ -44,7 +44,7 @@ void Dispatcher::process(Event* e) {
 
     if (itr_ != map_.end()) {
 
-        vector<QueueProcessor<Event*>*>* queue_processors = itr_->second;
+        QPVectorPointer queue_processors = itr_->second;
 
         for (int i = 0; i < queue_processors->size(); i++) {
 //            cout << "Processing: " << type_name(*e) << endl;

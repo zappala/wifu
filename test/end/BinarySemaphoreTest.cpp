@@ -11,7 +11,6 @@
 #include "BinarySemaphore.h"
 
 #include <iostream>
-#include <vector>
 
 #include "gtest/gtest.h"
 

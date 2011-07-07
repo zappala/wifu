@@ -42,9 +42,10 @@ gcstring Utils::itoa(int i) {
     return gcstring(buf);
 }
 
-vector<gcstring> Utils::read_file(gcstring& file) {
+// TODO: pass in a vector by reference to avoid the copy
+vector<gcstring, gc_allocator<gcstring> > Utils::read_file(gcstring& file) {
     gcstring s;
-    vector<gcstring> result;
+    vector<gcstring, gc_allocator<gcstring> > result;
     ifstream infile;
 
     try {
@@ -76,9 +77,9 @@ vector<gcstring> Utils::read_file(gcstring& file) {
     return result;
 }
 
-vector<gcstring> Utils::tokenize(gcstring& line, gcstring& delimiters) {
+vector<gcstring, gc_allocator<gcstring> > Utils::tokenize(gcstring& line, gcstring& delimiters) {
 
-    vector<gcstring> result;
+    vector<gcstring, gc_allocator<gcstring> > result;
     char* current = strtok((char*) line.c_str(), delimiters.c_str());
     while (current != NULL) {
         result.push_back(current);

@@ -38,7 +38,7 @@ private:
 
 	gcstring get_nonequal_packets_string(int packet_number, WiFuPacket* one, WiFuPacket* two) const;
 
-	vector<WiFuPacket*> packet_list_;
+	vector<WiFuPacket*, gc_allocator<WiFuPacket*> > packet_list_;
 
 };
 

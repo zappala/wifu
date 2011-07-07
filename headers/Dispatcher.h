@@ -16,9 +16,13 @@
 #include "defines.h"
 
 #include <algorithm>
-#include <tr1/unordered_map>
+#include <map>
 
 using namespace std;
+
+typedef QueueProcessor<Event*>* EventQPPointer;
+typedef vector<EventQPPointer>* QPVectorPointer;
+typedef map<event_name, QPVectorPointer, std::less<event_name>, gc_allocator<std::pair<event_name, QPVectorPointer> > > DispatcherMap;
 
 /**
  * Core of the application.  Receives all Event objects and enqueue's them to all registered QueueProcessor objects.
@@ -43,7 +47,7 @@ public:
      * @param name The name of the Event.
      * @param q Pointer to a QueuProcessor object which wants to receive Event objects denoted by name.
      */
-    void map_event(event_name, QueueProcessor<Event*>*);
+    void map_event(event_name, EventQPPointer q);
 
     /**
      * Clears all mappings from event names to QueueProcessors and deletes the QueueProcessors.
@@ -59,18 +63,18 @@ public:
      *
      * @see DequeueCallback<T>::process()
      */
-    void process(Event*);
+    void process(Event* e);
 
 private:
     /**
      * Map of Event name to a vector of QueueProcessor objects.
      */
-    tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*> map_;
+     DispatcherMap map_;
 
     /**
      * Map iterator
      */
-    tr1::unordered_map<event_name, vector<QueueProcessor<Event*>*>*>::iterator itr_;
+    DispatcherMap::iterator itr_;
 
     /**
      * Mutex to make this object thread-safe

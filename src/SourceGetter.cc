@@ -73,7 +73,7 @@ in_addr_t SourceGetter::get_bitmask(const char* interface) {
     return -1;
 }
 
-int SourceGetter::get_address_info(vector<address_info>& infos) {
+int SourceGetter::get_address_info(vector<struct address_info, gc_allocator<struct address_info> >& infos) {
     struct nlmsghdr *nlMsg;
     struct rtmsg *rtMsg;
     char msgBuf[BUFSIZE];

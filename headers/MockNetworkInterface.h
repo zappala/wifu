@@ -58,7 +58,7 @@ private:
     // innermost pair is seq/ack number
     // outermost pair is pair of seq/ack number to delay
     // delay of -1 means drop
-    vector< pair< pair<int, int>, int> > control_nums_to_delay_;
+    vector< pair< pair<int, int>, int>, gc_allocator< pair< pair<int, int>, int> > > control_nums_to_delay_;
 
     int percent_;
 
