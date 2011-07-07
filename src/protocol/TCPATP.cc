@@ -9,7 +9,6 @@
 
 //#define PRINT_DEBUG
 
-
 #ifdef PRINT_DEBUG
 	#define DEBUG(str) cout << str << endl;
 #else
@@ -31,8 +30,11 @@ TCPATP& TCPATP::instance() {
 void TCPATP::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
     DEBUG("\nTCPATP::icontext_receive_packet()");
 
+
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
+    ((ATPPacket *)p)->update_header();
+
 
     TCPTahoeIContextContainer* c = (TCPTahoeIContextContainer*) map_.find(s)->second;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c->get_reliability();
