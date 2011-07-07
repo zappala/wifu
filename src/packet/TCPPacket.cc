@@ -191,14 +191,14 @@ gcstring TCPPacket::to_s() const {
             << get_tcp_receive_window_size() << " "
             << get_tcp_checksum() << " "
             << get_tcp_urgent_pointer();
-    return s.str();
+    return s.str().c_str();
 }
 
 gcstring TCPPacket::to_s_format() const {
     stringstream s;
     s << IPPacket::to_s_format() << endl
             << "# tcp sport dport seq_num ack_num doff header_length URG ACK PSH RST SYN FIN rcv_wnd checksum urg_ptr";
-    return s.str();
+    return s.str().c_str();
 }
 
 bool TCPPacket::operator ==(const IPPacket& other) const {

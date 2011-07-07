@@ -14,6 +14,7 @@
 #include "AddressPort.h"
 #include "Socket.h"
 #include "states/State.h"
+#include "defines.h"
 
 using namespace std;
 
@@ -62,7 +63,7 @@ public:
     /**
      * @return A string representation of the current state.
      */
-    virtual string get_state_name();
+    virtual gcstring get_state_name();
 
     /**
      * Delegates handling of this request to State::state_socket()

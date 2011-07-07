@@ -19,6 +19,7 @@
 #include <assert.h>
 
 #include "Semaphore.h"
+#include "defines.h"
 
 using namespace std;
 

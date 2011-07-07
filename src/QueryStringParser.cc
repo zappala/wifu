@@ -39,5 +39,5 @@ gcstring QueryStringParser::create(gcstring name, map<gcstring, gcstring>& value
     for (itr = values.begin(); itr != values.end(); ++itr) {
         s << itr->first << "=" << itr->second << "&";
     }
-    return s.str();
+    return s.str().c_str();
 }

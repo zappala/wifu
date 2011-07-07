@@ -9,6 +9,8 @@
 #include <map>
 #include <iostream>
 
+#include "defines.h"
+
 using namespace std;
 
 class OptionParser {

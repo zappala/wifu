@@ -15,6 +15,20 @@
 
 typedef std::basic_string<char, std::char_traits<char>, gc_allocator<char> > gcstring;
 
+typedef struct {
+    long operator() (const gcstring & k) const {
+        return 1;
+    }
+} gcstring_hash;
+
+typedef struct {
+
+    bool operator() (const gcstring& x, const gcstring& y) const {
+        return x == y;
+    }
+} gcstring_eq;
+
+
 #define type_name(X) typeid(X).name()
 #define SIG_ENQUEUE_EVENT 50
 #define SIG_CANCEL_EVENT 51

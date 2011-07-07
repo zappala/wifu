@@ -72,14 +72,14 @@ gcstring WiFuPacket::to_s() const {
             << "wifu "
             << (int) get_source_port() << " "
             << (int) get_destination_port();
-    return s.str();
+    return s.str().c_str();
 }
 
 gcstring WiFuPacket::to_s_format() const {
     stringstream s;
     s << IPPacket::to_s_format() << endl
             << "# wifu source_port destination_port";
-    return s.str();
+    return s.str().c_str();
 }
 
 bool WiFuPacket::operator ==(const IPPacket& other) const {

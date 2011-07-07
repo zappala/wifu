@@ -15,5 +15,5 @@ void TimeoutEvent::execute(IModule* m) {
 gcstring TimeoutEvent::to_s() {
     stringstream s;
     s << "Seconds: " << timer_.tv_sec << " Nanoseconds: " << timer_.tv_nsec;
-    return s.str();
+    return s.str().c_str();
 }

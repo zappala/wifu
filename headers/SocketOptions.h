@@ -9,6 +9,7 @@
 #define	SOCKETOPTIONS_H
 
 #include "GarbageCollector.h"
+#include "defines.h"
 #include <map>
 #include <iostream>
 using namespace std;

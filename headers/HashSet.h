@@ -8,7 +8,7 @@
 #ifndef _NUMBERSET_H
 #define	_NUMBERSET_H
 
-#include <tr1/unordered_set>
+#include <set>
 #include "Semaphore.h"
 
 using namespace std;
@@ -98,7 +98,7 @@ public:
 
 private:
     Semaphore* mutex_;
-    tr1::unordered_set<T> set_;
+    set<T> set_;
 };
 
 #endif	/* _NUMBERSET_H */

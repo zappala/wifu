@@ -218,31 +218,31 @@ namespace {
         int zero = 0;
 
         converter << intMax;
-        result = converter.str();
+        result = converter.str().c_str();
         ASSERT_EQ(result, Utils::itoa(intMax));
 
         converter.str("");
 
         converter << intMin;
-        result = converter.str();
+        result = converter.str().c_str();
         ASSERT_EQ(result, Utils::itoa(intMin));
 
         converter.str("");
 
         converter << oneHundred;
-        result = converter.str();
+        result = converter.str().c_str();
         ASSERT_EQ(result, Utils::itoa(oneHundred));
 
         converter.str("");
 
         converter << negativeOneHundred;
-        result = converter.str();
+        result = converter.str().c_str();
         ASSERT_EQ(result, Utils::itoa(negativeOneHundred));
 
         converter.str("");
 
         converter << zero;
-        result = converter.str();
+        result = converter.str().c_str();
         ASSERT_EQ(result, Utils::itoa(zero));
     }
 

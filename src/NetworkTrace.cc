@@ -67,7 +67,7 @@ gcstring NetworkTrace::get_packet_trace(NetworkTrace& other) const {
         }
     }
 
-    return stream.str();
+    return stream.str().c_str();
 }
 
 int NetworkTrace::get_length() const {
@@ -97,7 +97,7 @@ gcstring NetworkTrace::get_packet_string(int packet_number, WiFuPacket* packet) 
     stringstream stream;
     stream << packet_number << endl <<
             packet->to_s();
-    return stream.str();
+    return stream.str().c_str();
 }
 
 gcstring NetworkTrace::get_nonequal_packets_string(int packet_number, WiFuPacket* one, WiFuPacket* two) const {
@@ -109,7 +109,7 @@ gcstring NetworkTrace::get_nonequal_packets_string(int packet_number, WiFuPacket
             get_packet_string(packet_number, one) << endl <<
             "Actual:" << endl <<
             get_packet_string(packet_number, two);
-    return stream.str();
+    return stream.str().c_str();
 }
 
 ostream & operator <<(ostream& os, const NetworkTrace& trace) {

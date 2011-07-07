@@ -65,7 +65,7 @@ gcstring AddressPort::to_s() {
     stringstream s;
     s << "Address: " << get_address() << " ";
     s << "Port: " << get_port();
-    return s.str();
+    return s.str().c_str();
 }
 
 void AddressPort::init(const char* address, uint16_t port) {

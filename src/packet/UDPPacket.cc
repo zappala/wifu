@@ -78,14 +78,14 @@ gcstring UDPPacket::to_s() const {
             << get_destination_port() << " "
             << get_udp_length_bytes() << " "
             << get_udp_checksum();
-    return s.str();
+    return s.str().c_str();
 }
 
 gcstring UDPPacket::to_s_format() const {
     stringstream s;
     s << IPPacket::to_s_format() << endl
       << "# UDP sport dport len checksum";
-    return s.str();
+    return s.str().c_str();
 }
 
 bool UDPPacket::operator ==(const IPPacket& other) const {

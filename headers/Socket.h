@@ -16,6 +16,7 @@
 #include "IPortManagerCreator.h"
 #include "PortManagerFactory.h"
 #include "SocketOptions.h"
+#include "defines.h"
 
 using namespace std;
 // TODO: do we need to protect this with a Semaphore, like a monitor?

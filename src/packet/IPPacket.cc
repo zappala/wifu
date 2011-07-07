@@ -250,13 +250,13 @@ gcstring IPPacket::to_s() const {
     s << get_ip_source_address_s() << " ";
     s << get_ip_destination_address_s() << " ";
     
-    return s.str();
+    return s.str().c_str();
 }
 
 gcstring IPPacket::to_s_format() const {
     stringstream s;
     s << "# ip version ihl tos datagram_length id flagsANDfrag_off ttl protocol checksum source destination";
-    return s.str();
+    return s.str().c_str();
 }
 
 bool IPPacket::operator==(const IPPacket& other) const {

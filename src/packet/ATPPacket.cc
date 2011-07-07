@@ -117,7 +117,7 @@ gcstring ATPPacket::to_s() const{
             << "atp "
             << ntohl(atp_->max_delay) << " "
             << ntohl(atp_->average_delay);
-    return s.str();
+    return s.str().c_str();
 }
 
 
@@ -125,7 +125,7 @@ gcstring ATPPacket::to_s_format() const{
     stringstream s;
     s << super::to_s_format() << endl
       << "# atp max_dealay average_delay";
-    return s.str();
+    return s.str().c_str();
 }
 
 

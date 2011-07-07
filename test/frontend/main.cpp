@@ -6,6 +6,7 @@
  */
 
 #include "gtest/gtest.h"
+#include "defines.h"
 #include <signal.h>
 
 using namespace std;

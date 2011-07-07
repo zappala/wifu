@@ -34,5 +34,5 @@ gcstring TCPTimestampOption::to_s() {
     s << get_timestamp();
     s << " Echo-reply: ";
     s << get_echo_reply();
-    return s.str();
+    return s.str().c_str();
 }

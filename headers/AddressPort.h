@@ -19,7 +19,7 @@
 #include <sstream>
 #include <iostream>
 #include "exceptions/InvalidAddressException.h"
-
+#include "defines.h"
 
 
 using namespace std;
