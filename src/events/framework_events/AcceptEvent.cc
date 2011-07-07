@@ -1,6 +1,6 @@
 #include "events/framework_events/AcceptEvent.h"
 
-AcceptEvent::AcceptEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {
+AcceptEvent::AcceptEvent(gcstring& message, gcstring& file, Socket* s) : LibraryEvent(message, file, s) {
 
 }
 

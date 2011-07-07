@@ -56,7 +56,7 @@ TCPPacket* TCPPacketBuffer::remove(TCPPacket* p) {
     
 }
 
-void TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number, string& buffer) {
+void TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number, gcstring& buffer) {
     assert(started_);
     
     packet_buffer::iterator itr = buffer_.begin();

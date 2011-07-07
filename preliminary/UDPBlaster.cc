@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <unistd.h>
 
+#include "../headers/defines.h"
 #include "../headers/OptionParser.h"
 #include "../headers/AddressPort.h"
 #include "Timer.h"
@@ -42,7 +43,7 @@ int main(int argc, char** argv) {
     OptionParser::instance().parse(argc, argv, long_options);
 
     int duration_ = 10;
-    string sink_address_ = "127.0.0.1";
+    gcstring sink_address_ = "127.0.0.1";
     u_int16_t sink_port_ = 5000;
     int sleep_ = 10;
     int message_length_ = 1452;
@@ -69,7 +70,7 @@ int main(int argc, char** argv) {
     cout << "Sleep:\t\t" << sleep_ << endl;
     cout << "Message Length:\t" << message_length_ << endl;
 
-    string message = "";
+    gcstring message = "";
 
     for(int i = 0; i < message_length_; i++) {
         message.append("m");

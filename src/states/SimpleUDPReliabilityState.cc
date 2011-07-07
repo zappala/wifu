@@ -36,7 +36,7 @@ void SimpleUDPReliabilityState::send_packets(Context* c, QueueProcessor<Event*>*
     //cout << "SimpleUDPReliabilityState::send_packets()" << endl;
 
     Socket* s = e->get_socket();
-    string& send_buffer = s->get_send_buffer();
+    gcstring& send_buffer = s->get_send_buffer();
 
     while ((int) send_buffer.size() > 0) {
 
@@ -50,7 +50,7 @@ void SimpleUDPReliabilityState::send_one_packet(Context* c, QueueProcessor<Event
     //SimpleUDPReliabilityState* ccc = (SimpleUDPReliabilityState*) c;
     Socket* s = e->get_socket();
 
-    string& send_buffer = s->get_send_buffer();
+    gcstring& send_buffer = s->get_send_buffer();
 
     UDPPacket* p = new UDPPacket();
     //p->insert_tcp_header_option(new TCPTimestampOption());
@@ -134,8 +134,8 @@ void SimpleUDPReliabilityState::create_and_dispatch_received_data(Context* c, Qu
     Socket* s = e->get_socket();
     int buffer_size = e->get_receive_buffer_size();
 
-    // TODO: change this to use string::data() so we avoid the copy in substr
-    string data = s->get_receive_buffer().substr(0, buffer_size);
+    // TODO: change this to use gcstring::data() so we avoid the copy in substr
+    gcstring data = s->get_receive_buffer().substr(0, buffer_size);
     int length = data.size();
     s->get_receive_buffer().erase(0, length);
 
@@ -160,7 +160,7 @@ void SimpleUDPReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* 
 
     //cout << "SimpleUDPReliabilityState::handle_data(): putting packet data in receive buffer.\n";
 
-    string& receive_buffer = s->get_receive_buffer();
+    gcstring& receive_buffer = s->get_receive_buffer();
     u_int32_t before_rcv_buffer_size = receive_buffer.size();
     receive_buffer.append((const char*)p->get_data());
     u_int32_t after_receive_buffer_size = receive_buffer.size();

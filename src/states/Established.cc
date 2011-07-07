@@ -76,7 +76,7 @@ void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Ne
 
         cmc->set_state(new CloseWait());
 
-        string name = WIFU_PRECLOSE_NAME;
+        gcstring name = WIFU_PRECLOSE_NAME;
         ResponseEvent* response_event = new ResponseEvent(s, name, cmc->get_file());
         response_event->put(RETURN_VALUE_STRING, Utils::itoa(0));
         response_event->put(ERRNO, Utils::itoa(0));

@@ -41,10 +41,10 @@ void OptionParser::parse(int argc, char* const argv[], const struct option* long
     }
 }
 
-bool OptionParser::present(string& option) {
+bool OptionParser::present(gcstring& option) {
     return present_[option];
 }
 
-string& OptionParser::argument(string& option) {
+gcstring& OptionParser::argument(gcstring& option) {
     return argument_[option];
 }

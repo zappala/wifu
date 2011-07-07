@@ -1,6 +1,6 @@
 #include "events/framework_events/GetSocketOptionEvent.h"
 
-GetSocketOptionEvent::GetSocketOptionEvent(string& message, string& file, Socket* s) : SocketOptionEvent(message, file, s) {
+GetSocketOptionEvent::GetSocketOptionEvent(gcstring& message, gcstring& file, Socket* s) : SocketOptionEvent(message, file, s) {
 
 }
 

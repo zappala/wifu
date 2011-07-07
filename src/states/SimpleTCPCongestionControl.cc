@@ -58,7 +58,7 @@ void SimpleTCPCongestionControl::state_receive_packet(Context* c, QueueProcessor
         // send data
         TCPPacket* p = new TCPPacket();
         p->insert_tcp_header_option(new TCPTimestampOption());
-        string data = s->get_send_buffer().substr(0, p->max_data_length());
+        gcstring data = s->get_send_buffer().substr(0, p->max_data_length());
         s->get_send_buffer().erase(0, data.size());
 
         AddressPort* destination = s->get_remote_address_port();
@@ -88,7 +88,7 @@ void SimpleTCPCongestionControl::state_send_buffer_not_empty(Context* c, QueuePr
         TCPPacket* p = new TCPPacket();
         p->insert_tcp_header_option(new TCPTimestampOption());
 
-        string data = s->get_send_buffer().substr(0, p->max_data_length());
+        gcstring data = s->get_send_buffer().substr(0, p->max_data_length());
         s->get_send_buffer().erase(0, data.size());
 
         AddressPort* destination = s->get_remote_address_port();

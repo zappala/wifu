@@ -1,6 +1,6 @@
 #include "events/framework_events/CloseEvent.h"
 
-CloseEvent::CloseEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {
+CloseEvent::CloseEvent(gcstring& message, gcstring& file, Socket* s) : LibraryEvent(message, file, s) {
 
 }
 

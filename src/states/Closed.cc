@@ -15,14 +15,14 @@ void Closed::state_connect(Context* c, QueueProcessor<Event*>* q, ConnectEvent* 
     cmc->set_connection_type(ACTIVE_OPEN);
     cmc->set_connect_event(e);
 
-    string dest_string = e->get_destination()->get_address();
+    gcstring dest_string = e->get_destination()->get_address();
 
     unsigned char* data = (unsigned char*) "";
     TCPPacket* p = new TCPPacket();
     p->insert_tcp_header_option(new TCPTimestampOption());
 
     int port = s->get_local_address_port()->get_port();
-    string address = SourceGetter::instance().get_source_address(dest_string);
+    gcstring address = SourceGetter::instance().get_source_address(dest_string);
     
     AddressPort* source = new AddressPort(address, port);
     AddressPort* destination = e->get_destination();

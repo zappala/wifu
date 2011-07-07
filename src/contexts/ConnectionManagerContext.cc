@@ -42,7 +42,7 @@ void ConnectionManagerContext::set_accept_event(AcceptEvent* e) {
     a_event_ = e;
 }
 
-string& ConnectionManagerContext::get_file() {
+gcstring& ConnectionManagerContext::get_file() {
     if(c_event_) {
         return c_event_->get_map()[FILE_STRING];
     }

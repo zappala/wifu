@@ -36,15 +36,15 @@ u_int64_t Utils::get_current_time_microseconds_64() {
     return microseconds;
 }
 
-string Utils::itoa(int i) {
+gcstring Utils::itoa(int i) {
     char buf[sizeof (i)*8 + 1];
     sprintf(buf, "%d", i);
-    return string(buf);
+    return gcstring(buf);
 }
 
-vector<string> Utils::read_file(string& file) {
-    string s;
-    vector<string> result;
+vector<gcstring> Utils::read_file(gcstring& file) {
+    gcstring s;
+    vector<gcstring> result;
     ifstream infile;
 
     try {
@@ -76,9 +76,9 @@ vector<string> Utils::read_file(string& file) {
     return result;
 }
 
-vector<string> Utils::tokenize(string& line, string& delimiters) {
+vector<gcstring> Utils::tokenize(gcstring& line, gcstring& delimiters) {
 
-    vector<string> result;
+    vector<gcstring> result;
     char* current = strtok((char*) line.c_str(), delimiters.c_str());
     while (current != NULL) {
         result.push_back(current);

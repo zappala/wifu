@@ -172,7 +172,7 @@ int TCPPacket::max_data_length() {
     return IPPacket::max_data_length() - get_tcp_header_length_bytes();
 }
 
-string TCPPacket::to_s() const {
+gcstring TCPPacket::to_s() const {
     stringstream s;
     s << IPPacket::to_s() << endl
             << "tcp "
@@ -194,7 +194,7 @@ string TCPPacket::to_s() const {
     return s.str();
 }
 
-string TCPPacket::to_s_format() const {
+gcstring TCPPacket::to_s_format() const {
     stringstream s;
     s << IPPacket::to_s_format() << endl
             << "# tcp sport dport seq_num ack_num doff header_length URG ACK PSH RST SYN FIN rcv_wnd checksum urg_ptr";

@@ -12,7 +12,7 @@ SourceGetter& SourceGetter::instance() {
     return instance_;
 }
 
-string SourceGetter::get_source_address(string& dest_address) {
+gcstring SourceGetter::get_source_address(gcstring& dest_address) {
 
     if (!dest_address.compare("127.0.0.1")) {
         return dest_address;
@@ -31,7 +31,7 @@ string SourceGetter::get_source_address(string& dest_address) {
         return "";
     }
 
-    string result;
+    gcstring result;
     for (int i = 0; i < infos_.size(); ++i) {
         in_addr_t mask = get_bitmask((const char*) infos_.at(i).if_name);
         in_addr addr;

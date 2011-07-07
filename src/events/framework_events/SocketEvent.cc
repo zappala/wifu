@@ -1,6 +1,6 @@
 #include "events/framework_events/SocketEvent.h"
 
-SocketEvent::SocketEvent(string& message, string& file, Socket* socket) : LibraryEvent(message, file, socket) {
+SocketEvent::SocketEvent(gcstring& message, gcstring& file, Socket* socket) : LibraryEvent(message, file, socket) {
 
 }
 

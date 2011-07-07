@@ -183,21 +183,21 @@ int MockNetworkInterface::get_delay(TCPPacket* p) {
 }
 
 void MockNetworkInterface::read_config_file() {
-    string mockfile = "mockfile";
+    gcstring mockfile = "mockfile";
     if (!OptionParser::instance().present(mockfile)) {
         throw IllegalStateException();
     }
-    string file = OptionParser::instance().argument(mockfile);
+    gcstring file = OptionParser::instance().argument(mockfile);
 
     try {
 
-        vector<string> lines = Utils::read_file(file);
-        string delim = " ";
+        vector<gcstring> lines = Utils::read_file(file);
+        gcstring delim = " ";
 
         for (int i = 0; i < lines.size(); ++i) {
-            string current = lines[i];
+            gcstring current = lines[i];
 
-            vector<string> tokens = Utils::tokenize(current, delim);
+            vector<gcstring> tokens = Utils::tokenize(current, delim);
             assert(tokens.size() == 3);
 
             int ack = atoi(tokens[0].c_str());

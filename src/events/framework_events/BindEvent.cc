@@ -1,6 +1,6 @@
 #include "events/framework_events/BindEvent.h"
 
-BindEvent::BindEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {
+BindEvent::BindEvent(gcstring& message, gcstring& file, Socket* s) : LibraryEvent(message, file, s) {
 
 }
 

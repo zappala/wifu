@@ -1,6 +1,6 @@
 #include "events/framework_events/LibraryEvent.h"
 
-LibraryEvent::LibraryEvent(string& message, string& file, Socket* socket) : FrameworkEvent(socket), file_(file) {
+LibraryEvent::LibraryEvent(gcstring& message, gcstring& file, Socket* socket) : FrameworkEvent(socket), file_(file) {
     QueryStringParser::parse(message, m_);
     name_ = m_[NAME_STRING];
 
@@ -11,14 +11,14 @@ LibraryEvent::~LibraryEvent() {
     
 }
 
-string& LibraryEvent::get_file() {
+gcstring& LibraryEvent::get_file() {
     return file_;
 }
 
-string& LibraryEvent::get_name() {
+gcstring& LibraryEvent::get_name() {
     return name_;
 }
 
-map<string, string>& LibraryEvent::get_map() {
+map<gcstring, gcstring>& LibraryEvent::get_map() {
     return m_;
 }

@@ -5,7 +5,7 @@ LocalSocketSender::LocalSocketSender() {
 }
 
 LocalSocketSender::~LocalSocketSender() {
-    map<string, struct sockaddr_un*>::iterator itr;
+    map<gcstring, struct sockaddr_un*>::iterator itr;
 
     // show content:
     for (itr = destinations_.begin(); itr != destinations_.end(); itr++) {
@@ -17,7 +17,7 @@ LocalSocketSender::~LocalSocketSender() {
 
 
 // TODO: do we need to protect destinations_ with a semaphore?
-ssize_t LocalSocketSender::send_to(string& socket_file, string& message) {
+ssize_t LocalSocketSender::send_to(gcstring& socket_file, gcstring& message) {
     struct sockaddr_un* destination = destinations_[socket_file];
     if (!destination) {
         destination = create_socket(socket_file);
@@ -25,7 +25,7 @@ ssize_t LocalSocketSender::send_to(string& socket_file, string& message) {
     return sendto(socket_, message.c_str(), message.size(), 0, (const struct sockaddr*) destination, SUN_LEN(destination));
 }
 
-struct sockaddr_un* LocalSocketSender::create_socket(string& socket_file) {
+struct sockaddr_un* LocalSocketSender::create_socket(gcstring& socket_file) {
     struct sockaddr_un* destination = new struct sockaddr_un;
 
     // Setup socket address structure
@@ -35,7 +35,7 @@ struct sockaddr_un* LocalSocketSender::create_socket(string& socket_file) {
 
 
     assert(destination->sun_family == AF_LOCAL);
-    assert(socket_file == string(destination->sun_path));
+    assert(socket_file == gcstring(destination->sun_path));
 
 
     destinations_[socket_file] = destination;

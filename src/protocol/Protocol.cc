@@ -44,7 +44,7 @@ void Protocol::imodule_library_bind(Event* e) {
     if (socket != NULL) {
 
         u_int16_t port = atoi(event->get_map()[PORT_STRING].c_str());
-        string address = event->get_map()[ADDRESS_STRING];
+        gcstring address = event->get_map()[ADDRESS_STRING];
         AddressPort* local = new AddressPort(address, port);
 
         // TODO: Check possible errors
@@ -380,7 +380,7 @@ void Protocol::imodule_library_get_socket_option(Event* e) {
         return;
     }
 
-    pair<string, socklen_t> value = socket->get_socket_options().get(event->get_level_name_pair());
+    pair<gcstring, socklen_t> value = socket->get_socket_options().get(event->get_level_name_pair());
 
     if (value.first.empty()) {
         // Indicates no option found

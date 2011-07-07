@@ -135,7 +135,7 @@ void TCPTahoeBaseCongestionControl::send_packets(Context* c, QueueProcessor<Even
 //    cout << "TCPTahoeBaseCongestionControl::send_packets()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
-    string& send_buffer = s->get_send_buffer();
+    gcstring& send_buffer = s->get_send_buffer();
 
     assert(ccc->get_num_outstanding() <= ccc->get_max_allowed_to_send());
 
@@ -151,7 +151,7 @@ void TCPTahoeBaseCongestionControl::send_one_packet(Context* c, QueueProcessor<E
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
 
-    string& send_buffer = s->get_send_buffer();
+    gcstring& send_buffer = s->get_send_buffer();
 
     // Represents the first byte in the send buffer which has "never" been sent before.
     // We actually may have sent data already but if SND.UNA changes due to a drop we will treat it as if we never sent it.
@@ -204,7 +204,7 @@ void TCPTahoeBaseCongestionControl::resend_data(Context* c, QueueProcessor<Event
     p->set_source_port(source->get_port());
 
     // Check for SYN or FIN byte in the buffer
-    string& send_buffer = s->get_send_buffer();
+    gcstring& send_buffer = s->get_send_buffer();
     assert(!send_buffer.empty());
     bool control_bit = false;
 
@@ -221,7 +221,7 @@ void TCPTahoeBaseCongestionControl::resend_data(Context* c, QueueProcessor<Event
         //                cout << "Control bit set, setting snd_nxt to snd.una + 1" << endl;
         p->set_data((unsigned char*) "", 0);
     } else {
-        // TODO: change this to use the string::data() method instead of substr() so we can avoid the copy
+        // TODO: change this to use the gcstring::data() method instead of substr() so we can avoid the copy
         int length = get_resend_data_length(c, e, p);
         if (!send_buffer.compare(send_buffer.size() - 1, 1, FIN_BYTE.c_str())) {
 
@@ -242,7 +242,7 @@ void TCPTahoeBaseCongestionControl::resend_data(Context* c, QueueProcessor<Event
 
 int TCPTahoeBaseCongestionControl::get_send_data_length(Context* c, Event* e, WiFuPacket* p, bool ignore_window) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
-    string& send_buffer = e->get_socket()->get_send_buffer();
+    gcstring& send_buffer = e->get_socket()->get_send_buffer();
 
     int num_unsent = (int) send_buffer.size() - (int) ccc->get_num_outstanding();
 
@@ -259,7 +259,7 @@ int TCPTahoeBaseCongestionControl::get_send_data_length(Context* c, Event* e, Wi
 
 int TCPTahoeBaseCongestionControl::get_resend_data_length(Context* c, Event* e, WiFuPacket* p) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
-    string& send_buffer = e->get_socket()->get_send_buffer();
+    gcstring& send_buffer = e->get_socket()->get_send_buffer();
 
     // SND.NXT should have previously been set back to SND.UNA
     int num_unsent = (int) send_buffer.size() - (int) ccc->get_num_outstanding();

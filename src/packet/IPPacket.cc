@@ -118,14 +118,14 @@ void IPPacket::set_ip_source_address(u_int32_t saddr) {
     ip_->saddr = htonl(saddr);
 }
 
-string IPPacket::get_ip_source_address_s() const {
+gcstring IPPacket::get_ip_source_address_s() const {
     char ip_addr_source[INET_ADDRSTRLEN];
     u_int32_t saddr = ip_->saddr;
     inet_ntop(AF_INET, &saddr, ip_addr_source, INET_ADDRSTRLEN);
-    return string(ip_addr_source);
+    return gcstring(ip_addr_source);
 }
 
-void IPPacket::set_ip_source_address_s(string& saddr) {
+void IPPacket::set_ip_source_address_s(gcstring& saddr) {
     inet_pton(AF_INET, saddr.c_str(), &ip_->saddr);
 }
 
@@ -137,14 +137,14 @@ void IPPacket::set_ip_destination_address(u_int32_t daddr) {
     ip_->daddr = htonl(daddr);
 }
 
-string IPPacket::get_ip_destination_address_s() const {
+gcstring IPPacket::get_ip_destination_address_s() const {
     char ip_addr_dest[INET_ADDRSTRLEN];
     u_int32_t daddr = ip_->daddr;
     inet_ntop(AF_INET, &daddr, ip_addr_dest, INET_ADDRSTRLEN);
-    return string(ip_addr_dest);
+    return gcstring(ip_addr_dest);
 }
 
-void IPPacket::set_ip_destination_address_s(string& daddr) {
+void IPPacket::set_ip_destination_address_s(gcstring& daddr) {
     inet_pton(AF_INET, daddr.c_str(), &ip_->daddr);
 }
 
@@ -235,7 +235,7 @@ int IPPacket::max_data_length() const {
     return MTU - get_ip_header_length_bytes();
 }
 
-string IPPacket::to_s() const {
+gcstring IPPacket::to_s() const {
     stringstream s;
     s << "ip" << " ";
     s << (int) get_ip_version() << " ";
@@ -253,7 +253,7 @@ string IPPacket::to_s() const {
     return s.str();
 }
 
-string IPPacket::to_s_format() const {
+gcstring IPPacket::to_s_format() const {
     stringstream s;
     s << "# ip version ihl tos datagram_length id flagsANDfrag_off ttl protocol checksum source destination";
     return s.str();

@@ -66,7 +66,7 @@ int WiFuPacket::max_data_length() {
     return IPPacket::max_data_length() - sizeof (struct wifu_packet_header);
 }
 
-string WiFuPacket::to_s() const {
+gcstring WiFuPacket::to_s() const {
     stringstream s;
     s << IPPacket::to_s() << endl
             << "wifu "
@@ -75,7 +75,7 @@ string WiFuPacket::to_s() const {
     return s.str();
 }
 
-string WiFuPacket::to_s_format() const {
+gcstring WiFuPacket::to_s_format() const {
     stringstream s;
     s << IPPacket::to_s_format() << endl
             << "# wifu source_port destination_port";

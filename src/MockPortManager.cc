@@ -11,8 +11,8 @@ MockPortManager& MockPortManager::instance() {
 }
 
 u_int16_t MockPortManager::get() {
-    string s = "passive_port";
-    string val = "0";
+    gcstring s = "passive_port";
+    gcstring val = "0";
     if(OptionParser::instance().present(s)) {
         val = OptionParser::instance().argument(s);
     } 

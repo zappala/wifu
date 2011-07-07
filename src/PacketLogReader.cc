@@ -105,8 +105,6 @@ WiFuPacket* PacketLogReader::get_new_packet(int protocol) {
         default:
             stringstream stream;
             stream << "Unknown protocol: " << protocol;
-            string* s = new string;
-            s->append(stream.str());
-            throw WiFuException(s->c_str());
+            throw WiFuException(stream.str().c_str());
     }
 }

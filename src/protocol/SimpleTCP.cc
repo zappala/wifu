@@ -377,7 +377,7 @@ void SimpleTCP::create_and_dispatch_received_data(ReceiveEvent* e) {
     Socket* s = e->get_socket();
     int buffer_size = e->get_receive_buffer_size();
 
-    string data = s->get_receive_buffer().substr(0, buffer_size);
+    gcstring data = s->get_receive_buffer().substr(0, buffer_size);
     s->get_receive_buffer().erase(0, data.size());
 
     //    cout << "SimpleTCP::create_and_dispatch_received_data(), Buffer: \"" << data << "\"" << endl;

@@ -12,7 +12,7 @@ void TimeoutEvent::execute(IModule* m) {
     m->imodule_timeout(this);
 }
 
-string TimeoutEvent::to_s() {
+gcstring TimeoutEvent::to_s() {
     stringstream s;
     s << "Seconds: " << timer_.tv_sec << " Nanoseconds: " << timer_.tv_nsec;
     return s.str();

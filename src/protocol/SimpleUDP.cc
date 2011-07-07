@@ -103,7 +103,7 @@ void SimpleUDP::icontext_connect(QueueProcessor<Event*>* q, ConnectEvent* e) {
     AddressPort* destination = e->get_destination();
     //cout << "This is a print line: " << destination->to_s() << endl;
     s->set_remote_address_port(destination);
-    string source = SourceGetter::instance().get_source_address(destination->get_address());
+    gcstring source = SourceGetter::instance().get_source_address(destination->get_address());
     s->set_local_address_port(new AddressPort(source, s->get_local_address_port()->get_port()));
 
     c->get_reliability()->icontext_connect(q, e);
@@ -197,7 +197,7 @@ void SimpleUDP::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
     /*AddressPort* destination = new AddressPort(e->get_map()[ADDRESS_STRING], atoi(e->get_map()[PORT_STRING].c_str()));
     //cout << "This is a print line: " << destination->to_s() << endl;
     s->set_remote_address_port(destination);
-    string source = SourceGetter::instance().get_source_address(destination->get_address());
+    gcstring source = SourceGetter::instance().get_source_address(destination->get_address());
     s->get_local_address_port()->get_port();*/
 
     //cout << "SimpleUDP::icontext_send()\n";
@@ -335,7 +335,7 @@ void SimpleUDP::create_and_dispatch_received_data(QueueProcessor<Event*>* q, Rec
     Socket* s = e->get_socket();
     int buffer_size = e->get_receive_buffer_size();
 
-    string data = s->get_receive_buffer().substr(0, buffer_size);
+    gcstring data = s->get_receive_buffer().substr(0, buffer_size);
     s->get_receive_buffer().erase(0, data.size());
 
     ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);

@@ -8,18 +8,18 @@ WifuEndBackEndLibrary& WifuEndBackEndLibrary::instance() {
 WifuEndBackEndLibrary::~WifuEndBackEndLibrary() {
 }
 
-void WifuEndBackEndLibrary::receive(string& message) {
+void WifuEndBackEndLibrary::receive(gcstring& message) {
     // TODO: this method is way too long (and will likely get bigger)
     // TODO: refactor this method to use objects as much as possible
 
     //        cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
 
 
-    map<string, string> m;
+    map<gcstring, gcstring> m;
     QueryStringParser::parse(message, m);
 
-    string name = m[NAME_STRING];
-    string s = m[SOCKET_STRING];
+    gcstring name = m[NAME_STRING];
+    gcstring s = m[SOCKET_STRING];
     int socket_int = atoi(s.c_str());
     //assert(sockInt != 0);
     Socket* socket = SocketCollection::instance().get_by_id(socket_int);
@@ -38,14 +38,14 @@ void WifuEndBackEndLibrary::receive(string& message) {
             return;
 
         } else {
-            map<string, string> response;
+            map<gcstring, gcstring> response;
             response[SOCKET_STRING] = s;
             response[FILE_STRING] = get_file();
             response[SOCKET_STRING] = Utils::itoa(-1);
             response[ERRNO] = Utils::itoa(EPROTONOSUPPORT);
             // TODO: May not always want to respond immediately
             // TODO: We may need to wait for a response from the internal system
-            string response_message = QueryStringParser::create(name, response);
+            gcstring response_message = QueryStringParser::create(name, response);
             send_to(m[FILE_STRING], response_message);
         }
 
@@ -91,8 +91,8 @@ void WifuEndBackEndLibrary::receive(string& message) {
 void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
     ResponseEvent* event = (ResponseEvent*) e;
     event->put(FILE_STRING, get_file());
-    string file = event->get_write_file();
-    string response = event->get_response();
+    gcstring file = event->get_write_file();
+    gcstring response = event->get_response();
 //    cout << "Response: " << response << endl;
     send_to(file, response);
 }

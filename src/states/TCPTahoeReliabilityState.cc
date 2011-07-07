@@ -123,8 +123,8 @@ void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, Que
     Socket* s = e->get_socket();
     int buffer_size = e->get_receive_buffer_size();
 
-    // TODO: change this to use string::data() so we avoid the copy in substr
-    string data = s->get_receive_buffer().substr(0, buffer_size);
+    // TODO: change this to use gcstring::data() so we avoid the copy in substr
+    gcstring data = s->get_receive_buffer().substr(0, buffer_size);
     int length = data.size();
     s->get_receive_buffer().erase(0, length);
 
@@ -198,7 +198,7 @@ void TCPTahoeReliabilityState::check_and_start_timer(Context*c, SendPacketEvent*
 
 void TCPTahoeReliabilityState::append_control_bytes_to_send_buffer(SendPacketEvent* e) {
     TCPPacket* p = (TCPPacket*)e->get_packet();
-    string& send_buffer = e->get_socket()->get_send_buffer();
+    gcstring& send_buffer = e->get_socket()->get_send_buffer();
 
     // if SYN and send buffer doesn't already have the SYN saved (resend)
     if (p->is_tcp_syn() && send_buffer.compare(0, 1, SYN_BYTE.c_str())) {
@@ -342,7 +342,7 @@ void TCPTahoeReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q
 
         rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
         //        cout << "TCPTahoeReliabilityState::handle_data(), receive window size: " << rc->get_rcv_wnd() << endl;
-        string& receive_buffer = s->get_receive_buffer();
+        gcstring& receive_buffer = s->get_receive_buffer();
         u_int32_t before_rcv_buffer_size = receive_buffer.size();
         rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
         u_int32_t after_receive_buffer_size = receive_buffer.size();

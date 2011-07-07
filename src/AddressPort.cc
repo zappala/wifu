@@ -1,10 +1,10 @@
 #include "AddressPort.h"
 
-AddressPort::AddressPort(string& address, uint16_t port) : address_(address), port_(port) {
+AddressPort::AddressPort(gcstring& address, uint16_t port) : address_(address), port_(port) {
     init(address.c_str(), port);
 }
 
-AddressPort::AddressPort(const char* address, uint16_t port) : address_(string(address)), port_(port) {
+AddressPort::AddressPort(const char* address, uint16_t port) : address_(gcstring(address)), port_(port) {
     init(address, port);
 }
 
@@ -15,7 +15,7 @@ AddressPort::AddressPort(struct sockaddr_in* obj) {
     u_int32_t saddr = obj->sin_addr.s_addr;
     inet_ntop(AF_INET, &saddr, ip_address, INET_ADDRSTRLEN);
 
-    address_ = string(ip_address);
+    address_ = gcstring(ip_address);
     port_ = ntohs(obj->sin_port);
 
     memcpy(&data_, obj, sizeof (struct sockaddr_in));
@@ -45,7 +45,7 @@ bool AddressPort::operator!=(const AddressPort& other) const {
 AddressPort::~AddressPort() {
 }
 
-string& AddressPort::get_address() {
+gcstring& AddressPort::get_address() {
     return address_;
 }
 
@@ -61,7 +61,7 @@ struct sockaddr_in* AddressPort::get_network_struct_ptr() {
     return &data_;
 }
 
-string AddressPort::to_s() {
+gcstring AddressPort::to_s() {
     stringstream s;
     s << "Address: " << get_address() << " ";
     s << "Port: " << get_port();

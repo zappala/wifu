@@ -1,6 +1,6 @@
 #include "events/framework_events/ReceiveEvent.h"
 
-ReceiveEvent::ReceiveEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {
+ReceiveEvent::ReceiveEvent(gcstring& message, gcstring& file, Socket* s) : LibraryEvent(message, file, s) {
 
 }
 

@@ -14,9 +14,9 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
-    string destination = "destination";
-    string destport = "port";
-    string dest = "127.0.0.1";
+    gcstring destination = "destination";
+    gcstring destport = "port";
+    gcstring dest = "127.0.0.1";
     int port = 5002;
 
     static struct option long_options[] = {
@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
     int size = 50000;
     char buffer[size];
 
-    string message = "";
+    gcstring message = "";
     while (message.compare("stop")) {
         for (int i = 0; i < 10000; i++) {
             message = "This is a message\n";

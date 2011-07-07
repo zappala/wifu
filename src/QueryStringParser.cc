@@ -1,15 +1,15 @@
 #include "QueryStringParser.h"
 
-void QueryStringParser::parse(string& message, map<string, string>& values) {
+void QueryStringParser::parse(gcstring& message, map<gcstring, gcstring>& values) {
     size_t end = message.find_first_of('?', 0);
-    if (end == string::npos)
+    if (end == gcstring::npos)
         throw WiFuException("Malformed query");
 
-    string name = message.substr(0, end);
+    gcstring name = message.substr(0, end);
 
     values[NAME_STRING] = name;
-    string key;
-    string value;
+    gcstring key;
+    gcstring value;
     size_t begin;
 
     while (1) {
@@ -32,10 +32,10 @@ void QueryStringParser::parse(string& message, map<string, string>& values) {
     }
 }
 
-string QueryStringParser::create(string name, map<string, string>& values) {
+gcstring QueryStringParser::create(gcstring name, map<gcstring, gcstring>& values) {
     stringstream s;
     s << name << "?";
-    map<string, string>::iterator itr;
+    map<gcstring, gcstring>::iterator itr;
     for (itr = values.begin(); itr != values.end(); ++itr) {
         s << itr->first << "=" << itr->second << "&";
     }

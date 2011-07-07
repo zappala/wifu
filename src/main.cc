@@ -303,7 +303,7 @@ void register_protocols() {
     register_ap();
 }
 
-void setup_network_interface(string& type) {
+void setup_network_interface(gcstring& type) {
     if (type == "standard") {
         log_INFORMATIONAL("Using standard network interface");
         NetworkInterfaceFactory::instance().set_creator(new StandardNetworkInterfaceCreator());
@@ -328,10 +328,10 @@ int main(int argc, char** argv) {
     //TODO: Change second argument to 0 once we have a logger in place
     daemon(1, 1);
 
-    string network_type = "standard";
-    string network = "network";
-    string mockfile = "mockfile";
-    string passive_port = "passive_port";
+    gcstring network_type = "standard";
+    gcstring network = "network";
+    gcstring mockfile = "mockfile";
+    gcstring passive_port = "passive_port";
 
     static struct option long_options[] = {
         {network.c_str(), required_argument, NULL, 0},

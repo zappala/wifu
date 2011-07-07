@@ -1,7 +1,7 @@
 #include "LocalSocketReceiver.h"
 
 
-LocalSocketReceiver::LocalSocketReceiver(string& file, LocalSocketReceiverCallback* callback) : file_(file), callback_(callback) {
+LocalSocketReceiver::LocalSocketReceiver(gcstring& file, LocalSocketReceiverCallback* callback) : file_(file), callback_(callback) {
     init();
 }
 
@@ -19,11 +19,11 @@ int LocalSocketReceiver::get_socket() {
     return socket_;
 }
 
-string & LocalSocketReceiver::get_file() {
+gcstring & LocalSocketReceiver::get_file() {
     return file_;
 }
 
-void LocalSocketReceiver::recv(string & message) {
+void LocalSocketReceiver::recv(gcstring & message) {
     sem_.wait();
     callback_->receive(message);
     sem_.post();
@@ -97,7 +97,7 @@ void * unix_receive_handler(void* arg) {
             break;
         }
 
-        string s(buf, nread);
+        gcstring s(buf, nread);
         receiver->recv(s);
     }
 }

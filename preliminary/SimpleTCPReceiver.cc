@@ -12,9 +12,9 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
-    string bindaddr = "address";
-    string hostaddr = "127.0.0.1";
-    string portarg = "port";
+    gcstring bindaddr = "address";
+    gcstring hostaddr = "127.0.0.1";
+    gcstring portarg = "port";
     int port = 5002;
 
     static struct option long_options[] = {

@@ -28,7 +28,7 @@ void TCPTimestampOption::set_timestamp(u_int32_t timestamp) {
     get_wifu_tcp_timestamp()->timestamp_value_ = htonl(timestamp);
 }
 
-string TCPTimestampOption::to_s() {
+gcstring TCPTimestampOption::to_s() {
     stringstream s;
     s << "Timestamp: ";
     s << get_timestamp();

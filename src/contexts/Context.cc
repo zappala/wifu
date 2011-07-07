@@ -25,7 +25,7 @@ State* Context::get_state() {
     return current_;
 }
 
-string Context::get_state_name() {
+gcstring Context::get_state_name() {
     return type_name(*get_state());
 }
 

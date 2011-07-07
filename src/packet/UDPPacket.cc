@@ -7,7 +7,7 @@
 
 #include <netinet/udp.h>
 
-#include "UDPPacket.h"
+#include "packet/UDPPacket.h"
 
 UDPPacket::UDPPacket() : WiFuPacket(), data_set_(false){
     init();
@@ -70,7 +70,7 @@ void UDPPacket::set_udp_checksum(u_int16_t checksum) {
     udp_->check = checksum;
 }
 
-string UDPPacket::to_s() const {
+gcstring UDPPacket::to_s() const {
     stringstream s;
     s << IPPacket::to_s() << endl
             << "udp "
@@ -81,7 +81,7 @@ string UDPPacket::to_s() const {
     return s.str();
 }
 
-string UDPPacket::to_s_format() const {
+gcstring UDPPacket::to_s_format() const {
     stringstream s;
     s << IPPacket::to_s_format() << endl
       << "# UDP sport dport len checksum";

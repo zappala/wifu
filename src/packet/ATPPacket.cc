@@ -111,7 +111,7 @@ int ATPPacket::max_data_length(){
 }
 
 
-string ATPPacket::to_s() const{
+gcstring ATPPacket::to_s() const{
     stringstream s;
     s << super::to_s() << endl
             << "atp "
@@ -121,7 +121,7 @@ string ATPPacket::to_s() const{
 }
 
 
-string ATPPacket::to_s_format() const{
+gcstring ATPPacket::to_s_format() const{
     stringstream s;
     s << super::to_s_format() << endl
       << "# atp max_dealay average_delay";

@@ -1,6 +1,6 @@
 #include "events/framework_events/ListenEvent.h"
 
-ListenEvent::ListenEvent(string& message, string& file, Socket* s) : LibraryEvent(message, file, s) {
+ListenEvent::ListenEvent(gcstring& message, gcstring& file, Socket* s) : LibraryEvent(message, file, s) {
 }
 
 ListenEvent::~ListenEvent() {

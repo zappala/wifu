@@ -14,7 +14,7 @@ void NetworkTrace::add_packet(WiFuPacket* packet) {
     packet_list_.push_back(packet);
 }
 
-string NetworkTrace::get_packet_trace(NetworkTrace& other) const {
+gcstring NetworkTrace::get_packet_trace(NetworkTrace& other) const {
     stringstream stream;
     stream << endl <<
             "*********** Packet Trace ***********" << endl;
@@ -93,14 +93,14 @@ bool NetworkTrace::equal_size_traces(const NetworkTrace& one, const NetworkTrace
     return one.packet_list_.size() == two.packet_list_.size();
 }
 
-string NetworkTrace::get_packet_string(int packet_number, WiFuPacket* packet) const {
+gcstring NetworkTrace::get_packet_string(int packet_number, WiFuPacket* packet) const {
     stringstream stream;
     stream << packet_number << endl <<
             packet->to_s();
     return stream.str();
 }
 
-string NetworkTrace::get_nonequal_packets_string(int packet_number, WiFuPacket* one, WiFuPacket* two) const {
+gcstring NetworkTrace::get_nonequal_packets_string(int packet_number, WiFuPacket* one, WiFuPacket* two) const {
     stringstream stream;
     if (packet_number > 1)
         stream << endl;

@@ -85,25 +85,25 @@ bool Socket::operator!=(const Socket& other) {
 
 // TODO: can we lazily evaluate this?
 
-string Socket::get_key() {
+gcstring Socket::get_key() {
     return make_key(get_local_address_port(), get_remote_address_port());
 }
 
-string Socket::make_key(AddressPort* local, AddressPort* remote) {
-    string local_s = local->to_s();
-    string remote_s = remote->to_s();
+gcstring Socket::make_key(AddressPort* local, AddressPort* remote) {
+    gcstring local_s = local->to_s();
+    gcstring remote_s = remote->to_s();
     return local_s.append(remote_s);
 }
 
-string& Socket::get_receive_buffer() {
+gcstring& Socket::get_receive_buffer() {
     return receive_buffer_;
 }
 
-string& Socket::get_send_buffer() {
+gcstring& Socket::get_send_buffer() {
     return send_buffer_;
 }
 
-string& Socket::get_resend_buffer() {
+gcstring& Socket::get_resend_buffer() {
     return resend_buffer_;
 }
 
