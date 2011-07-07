@@ -45,7 +45,7 @@ void TCPATPCongestionControl::setDelay(int seconds, long int microseconds) {
 		cout << "WARNING: seconds and microseconds is 0!" << endl;
 	}
 
-	cout << "\t\tSetting rate to: " << seconds << ", " << microseconds << endl;
+	//cout << "\t\tSetting rate to: " << seconds << ", " << microseconds << endl;
 
     sendSeconds_ = seconds;
     sendMicros_ = microseconds;
