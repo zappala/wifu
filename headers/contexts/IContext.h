@@ -8,7 +8,6 @@
 #ifndef ICONTEXT_H
 #define	ICONTEXT_H
 
-#include <string>
 #include "GarbageCollector.h"
 
 #include "events/framework_events/ConnectEvent.h"

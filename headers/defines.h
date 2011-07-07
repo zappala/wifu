@@ -116,8 +116,8 @@ typedef std::basic_string<char, std::char_traits<char>, gc_allocator<char> > gcs
 // TODO: if we want it any bigger we need to employ the window scale option
 #define MAX_TCP_RECEIVE_WINDOW_SIZE USHRT_MAX
 
-#define SYN_BYTE std::string(1, 22)
-#define FIN_BYTE std::string(1, 23)
+#define SYN_BYTE gcstring(1, 22)
+#define FIN_BYTE gcstring(1, 23)
 
 typedef const char * event_name;
 

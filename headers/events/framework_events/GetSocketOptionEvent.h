@@ -32,7 +32,7 @@ public:
      * @param file The file associated with a Unix socket to write any response to the application.
      * @param s The Socket object to which this Event belongs.
      */
-    GetSocketOptionEvent(string& message, string& file, Socket* s);
+    GetSocketOptionEvent(gcstring& message, gcstring& file, Socket* s);
 
     /**
      * Destructor.

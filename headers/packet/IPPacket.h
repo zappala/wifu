@@ -263,14 +263,14 @@ public:
     /**
      * @return A human-readable (e.g. 127.0.0.1) string representation of the source IP address of this packet.
      */
-    string get_ip_source_address_s() const;
+    gcstring get_ip_source_address_s() const;
 
     /**
      * Sets a string representation of the source IP address of this packet.
      *
      * @param saddr A human-readable (e.g. 127.0.0.1) string representation of the source IP address of this packet.
      */
-    void set_ip_source_address_s(string& saddr);
+    void set_ip_source_address_s(gcstring& saddr);
 
     /**
      * @return The destination IP address of this packet.
@@ -287,14 +287,14 @@ public:
     /**
      * @return A human-readable (e.g. 127.0.0.1) string representation of the destination IP address of this packet.
      */
-    string get_ip_destination_address_s() const;
+    gcstring get_ip_destination_address_s() const;
 
     /**
      * Sets a string representation of the destination IP address of this packet.
      *
      * @param daddr A human-readable (e.g. 127.0.0.1) string representation of the destination IP address of this packet.
      */
-    void set_ip_destination_address_s(string& daddr);
+    void set_ip_destination_address_s(gcstring& daddr);
 
     /**
      * Computes the 16-bit one's complement of the one's complement sum of all 16-bit words in buffer pointed to by ptr.
@@ -343,7 +343,7 @@ public:
      *
      * @see IPPacket::to_s_format()
      */
-    virtual string to_s() const;
+    virtual gcstring to_s() const;
 
     /**
      * @return A string representing the names of the values produced by IPPacket::to_s().
@@ -352,7 +352,7 @@ public:
      *
      * @see IPPacket::to_s()
      */
-    virtual string to_s_format() const;
+    virtual gcstring to_s_format() const;
 
     /**
      * Returns the maximum number of bytes that this packet can store after the IP header.

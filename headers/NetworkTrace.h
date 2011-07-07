@@ -25,7 +25,7 @@ public:
 	 * This method assumes that this object is the expected trace while 'other'
 	 * is what was actually was logged
 	 */
-	string get_packet_trace(NetworkTrace& other) const;
+	gcstring get_packet_trace(NetworkTrace& other) const;
 
 	int get_length() const;
 
@@ -34,9 +34,9 @@ public:
 private:
 	bool equal_size_traces(const NetworkTrace& one, const NetworkTrace& two) const;
 
-	string get_packet_string(int packet_number, WiFuPacket* packet) const;
+	gcstring get_packet_string(int packet_number, WiFuPacket* packet) const;
 
-	string get_nonequal_packets_string(int packet_number, WiFuPacket* one, WiFuPacket* two) const;
+	gcstring get_nonequal_packets_string(int packet_number, WiFuPacket* one, WiFuPacket* two) const;
 
 	vector<WiFuPacket*> packet_list_;
 

@@ -8,7 +8,6 @@
 #ifndef RESPONSEEVENT_H
 #define	RESPONSEEVENT_H
 
-#include <string>
 #include <map>
 
 #include "FrameworkEvent.h"
@@ -36,7 +35,7 @@ public:
      * @param name Name of the BSD socket function which we are responding to (socket, bind, listend, recv, etc.).
      * @param file The location of the file the Unix socket is going to receive this response on.
      */
-    ResponseEvent(Socket* socket, string& name, string& file);
+    ResponseEvent(Socket* socket, gcstring& name, gcstring& file);
 
     /**
      * Destructor.
@@ -46,21 +45,21 @@ public:
     /**
      * @return A query string-like message to be passed over a Unix socket to the front end.
      */
-    string get_response();
+    gcstring get_response();
 
     /**
      * Inserts a key-value pair into the response.
      * @param key The key of the pair.
      * @param value The value of the pair.
      */
-    void put(string key, string value);
+    void put(gcstring key, gcstring value);
 
     /**
      * Inserts a key-value pair into the response.
      * @param key The key of the pair.
      * @param value The value of the pair.
      */
-    void put(const char* key, string value);
+    void put(const char* key, gcstring value);
 
     /**
      * Calls IModule::imodule_library_response() and passes this ResponseEvent in as the argument.
@@ -77,24 +76,24 @@ public:
     /**
      * @return A reference to the file used by a Unix socket that this ResponseEvent will send to.
      */
-    string get_write_file();
+    gcstring get_write_file();
 
 private:
 
     /**
      * Name of the BSD socket function we are responding to.
      */
-    string name_;
+    gcstring name_;
 
     /**
      * The file used by a Unix socket that this ResponseEvent will send to.
      */
-    string file_;
+    gcstring file_;
 
     /**
      * A map of the key-value pairs to send to the front end.
      */
-    map<string, string> m_;
+    map<gcstring, gcstring> m_;
             
 };
 

@@ -58,7 +58,7 @@ public:
     /**
      * @return The stirng representation of the exact time at which this timer is supposed to go off.
      */
-    string to_s();
+    gcstring to_s();
 
 private:
     

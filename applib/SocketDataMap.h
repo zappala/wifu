@@ -12,6 +12,7 @@
 #include <assert.h>
 #include "Semaphore.h"
 #include "SocketData.h"
+#include "GarbageCollector.h"
 
 using namespace std;
 

@@ -8,8 +8,6 @@
 #ifndef _SOCKETDATA_H
 #define	_SOCKETDATA_H
 
-#include <string.h>
-
 #include "Semaphore.h"
 #include "defines.h"
 #include "AddressPort.h"
@@ -95,7 +93,7 @@ public:
      *
      * @see WifuEndAPILocalSocket::receive().
      */
-    void set_payload(string& payload, size_t length) {
+    void set_payload(gcstring& payload, size_t length) {
         memcpy(payload_, payload.data(), length);
         set_payload_length(length);
     }

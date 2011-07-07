@@ -8,7 +8,7 @@
 #ifndef CONNECTIONMANAGERCONTEXT_H
 #define	CONNECTIONMANAGERCONTEXT_H
 
-#include <string>
+#include "defines.h"
 #include "Context.h"
 #include "states/Closed.h"
 #include "AddressPort.h"
@@ -121,7 +121,7 @@ public:
     /**
      * @return The unix socket file that the front end is receiving messages on.
      */
-    string& get_file();
+    gcstring& get_file();
 
     /**
      * @return A pointer to the Socket which is using this conneciton manager FSM.

@@ -10,7 +10,6 @@
 
 #include <assert.h>
 #include <time.h>
-#include <string>
 #include <stdio.h>
 #include <vector>
 #include <fstream>
@@ -43,7 +42,7 @@ public:
      * @param i an integer
      * @return the passed integer as a string
      */
-    static string itoa(int i);
+    static gcstring itoa(int i);
 
     /**
      * Reads each line in file and stores it in a vector
@@ -54,7 +53,7 @@ public:
      * @param file The file to open
      * @return A vector which each line is representative of on line in the file
      */
-    static vector<string> read_file(string& file);
+    static vector<gcstring> read_file(gcstring& file);
 
 
     /**
@@ -65,7 +64,7 @@ public:
      *
      * @return A vector contaning all the tokens, in order
      */
-    static vector<string> tokenize(string& line, string& delimiters);
+    static vector<gcstring> tokenize(gcstring& line, gcstring& delimiters);
 
 
     static u_int32_t get_current_time_microseconds_32();

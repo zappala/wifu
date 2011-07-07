@@ -77,8 +77,8 @@ public:
     virtual int max_data_length();
 
 
-    virtual string to_s() const;
-    virtual string to_s_format() const;
+    virtual gcstring to_s() const;
+    virtual gcstring to_s_format() const;
 
     virtual bool operator ==(const IPPacket& other) const;
     virtual bool operator !=(const IPPacket& other) const;

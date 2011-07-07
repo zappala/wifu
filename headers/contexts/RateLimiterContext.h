@@ -7,7 +7,6 @@
 #ifndef RATELIMITERCONTEXT_H
 #define	RATELIMITERCONTEXT_H
 
-#include <string>
 #include "Context.h"
 //#include "states/PassThroughRateLimiter.h"
 #include "states/tcp-ap/SendRateLimiter.h"

@@ -8,7 +8,6 @@
 #ifndef CONGESTIONCONTROLCONTEXT_H
 #define	CONGESTIONCONTROLCONTEXT_H
 
-#include <string>
 #include "Context.h"
 #include "states/SimpleTCPCongestionControl.h"
 #include "AddressPort.h"

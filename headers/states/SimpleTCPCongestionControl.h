@@ -8,8 +8,6 @@
 #ifndef SLOWSTART_H
 #define	SLOWSTART_H
 
-#include <string>
-
 #include "contexts/Context.h"
 #include "AddressPort.h"
 #include "Socket.h"

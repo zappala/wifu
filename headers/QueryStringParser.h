@@ -8,7 +8,6 @@
 #ifndef QUERYSTRINGPARSER_H
 #define	QUERYSTRINGPARSER_H
 
-#include <string>
 #include <sstream>
 #include <map>
 #include <iostream>
@@ -20,9 +19,9 @@ using namespace std;
 
 class QueryStringParser {
 public:
-    static void parse(string& message, map<string, string>& values);
+    static void parse(gcstring& message, map<gcstring, gcstring>& values);
 
-    static string create(string name, map<string, string>& values);
+    static gcstring create(gcstring name, map<gcstring, gcstring>& values);
 };
 
 #endif	/* QUERYSTRINGPARSER_H */

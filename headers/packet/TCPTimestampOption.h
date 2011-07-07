@@ -84,7 +84,7 @@ public:
     /**
      * @return A string representation of this TCPTimestampOption object.
      */
-    string to_s();
+    gcstring to_s();
 
 };
 

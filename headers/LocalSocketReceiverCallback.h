@@ -8,13 +8,13 @@
 #ifndef _LOCALSOCKETRECEIVERCALLBACK_H
 #define	_LOCALSOCKETRECEIVERCALLBACK_H
 
-#include <string>
+#include "defines.h"
 
 using namespace std;
 
 class LocalSocketReceiverCallback {
 public:
-    virtual void receive(string&  message) = 0;
+    virtual void receive(gcstring&  message) = 0;
 };
 
 #endif	/* _LOCALSOCKETRECEIVERCALLBACK_H */

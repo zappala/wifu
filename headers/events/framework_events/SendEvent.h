@@ -30,7 +30,7 @@ public:
      * @param file The file associated with a Unix socket to write any response to the application.
      * @param s The Socket object to which this Event belongs.
      */
-    SendEvent(string& message, string& file, Socket* s);
+    SendEvent(gcstring& message, gcstring& file, Socket* s);
 
     /**
      * Calls IModule::imodule_library_send() and passes this SendEvent in as the argument.

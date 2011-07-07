@@ -10,7 +10,6 @@
 
 #include <algorithm>
 #include <tr1/unordered_map>
-#include <string>
 #include <typeinfo>
 
 #include "Socket.h"
@@ -31,8 +30,8 @@ private:
 
     SocketCollection(const SocketCollection& other);
 
-    tr1::unordered_map<string, Socket*> collection_;
-    tr1::unordered_map<string, Socket*>::iterator itr_;
+    tr1::unordered_map<gcstring, Socket*> collection_;
+    tr1::unordered_map<gcstring, Socket*>::iterator itr_;
     Semaphore* mutex_;
     Semaphore* update_mutex_;
 

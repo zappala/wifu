@@ -8,7 +8,6 @@
 #ifndef LIBRARYEVENT_H
 #define	LIBRARYEVENT_H
 
-#include <string>
 #include <map>
 #include <stdlib.h>
 
@@ -43,7 +42,7 @@ public:
      * @see QueryStringParser
      * @see WiFuEndBackEndLibrary
      */
-    LibraryEvent(string& message, string& file, Socket* socket);
+    LibraryEvent(gcstring& message, gcstring& file, Socket* socket);
 
     /**
      * Destructor.
@@ -53,12 +52,12 @@ public:
     /**
      * @return The name of the file representing a Unix socket to write any response to the front end to.
      */
-    string& get_file();
+    gcstring& get_file();
 
     /**
      * @return The name of the BSD socket method which this LibraryEvent represents.
      */
-    string& get_name();
+    gcstring& get_name();
 
     /**
      * Returns a map containing the key-value pairs of the information passed from the front end to the back end.
@@ -69,24 +68,24 @@ public:
      *
      * @return A map containing the key-value pairs of the information passed from the front end to the back end.
      */
-    map<string, string>& get_map();
+    map<gcstring, gcstring>& get_map();
 
 private:
 
     /**
      * A map containing key-value pairs of the information passed into a BSD socket function call as well as some bookkeeping information.
      */
-    map<string, string> m_;
+    map<gcstring, gcstring> m_;
 
     /**
      * The specific BSD socket function call name (socket, listen, bind, recv, etc.).
      */
-    string name_;
+    gcstring name_;
 
     /**
      * File representing a socket to which any ResponseEvent must use to correctly transmit data back to the front end.
      */
-    string file_;
+    gcstring file_;
 
 };
 

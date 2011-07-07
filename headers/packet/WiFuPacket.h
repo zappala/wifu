@@ -156,7 +156,7 @@ public:
      * @see IPPacket::to_s()
      * @see WiFuPacket::to_s_format()
      */
-    virtual string to_s() const;
+    virtual gcstring to_s() const;
 
     /**
      * @return A string representing the names of the values produced by WiFuPacket::to_s().
@@ -166,7 +166,7 @@ public:
      * @see IPPacket::to_s_format()
      * @see WiFuPacket::to_s()
      */
-    virtual string to_s_format() const;
+    virtual gcstring to_s_format() const;
 
     /**
      * Compares this WiFuPacket with other and returns whether they are equal or not.

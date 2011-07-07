@@ -278,7 +278,7 @@ public:
      * @see WiFuPacket::to_s()
      * @see TCPPacket::to_s_format()
      */
-    virtual string to_s() const;
+    virtual gcstring to_s() const;
 
     /**
      * @return A string representing the names of the values produced by TCPPacket::to_s().
@@ -289,7 +289,7 @@ public:
      * @see WiFuPacket::to_s_format()
      * @see TCPPacket::to_s()
      */
-    virtual string to_s_format() const;
+    virtual gcstring to_s_format() const;
 
     /**
      * Compares this TCPPacket with other and returns whether they are equal or not.

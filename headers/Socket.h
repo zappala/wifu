@@ -8,7 +8,6 @@
 #ifndef _SOCKET_H
 #define	_SOCKET_H
 
-#include <string>
 
 #include "PortManager.h"
 #include "SocketManager.h"
@@ -66,15 +65,15 @@ public:
 
     bool operator!=(const Socket& other);
 
-    string get_key();
+    gcstring get_key();
 
-    static string make_key(AddressPort* local, AddressPort* remote);
+    static gcstring make_key(AddressPort* local, AddressPort* remote);
 
-    string& get_receive_buffer();
+    gcstring& get_receive_buffer();
 
-    string& get_send_buffer();
+    gcstring& get_send_buffer();
     
-    string& get_resend_buffer();
+    gcstring& get_resend_buffer();
 
     SocketOptions& get_socket_options();
 
@@ -88,9 +87,9 @@ private:
 
     bool is_passive_;
 
-    string receive_buffer_;
-    string send_buffer_;
-    string resend_buffer_;
+    gcstring receive_buffer_;
+    gcstring send_buffer_;
+    gcstring resend_buffer_;
 
     SocketOptions socket_options_;
 };

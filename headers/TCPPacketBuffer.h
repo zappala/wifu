@@ -25,7 +25,7 @@ public:
 
     int insert(TCPPacket* p);
     TCPPacket* remove(TCPPacket* p);
-    void get_continuous_data(u_int32_t sequence_number, string& buffer);
+    void get_continuous_data(u_int32_t sequence_number, gcstring& buffer);
     int size();
     u_int32_t get_first_sequence_number();
     void set_first_sequence_number(u_int32_t seq_num);

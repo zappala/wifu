@@ -9,7 +9,6 @@
 #define WIFUEXCEPTION_H_
 
 #include <exception>
-#include <string>
 
 using namespace std;
 

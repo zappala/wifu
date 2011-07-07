@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <iostream>
-#include <string>
 #include <vector>
 #include <assert.h>
 #include <map>
@@ -45,7 +44,7 @@ public:
     ~SourceGetter();
     static SourceGetter& instance();
 
-    string get_source_address(string& dest_address);
+    gcstring get_source_address(gcstring& dest_address);
 
 private:
     SourceGetter();
@@ -55,8 +54,8 @@ private:
     void parse_routes(struct nlmsghdr* headder, struct address_info* info);
 
     // key = destination, value = source
-    map<string, string> cache_;
-    map<string, string>::iterator cache_itr_;
+    map<gcstring, gcstring> cache_;
+    map<gcstring, gcstring>::iterator cache_itr_;
     int netlink_socket_;
     int udp_socket_;
     vector<struct address_info> infos_;

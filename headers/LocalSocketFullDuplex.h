@@ -8,8 +8,7 @@
 #ifndef _LOCALSOCKETFULLDUPLEX_H
 #define	_LOCALSOCKETFULLDUPLEX_H
 
-#include <string>
-
+#include "defines.h"
 #include "LocalSocketSender.h"
 #include "LocalSocketReceiver.h"
 #include "LocalSocketReceiverCallback.h"
@@ -36,7 +35,7 @@ public:
      * @see LocalSocketReceiver
      * @see LocalSocketReceiverCallback
      */
-    LocalSocketFullDuplex(string & file);
+    LocalSocketFullDuplex(gcstring & file);
 
     /**
      * Constructor.  Simply calls the Constructors of the classes it inherits from.

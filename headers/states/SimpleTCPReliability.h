@@ -8,8 +8,6 @@
 #ifndef RELIABILITYSTATE_H
 #define	RELIABILITYSTATE_H
 
-#include <string>
-
 #include "contexts/Context.h"
 #include "contexts/SimpleTCPReliabilityContext.h"
 

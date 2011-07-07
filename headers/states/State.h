@@ -25,7 +25,6 @@
 #include "events/framework_events/SetSocketOptionEvent.h"
 #include "events/framework_events/GetSocketOptionEvent.h"
 
-#include <string>
 #include "contexts/Context.h"
 
 #include "GarbageCollector.h"

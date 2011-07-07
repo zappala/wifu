@@ -26,7 +26,7 @@ protected:
 
     tr1::unordered_map<Socket*, BasicIContextContainer*> map_;
 
-    HashSet<string> states_we_can_send_ack_;
+    HashSet<gcstring> states_we_can_send_ack_;
 
     int get_available_room_in_send_buffer(SendEvent* e);
     void save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e, int available_room_in_send_buffer);

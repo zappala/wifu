@@ -8,7 +8,6 @@
 #ifndef _LOCALSOCKETSENDER_H
 #define	_LOCALSOCKETSENDER_H
 
-#include <string>
 #include <arpa/inet.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -28,10 +27,10 @@ public:
     LocalSocketSender();
     virtual ~LocalSocketSender();
 
-    ssize_t send_to(string& socket_file, string& message);
+    ssize_t send_to(gcstring& socket_file, gcstring& message);
 private:
-    map<string, struct sockaddr_un*> destinations_;
-    struct sockaddr_un* create_socket(string & socket_file);
+    map<gcstring, struct sockaddr_un*> destinations_;
+    struct sockaddr_un* create_socket(gcstring& socket_file);
 
     int socket_;
 

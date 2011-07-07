@@ -10,7 +10,6 @@
 
 #include "GarbageCollector.h"
 
-#include <string>
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <string.h>
@@ -37,7 +36,7 @@ public:
      * @param address Address to store
      * @param port Port to store
      */
-    AddressPort(string& address, uint16_t port);
+    AddressPort(gcstring& address, uint16_t port);
 
     /**
      * Constructor: Stores address and port.
@@ -94,7 +93,7 @@ public:
     /**
      * @return A reference to the address
      */
-    string& get_address();
+    gcstring& get_address();
 
     /**
      * @return A reference to the port
@@ -116,13 +115,13 @@ public:
      *
      * @return A string representation of this AddressPort
      */
-    string to_s();
+    gcstring to_s();
 
 private:
     /**
      * The (IP) address of a machine.
      */
-    string address_;
+    gcstring address_;
 
     /**
      * The port of a machine.

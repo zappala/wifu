@@ -32,7 +32,7 @@ public:
      * @param file The file associated with a Unix socket to write any response to the application.
      * @param s The Socket object to which this Event belongs.
      */
-    SetSocketOptionEvent(string& message, string& file, Socket* s);
+    SetSocketOptionEvent(gcstring& message, gcstring& file, Socket* s);
 
     /**
      * Destructor.
@@ -52,14 +52,14 @@ public:
     /**
      * @return The value to set the option to.
      */
-    string& get_option_value();
+    gcstring& get_option_value();
 
     /**
      * Helper function to create the value pair used in the SocketOptions map.
      * @return A pair of value and value-length for this socket option event.
      * @see SocketOptions
      */
-    pair<string, socklen_t> get_value_length_pair();
+    pair<gcstring, socklen_t> get_value_length_pair();
 };
 
 #endif	/* SETSOCKETOPTIONEVENT_H */

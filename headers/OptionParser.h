@@ -19,16 +19,16 @@ public:
 
     void parse(int argc, char* const argv[], const struct option* long_options);
 
-    bool present(string& option);
+    bool present(gcstring& option);
 
-    string& argument(string& option);
+    gcstring& argument(gcstring& option);
 
 private:
 
     OptionParser();
 
-    map<string, bool> present_;
-    map<string, string> argument_;
+    map<gcstring, bool> present_;
+    map<gcstring, gcstring> argument_;
 };
 
 #endif  // option_parser_h

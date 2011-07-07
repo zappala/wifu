@@ -9,7 +9,6 @@
 #define	_LOCALSOCKETRECEIVER_H
 
 #include <iostream>
-#include <string>
 #include <arpa/inet.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -20,7 +19,6 @@
 #include <sys/un.h>
 #include <pthread.h>
 #include <semaphore.h>
-#include <string.h>
 #include <vector>
 
 #include "LocalSocketReceiverCallback.h"
@@ -66,21 +64,21 @@ struct local_socket_receiver_obj {
  */
 class LocalSocketReceiver {
 public:
-    LocalSocketReceiver(string & file, LocalSocketReceiverCallback * callback);
+    LocalSocketReceiver(gcstring & file, LocalSocketReceiverCallback * callback);
     LocalSocketReceiver(const char* file, LocalSocketReceiverCallback * callback);
 
     virtual ~LocalSocketReceiver();
     int get_socket();
 
-    string & get_file();
+    gcstring & get_file();
 
-    void recv(string & message);
-    virtual void receive(string & message) = 0;
+    void recv(gcstring & message);
+    virtual void receive(gcstring & message) = 0;
 
 
 
 private:
-    string file_;
+    gcstring file_;
     Semaphore sem_;
     pthread_t thread_;
     LocalSocketReceiverCallback * callback_;

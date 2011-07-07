@@ -37,8 +37,8 @@ public:
 
     virtual void set_data(unsigned char* data, int length);
 
-    virtual string to_s() const;
-    virtual string to_s_format() const;
+    virtual gcstring to_s() const;
+    virtual gcstring to_s_format() const;
 
     virtual bool operator ==(const IPPacket& other) const;
     virtual bool operator !=(const IPPacket& other) const;
