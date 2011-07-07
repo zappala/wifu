@@ -42,15 +42,19 @@ namespace {
     }
 
     TEST_F(SocketCollectionTest, SizePushRemove) {
+        printf("Heap size = %d\n", GC_get_heap_size());
+
         int number = 1000;
 
         collection.reset();
         ASSERT_EQ(0, collection.size());
 
+        cout << sizeof (Socket) + 2 * sizeof (AddressPort) << endl;
+
         int ids[number];
 
         for (int i = 0; i < number; ++i) {
-            Socket* s = new Socket(i,i,i);
+            Socket* s = new Socket(i, i, i);
             mysleep();
             ids[i] = s->get_socket_id();
             collection.push(s);
@@ -71,6 +75,9 @@ namespace {
 
         collection.clear();
         ASSERT_EQ(0, collection.size());
+
+        printf("Heap size = %d\n", GC_get_heap_size());
+
     }
 
     TEST_F(SocketCollectionTest, Integer) {
@@ -79,7 +86,7 @@ namespace {
         Socket * sockets[number];
 
         for (int i = 0; i < number; i++) {
-            sockets[i] = new Socket(i,i,i);
+            sockets[i] = new Socket(i, i, i);
             mysleep();
             collection.push(sockets[i]);
         }
@@ -112,7 +119,7 @@ namespace {
         AddressPort * aps[number];
 
         for (int i = 0; i < number; i++) {
-            sockets[i] = new Socket(i,i,i);
+            sockets[i] = new Socket(i, i, i);
             mysleep();
             string address = "192.0.0.";
             int n = i % 255;
@@ -151,7 +158,7 @@ namespace {
         AddressPort * remotes[number];
 
         for (int i = 0; i < number; i++) {
-            sockets[i] = new Socket(i,i,i);
+            sockets[i] = new Socket(i, i, i);
             mysleep();
             string local_address = "192.0.0.";
             string remote_address = "192.1.1.";
@@ -194,7 +201,7 @@ namespace {
         AddressPort * remotes[number];
 
         for (int i = 0; i < number; i++) {
-            sockets[i] = new Socket(i,i,i);
+            sockets[i] = new Socket(i, i, i);
             mysleep();
             string local_address = "192.0.0.";
             string remote_address = "192.1.1.";

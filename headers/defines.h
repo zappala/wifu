@@ -11,6 +11,9 @@
 #include <typeinfo>
 #include <limits.h>
 #include <string>
+#include "GarbageCollector.h"
+
+typedef std::basic_string<char, std::char_traits<char>, gc_allocator<char> > gcstring;
 
 #define type_name(X) typeid(X).name()
 #define SIG_ENQUEUE_EVENT 50
@@ -136,6 +139,7 @@ enum Priority {
     MEDIUM = 1000,
     LOW = 2000
 };
+
 
 
 

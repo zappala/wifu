@@ -10,5 +10,6 @@
 
 #define GC_THREADS
 #include "../lib/gc/include/gc_cpp.h"
+#include "../lib/gc/include/gc/gc_allocator.h"
 
 #endif /* GARBAGECOLLECTABLE_H_ */

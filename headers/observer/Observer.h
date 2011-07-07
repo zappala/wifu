@@ -8,6 +8,7 @@
 #ifndef _OBSERVER_H
 #define	_OBSERVER_H
 
+#include "GarbageCollector.h"
 #include "Observable.h"
 
 using namespace std;
@@ -20,7 +21,7 @@ using namespace std;
  *
  * @see Observable
  */
-class Observer {
+class Observer : public gc {
 public:
     
     /**

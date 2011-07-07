@@ -8,6 +8,8 @@
 #ifndef _ADDRESSPORT_H
 #define	_ADDRESSPORT_H
 
+#include "GarbageCollector.h"
+
 #include <string>
 #include <netdb.h>
 #include <arpa/inet.h>
@@ -19,7 +21,7 @@
 #include <iostream>
 #include "exceptions/InvalidAddressException.h"
 
-#include "GarbageCollector.h"
+
 
 using namespace std;
 

@@ -8,6 +8,7 @@
 #ifndef _OBSERVABLE_H
 #define	_OBSERVABLE_H
 
+#include "GarbageCollector.h"
 #include "Observer.h"
 #include <set>
 
@@ -21,7 +22,7 @@ using namespace std;
  *
  * @see Observer
  */
-class Observable {
+class Observable : public gc {
 private:
 
     /**

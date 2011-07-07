@@ -33,7 +33,7 @@ string BackEndTest::getOutputFromCommand(char* cmd) {
     if (!pipe)
         ADD_FAILURE() << "Error opening pipe to find wifu-end";
     char buffer[128];
-    std::string result = "";
+    string result = "";
     while (!feof(pipe))
         if (fgets(buffer, 128, pipe) != NULL)
             result += buffer;
