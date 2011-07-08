@@ -94,6 +94,7 @@ namespace {
         ASSERT_TRUE((*source) == (*p.get_source_address_port()));
         ASSERT_TRUE((*dest) == (*p.get_dest_address_port()));
         ASSERT_TRUE(!strncmp(helper.get_data(), (const char*) p.get_data(), strlen(helper.get_data())));
+
     }
 
 //    TEST(WiFuPacketTest, BufferConstructor) {
@@ -137,6 +138,7 @@ namespace {
         p.set_ip_source_address_s(ap.get_address());
         p.set_source_port(ap.get_port());
         ASSERT_TRUE(ap == (*p.get_source_address_port()));
+                        cout << p.to_s() << endl;
     }
 
     TEST(WiFuPacketTest, MaxDataSizeTest) {

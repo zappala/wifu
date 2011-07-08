@@ -8,7 +8,6 @@
 #ifndef QUERYSTRINGPARSER_H
 #define	QUERYSTRINGPARSER_H
 
-#include <sstream>
 #include <map>
 #include <iostream>
 #include "exceptions/WiFuException.h"

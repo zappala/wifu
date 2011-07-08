@@ -30,6 +30,6 @@ void TCPTimestampOption::set_timestamp(u_int32_t timestamp) {
 
 gcstring TCPTimestampOption::to_s() {
     char buffer[100];
-    sprintf(buffer, "Timestamp: %ud Echo-reply: %ud", get_timestamp(), get_echo_reply());
+    sprintf(buffer, "Timestamp: %u Echo-reply: %u", get_timestamp(), get_echo_reply());
     return buffer;
 }

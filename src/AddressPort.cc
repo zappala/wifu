@@ -64,7 +64,7 @@ struct sockaddr_in* AddressPort::get_network_struct_ptr() {
 gcstring AddressPort::to_s() {
     char buffer[25];
     // Port then address on to_s as ports will likely be different sooner.
-    sprintf(buffer, "%uh %s", get_port(), get_address().c_str());
+    sprintf(buffer, "%hu %s", get_port(), get_address().c_str());
     return buffer;
 }
 

@@ -112,20 +112,16 @@ int ATPPacket::max_data_length(){
 
 
 gcstring ATPPacket::to_s() const{
-    stringstream s;
-    s << super::to_s() << endl
-            << "atp "
-            << ntohl(atp_->max_delay) << " "
-            << ntohl(atp_->average_delay);
-    return s.str().c_str();
+    char buffer[300];
+    sprintf(buffer, "%s\n# atp %u %u", super::to_s().c_str(), ntohl(atp_->max_delay), ntohl(atp_->average_delay));
+    return buffer;
 }
 
 
 gcstring ATPPacket::to_s_format() const{
-    stringstream s;
-    s << super::to_s_format() << endl
-      << "# atp max_dealay average_delay";
-    return s.str().c_str();
+    char buffer[300];
+    sprintf(buffer, "%s\n# atp max_dealay average_delay", super::to_s_format().c_str());
+    return buffer;
 }
 
 

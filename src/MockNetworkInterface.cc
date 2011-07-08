@@ -75,7 +75,7 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
         delay = get_delay(tcp_packet);
     }
 
-    //    cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
+//        cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
         assert(p);
 //        cout << p->to_s_format() << endl;
 //        cout << p->to_s() << endl;

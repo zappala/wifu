@@ -12,7 +12,6 @@
 #include "Utils.h"
 #include <netinet/tcp.h>
 #include <netinet/in.h>
-#include <sstream>
 
 /**
  * TCP timestamp header option value.

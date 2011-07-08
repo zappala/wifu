@@ -10,7 +10,6 @@
 
 #include "IPPacket.h"
 #include "AddressPort.h"
-#include <sstream>
 
 using namespace std;
 

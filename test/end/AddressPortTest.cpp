@@ -119,7 +119,7 @@ namespace {
 
     TEST(AddressPort, ToString) {
 
-        gcstring expected = "Address: 127.0.0.1 Port: 5000";
+        gcstring expected = "5000 127.0.0.1";
 
         gcstring address("127.0.0.1");
         int port = 5000;

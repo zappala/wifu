@@ -37,9 +37,9 @@ u_int64_t Utils::get_current_time_microseconds_64() {
 }
 
 gcstring Utils::itoa(int i) {
-    char buf[sizeof (i)*8 + 1];
+    char buf[20];
     sprintf(buf, "%d", i);
-    return gcstring(buf);
+    return buf;
 }
 
 // TODO: pass in a vector by reference to avoid the copy

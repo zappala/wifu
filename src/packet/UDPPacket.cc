@@ -72,13 +72,14 @@ void UDPPacket::set_udp_checksum(u_int16_t checksum) {
 
 gcstring UDPPacket::to_s() const {
     char buffer[200];
-    sprintf(buffer, "%s\n# udp %uh %uh %uh %uh", IPPacket::to_s().c_str(), get_source_port(), get_destination_port(), get_udp_length_bytes(), get_udp_checksum());
+    sprintf(buffer, "%s\n# udp %hu %hu %hu %hu", IPPacket::to_s().c_str(), get_source_port(), get_destination_port(), get_udp_length_bytes(), get_udp_checksum());
     return buffer;
 }
 
 gcstring UDPPacket::to_s_format() const {
     char buffer[200];
-    sprintf(buffer, "%s\n# udp sport dport len checksum", IPPacket::to_s().c_str());
+    sprintf(buffer, "%s\n# udp sport dport len checksum", IPPacket::to_s_format().c_str());
+    return buffer;
 }
 
 bool UDPPacket::operator ==(const IPPacket& other) const {
