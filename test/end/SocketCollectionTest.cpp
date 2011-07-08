@@ -49,8 +49,6 @@ namespace {
         collection.reset();
         ASSERT_EQ(0, collection.size());
 
-        cout << sizeof (Socket) + 2 * sizeof (AddressPort) << endl;
-
         int ids[number];
 
         for (int i = 0; i < number; ++i) {
