@@ -127,7 +127,7 @@ private:
      */
     Semaphore counter_;
 
-    list<T> q_;
+    list<T, gc_allocator<T> > q_;
     Comparator comparator_;
 };
 

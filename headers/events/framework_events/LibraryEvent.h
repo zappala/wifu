@@ -8,7 +8,6 @@
 #ifndef LIBRARYEVENT_H
 #define	LIBRARYEVENT_H
 
-#include <map>
 #include <stdlib.h>
 
 #include "defines.h"
@@ -68,14 +67,14 @@ public:
      *
      * @return A map containing the key-value pairs of the information passed from the front end to the back end.
      */
-    map<gcstring, gcstring>& get_map();
+    gcstring_map& get_map();
 
 private:
 
     /**
      * A map containing key-value pairs of the information passed into a BSD socket function call as well as some bookkeeping information.
      */
-    map<gcstring, gcstring> m_;
+    gcstring_map m_;
 
     /**
      * The specific BSD socket function call name (socket, listen, bind, recv, etc.).

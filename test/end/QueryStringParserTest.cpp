@@ -24,7 +24,7 @@ namespace {
         char buf[(sizeof (int) *8 + 1)];
 
         gcstring name = "name";
-        map<gcstring, gcstring> values;
+        gcstring_map values;
 
         gcstring result = QueryStringParser::create(name, values);
         gcstring expected = "name?";
@@ -50,7 +50,7 @@ namespace {
 
     TEST(QueryStringParserTest, moreCreate) {
 
-        map<gcstring, gcstring> values;
+        gcstring_map values;
         gcstring query = "name?a=9&b=bob&c=1234&";
 
         QueryStringParser::parse(query, values);

@@ -86,7 +86,7 @@ private:
     /**
      * Container to store the TCPHeaderOptions.
      */
-    list<TCPHeaderOption*> options_;
+    list<TCPHeaderOption*, gc_allocator<TCPHeaderOption*> > options_;
 };
 
 #endif	/* TCPHEADEROPTIONCOLLECTION_H */

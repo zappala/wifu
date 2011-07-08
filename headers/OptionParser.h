@@ -29,8 +29,8 @@ private:
 
     OptionParser();
 
-    map<gcstring, bool> present_;
-    map<gcstring, gcstring> argument_;
+    map<gcstring, bool, std::less<gcstring>, gc_allocator<std::pair<gcstring, bool> > > present_;
+    gcstring_map argument_;
 };
 
 #endif  // option_parser_h

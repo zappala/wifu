@@ -9,7 +9,6 @@
 #define	_TCPTAHOESENDRECEIVEACTIVETOPASSIVE_H
 
 #include <iostream>
-#include <vector>
 #include <cmath>
 #include <stdlib.h>
 #include <stdio.h>

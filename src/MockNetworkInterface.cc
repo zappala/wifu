@@ -138,7 +138,7 @@ void MockNetworkInterface::receive(WiFuPacket* p) {
 void MockNetworkInterface::imodule_timer_fired(Event* e) {
     TimerFiredEvent* event = (TimerFiredEvent*) e;
 
-    map<TimeoutEvent*, WiFuPacket*>::iterator itr = delayed_.find(event->get_timeout_event());
+    map<TimeoutEvent*, WiFuPacket*, std::less<TimeoutEvent*>, gc_allocator<std::pair<TimeoutEvent*, WiFuPacket*> > >::iterator itr = delayed_.find(event->get_timeout_event());
     if (itr != delayed_.end()) {
         //        cout << "MockNetworkInterface::timer_fired()" << endl;
         receive(itr->second);

@@ -50,8 +50,8 @@ gcstring NetworkTrace::get_packet_trace(NetworkTrace& other) const {
 
     if (!equal_size_traces(*this, other)) {
         bool this_is_shorter = packet_list_.size() < other.packet_list_.size();
-        vector<WiFuPacket*> shorter_list = this_is_shorter ? packet_list_ : other.packet_list_;
-        vector<WiFuPacket*> longer_list = this_is_shorter ? other.packet_list_ : packet_list_;
+        vector<WiFuPacket*, gc_allocator<WiFuPacket*> > shorter_list = this_is_shorter ? packet_list_ : other.packet_list_;
+        vector<WiFuPacket*, gc_allocator<WiFuPacket*> > longer_list = this_is_shorter ? other.packet_list_ : packet_list_;
 
         for (int index = packets_in_shorter_trace; index < longer_list.size(); ++index, ++packet_number) {
             if (index == packets_in_shorter_trace) {

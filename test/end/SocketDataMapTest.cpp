@@ -9,7 +9,6 @@
 #define	SOCKETDATAMAPTEST_H
 
 #include <iostream>
-#include <vector>
 
 #include "gtest/gtest.h"
 #include "../applib/SocketDataMap.h"
@@ -46,7 +45,7 @@ namespace {
     }
 
     TEST(SocketDataMapTest, MapTest) {
-        map<int, int*> m;
+        map<int, int*, std::less<int>, gc_allocator<std::pair<int, int*> > > m;
 
         int a = 0;
         int b = 1;

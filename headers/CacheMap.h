@@ -36,7 +36,7 @@ public:
 private:
     CacheMap();
 
-    map<Socket*, Cache*> map_;
+    map<Socket*, Cache*, std::less<Socket*>, gc_allocator<std::pair<Socket*, Cache*> > > map_;
     Semaphore mutex_;
 };
 

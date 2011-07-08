@@ -9,7 +9,6 @@
 #define	_QUEUETEST_H
 
 #include <iostream>
-#include <vector>
 #include <signal.h>
 
 #include "gtest/gtest.h"

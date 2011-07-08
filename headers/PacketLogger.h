@@ -78,7 +78,7 @@ private:
 	ofstream fileout_;
 	BinarySemaphore lock_;
 
-        list<PacketLoggerItem*> items_;
+        list<PacketLoggerItem*, gc_allocator<PacketLoggerItem*> > items_;
         int flush_count_;
 
 };

@@ -30,6 +30,7 @@
 
 #define sockets SocketDataMap::instance()
 
+
 // TODO: Go over each man page and determine what we want to support,
 // TODO: then make sure that every function in this file supports that behavior.
 
@@ -175,7 +176,7 @@ public:
      */
     int wifu_socket(int domain, int type, int protocol) {
         socket_mutex_.wait();
-        map<gcstring, gcstring> m;
+        gcstring_map m;
         m[FILE_STRING] = get_file();
         m[DOMAIN_STRING] = Utils::itoa(domain);
         m[TYPE_STRING] = Utils::itoa(type);
@@ -222,7 +223,7 @@ public:
 
         AddressPort ap((struct sockaddr_in*) addr);
 
-        map<gcstring, gcstring> m;
+        gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[ADDRESS_STRING] = ap.get_address();
@@ -260,7 +261,7 @@ public:
      */
     int wifu_getsockopt(int fd, int level, int optname, void *__restrict optval, socklen_t *__restrict optlen) {
 
-        map<gcstring, gcstring> m;
+        gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[LEVEL_STRING] = Utils::itoa(level);
@@ -303,7 +304,7 @@ public:
         memset(value, 0, BUFFER_SIZE);
         memcpy(value, optval, optlen);
 
-        map<gcstring, gcstring> m;
+        gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[LEVEL_STRING] = Utils::itoa(level);
@@ -345,7 +346,7 @@ public:
         }
 
 
-        map<gcstring, gcstring> m;
+        gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[N_STRING] = Utils::itoa(n);
@@ -381,7 +382,7 @@ public:
      */
     int wifu_accept(int fd, struct sockaddr* addr, socklen_t *__restrict addr_len) {
 
-        map<gcstring, gcstring> m;
+        gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
 
@@ -468,7 +469,7 @@ public:
      */
     ssize_t wifu_sendto(int fd, const void* buf, size_t n, int flags, const struct sockaddr* addr, socklen_t addr_len) {
 
-        map<gcstring, gcstring> m;
+        gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[BUFFER_STRING] = gcstring((const char*) buf, n);
@@ -517,7 +518,7 @@ public:
      */
     ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr, socklen_t *__restrict addr_len) {
                 //cout << "wifu_recvfrom()" << endl;
-        map<gcstring, gcstring> m;
+        gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[N_STRING] = Utils::itoa(n);
@@ -569,7 +570,7 @@ public:
         assert(addr != NULL);
         assert(sizeof (struct sockaddr_in) == len);
 
-        map<gcstring, gcstring> m;
+        gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
 
@@ -595,7 +596,7 @@ public:
      * @return 0 if call was successfull, -1 otherwise (and ERRNO is set appropriately).
      */
     int wifu_close(int fd) {
-        map<gcstring, gcstring> m;
+        gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
 
@@ -629,7 +630,7 @@ private:
     /**
      * Response received from the back-end.  The key is the method name, the value is the message.
      */
-    map<gcstring, gcstring> response_;
+    gcstring_map response_;
 };
 
 #endif	/* _WIFUENDAPILOCALSOCKET_H */

@@ -52,7 +52,7 @@ private:
     /**
      * Data structure mapping socket id (int) to SocketData pointer.
      */
-    map<int, SocketData*> data_;
+    map<int, SocketData*, std::less<int>, gc_allocator<std::pair<int, SocketData*> > > data_;
 
     /**
      * Control variable that makes this object thread-safe.
@@ -62,7 +62,7 @@ private:
     /**
      * Iterator for data_.
      */
-    map<int, SocketData*>::iterator itr_;
+    map<int, SocketData*, std::less<int>, gc_allocator<std::pair<int, SocketData*> > >::iterator itr_;
 
 public:
 
@@ -72,10 +72,9 @@ public:
      * This calls delete on all SocketData pointers saved inside this data structure.
      */
     virtual ~SocketDataMap() {
-        map<int, SocketData*>::iterator itr;
-        for (itr = data_.begin(); itr != data_.end(); ++itr) {
-            if (itr->second != NULL) {
-                delete itr->second;
+        for (itr_ = data_.begin(); itr_ != data_.end(); ++itr_) {
+            if (itr_->second != NULL) {
+                delete itr_->second;
             }
         }
     }

@@ -125,9 +125,9 @@ private:
     Semaphore counter_;
 
     /**
-     * Acutal STL queue we use in this PriorityQueue.
+     * Acutal STL queue we use in this Queue.
      */
-    queue<T> q_;
+    queue<T, deque<T, gc_allocator<T> > > q_;
 };
 
 

@@ -200,7 +200,7 @@ namespace {
         PriorityQueue<Event*, TimeoutEventComparator> q_;
 
         Socket* s = new Socket(0, 1, 2);
-        list<Event*> a, b, c;
+        list<Event*, gc_allocator<Event*> > a, b, c;
 
 
         // high priority
@@ -225,7 +225,7 @@ namespace {
         }
 
         // should get a, c, b
-        list<Event*> all;
+        list<Event*, gc_allocator<Event*> > all;
         all.insert(all.end(), a.begin(), a.end());
         all.insert(all.end(), c.begin(), c.end());
         all.insert(all.end(), b.begin(), b.end());

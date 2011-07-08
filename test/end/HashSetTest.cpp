@@ -11,7 +11,6 @@
 #include "HashSet.h"
 
 #include <iostream>
-#include <vector>
 
 #include "gtest/gtest.h"
 #include "events/Event.h"

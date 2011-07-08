@@ -36,7 +36,7 @@ private:
     NetworkInterface();
 
     int socket_;
-    map<int, PacketFactory*> protocols_;
+    map<int, PacketFactory*, std::less<int>, gc_allocator<std::pair<int, PacketFactory*> > > protocols_;
     RawSocketSender sender_;
     RawSocketListener listener_;
 };

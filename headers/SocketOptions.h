@@ -51,7 +51,7 @@ private:
 
     // Key:   pair<level, name>
     // Value: pair<value, value-length>
-    map< pair<int, int>, pair<gcstring, socklen_t> > map_;
+    map< pair<int, int>, pair<gcstring, socklen_t>, std::less<pair<int, int> >, gc_allocator<pair<pair<int, int>, pair<gcstring, socklen_t> > > > map_;
 };
 
 #endif	/* SOCKETOPTIONS_H */

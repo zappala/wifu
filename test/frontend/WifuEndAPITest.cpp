@@ -9,7 +9,6 @@
 #define	_WIFUENDAPITEST_H
 
 #include <iostream>
-#include <vector>
 #include <unistd.h>
 #include "../headers/defines.h"
 
@@ -43,10 +42,10 @@ namespace {
 
         void receive(gcstring& message) {
             //cout << "Request:\t" << message << endl;
-            map<gcstring, gcstring> m;
+            gcstring_map m;
             QueryStringParser::parse(message, m);
 
-            map<gcstring, gcstring> response;
+            gcstring_map response;
             response[FILE_STRING] = get_file();
             gcstring name = m[NAME_STRING];
             response[SOCKET_STRING] = m[SOCKET_STRING];

@@ -21,7 +21,7 @@
 using namespace std;
 
 typedef QueueProcessor<Event*>* EventQPPointer;
-typedef vector<EventQPPointer>* QPVectorPointer;
+typedef vector<EventQPPointer, gc_allocator<EventQPPointer> >* QPVectorPointer;
 typedef map<event_name, QPVectorPointer, std::less<event_name>, gc_allocator<std::pair<event_name, QPVectorPointer> > > DispatcherMap;
 
 /**

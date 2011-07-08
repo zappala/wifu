@@ -28,12 +28,12 @@ private:
     /**
      * The collection of Observers to notify when Observable::notify() is called.
      */
-    set<class Observer*> observers_;
+    set<class Observer*, std::less<Observer*>, gc_allocator<Observer*> > observers_;
 
     /**
      * Iterator for observers_
      */
-    set<class Observer*>::iterator itr_;
+    set<class Observer*, std::less<Observer*>, gc_allocator<Observer*> >::iterator itr_;
 
 public:
 

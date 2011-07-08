@@ -249,9 +249,9 @@ namespace {
     TEST(UtilsTest, read_file) {
 
         gcstring file = "test_file";
-        vector<gcstring> results = Utils::read_file(file);
+        vector<gcstring, gc_allocator<gcstring> > results = Utils::read_file(file);
 
-        vector<gcstring> expected;
+        vector<gcstring, gc_allocator<gcstring> > expected;
         expected.push_back("line one");
         expected.push_back("line two");
         expected.push_back("this is a longer line");
@@ -268,7 +268,7 @@ namespace {
     }
 
     TEST(UtilsTest, tokenize) {
-        vector<gcstring> expected;
+        vector<gcstring, gc_allocator<gcstring> > expected;
         expected.push_back("This");
         expected.push_back("is");
         expected.push_back("a");
@@ -276,7 +276,7 @@ namespace {
 
         gcstring line = "This is a line";
         gcstring delims = " ";
-        vector<gcstring> results = Utils::tokenize(line, delims);
+        vector<gcstring, gc_allocator<gcstring> > results = Utils::tokenize(line, delims);
 
         ASSERT_EQ(expected.size(), results.size());
 

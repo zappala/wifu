@@ -30,7 +30,7 @@ public:
 
     ssize_t send_to(gcstring& socket_file, gcstring& message);
 private:
-    map<gcstring, struct sockaddr_un*> destinations_;
+    map<gcstring, struct sockaddr_un*, std::less<gcstring>, gc_allocator<std::pair<gcstring, struct sockaddr_un*> > > destinations_;
     struct sockaddr_un* create_socket(gcstring& socket_file);
 
     int socket_;

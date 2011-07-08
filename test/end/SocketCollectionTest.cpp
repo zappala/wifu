@@ -42,7 +42,7 @@ namespace {
     }
 
     TEST_F(SocketCollectionTest, SizePushRemove) {
-        printf("Heap size = %d\n", GC_get_heap_size());
+        //printf("Heap size = %d\n", (int) GC_get_heap_size());
 
         int number = 1000;
 
@@ -76,7 +76,7 @@ namespace {
         collection.clear();
         ASSERT_EQ(0, collection.size());
 
-        printf("Heap size = %d\n", GC_get_heap_size());
+//        printf("Heap size = %d\n", (int) GC_get_heap_size());
 
     }
 

@@ -1,7 +1,6 @@
 #ifndef SOCKETOPTIONSTEST
 #define SOCKETOPTIONSTEST
 #include <iostream>
-#include <vector>
 #include <cmath>
 #include <stdlib.h>
 #include <stdio.h>

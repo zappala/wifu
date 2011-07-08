@@ -16,7 +16,6 @@
 #include "events/framework_events/NullEvent.h"
 
 #include <vector>
-#include <map>
 #include <time.h>
 #include <algorithm>
 
@@ -210,7 +209,7 @@ namespace {
         int seconds = 2;
         long int nano = 10000;
         int max = 10000;
-        vector<Event*> events;
+        vector<Event*, gc_allocator<Event*> > events;
 
         for (int i = 0; i < max; ++i) {
             long int time = (nano * i) + nano;
@@ -245,7 +244,7 @@ namespace {
         int seconds = 3;
         long int nano = 10000;
         int max = 10000;
-        vector<Event*> events;
+        vector<Event*, gc_allocator<Event*> > events;
 
         for (int i = 0; i < max; ++i) {
             long int time = (nano * i) + nano;
@@ -253,7 +252,7 @@ namespace {
             events.push_back(e);
         }
 
-        vector<Event*> events_copy(events);
+        vector<Event*, gc_allocator<Event*> > events_copy(events);
 
         while(!events.empty()) {
             int random = get_random(events.size());
@@ -346,7 +345,7 @@ namespace {
         int seconds = 2;
         long int nano = 1000;
         int max = 10000;
-        vector<Event*> events;
+        vector<Event*, gc_allocator<Event*> > events;
         HashSet<int> to_cancel;
 
         for (int i = 0; i < max; ++i) {
@@ -355,7 +354,7 @@ namespace {
             events.push_back(e);
         }
 
-        vector<Event*> events_copy(events);
+        vector<Event*, gc_allocator<Event*> > events_copy(events);
 
         // Randomly insert
         while(!events.empty()) {

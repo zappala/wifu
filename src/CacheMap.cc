@@ -11,7 +11,7 @@ CacheMap::~CacheMap() {
 
 Cache* CacheMap::get(Socket* s) {
     mutex_.wait();
-    map<Socket*, Cache*>::iterator itr = map_.find(s);
+    map<Socket*, Cache*, std::less<Socket*>, gc_allocator<std::pair<Socket*, Cache*> > >::iterator itr = map_.find(s);
     Cache* c = itr == map_.end() ? NULL : itr->second;
     mutex_.post();
     return c;

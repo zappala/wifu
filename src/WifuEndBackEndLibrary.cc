@@ -15,7 +15,7 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
     //        cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
 
 
-    map<gcstring, gcstring> m;
+    gcstring_map m;
     QueryStringParser::parse(message, m);
 
     gcstring name = m[NAME_STRING];
@@ -38,7 +38,7 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
             return;
 
         } else {
-            map<gcstring, gcstring> response;
+            gcstring_map response;
             response[SOCKET_STRING] = s;
             response[FILE_STRING] = get_file();
             response[SOCKET_STRING] = Utils::itoa(-1);

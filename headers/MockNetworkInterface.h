@@ -62,7 +62,7 @@ private:
 
     int percent_;
 
-    map<TimeoutEvent*, WiFuPacket*> delayed_;
+    map<TimeoutEvent*, WiFuPacket*, std::less<TimeoutEvent*>, gc_allocator<std::pair<TimeoutEvent*, WiFuPacket*> > > delayed_;
 
     Socket* fake_socket_;
 

@@ -11,22 +11,23 @@
 #include <typeinfo>
 #include <limits.h>
 #include <string>
+#include <map>
 #include "GarbageCollector.h"
 
 typedef std::basic_string<char, std::char_traits<char>, gc_allocator<char> > gcstring;
-
-typedef struct {
-    long operator() (const gcstring & k) const {
-        return 1;
-    }
-} gcstring_hash;
-
-typedef struct {
-
-    bool operator() (const gcstring& x, const gcstring& y) const {
-        return x == y;
-    }
-} gcstring_eq;
+typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair<gcstring, gcstring> > > gcstring_map;
+//typedef struct {
+//    long operator() (const gcstring & k) const {
+//        return 1;
+//    }
+//} gcstring_hash;
+//
+//typedef struct {
+//
+//    bool operator() (const gcstring& x, const gcstring& y) const {
+//        return x == y;
+//    }
+//} gcstring_eq;
 
 
 #define type_name(X) typeid(X).name()

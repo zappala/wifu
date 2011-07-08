@@ -63,7 +63,7 @@ void TCPHeaderOptionCollection::parse(unsigned char* options, u_int8_t options_l
 }
 
 void TCPHeaderOptionCollection::accept(Visitor* v) {
-    list<TCPHeaderOption*>::iterator itr = options_.begin();
+    list<TCPHeaderOption*, gc_allocator<TCPHeaderOption*> >::iterator itr = options_.begin();
     for (; itr != options_.end(); ++itr) {
         v->visit(*itr);
         if(v->stop()) {

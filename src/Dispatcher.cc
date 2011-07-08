@@ -12,10 +12,10 @@ Dispatcher::~Dispatcher() {
 void Dispatcher::map_event(event_name name, EventQPPointer q) {
     mutex_.wait();
     if (map_.find(name) == map_.end()) {
-        map_[name] = new vector<EventQPPointer>;
+        map_[name] = new vector<EventQPPointer, gc_allocator<EventQPPointer> >;
     }
 
-    vector<EventQPPointer>::iterator itr = find(map_[name]->begin(), map_[name]->end(), q);
+    vector<EventQPPointer, gc_allocator<EventQPPointer> >::iterator itr = find(map_[name]->begin(), map_[name]->end(), q);
     if (itr == map_[name]->end()) {
         map_[name]->push_back(q);
     }

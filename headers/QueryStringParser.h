@@ -19,9 +19,9 @@ using namespace std;
 
 class QueryStringParser {
 public:
-    static void parse(gcstring& message, map<gcstring, gcstring>& values);
+    static void parse(gcstring& message, gcstring_map& values);
 
-    static gcstring create(gcstring name, map<gcstring, gcstring>& values);
+    static gcstring create(gcstring name, gcstring_map& values);
 };
 
 #endif	/* QUERYSTRINGPARSER_H */

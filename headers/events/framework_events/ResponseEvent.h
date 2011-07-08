@@ -8,12 +8,12 @@
 #ifndef RESPONSEEVENT_H
 #define	RESPONSEEVENT_H
 
-#include <map>
 
 #include "FrameworkEvent.h"
 #include "QueryStringParser.h"
 #include "Socket.h"
 #include "Utils.h"
+#include "defines.h"
 
 using namespace std;
 
@@ -93,7 +93,7 @@ private:
     /**
      * A map of the key-value pairs to send to the front end.
      */
-    map<gcstring, gcstring> m_;
+    gcstring_map m_;
             
 };
 

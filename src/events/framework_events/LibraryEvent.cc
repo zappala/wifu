@@ -19,6 +19,6 @@ gcstring& LibraryEvent::get_name() {
     return name_;
 }
 
-map<gcstring, gcstring>& LibraryEvent::get_map() {
+gcstring_map& LibraryEvent::get_map() {
     return m_;
 }

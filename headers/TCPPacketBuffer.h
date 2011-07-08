@@ -15,8 +15,7 @@
 #include "packet/TCPSequenceNumberComparator.h"
 #include "Math.h"
 
-//typedef map<TCPPacket*, char, TCPSequenceNumberComparator> packet_buffer;
-typedef list<TCPPacket*> packet_buffer;
+typedef list<TCPPacket*, gc_allocator<TCPPacket*> > packet_buffer;
 
 class TCPPacketBuffer : public gc {
 public:

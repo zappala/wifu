@@ -5,7 +5,7 @@ LocalSocketSender::LocalSocketSender() {
 }
 
 LocalSocketSender::~LocalSocketSender() {
-    map<gcstring, struct sockaddr_un*>::iterator itr;
+    map<gcstring, struct sockaddr_un*, std::less<gcstring>, gc_allocator<std::pair<gcstring, struct sockaddr_un*> > >::iterator itr;
 
     // show content:
     for (itr = destinations_.begin(); itr != destinations_.end(); itr++) {

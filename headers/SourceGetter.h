@@ -54,8 +54,8 @@ private:
     void parse_routes(struct nlmsghdr* headder, struct address_info* info);
 
     // key = destination, value = source
-    map<gcstring, gcstring> cache_;
-    map<gcstring, gcstring>::iterator cache_itr_;
+    gcstring_map cache_;
+    gcstring_map::iterator cache_itr_;
     int netlink_socket_;
     int udp_socket_;
     vector<struct address_info, gc_allocator<struct address_info> > infos_;

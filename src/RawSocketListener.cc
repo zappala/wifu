@@ -5,7 +5,7 @@ void* listener(void* arg) {
     NetworkCallback* callback = data->callback;
     int epfd = data->epfd;
     Semaphore* sem = data->sem;
-    map<int, PacketFactory*>* factories = data->factories;
+    map<int, PacketFactory*, std::less<int>, gc_allocator<std::pair<int, PacketFactory*> > >* factories = data->factories;
 
     sem->post();
 

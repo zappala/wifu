@@ -38,7 +38,7 @@ struct listen_data {
     NetworkCallback* callback;
     int epfd;
     Semaphore* sem;
-    map<int, PacketFactory*>* factories;
+    map<int, PacketFactory*, std::less<int>, gc_allocator<std::pair<int, PacketFactory*> > >* factories;
 };
 
 class RawSocketListener {
@@ -51,7 +51,7 @@ public:
     void start(NetworkCallback* callback);
 
 private:
-    map<int, PacketFactory*> factories_;
+    map<int, PacketFactory*, std::less<int>, gc_allocator<std::pair<int, PacketFactory*> > > factories_;
     int epfd_;
     Semaphore* sem_;
     bool started_;
