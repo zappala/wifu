@@ -13,7 +13,7 @@ void TimeoutEvent::execute(IModule* m) {
 }
 
 gcstring TimeoutEvent::to_s() {
-    stringstream s;
-    s << "Seconds: " << timer_.tv_sec << " Nanoseconds: " << timer_.tv_nsec;
-    return s.str().c_str();
+    char buffer[100];
+    sprintf(buffer, "Seconds: %ld Nanoseconds: %ld", timer_.tv_sec, timer_.tv_nsec);
+    return buffer;
 }

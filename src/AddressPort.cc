@@ -62,14 +62,9 @@ struct sockaddr_in* AddressPort::get_network_struct_ptr() {
 }
 
 gcstring AddressPort::to_s() {
-    // Max lengths of items:
-    // Address: 15
-    // Port = 5
-    // Space = 1
-    // Null char = 1
-    // Total = 22
-    char buffer[22];
-    sprintf(buffer, "%s %uh", get_address().c_str(), get_port());
+    char buffer[25];
+    // Port then address on to_s as ports will likely be different sooner.
+    sprintf(buffer, "%uh %s", get_port(), get_address().c_str());
     return buffer;
 }
 

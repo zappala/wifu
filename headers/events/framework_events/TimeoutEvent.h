@@ -57,7 +57,7 @@ public:
     void execute(IModule* m);
 
     /**
-     * @return The stirng representation of the exact time at which this timer is supposed to go off.
+     * @return The string representation of the exact time at which this timer is supposed to go off.
      */
     gcstring to_s();
 

@@ -94,10 +94,9 @@ bool NetworkTrace::equal_size_traces(const NetworkTrace& one, const NetworkTrace
 }
 
 gcstring NetworkTrace::get_packet_string(int packet_number, WiFuPacket* packet) const {
-    stringstream stream;
-    stream << packet_number << endl <<
-            packet->to_s();
-    return stream.str().c_str();
+    char buffer[2000];
+    sprintf(buffer, "%d\n%s", packet_number, packet->to_s().c_str());
+    return buffer;
 }
 
 gcstring NetworkTrace::get_nonequal_packets_string(int packet_number, WiFuPacket* one, WiFuPacket* two) const {
