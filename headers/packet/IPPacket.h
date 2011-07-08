@@ -10,9 +10,9 @@
 
 #include <arpa/inet.h>
 #include <netinet/ip.h>
-#include <sstream>
 #include <string.h>
 #include <iostream>
+#include <stdio.h>
 
 #include "defines.h"
 #include "GarbageCollector.h"

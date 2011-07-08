@@ -67,19 +67,15 @@ int WiFuPacket::max_data_length() {
 }
 
 gcstring WiFuPacket::to_s() const {
-    stringstream s;
-    s << IPPacket::to_s() << endl
-            << "wifu "
-            << (int) get_source_port() << " "
-            << (int) get_destination_port();
-    return s.str().c_str();
+    char buffer[200];
+    sprintf(buffer, "%s\n# wifu %uh %uh", IPPacket::to_s().c_str(), get_source_port(), get_destination_port());
+    return buffer;
 }
 
 gcstring WiFuPacket::to_s_format() const {
-    stringstream s;
-    s << IPPacket::to_s_format() << endl
-            << "# wifu source_port destination_port";
-    return s.str().c_str();
+    char buffer[200];
+    sprintf(buffer, "%s\n# wifu source_port destination_port", IPPacket::to_s_format().c_str());
+    return buffer;
 }
 
 bool WiFuPacket::operator ==(const IPPacket& other) const {

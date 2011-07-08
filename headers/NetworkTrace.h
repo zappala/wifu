@@ -11,6 +11,7 @@
 #include "GarbageCollector.h"
 #include "packet/WiFuPacket.h"
 #include "packet/TCPPacket.h"
+#include <sstream>
 #include <vector>
 
 using namespace std;

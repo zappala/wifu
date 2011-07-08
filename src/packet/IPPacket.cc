@@ -5,7 +5,7 @@ IPPacket::IPPacket() : length_set_(false) {
 }
 
 IPPacket::~IPPacket() {
-    
+
 }
 
 unsigned char* IPPacket::get_payload() {
@@ -122,7 +122,7 @@ gcstring IPPacket::get_ip_source_address_s() const {
     char ip_addr_source[INET_ADDRSTRLEN];
     u_int32_t saddr = ip_->saddr;
     inet_ntop(AF_INET, &saddr, ip_addr_source, INET_ADDRSTRLEN);
-    return gcstring(ip_addr_source);
+    return ip_addr_source;
 }
 
 void IPPacket::set_ip_source_address_s(gcstring& saddr) {
@@ -141,7 +141,7 @@ gcstring IPPacket::get_ip_destination_address_s() const {
     char ip_addr_dest[INET_ADDRSTRLEN];
     u_int32_t daddr = ip_->daddr;
     inet_ntop(AF_INET, &daddr, ip_addr_dest, INET_ADDRSTRLEN);
-    return gcstring(ip_addr_dest);
+    return ip_addr_dest;
 }
 
 void IPPacket::set_ip_destination_address_s(gcstring& daddr) {
@@ -236,27 +236,25 @@ int IPPacket::max_data_length() const {
 }
 
 gcstring IPPacket::to_s() const {
-    stringstream s;
-    s << "ip" << " ";
-    s << (int) get_ip_version() << " ";
-    s << (int) get_ip_header_length_words() << " ";
-    s << (int) get_ip_tos() << " ";
-    s << get_ip_tot_length() << " ";
-    s << get_ip_identifier() << " ";
-    s << get_ip_fragmentation_offset() << " ";
-    s << (int) get_ip_ttl() << " ";
-    s << (int) get_ip_protocol() << " ";
-    s << get_ip_checksum() << " ";
-    s << get_ip_source_address_s() << " ";
-    s << get_ip_destination_address_s() << " ";
-    
-    return s.str().c_str();
+    char buffer[100];
+    sprintf(buffer, "# ip %d %d %d %uh %uh %uh %d %d %uh %s %s",
+            (int) get_ip_version(),
+            (int) get_ip_header_length_words(),
+            (int) get_ip_tos(),
+            get_ip_tot_length(),
+            get_ip_identifier(),
+            get_ip_fragmentation_offset(),
+            (int) get_ip_ttl(),
+            (int) get_ip_protocol(),
+            get_ip_checksum(),
+            get_ip_source_address_s().c_str(),
+            get_ip_destination_address_s().c_str());
+
+    return buffer;
 }
 
 gcstring IPPacket::to_s_format() const {
-    stringstream s;
-    s << "# ip version ihl tos datagram_length id flagsANDfrag_off ttl protocol checksum source destination";
-    return s.str().c_str();
+    return "# ip version ihl tos datagram_length id frag_off ttl protocol checksum source destination";
 }
 
 bool IPPacket::operator==(const IPPacket& other) const {

@@ -173,32 +173,31 @@ int TCPPacket::max_data_length() {
 }
 
 gcstring TCPPacket::to_s() const {
-    stringstream s;
-    s << IPPacket::to_s() << endl
-            << "tcp "
-            << get_source_port() << " "
-            << get_destination_port() << " "
-            << get_tcp_sequence_number() << " "
-            << get_tcp_ack_number() << " "
-            << get_tcp_data_offset() << " "
-            << get_tcp_header_length_bytes() << " "
-            << is_tcp_urg() << " "
-            << is_tcp_ack() << " "
-            << is_tcp_psh() << " "
-            << is_tcp_rst() << " "
-            << is_tcp_syn() << " "
-            << is_tcp_fin() << " "
-            << get_tcp_receive_window_size() << " "
-            << get_tcp_checksum() << " "
-            << get_tcp_urgent_pointer();
-    return s.str().c_str();
+    char buffer[250];
+    sprintf(buffer, "%s# tcp %uh %uh %ud %ud %uh %d %d %d %d %d %d %d %uh %uh %uh",
+            IPPacket::to_s().c_str(),
+            get_source_port(),
+            get_destination_port(),
+            get_tcp_sequence_number(),
+            get_tcp_ack_number(),
+            get_tcp_data_offset(),
+            get_tcp_header_length_bytes(),
+            is_tcp_urg(),
+            is_tcp_ack(),
+            is_tcp_psh(),
+            is_tcp_rst(),
+            is_tcp_syn(),
+            is_tcp_fin(),
+            get_tcp_receive_window_size(),
+            get_tcp_checksum(),
+            get_tcp_urgent_pointer());
+    return buffer;
 }
 
 gcstring TCPPacket::to_s_format() const {
-    stringstream s;
-    s << IPPacket::to_s_format() << endl
-            << "# tcp sport dport seq_num ack_num doff header_length URG ACK PSH RST SYN FIN rcv_wnd checksum urg_ptr";
-    return s.str().c_str();
+    char buffer[250];
+    sprintf(buffer, "%s\n# tcp sport dport seq_num ack_num doff header_length URG ACK PSH RST SYN FIN rcv_wnd checksum urg_ptr", IPPacket::to_s_format().c_str());
+    return buffer;
 }
 
 bool TCPPacket::operator ==(const IPPacket& other) const {
