@@ -25,7 +25,7 @@
 
 #include "SimpleTCPCache.h"
 #include "CacheMap.h"
-#include "HashSet.h"
+#include "Set.h"
 #include "packet/TCPTimestampOption.h"
 
 using namespace std;

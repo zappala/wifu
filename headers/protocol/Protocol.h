@@ -40,7 +40,7 @@
 #include "events/framework_events/TimerEvent.h"
 #include "events/framework_events/TimerFiredEvent.h"
 
-#include "HashSet.h"
+#include "Set.h"
 #include "Socket.h"
 #include "visitors/AlreadyListeningOnSamePortVisitor.h"
 #include "visitors/AlreadyBoundToAddressPortVisitor.h"
@@ -125,7 +125,7 @@ public:
 
 private:
     int protocol_;
-    HashSet<Socket*> sockets_;
+    Set<Socket*> sockets_;
 };
 
 #endif	/* PROTOCOL_H */

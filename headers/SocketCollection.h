@@ -9,7 +9,6 @@
 #define	_SOCKETCOLLECTION_H
 
 #include <algorithm>
-#include <tr1/unordered_map>
 #include <typeinfo>
 
 #include "Socket.h"

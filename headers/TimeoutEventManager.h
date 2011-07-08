@@ -88,7 +88,7 @@ private:
     /**
      * TimeoutEvents which have been canceled
      */
-    HashSet<TimeoutEvent*> canceled_events_;
+    Set<TimeoutEvent*> canceled_events_;
 };
 
 

@@ -12,7 +12,7 @@
 #include "contexts/IContext.h"
 #include "contexts/TCPTahoeIContextContainer.h"
 #include "Math.h"
-#include "HashSet.h"
+#include "Set.h"
 #include "IContextContainerFactory.h"
 #include "TCPTahoeIContextContainerFactory.h"
 #include "contexts/BasicIContextContainer.h"
@@ -24,9 +24,9 @@ private:
 protected:
     TCPTahoe(int protocol = TCP_TAHOE, IContextContainerFactory* factory = new TCPTahoeIContextContainerFactory());
 
-    tr1::unordered_map<Socket*, BasicIContextContainer*> map_;
+    map<Socket*, BasicIContextContainer*, std::less<Socket*>, gc_allocator<std::pair<Socket*, BasicIContextContainer*> > > map_;
 
-    HashSet<gcstring> states_we_can_send_ack_;
+    Set<gcstring> states_we_can_send_ack_;
 
     int get_available_room_in_send_buffer(SendEvent* e);
     void save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e, int available_room_in_send_buffer);

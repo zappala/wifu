@@ -1,14 +1,14 @@
 /* 
- * File:   HashSetTest.h
+ * File:   SetTest.h
  * Author: rbuck
  *
  * Created on December 23, 2010, 11:34 AM
  */
 
-#ifndef HASHSETTEST_H
-#define	HASHSETTEST_H
+#ifndef SETTEST_H
+#define	SETTEST_H
 
-#include "HashSet.h"
+#include "Set.h"
 
 #include <iostream>
 
@@ -20,13 +20,13 @@ using namespace std;
 
 namespace {
 
-    TEST(IntHashSetTest, Empty) {
-        HashSet<int> set;
+    TEST(IntSetTest, Empty) {
+        Set<int> set;
         ASSERT_EQ(0, set.size());
     }
 
-    TEST(IntHashSetTest, Clear) {
-    	HashSet<int> set;
+    TEST(IntSetTest, Clear) {
+    	Set<int> set;
     	set.insert(5);
 
     	set.insert(6);
@@ -37,15 +37,15 @@ namespace {
     	ASSERT_EQ(set.size(), 0);
     }
 
-    TEST(IntHashSetTest, InsertContains) {
-        HashSet<int> set;
+    TEST(IntSetTest, InsertContains) {
+        Set<int> set;
         int zero = 0;
         set.insert(zero);
         ASSERT_TRUE(set.contains(zero));
     }
 
-    TEST(IntHashSetTest, InsertContainsMany) {
-        HashSet<int> set;
+    TEST(IntSetTest, InsertContainsMany) {
+        Set<int> set;
 
         int count = 1000;
 
@@ -58,8 +58,8 @@ namespace {
         }
     }
 
-    TEST(IntHashSetTest, Remove) {
-        HashSet<int> set;
+    TEST(IntSetTest, Remove) {
+        Set<int> set;
         int zero = 0;
         set.insert(zero);
         ASSERT_TRUE(set.contains(zero));
@@ -69,8 +69,8 @@ namespace {
         ASSERT_EQ(0, set.size());
     }
 
-    TEST(IntHashSetTest, RemoveMany) {
-        HashSet<int> set;
+    TEST(IntSetTest, RemoveMany) {
+        Set<int> set;
 
         int count = 1000;
 
@@ -98,21 +98,21 @@ namespace {
         }
     }
 
-    TEST(EventPointerHashSetTest, Empty) {
-        HashSet<Event*> set;
+    TEST(EventPointerSetTest, Empty) {
+        Set<Event*> set;
         ASSERT_EQ(0, set.size());
     }
 
-    TEST(EventPointerHashSetTest, InsertContains) {
-        HashSet<Event*> set;
+    TEST(EventPointerSetTest, InsertContains) {
+        Set<Event*> set;
         Event* e = new TimeoutEvent(0, 1, 0);
 
         set.insert(e);
         ASSERT_TRUE(set.contains(e));
     }
 
-    TEST(EventPointerHashSetTest, InsertContainsMany) {
-        HashSet<Event*> set;
+    TEST(EventPointerSetTest, InsertContainsMany) {
+        Set<Event*> set;
 
         int count = 1000;
         Event * events[count];
@@ -127,8 +127,8 @@ namespace {
         }
     }
 
-    TEST(EventPointerHashSetTest, Remove) {
-        HashSet<Event*> set;
+    TEST(EventPointerSetTest, Remove) {
+        Set<Event*> set;
         Event* e = new TimeoutEvent(0, 0, 1);
 
         set.insert(e);
@@ -139,8 +139,8 @@ namespace {
         ASSERT_EQ(0, set.size());
     }
 
-    TEST(EventPointerHashSetTest, RemoveMany) {
-        HashSet<Event*> set;
+    TEST(EventPointerSetTest, RemoveMany) {
+        Set<Event*> set;
 
         int count = 1000;
         Event * events[count];
@@ -171,5 +171,5 @@ namespace {
     }
 }
 
-#endif	/* HASHSETTEST_H */
+#endif	/* SETTEST_H */
 

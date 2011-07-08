@@ -1,42 +1,43 @@
 /* 
- * File:   NumberSet.h
+ * File:   Set.h
  * Author: rbuck
  *
  * Created on December 22, 2010, 10:13 AM
  */
 
-#ifndef _NUMBERSET_H
-#define	_NUMBERSET_H
+#ifndef _SET_H
+#define	_SET_H
 
 #include <set>
 #include "Semaphore.h"
+#include "GarbageCollector.h"
 
 using namespace std;
 
 /**
- * Template hash set class that stores type T objects.
+ * Template set class that stores type T objects.
  * This class is thread-safe.
  */
 template<class T>
-class HashSet {
+class Set {
 public:
 
     /**
-     * Constructs an empty HashSet
+     * Constructs an empty Set
      */
-    HashSet() {
+    Set() {
         reset();
     }
 
     /**
-     * Cleans up this HashSet
+     * Cleans up this Set
      */
-    virtual ~HashSet() {
+    virtual ~Set() {
 
     }
 
     /**
-     * Inserts obj into this hash set
+     * Inserts obj into this set
      * @param obj The object to insert
      */
     void insert(T obj) {
@@ -46,7 +47,7 @@ public:
     }
 
     /**
-     * Removes obj from this hash set if it exists
+     * Removes obj from this set if it exists
      */
     void remove(T obj) {
         mutex_->wait();
@@ -55,7 +56,7 @@ public:
     }
 
     /**
-     * @return True if obj is in this hash set, false otherwise
+     * @return True if obj is in this set, false otherwise
      */
     bool contains(T obj) {
         mutex_->wait();
@@ -65,7 +66,7 @@ public:
     }
 
     /**
-     * @return The number of elements in this hash set
+     * @return The number of elements in this set
      */
     int size() {
         mutex_->wait();
@@ -75,7 +76,7 @@ public:
     }
 
     /**
-     * Removes all elements from this hash set
+     * Removes all elements from this set
      */
     void clear() {
         mutex_->wait();
@@ -84,11 +85,11 @@ public:
     }
 
     /**
-     * Resets this hash set.
+     * Resets this set.
      * Reinitializes the protecting Semaphore object and calls clear()
      *
      * @see Semaphore
-     * @see HashSet::clear()
+     * @see Set::clear()
      */
     void reset() {
         mutex_ = new Semaphore();
@@ -98,7 +99,7 @@ public:
 
 private:
     Semaphore* mutex_;
-    set<T> set_;
+    set<T, std::less<T>, gc_allocator<T> > set_;
 };
 
 #endif	/* _NUMBERSET_H */

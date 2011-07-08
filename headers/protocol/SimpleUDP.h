@@ -16,9 +16,7 @@ class SimpleUDP : public Protocol {
 private:
     SimpleUDP(int protocol = UDP);
 
-    tr1::unordered_map<Socket*, SimpleUDPIContextContainer*> map_;
-
-    //HashSet<gcstring> states_we_can_send_ack_;
+    map<Socket*, SimpleUDPIContextContainer*, std::less<Socket*>, gc_allocator<std::pair<Socket*, SimpleUDPIContextContainer*> > > map_;
 
     bool is_room_in_send_buffer(SendEvent* e);
     void save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e);

@@ -8,14 +8,14 @@
 #ifndef _PROTOCOLMANAGER_H
 #define	_PROTOCOLMANAGER_H
 
-#include "HashSet.h"
+#include "Set.h"
 #include "Socket.h"
 
 /**
  * Keeps track of the set of protocols (ints) which is supported by
  * wifu end.
  */
-class ProtocolManager : public HashSet<int> {
+class ProtocolManager : public Set<int> {
 private:
     ProtocolManager();
 

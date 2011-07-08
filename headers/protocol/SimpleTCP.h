@@ -8,6 +8,8 @@
 #ifndef SIMPLETCP_H
 #define	SIMPLETCP_H
 
+#include <map>
+
 #include "Protocol.h"
 #include "defines.h"
 
@@ -23,6 +25,7 @@
 #include "SimpleTCPCache.h"
 #include "packet/TCPTimestampOption.h"
 
+
 class SimpleTCP : public Protocol {
 private:
     SimpleTCP();
@@ -31,8 +34,8 @@ private:
 
     SimpleTCPIContextContainer* get_context(Socket* s);
 
-    tr1::unordered_map<Socket*, SimpleTCPIContextContainer*> map_;
-    tr1::unordered_map<Socket*, SimpleTCPIContextContainer*>::iterator itr_;
+    map<Socket*, SimpleTCPIContextContainer*, std::less<Socket*>, gc_allocator<std::pair<Socket*, SimpleTCPIContextContainer*> > > map_;
+    map<Socket*, SimpleTCPIContextContainer*, std::less<Socket*>, gc_allocator<std::pair<Socket*, SimpleTCPIContextContainer*> > >::iterator itr_;
 
     bool is_room_in_send_buffer(SendEvent* e);
     void save_in_buffer_and_send_events(SendEvent* e);

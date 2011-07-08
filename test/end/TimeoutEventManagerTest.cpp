@@ -346,7 +346,7 @@ namespace {
         long int nano = 1000;
         int max = 10000;
         vector<Event*, gc_allocator<Event*> > events;
-        HashSet<int> to_cancel;
+        Set<int> to_cancel;
 
         for (int i = 0; i < max; ++i) {
             long int time = (nano * i) + nano;

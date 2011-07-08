@@ -11,12 +11,12 @@
 #include <cstdlib>
 #include <time.h>
 
-#include "HashSet.h"
+#include "Set.h"
 
 using namespace std;
 
 template<class N>
-class RandomNumberSet : public HashSet<N> {
+class RandomNumberSet : public Set<N> {
 public:
 
     RandomNumberSet() {

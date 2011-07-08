@@ -1,6 +1,6 @@
 #include "TimeoutHelper.h"
 
-TimeoutHelper::TimeoutHelper() : HashSet<Event*>() {}
+TimeoutHelper::TimeoutHelper() : Set<Event*>() {}
 
 TimeoutHelper::~TimeoutHelper() {}
 
