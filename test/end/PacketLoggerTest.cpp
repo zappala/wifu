@@ -23,6 +23,9 @@ using namespace std;
 #define logger PacketLogger::instance()
 
 namespace {
+    
+    // TODO: this test is broken because the logger is a singleton and doesn't start over upon a new test being started.
+    // Need to be able to reset the logger (delete the old log) and start fresh each test.
 
     TEST(PacketLogger, test) {
         // TODO: we need to be able to log options now
