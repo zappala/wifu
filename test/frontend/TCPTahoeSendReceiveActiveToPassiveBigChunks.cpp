@@ -44,10 +44,13 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
     char buffer[size];
     gcstring all_received = "";
 
+    Timer recv_timer;
+
     while (true) {
 
         memset(buffer, 0, size);
         int return_value = wifu_recv(connection, &buffer, 10000, 0);
+        recv_timer.start();
 
         if (return_value == 0) {
 //                        cout << "Close Thread BREAK" << endl;
@@ -57,6 +60,10 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
         gcstring actual(buffer);
         all_received.append(actual);
     }
+
+    recv_timer.stop();
+    cout << "Duration (us) to recv: " << expected.size() << " bytes on localhost: " << recv_timer.get_duration_microseconds() << endl;
+    
     wifu_close(connection);
     wifu_close(server);
     EXPECT_EQ(expected, all_received);
@@ -140,6 +147,14 @@ void tahoe_active_to_passive_big_chunks(int protocol, gcstring message) {
 
 TEST_F(BackEndTest, tahoeSendReceiveTestActiveBigChunks100000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(100000));
+}
+
+TEST_F(BackEndTest, tahoeSendReceiveTestActiveBigChunks1000000) {
+    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000000));
+}
+
+TEST_F(BackEndTest, tahoeSendReceiveTestActiveBigChunks10000000) {
+    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(10000000));
 }
 
 TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks1000) {
