@@ -92,10 +92,9 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
 void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
     ResponseEvent* event = (ResponseEvent*) e;
     event->put(FILE_STRING, get_file());
-    gcstring file = event->get_write_file();
-    gcstring response = event->get_response();
-//    cout << "Response: " << response << endl;
-    send_to(file, response);
+    gcstring response;
+    event->get_response(response);
+    send_to(event->get_write_file(), response);
 }
 
 WifuEndBackEndLibrary::WifuEndBackEndLibrary() : LocalSocketFullDuplex("/tmp/WS"), Module() {

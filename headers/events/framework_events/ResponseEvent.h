@@ -42,10 +42,12 @@ public:
      */
     virtual ~ResponseEvent();
 
+
     /**
-     * @return A query string-like message to be passed over a Unix socket to the front end.
+     * Creates a response from the internal map.
+     * @param response A reference to a string to store the response in.
      */
-    gcstring get_response();
+    void get_response(gcstring& response);
 
     /**
      * Inserts a key-value pair into the response.
@@ -76,7 +78,7 @@ public:
     /**
      * @return A reference to the file used by a Unix socket that this ResponseEvent will send to.
      */
-    gcstring get_write_file();
+    gcstring& get_write_file();
 
 private:
 

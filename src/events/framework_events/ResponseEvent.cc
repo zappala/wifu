@@ -8,12 +8,9 @@ ResponseEvent::~ResponseEvent() {
 
 }
 
-gcstring ResponseEvent::get_response() {
+void ResponseEvent::get_response(gcstring& response) {
     m_[SOCKET_STRING] = Utils::itoa(get_socket()->get_socket_id());
-    gcstring response;
-    // TODO: figure out how to reserve enough space
     QueryStringParser::create(name_, m_, response);
-    return response;
 }
 
 // TODO: fix this so we can pass references
@@ -33,6 +30,6 @@ void ResponseEvent::execute(IModule* m) {
     m->imodule_library_response(this);
 }
 
-gcstring ResponseEvent::get_write_file() {
+gcstring& ResponseEvent::get_write_file() {
     return file_;
 }
