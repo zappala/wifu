@@ -174,7 +174,7 @@ int TCPPacket::max_data_length() {
 
 gcstring TCPPacket::to_s() const {
     char buffer[250];
-    sprintf(buffer, "%s\n# tcp %hu %hu %u %u %hu %d %d %d %d %d %d %d %hu %hu %hu",
+    sprintf(buffer, "%s\ntcp %hu %hu %u %u %hu %d %d %d %d %d %d %d %hu %hu %hu",
             IPPacket::to_s().c_str(),
             get_source_port(),
             get_destination_port(),

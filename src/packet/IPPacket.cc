@@ -237,7 +237,7 @@ int IPPacket::max_data_length() const {
 
 gcstring IPPacket::to_s() const {
     char buffer[100];
-    sprintf(buffer, "# ip %d %d %d %hu %hu %hu %d %d %hu %s %s",
+    sprintf(buffer, "ip %d %d %d %hu %hu %hu %d %d %hu %s %s",
             (int) get_ip_version(),
             (int) get_ip_header_length_words(),
             (int) get_ip_tos(),

@@ -113,7 +113,7 @@ int ATPPacket::max_data_length(){
 
 gcstring ATPPacket::to_s() const{
     char buffer[300];
-    sprintf(buffer, "%s\n# atp %u %u", super::to_s().c_str(), ntohl(atp_->max_delay), ntohl(atp_->average_delay));
+    sprintf(buffer, "%s\natp %u %u", super::to_s().c_str(), ntohl(atp_->max_delay), ntohl(atp_->average_delay));
     return buffer;
 }
 

@@ -68,7 +68,7 @@ int WiFuPacket::max_data_length() {
 
 gcstring WiFuPacket::to_s() const {
     char buffer[200];
-    sprintf(buffer, "%s\n# wifu %hu %hu", IPPacket::to_s().c_str(), get_source_port(), get_destination_port());
+    sprintf(buffer, "%s\nwifu %hu %hu", IPPacket::to_s().c_str(), get_source_port(), get_destination_port());
     return buffer;
 }
 
