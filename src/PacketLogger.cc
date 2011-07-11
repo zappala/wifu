@@ -36,6 +36,7 @@ void PacketLogger::flush() {
 
     const char fake_ethernet_header[FAKE_ETHERNET_HEADER_SIZE] = {0x00, 0x50, 0x56, 0xb7, 0x16, 0xc7, 0x00, 0x0f, 0xfe, 0xfe, 0x52, 0x17, 0x08, 0x00};
 
+    cout << "Size: " << items_.size() << endl;
     while (!items_.empty()) {
         PacketLoggerItem* item = items_.front();
         items_.pop_front();
@@ -57,6 +58,9 @@ void PacketLogger::flush() {
 }
 
 PacketLogger::PacketLogger() : Module(), flush_count_(1), flush_seconds_(1), flush_nanoseconds_(0), timeout_(0), fake_socket_(new Socket(0,0,0)) {
+    // TODO: we can remove this call to init() as we call reset() in main().
+    // However, this may cause some tests to break.
+    // By not removing it, we are simply creating the file one extra time.
     init();
 }
 
@@ -78,7 +82,9 @@ void PacketLogger::reset() {
 void PacketLogger::imodule_timer_fired(Event* e) {
     TimerFiredEvent* event = (TimerFiredEvent*) e;
     if (timeout_ == event->get_timeout_event()) {
+        cout << "Timed out" << endl;
         flush();
+
     }
 }
 
