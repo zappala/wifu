@@ -46,31 +46,40 @@ void PacketLogger::flush() {
         packet_header.incl_len = item->get_packet()->get_ip_tot_length() + FAKE_ETHERNET_HEADER_SIZE;
         packet_header.orig_len = item->get_packet()->get_ip_tot_length() + FAKE_ETHERNET_HEADER_SIZE;
 
-        //        TCPPacket* p = (TCPPacket*) item->get_packet();
-        //        p->set_ip_protocol(6);
-        //        p->calculate_and_set_ip_checksum();
-        //        p->calculate_and_set_tcp_checksum();
-
         fileout_.write(reinterpret_cast<const char*> (&packet_header), sizeof (PcapPacketHeader));
         fileout_.write(fake_ethernet_header, sizeof (fake_ethernet_header));
         fileout_.write(reinterpret_cast<const char*> (item->get_packet()->get_payload()), item->get_packet()->get_ip_tot_length());
     }
 
     close_log();
+    dispatch_timeout();
     lock_.post();
 }
 
-PacketLogger::PacketLogger() : flush_count_(1) {
+PacketLogger::PacketLogger() : Module(), flush_count_(1), flush_seconds_(1), flush_nanoseconds_(0), timeout_(0), fake_socket_(new Socket(0,0,0)) {
     init();
 }
 
-void PacketLogger::set_flush_value(int count) {
+void PacketLogger::set_flush_threshold(int count) {
     flush_count_ = count;
+
+}
+
+void PacketLogger::set_flush_timeout(double timeout) {
+    flush_nanoseconds_ = modf(timeout, &flush_seconds_) * NANOSECONDS_IN_SECONDS;
 }
 
 void PacketLogger::reset() {
     close_log();
     init();
+    dispatch_timeout();
+}
+
+void PacketLogger::imodule_timer_fired(Event* e) {
+    TimerFiredEvent* event = (TimerFiredEvent*) e;
+    if (timeout_ == event->get_timeout_event()) {
+        flush();
+    }
 }
 
 void PacketLogger::close_log() {
@@ -102,4 +111,9 @@ void PacketLogger::init() {
     close_log();
 
     lock_.init(1);
+}
+
+void PacketLogger::dispatch_timeout() {
+    timeout_ = new TimeoutEvent(fake_socket_, flush_seconds_, flush_nanoseconds_);
+    dispatch(timeout_);
 }

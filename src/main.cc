@@ -269,27 +269,27 @@ void register_ap() {
     ProtocolManager::instance().support(TCP_AP);
     NetworkInterfaceFactory::instance().create().register_protocol(TCP_AP, new TCPPacketFactory());
 
-//    dispatcher.map_event(type_name(SocketEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(BindEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(ListenEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(ConnectEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(AcceptEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(SendPacketEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(TimerFiredEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(ResendPacketEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(ReceiveEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(SendEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(CloseEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(DeleteSocketEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCPAP::instance());
-//    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(SocketEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(BindEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(ListenEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(ConnectEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(AcceptEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(SendPacketEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(TimerFiredEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(ResendPacketEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(ReceiveEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(SendEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(CloseEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(DeleteSocketEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCPAP::instance());
+    //    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPAP::instance());
 }
 
 void register_protocols() {
@@ -332,11 +332,16 @@ int main(int argc, char** argv) {
     gcstring network = "network";
     gcstring mockfile = "mockfile";
     gcstring passive_port = "passive_port";
+    gcstring logger_threshold = "logger_threshold";
+    gcstring logger_timeout = "logger_timeout";
+
 
     static struct option long_options[] = {
         {network.c_str(), required_argument, NULL, 0},
         {mockfile.c_str(), required_argument, NULL, 0},
         {passive_port.c_str(), required_argument, NULL, 0},
+        {logger_threshold.c_str(), required_argument, NULL, 0},
+        {logger_timeout.c_str(), required_argument, NULL, 0},
         {0, 0, 0, 0}
     };
 
@@ -344,6 +349,10 @@ int main(int argc, char** argv) {
     if (optionparser.present(network)) {
         network_type = optionparser.argument(network);
     }
+
+
+
+
 
     setup_network_interface(network_type);
     register_signals();
@@ -361,9 +370,22 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
     dispatcher.map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
+    dispatcher.map_event(type_name(TimerFiredEvent), &PacketLogger::instance());
+
+    // Packet Logger
+    if (optionparser.present(logger_threshold)) {
+        int value = atoi(optionparser.argument(logger_threshold).c_str());
+        PacketLogger::instance().set_flush_threshold(value);
+    }
+
+    if (optionparser.present(logger_timeout)) {
+        double value = atof(optionparser.argument(logger_timeout).c_str());
+        PacketLogger::instance().set_flush_timeout(value);
+    }
+    PacketLogger::instance().reset();
 
     register_protocols();
-    
+
     NetworkInterfaceFactory::instance().create().start();
 
     // Wait indefinitely

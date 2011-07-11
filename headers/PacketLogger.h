@@ -20,6 +20,7 @@
 #include "defines.h"
 #include "BinarySemaphore.h"
 #include "PacketLoggerItem.h"
+#include "Module.h"
 
 #define LOG_FILENAME "wifu-log.pcap"
 
@@ -48,7 +49,7 @@ struct PcapPacketHeader {
 };
 
 
-class PacketLogger {
+class PacketLogger : public Module {
 public:
 	static PacketLogger& instance();
 
@@ -63,9 +64,19 @@ public:
          * Default is flush count of 1 (write each packet to disk) and should be changed to perform better.
          * @param count The number of packets to save before flushing to disk
          */
-        void set_flush_value(int count);
+        void set_flush_threshold(int count);
+
+        /**
+         * Determines the timout in seconds when all packets which are saved in memory are flushed to disk.
+         * This is to ensure that we regularly are writing packets to disk if we don't reach the flush threshold.
+         * Default is 1 second.
+         * @param timeout Timeout period between regular flushes in seconds.
+         */
+        void set_flush_timeout(double timeout);
 
         void reset();
+
+        virtual void imodule_timer_fired(Event* e);
 
 private:
 	PacketLogger();
@@ -76,6 +87,8 @@ private:
 
         void init();
 
+        void dispatch_timeout();
+
         
 
 	const char* file_name_;
@@ -84,6 +97,11 @@ private:
 
         list<PacketLoggerItem*, gc_allocator<PacketLoggerItem*> > items_;
         int flush_count_;
+        double flush_seconds_;
+        long int flush_nanoseconds_;
+
+        TimeoutEvent* timeout_;
+        Socket* fake_socket_;
 
 };
 

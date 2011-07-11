@@ -24,7 +24,7 @@ void BackEndTest::kill_backend() {
 }
 
 gcstring BackEndTest::get_command() {
-    return "./wifu-end --network standard";
+    return "./wifu-end --logger_threshold 10000 --logger_timeout 1.0 --network standard";
 }
 
 gcstring BackEndTest::getOutputFromCommand(char* cmd) {
@@ -43,7 +43,7 @@ gcstring BackEndTest::getOutputFromCommand(char* cmd) {
 }
 
 gcstring BackEndMockTest::get_command() {
-    gcstring cmd = "./wifu-end --network mock --passive_port 1000 --mockfile ";
+    gcstring cmd = "./wifu-end --logger_threshold 10000 --logger_timeout 1.0 --network mock --passive_port 1000 --mockfile ";
     cmd.append(get_mock_file());
     return cmd;
 }
