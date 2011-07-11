@@ -45,7 +45,8 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
             response[ERRNO] = Utils::itoa(EPROTONOSUPPORT);
             // TODO: May not always want to respond immediately
             // TODO: We may need to wait for a response from the internal system
-            gcstring response_message = QueryStringParser::create(name, response);
+            gcstring response_message;
+            QueryStringParser::create(name, response, response_message);
             send_to(m[FILE_STRING], response_message);
         }
 

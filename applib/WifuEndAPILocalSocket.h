@@ -180,7 +180,8 @@ public:
         m[DOMAIN_STRING] = Utils::itoa(domain);
         m[TYPE_STRING] = Utils::itoa(type);
         m[PROTOCOL_STRING] = Utils::itoa(protocol);
-        gcstring message = QueryStringParser::create(WIFU_SOCKET_NAME, m);
+        gcstring message;
+        QueryStringParser::create(WIFU_SOCKET_NAME, m, message);
         send_to(write_file_, message);
 
         socket_signal_.wait();
@@ -229,7 +230,8 @@ public:
         m[PORT_STRING] = Utils::itoa(ap.get_port());
         m[LENGTH_STRING] = Utils::itoa(len);
 
-        gcstring message = QueryStringParser::create(WIFU_BIND_NAME, m);
+        gcstring message;
+        QueryStringParser::create(WIFU_BIND_NAME, m, message);
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
@@ -267,7 +269,8 @@ public:
         m[OPTION_NAME_STRING] = Utils::itoa(optname);
         m[LENGTH_STRING] = Utils::itoa(*optlen);
 
-        gcstring message = QueryStringParser::create(WIFU_GETSOCKOPT_NAME, m);
+        gcstring message;
+        QueryStringParser::create(WIFU_GETSOCKOPT_NAME, m, message);
         send_to(write_file_, message);
 
         //TODO: Fill in optval and optlen according to man 2 getsockopt
@@ -311,7 +314,8 @@ public:
         m[OPTION_VALUE_STRING] = (const char*) value;
         m[LENGTH_STRING] = Utils::itoa(optlen);
 
-        gcstring message = QueryStringParser::create(WIFU_SETSOCKOPT_NAME, m);
+        gcstring message;
+        QueryStringParser::create(WIFU_SETSOCKOPT_NAME, m, message);
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
@@ -350,7 +354,8 @@ public:
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[N_STRING] = Utils::itoa(n);
 
-        gcstring message = QueryStringParser::create(WIFU_LISTEN_NAME, m);
+        gcstring message;
+        QueryStringParser::create(WIFU_LISTEN_NAME, m, message);
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
@@ -393,7 +398,8 @@ public:
             m[LENGTH_STRING] = Utils::itoa(*addr_len);
         }
 
-        gcstring message = QueryStringParser::create(WIFU_ACCEPT_NAME, m);
+        gcstring message;
+        QueryStringParser::create(WIFU_ACCEPT_NAME, m, message);
         //        cout << "WifuEndAPILocalSocket::wifu_accept(), sending message to back end." << endl;
         send_to(write_file_, message);
 
@@ -485,8 +491,9 @@ public:
             m[LENGTH_STRING] = Utils::itoa(addr_len);
         }
 
-        gcstring message = QueryStringParser::create(WIFU_SENDTO_NAME, m);
-        ssize_t bytes_sent = send_to(write_file_, message);
+        gcstring message;
+        QueryStringParser::create(WIFU_SENDTO_NAME, m, message);
+        send_to(write_file_, message);
 
         assert(message.length() <= MAX_BUFFER_SIZE);
 
@@ -531,7 +538,8 @@ public:
             m[LENGTH_STRING] = Utils::itoa(*addr_len);
         }
 
-        gcstring message = QueryStringParser::create(WIFU_RECVFROM_NAME, m);
+        gcstring message;
+        QueryStringParser::create(WIFU_RECVFROM_NAME, m, message);
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
@@ -578,7 +586,8 @@ public:
         m[PORT_STRING] = Utils::itoa(ap.get_port());
         m[LENGTH_STRING] = Utils::itoa(len);
 
-        gcstring message = QueryStringParser::create(WIFU_CONNECT_NAME, m);
+        gcstring message;
+        QueryStringParser::create(WIFU_CONNECT_NAME, m, message);
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
@@ -599,7 +608,8 @@ public:
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
 
-        gcstring message = QueryStringParser::create(WIFU_CLOSE_NAME, m);
+        gcstring message;
+        QueryStringParser::create(WIFU_CLOSE_NAME, m, message);
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);

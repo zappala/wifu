@@ -10,7 +10,10 @@ ResponseEvent::~ResponseEvent() {
 
 gcstring ResponseEvent::get_response() {
     m_[SOCKET_STRING] = Utils::itoa(get_socket()->get_socket_id());
-    return QueryStringParser::create(name_, m_);
+    gcstring response;
+    // TODO: figure out how to reserve enough space
+    QueryStringParser::create(name_, m_, response);
+    return response;
 }
 
 // TODO: fix this so we can pass references

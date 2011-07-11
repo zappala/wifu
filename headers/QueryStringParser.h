@@ -20,7 +20,7 @@ class QueryStringParser {
 public:
     static void parse(gcstring& message, gcstring_map& values);
 
-    static gcstring create(gcstring name, gcstring_map& values);
+    static void create(gcstring name, gcstring_map& values, gcstring& message);
 };
 
 #endif	/* QUERYSTRINGPARSER_H */

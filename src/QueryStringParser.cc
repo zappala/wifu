@@ -34,11 +34,10 @@ void QueryStringParser::parse(gcstring& message, gcstring_map& values) {
     }
 }
 
-gcstring QueryStringParser::create(gcstring name, gcstring_map& values) {
+void QueryStringParser::create(gcstring name, gcstring_map& values, gcstring& message) {
     gcstring_map::iterator itr;
-    gcstring value = name + '?';    
+    message = name + '?';
     for (itr = values.begin(); itr != values.end(); ++itr) {
-        value.append(itr->first + '=' + itr->second + '&');
+        message.append(itr->first + '=' + itr->second + '&');
     }
-    return value;
 }

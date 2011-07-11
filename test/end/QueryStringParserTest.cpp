@@ -26,24 +26,25 @@ namespace {
         gcstring name = "name";
         gcstring_map values;
 
-        gcstring result = QueryStringParser::create(name, values);
+        gcstring result;
+        QueryStringParser::create(name, values, result);
         gcstring expected = "name?";
         ASSERT_EQ(expected, result);
 
         values["a"] = "a";
-        result = QueryStringParser::create(name, values);
+        QueryStringParser::create(name, values, result);
         expected = "name?a=a&";
         ASSERT_EQ(expected, result);
 
         sprintf(buf, "%d", 95);
         values["a"] = buf;
-        result = QueryStringParser::create(name, values);
+        QueryStringParser::create(name, values, result);
         expected = "name?a=95&";
         ASSERT_EQ(expected, result);
 
         sprintf(buf, "%d", 4);
         values["b"] = buf;
-        result = QueryStringParser::create(name, values);
+        QueryStringParser::create(name, values, result);
         expected = "name?a=95&b=4&";
         ASSERT_EQ(expected, result);
     }

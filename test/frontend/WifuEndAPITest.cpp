@@ -97,7 +97,8 @@ namespace {
                 response[RETURN_VALUE_STRING] = Utils::itoa(return_val);
             }
 
-            gcstring response_message = QueryStringParser::create(name, response);
+            gcstring response_message;
+            QueryStringParser::create(name, response, response_message);
             send_to(m[FILE_STRING], response_message);
         }
 
