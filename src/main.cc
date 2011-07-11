@@ -350,13 +350,8 @@ int main(int argc, char** argv) {
         network_type = optionparser.argument(network);
     }
 
-
-
-
-
     setup_network_interface(network_type);
     register_signals();
-
 
     // Start Dispatcher
     dispatcher.start_processing();

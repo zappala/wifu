@@ -57,6 +57,9 @@ void PacketLogger::flush() {
 }
 
 PacketLogger::PacketLogger() : Module(), flush_count_(1), flush_seconds_(1), flush_nanoseconds_(0), timeout_(0), fake_socket_(new Socket(0,0,0)) {
+    // TODO: we can remove this call to init() as we call reset() in main().
+    // However, this may cause some tests to break.
+    // By not removing it, we are simply creating the file one extra time.
     init();
 }
 
