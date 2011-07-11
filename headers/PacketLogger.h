@@ -65,12 +65,16 @@ public:
          */
         void set_flush_value(int count);
 
+        void reset();
+
 private:
 	PacketLogger();
 
 	void close_log();
 
 	void write_file_header();
+
+        void init();
 
         
 

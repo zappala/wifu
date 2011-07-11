@@ -38,8 +38,6 @@ void* listener(void* arg) {
 
             assert(ret == packet->get_ip_tot_length());
 
-            PacketLogger::instance().log(packet);
-
             callback->imodule_network_receive(packet);
         }
     }

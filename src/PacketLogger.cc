@@ -22,7 +22,7 @@ void PacketLogger::log(WiFuPacket* packet) {
     bool should_flush = items_.size() >= flush_count_;
     lock_.post();
 
-    if(should_flush) {
+    if (should_flush) {
         flush();
     }
 }
@@ -61,20 +61,16 @@ void PacketLogger::flush() {
 }
 
 PacketLogger::PacketLogger() : flush_count_(1) {
-    file_name_ = LOG_FILENAME;
-
-    fileout_.open(file_name_, ios::out | ios::trunc | ios::binary);
-    if (fileout_.fail()) {
-        throw IOError();
-    }
-    write_file_header();
-    close_log();
-
-    lock_.init(1);
+    init();
 }
 
 void PacketLogger::set_flush_value(int count) {
     flush_count_ = count;
+}
+
+void PacketLogger::reset() {
+    close_log();
+    init();
 }
 
 void PacketLogger::close_log() {
@@ -93,4 +89,17 @@ void PacketLogger::write_file_header() {
     file_header.snaplen = USHRT_MAX;
     file_header.network = 1; //Ethernet
     fileout_.write(reinterpret_cast<const char*> (&file_header), sizeof (PcapFileHeader));
+}
+
+void PacketLogger::init() {
+    file_name_ = LOG_FILENAME;
+
+    fileout_.open(file_name_, ios::out | ios::trunc | ios::binary);
+    if (fileout_.fail()) {
+        throw IOError();
+    }
+    write_file_header();
+    close_log();
+
+    lock_.init(1);
 }

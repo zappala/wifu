@@ -22,7 +22,6 @@
 
 #include "exceptions/MalformedPacketException.h"
 #include "packet/WiFuPacket.h"
-#include "PacketLogger.h"
 
 using namespace std;
 

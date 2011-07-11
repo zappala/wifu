@@ -18,10 +18,11 @@ void NetworkInterface::register_protocol(int protocol, PacketFactory* pf) {
 
 void NetworkInterface::imodule_network_receive(WiFuPacket* p) {
 
-//    cout << "Network receive packet: \n" << p->to_s_format() << endl << p->to_s() << endl;
+    PacketLogger::instance().log(p);
+    //    cout << "Network receive packet: \n" << p->to_s_format() << endl << p->to_s() << endl;
 
     // TODO: figure out if the kernel does this check for us
-    if(!p->is_valid_ip_checksum()) {
+    if (!p->is_valid_ip_checksum()) {
         return;
     }
 
@@ -29,7 +30,7 @@ void NetworkInterface::imodule_network_receive(WiFuPacket* p) {
     AddressPort* remote = p->get_source_address_port();
     AddressPort* local = p->get_dest_address_port();
 
-    
+
     Socket* s = SocketCollection::instance().get_by_local_and_remote_ap(local, remote);
 
     if (!s) {
@@ -54,8 +55,9 @@ void NetworkInterface::imodule_network_send(Event* e) {
     // TODO: Check return value (bytes sent)?
     WiFuPacket* p = event->get_packet();
     p->calculate_and_set_ip_checksum();
-//    cout << "Network sending packet: \n" << p->to_s_format() << endl << p->to_s() << endl;
+    //    cout << "Network sending packet: \n" << p->to_s_format() << endl << p->to_s() << endl;
     sender_.send(p);
+    PacketLogger::instance().log(p);
 }
 
 NetworkInterface::NetworkInterface() : INetworkInterface() {

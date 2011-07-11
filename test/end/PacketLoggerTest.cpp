@@ -28,6 +28,8 @@ namespace {
     // Need to be able to reset the logger (delete the old log) and start fresh each test.
 
     TEST(PacketLogger, test) {
+        logger.reset();
+        
         // TODO: we need to be able to log options now
         TCPPacket* packet1 = new TCPPacket(); //be sure to call 'new'
         packet1->set_ip_protocol(SIMPLE_TCP); //very important
@@ -72,6 +74,8 @@ namespace {
          * 'actual' is dereferenced so that the operator== is called correctly.
          */
         ASSERT_EQ(expected, *actual) << expected.get_packet_trace(*actual); //
+
+        
     }
 
 }

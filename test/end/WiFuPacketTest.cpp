@@ -138,7 +138,6 @@ namespace {
         p.set_ip_source_address_s(ap.get_address());
         p.set_source_port(ap.get_port());
         ASSERT_TRUE(ap == (*p.get_source_address_port()));
-                        cout << p.to_s() << endl;
     }
 
     TEST(WiFuPacketTest, MaxDataSizeTest) {

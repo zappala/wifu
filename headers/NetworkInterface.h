@@ -15,6 +15,7 @@
 #include "AddressPort.h"
 #include "SocketCollection.h"
 #include "INetworkInterface.h"
+#include "PacketLogger.h"
 
 class NetworkInterface : public INetworkInterface {
 public:
