@@ -46,7 +46,7 @@ namespace {
 
         int level = 0;
         int optname = 0;
-        int optvalue = 5;
+        int optvalue = 50;
         socklen_t optlen = sizeof (optvalue);
 
         int return_val = wifu_setsockopt(fd, level, optname, &optvalue, optlen);

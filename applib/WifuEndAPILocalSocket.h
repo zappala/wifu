@@ -302,20 +302,18 @@ public:
      */
     int wifu_setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen) {
         assert(optlen < BUFFER_SIZE);
-        unsigned char value[BUFFER_SIZE];
-        memset(value, 0, BUFFER_SIZE);
-        memcpy(value, optval, optlen);
 
         gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
         m[LEVEL_STRING] = Utils::itoa(level);
         m[OPTION_NAME_STRING] = Utils::itoa(optname);
-        m[OPTION_VALUE_STRING] = (const char*) value;
+        m[OPTION_VALUE_STRING] = gcstring((const char*) optval, optlen);
         m[LENGTH_STRING] = Utils::itoa(optlen);
 
         gcstring message;
         QueryStringParser::create(WIFU_SETSOCKOPT_NAME, m, message);
+
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
