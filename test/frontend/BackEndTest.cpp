@@ -19,8 +19,10 @@ void BackEndTest::start_backend() {
 
 void BackEndTest::kill_backend() {
     int value = system("killall wifu-end");
-    if (value < 0)
+    if (value < 0) {
         FAIL() << "Error killing wifu-end";
+    }
+    sleep(1);
 }
 
 gcstring BackEndTest::get_command() {

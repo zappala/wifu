@@ -46,7 +46,6 @@ void LocalSocketReceiver::init(void) {
         perror("Error creating Unix socket");
         exit(-1);
     }
-
     unlink(file_.c_str());
 
     int optval = 1;

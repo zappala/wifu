@@ -6,14 +6,14 @@ WifuEndBackEndLibrary& WifuEndBackEndLibrary::instance() {
 }
 
 WifuEndBackEndLibrary::~WifuEndBackEndLibrary() {
+
 }
 
 void WifuEndBackEndLibrary::receive(gcstring& message) {
     // TODO: this method is way too long (and will likely get bigger)
     // TODO: refactor this method to use objects as much as possible
 
-    //        cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
-
+//            cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
 
     gcstring_map m;
     QueryStringParser::parse(message, m);
@@ -25,6 +25,7 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
     Socket* socket = SocketCollection::instance().get_by_id(socket_int);
 
     if (!name.compare(WIFU_SOCKET_NAME)) {
+
 
         int domain = atoi(m[DOMAIN_STRING].c_str());
         int type = atoi(m[TYPE_STRING].c_str());
@@ -98,4 +99,5 @@ void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
 }
 
 WifuEndBackEndLibrary::WifuEndBackEndLibrary() : LocalSocketFullDuplex("/tmp/WS"), Module() {
+
 }

@@ -2,14 +2,14 @@
 
 void* tahoe_active_to_passive_big_chunks_thread(void* args) {
 
-
     struct var* v = (struct var*) args;
     AddressPort* to_bind = v->to_bind_;
     Semaphore* sem = v->sem_;
     Semaphore* flag = v->flag_;
     Semaphore* done = v->done_;
-
-    gcstring expected = v->expected_string;
+    gcstring expected;
+    expected.reserve(v->expected_string.size());
+    expected = v->expected_string;
 
     // Create server
     int server = wifu_socket(AF_INET, SOCK_STREAM, v->protocol_);
@@ -30,8 +30,6 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
 
     flag->post();
 
-
-
     AddressPort ap(&addr);
     gcstring address("127.0.0.1");
     gcstring res = ap.get_address();
@@ -45,7 +43,6 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
     gcstring all_received = "";
 
     Timer recv_timer;
-
     while (true) {
 
         memset(buffer, 0, size);
@@ -53,17 +50,16 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
         recv_timer.start();
 
         if (return_value == 0) {
-//                        cout << "Close Thread BREAK" << endl;
+            //                        cout << "Close Thread BREAK" << endl;
             break;
         }
 
-        gcstring actual(buffer);
-        all_received.append(actual);
+        all_received.append(buffer);
     }
 
     recv_timer.stop();
     cout << "Duration (us) to recv: " << expected.size() << " bytes on localhost: " << recv_timer.get_duration_microseconds() << endl;
-    
+
     wifu_close(connection);
     wifu_close(server);
     EXPECT_EQ(expected, all_received);
@@ -124,9 +120,9 @@ void tahoe_active_to_passive_big_chunks(int protocol, gcstring message) {
     Timer send_timer;
     send_timer.start();
 
-    while(index < message.length()) {
+    while (index < message.length()) {
 
-        if(index + chunk > message.length()) {
+        if (index + chunk > message.length()) {
             chunk = message.length() - index;
         }
         const char* data = message.data() + index;
@@ -137,7 +133,7 @@ void tahoe_active_to_passive_big_chunks(int protocol, gcstring message) {
     }
     send_timer.stop();
     cout << "Duration (us) to send: " << message.size() << " bytes on localhost: " << send_timer.get_duration_microseconds() << endl;
-//    cout << "Done sending" << endl;
+    //    cout << "Done sending" << endl;
 
     EXPECT_EQ(message.length(), num_sent);
 
