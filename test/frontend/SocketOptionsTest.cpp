@@ -64,6 +64,29 @@ namespace {
         EXPECT_EQ(len, optlen);
     }
 
+    TEST_F(BackEndMockTestDropNone, socketOptionsTestDoubleValue) {
+        int fd = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+
+        int level = 0;
+        int optname = 0;
+        double optvalue = rand() / RAND_MAX;
+        socklen_t optlen = sizeof (optvalue);
+
+        int return_val = wifu_setsockopt(fd, level, optname, &optvalue, optlen);
+        EXPECT_EQ(0, return_val);
+
+        unsigned char buffer[BUFFER_SIZE];
+        memset(buffer, 0, BUFFER_SIZE);
+        socklen_t len = BUFFER_SIZE;
+
+        return_val = wifu_getsockopt(fd, level, optname, buffer, &len);
+        double* result = (double*) buffer;
+
+        EXPECT_EQ(0, return_val);
+        EXPECT_EQ(optvalue, *result);
+        EXPECT_EQ(len, optlen);
+    }
+
     TEST_F(BackEndMockTestDropNone, socketOptionsTestBoolValue) {
         int fd = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
 
