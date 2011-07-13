@@ -17,9 +17,13 @@ def set_options(opt):
 
 	opt.add_option('--debug',
 					help=('Compile with debugging symbols.'),
-					action="store_true", default=True,
+					action="store_true", default=False,
 					dest='debug')
 
+	opt.add_option('--prof',
+					help=('Compile with profiler symbols.'),
+					action="store_true", default=False,
+					dest='prof')
 
 def configure(conf):
 	print('→ configuring the project')
@@ -31,16 +35,17 @@ def configure(conf):
 	else:
 		conf.env['LIBPATH'] += ['../lib/gtest/gtest_64']
 		conf.env['LIBPATH'] += ['../lib/pantheios/pantheios_64']
+	
 	conf.env['LIB_PTHREAD'] = ['pthread']
 	
 	conf.env['STATICLIB'] += ['gtest']
 	conf.env['STATICLIB'] += ['pantheios.1.core.gcc44']
 	
 	#Use the top two for logging to a file, the bottom two for logging to console 
-#	conf.env['STATICLIB'] += ['pantheios.1.be.file.gcc44']
-#	conf.env['STATICLIB'] += ['pantheios.1.bec.file.gcc44']
-	conf.env['STATICLIB'] += ['pantheios.1.be.fprintf.gcc44']
-	conf.env['STATICLIB'] += ['pantheios.1.bec.fprintf.gcc44']
+	conf.env['STATICLIB'] += ['pantheios.1.be.file.gcc44']
+	conf.env['STATICLIB'] += ['pantheios.1.bec.file.gcc44']
+#	conf.env['STATICLIB'] += ['pantheios.1.be.fprintf.gcc44']
+#	conf.env['STATICLIB'] += ['pantheios.1.bec.fprintf.gcc44']
 
 	#Always use these
 	conf.env['STATICLIB'] += ['pantheios.1.fe.all.gcc44']
@@ -71,6 +76,18 @@ def configure(conf):
 		print "Configuring with debugging symbols"
 		conf.env['CXXFLAGS'] += ['-g']
 		conf.env['CXXFLAGS'] += ['-O0']
+
+	if Options.options.prof:
+		print "Configuring for profiler!"
+		# for use with gprof
+		conf.env['CXXFLAGS'] += ['-pg']
+		conf.env['LINKFLAGS'] += ['-pg']
+		# Optimizations: -O, -O0 (off), -O1, -O2, -O3 (the higher the number, the more optimization it does, and the harder to debug it)
+		conf.env['CXXFLAGS'] += ['-O0']
+		# turn off coverage scanner
+		conf.env['CXXFLAGS'] += ['--cs-off']
+		conf.env['LINKFLAGS'] += ['--cs-off']
+
 
 def post(ctx):
 	import os
@@ -312,8 +329,8 @@ def build(bld):
 		build_wifu_end_test(bld)
 		build_wifu_frontend_test(bld)
 	
-	build_simple_tcp_sender(bld)
-	build_simple_tcp_receiver(bld)
+	#build_simple_tcp_sender(bld)
+	#build_simple_tcp_receiver(bld)
 
 #	bld.add_post_fun(post)
 

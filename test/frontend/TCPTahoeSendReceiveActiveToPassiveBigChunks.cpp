@@ -46,7 +46,9 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
     while (true) {
 
         memset(buffer, 0, size);
+        cout << "Calling recv()" << endl;
         int return_value = wifu_recv(connection, &buffer, 10000, 0);
+        cout << "Returning from recv()" << endl;
         recv_timer.start();
 
         if (return_value == 0) {
@@ -55,6 +57,8 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
         }
 
         all_received.append(buffer);
+
+        cout << "Total received: " << all_received.size() << endl;
     }
 
     recv_timer.stop();

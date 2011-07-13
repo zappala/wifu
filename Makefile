@@ -14,6 +14,11 @@ mesh:
 	./waf install -j4  -p --32
 
 debug:
-	./waf configure -j4  -p
+	./waf configure -j4  -p --debug
 	./waf build -j4  -p --debug
 	./waf install -j4  -p --debug
+
+prof:
+	./waf configure -j4 --prof
+	./waf build -j4 --prof
+	./waf install -j4 --prof

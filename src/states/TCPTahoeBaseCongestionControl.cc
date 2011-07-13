@@ -140,7 +140,6 @@ void TCPTahoeBaseCongestionControl::send_packets(Context* c, QueueProcessor<Even
     assert(ccc->get_num_outstanding() <= ccc->get_max_allowed_to_send());
 
     while ((int) send_buffer.size() - (int) ccc->get_num_outstanding() > 0 && ccc->get_num_outstanding() < ccc->get_max_allowed_to_send()) {
-
         send_one_packet(c, q, e);
     }
 }

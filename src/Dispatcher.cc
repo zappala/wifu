@@ -40,6 +40,8 @@ void Dispatcher::process(Event* e) {
     assert(e);
 //    cout << "Event name: " << type_name(*e) << endl;
 
+
+
     itr_ = map_.find(type_name(*e));
 
     if (itr_ != map_.end()) {

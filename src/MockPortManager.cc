@@ -1,7 +1,7 @@
 #include "MockPortManager.h"
 #include "OptionParser.h"
 
-MockPortManager::MockPortManager() : IPortManager(), RandomNumberSet<uint16_t>() {}
+MockPortManager::MockPortManager() : IPortManager(), RandomNumberSet<u_int16_t>() {}
 
 MockPortManager::~MockPortManager() {}
 

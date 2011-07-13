@@ -7,6 +7,7 @@
 
 #include "gtest/gtest.h"
 #include "defines.h"
+#include "OptionParser.h"
 #include <signal.h>
 
 using namespace std;

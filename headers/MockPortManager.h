@@ -13,7 +13,7 @@
 #include "RandomNumberSet.h"
 #include "IPortManager.h"
 
-class MockPortManager : public IPortManager, public RandomNumberSet<uint16_t> {
+class MockPortManager : public IPortManager, public RandomNumberSet<u_int16_t> {
 private:
     MockPortManager();
 

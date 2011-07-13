@@ -75,6 +75,9 @@
 #include "WifuEndBackEndLibrary.h"
 #include "PortManagerFactory.h"
 
+// logging
+#include "Logger.h"
+
 
 using namespace std;
 
@@ -305,11 +308,11 @@ void register_protocols() {
 
 void setup_network_interface(gcstring& type) {
     if (type == "standard") {
-        log_INFORMATIONAL("Using standard network interface");
+        log_INFORMATIONAL("Using standard network interface.");
         NetworkInterfaceFactory::instance().set_creator(new StandardNetworkInterfaceCreator());
         PortManagerFactory::instance().set_creator(new StandardPortManagerCreator());
     } else if (type == "mock") {
-        log_INFORMATIONAL("Using mock network interface");
+        log_INFORMATIONAL("Using mock network interface.");
         NetworkInterfaceFactory::instance().set_creator(new MockNetworkInterfaceCreator());
         PortManagerFactory::instance().set_creator(new MockPortManagerCreator());
     }
@@ -318,15 +321,9 @@ void setup_network_interface(gcstring& type) {
 int main(int argc, char** argv) {
     GC_INIT();
 
-
-
     //only needs to be on if logging to file
-    //pantheios_be_file_setFilePath(PantheiosString("wifu-end.log"), PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BEID_ALL);
-
-    //log_DEBUG("main(", pantheios::args(argc, argv), ")");
-
-    //TODO: Change second argument to 0 once we have a logger in place
-    daemon(1, 1);
+    pantheios_be_file_setFilePath(PantheiosString("wifu-end.log"), PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BEID_ALL);
+    log_DEBUG("Command line arguments: ", pantheios::args(argc, argv));
 
     gcstring network_type = "standard";
     gcstring network = "network";
@@ -334,7 +331,7 @@ int main(int argc, char** argv) {
     gcstring passive_port = "passive_port";
     gcstring logger_threshold = "logger_threshold";
     gcstring logger_timeout = "logger_timeout";
-
+    gcstring foreground = "foreground";
 
     static struct option long_options[] = {
         {network.c_str(), required_argument, NULL, 0},
@@ -342,10 +339,22 @@ int main(int argc, char** argv) {
         {passive_port.c_str(), required_argument, NULL, 0},
         {logger_threshold.c_str(), required_argument, NULL, 0},
         {logger_timeout.c_str(), required_argument, NULL, 0},
+        {foreground.c_str(), no_argument, NULL, 0},
         {0, 0, 0, 0}
     };
 
     optionparser.parse(argc, argv, long_options);
+
+
+    if (!optionparser.present(foreground)) {
+        //TODO: Change second argument in the call to daemon to 0 once we have a logger in place
+        if (daemon(1, 1) < 0) {
+            log_EMERGENCY("Unable to create daemon.");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+
     if (optionparser.present(network)) {
         network_type = optionparser.argument(network);
     }
@@ -390,6 +399,7 @@ int main(int argc, char** argv) {
     // This probably is not be needed but it's here in case it turns out to be
     // Closes the file by setting the path to NULL
     // pantheios_be_file_setFilePath(NULL, PANTHEIOS_BEID_ALL);
+    cout << "Exiting" << endl;
 
     return (EXIT_SUCCESS);
 }

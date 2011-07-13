@@ -44,7 +44,10 @@ void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, QueueP
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
 
+//    cout << "TCPTahoeReliabilityState::state_receive_buffer_not_empty()" << endl;
+
     if (rc->get_receive_event() && !s->get_receive_buffer().empty()) {
+//        cout << "TCPTahoeReliabilityState::state_receive_buffer_not_empty(), receive event exists" << endl;
         create_and_dispatch_received_data(c, q, rc->get_receive_event());
         rc->set_receive_event(0);
     }
@@ -346,6 +349,7 @@ void TCPTahoeReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q
         u_int32_t before_rcv_buffer_size = receive_buffer.size();
         rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
         u_int32_t after_receive_buffer_size = receive_buffer.size();
+        cout << "Receive Buffer Size: " << after_receive_buffer_size << endl;
         u_int32_t amount_put_in_receive_buffer = after_receive_buffer_size - before_rcv_buffer_size;
         assert(amount_put_in_receive_buffer >= 0);
 

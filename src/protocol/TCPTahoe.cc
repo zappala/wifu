@@ -242,7 +242,7 @@ void TCPTahoe::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
 
 void TCPTahoe::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
 
-    //    cout << "TCPTahoe::icontext_receive()" << endl;
+//    cout << "TCPTahoe::icontext_receive()" << endl;
 
     Socket* s = e->get_socket();
     BasicIContextContainer* c = map_.find(s)->second;

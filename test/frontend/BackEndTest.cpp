@@ -10,7 +10,7 @@ void BackEndTest::TearDown() {
 
 void BackEndTest::start_backend() {
     gcstring commandToExecute = get_command();
-    int value = system(commandToExecute.c_str());
+    int value = system(commandToExecute.c_str()); 
     if (value < 0)
         FAIL() << "Error starting wifu-end";
     // We have to sleep so we can ensure the back end is up and running
