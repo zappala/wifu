@@ -27,11 +27,11 @@ public:
     /**
      * Constructs a CloseEvent.
      *
-     * @param message Message received from the front end library containing the information about the close() BSD socket API call and some bookkeeping information.
+     * @param m Map received from the front end library containing the information about the close() BSD socket API call and some bookkeeping information.
      * @param file The file associated with a Unix socket to write any response to the application.
      * @param s The Socket object to which this Event belongs.
      */
-    CloseEvent(gcstring& message, gcstring& file, Socket* s);
+    CloseEvent(gcstring_map& m, gcstring& file, Socket* s);
 
     /**
      * Destructor.

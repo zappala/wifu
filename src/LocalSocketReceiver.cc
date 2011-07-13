@@ -1,6 +1,5 @@
 #include "LocalSocketReceiver.h"
 
-
 LocalSocketReceiver::LocalSocketReceiver(gcstring& file, LocalSocketReceiverCallback* callback) : file_(file), callback_(callback) {
     init();
 }
@@ -59,7 +58,7 @@ void LocalSocketReceiver::init(void) {
         perror("Bind");
         exit(-1);
     }
-   
+
     struct local_socket_receiver_obj obj;
     obj.sock = get_socket();
     obj.receiver = this;
@@ -74,17 +73,20 @@ void LocalSocketReceiver::init(void) {
 
 void * unix_receive_handler(void* arg) {
     struct local_socket_receiver_obj* obj = (struct local_socket_receiver_obj*) arg;
-    
+
     LocalSocketReceiver * receiver = obj->receiver;
     int socket = obj->sock;
-    
+
     obj->sem.post();
 
     char buf[MAX_BUFFER_SIZE];
+
+    gcstring s;
+    s.reserve(MAX_BUFFER_SIZE);
+
     int nread;
 
     while (1) {
-        memset(buf, 0, MAX_BUFFER_SIZE);
         nread = recv(socket, buf, MAX_BUFFER_SIZE, 0);
         if (nread < 0) {
             if (errno == EINTR)
@@ -96,7 +98,7 @@ void * unix_receive_handler(void* arg) {
             break;
         }
 
-        gcstring s(buf, nread);
+        s.assign(buf, nread);
         receiver->recv(s);
     }
 }

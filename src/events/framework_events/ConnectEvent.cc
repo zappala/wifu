@@ -1,6 +1,6 @@
 #include "events/framework_events/ConnectEvent.h"
 
-ConnectEvent::ConnectEvent(gcstring& message, gcstring& file, Socket* s) : LibraryEvent(message, file, s), destination_(0) {
+ConnectEvent::ConnectEvent(gcstring_map& m, gcstring& file, Socket* s) : LibraryEvent(m, file, s), destination_(0) {
 }
 
 ConnectEvent::~ConnectEvent() {

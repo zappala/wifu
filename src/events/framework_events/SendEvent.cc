@@ -1,6 +1,6 @@
 #include "events/framework_events/SendEvent.h"
 
-SendEvent::SendEvent(gcstring& message, gcstring& file, Socket* s) : LibraryEvent(message, file, s), data_(0), data_length_(-1) {
+SendEvent::SendEvent(gcstring_map& m, gcstring& file, Socket* s) : LibraryEvent(m, file, s), data_(0), data_length_(-1) {
 
 }
 

@@ -1,9 +1,8 @@
 #include "events/framework_events/LibraryEvent.h"
 
-LibraryEvent::LibraryEvent(gcstring& message, gcstring& file, Socket* socket) : FrameworkEvent(socket), file_(file) {
-    QueryStringParser::parse(message, m_);
+LibraryEvent::LibraryEvent(gcstring_map& m, gcstring& file, Socket* socket) : FrameworkEvent(socket), file_(file) {
+    m_ = m;
     name_ = m_[NAME_STRING];
-
     m_[SOCKET_STRING] = Utils::itoa(socket->get_socket_id());
 }
 

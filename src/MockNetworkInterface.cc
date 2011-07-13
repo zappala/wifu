@@ -9,6 +9,16 @@ MockNetworkInterface& MockNetworkInterface::instance() {
 }
 
 MockNetworkInterface::~MockNetworkInterface() {
+    u_int64_t total = 0;
+    u_int64_t size = send_times_.size();
+    while (!send_times_.empty()) {
+        total += send_times_.front();
+        send_times_.pop_front();
+    }
+
+    u_int64_t average = total / size;
+    cout << "Number of packets sent: " << size << endl;
+    cout << "Average time to log a packet (us): " << average << endl;
 
 }
 
@@ -23,14 +33,14 @@ void MockNetworkInterface::imodule_network_receive(WiFuPacket* p) {
 
 void MockNetworkInterface::imodule_network_send(Event* e) {
     //cout << "MockNetworkInterface::network_send()" << endl;
+
     NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
     WiFuPacket* p = event->get_packet();
     int delay = 0;
 
     p->calculate_and_set_ip_checksum();
 
-    if(p->get_ip_protocol() == UDP)
-    {
+    if (p->get_ip_protocol() == UDP) {
         ++udp_seq_;
         //UDPPacket* udp_packet = (UDPPacket*) p;
 
@@ -55,31 +65,36 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
                 delay = numbers.second;
             }
         }
-    }
-    else if(p->get_ip_protocol() == TCP_ATP){
-    	ATPPacket* packet = dynamic_cast<ATPPacket *>(p);
-    	assert(packet != 0);
+    } else if (p->get_ip_protocol() == TCP_ATP) {
+        ATPPacket* packet = dynamic_cast<ATPPacket *> (p);
+        assert(packet != 0);
 
-    	// max delay > 250 seems to work always
-    	packet->set_atp_max_delay(rand() % 1000 + 250);
-    	packet->calculate_and_set_tcp_checksum();
+        // max delay > 250 seems to work always
+        packet->set_atp_max_delay(rand() % 1000 + 250);
+        packet->calculate_and_set_tcp_checksum();
 
-    	delay = get_delay(packet);
+        delay = get_delay(packet);
 
-    }
-    else
-    {
+    } else {
         TCPPacket* tcp_packet = (TCPPacket*) p;
         tcp_packet->pack();
 
         delay = get_delay(tcp_packet);
     }
 
-//        cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
-        assert(p);
-//        cout << p->to_s_format() << endl;
-        cout << p->to_s() << endl;
+    //        cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
+    assert(p);
+    //        cout << p->to_s_format() << endl;
+    cout << p->to_s() << endl;
+
+    Timer timer;
+    timer.start();
+
     logger.log(p);
+
+    timer.stop();
+    send_times_.push_back(timer.get_duration_microseconds());
+
     // drop the packet
     //    cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
     if (delay == -1) {
@@ -101,12 +116,13 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
         return;
     }
 
+
     receive(p);
 }
 
 void MockNetworkInterface::receive(WiFuPacket* p) {
 
-    if(!p->is_valid_ip_checksum()) {
+    if (!p->is_valid_ip_checksum()) {
         return;
     }
 
@@ -125,11 +141,11 @@ void MockNetworkInterface::receive(WiFuPacket* p) {
         return;
     }
 
-//    cout << "Socket " << s << " received packet: " << endl;
-//    cout << "MockNetworkInterface::network_send() (mocking a receive)" << endl;
+    //    cout << "Socket " << s << " received packet: " << endl;
+    //    cout << "MockNetworkInterface::network_send() (mocking a receive)" << endl;
     logger.log(p);
-//    cout << p->to_s_format() << endl;
-//    cout << p->to_s() << endl << endl;
+    //    cout << p->to_s_format() << endl;
+    //    cout << p->to_s() << endl << endl;
 
     Event* response = new NetworkReceivePacketEvent(s, p);
     Dispatcher::instance().enqueue(response);

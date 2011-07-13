@@ -1,6 +1,6 @@
 #include "events/framework_events/SocketOptionEvent.h"
 
-SocketOptionEvent::SocketOptionEvent(gcstring& message, gcstring& file, Socket* s) : LibraryEvent(message, file, s) {
+SocketOptionEvent::SocketOptionEvent(gcstring_map& m, gcstring& file, Socket* s) : LibraryEvent(m, file, s) {
 
 }
 

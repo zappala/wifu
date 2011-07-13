@@ -8,7 +8,7 @@
 #ifndef _MOCKNETWORKINTERFACE_H
 #define	_MOCKNETWORKINTERFACE_H
 
-
+#include <list>
 #include <map>
 
 #include "INetworkInterface.h"
@@ -19,6 +19,8 @@
 #include "exceptions/IllegalStateException.h"
 #include "exceptions/IOError.h"
 #include "PacketLogger.h"
+#include "Timer.h"
+
 
 #define logger PacketLogger::instance()
 
@@ -67,6 +69,8 @@ private:
     Socket* fake_socket_;
 
     int udp_seq_;
+
+    list<long int, gc_allocator<long int> > send_times_;
 };
 
 #endif	/* _MOCKNETWORKINTERFACE_H */

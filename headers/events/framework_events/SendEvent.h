@@ -26,11 +26,11 @@ public:
     /**
      * Constructs a SendEvent.
      *
-     * @param message Message received from the front end library containing the information about the send() or sendto() BSD socket API call and some bookkeeping information.
+     * @param m Map received from the front end library containing the information about the send() or sendto() BSD socket API call and some bookkeeping information.
      * @param file The file associated with a Unix socket to write any response to the application.
      * @param s The Socket object to which this Event belongs.
      */
-    SendEvent(gcstring& message, gcstring& file, Socket* s);
+    SendEvent(gcstring_map& m, gcstring& file, Socket* s);
 
     /**
      * Calls IModule::imodule_library_send() and passes this SendEvent in as the argument.

@@ -13,18 +13,54 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
     // TODO: this method is way too long (and will likely get bigger)
     // TODO: refactor this method to use objects as much as possible
 
-//            cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
+    //            cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
 
     gcstring_map m;
     QueryStringParser::parse(message, m);
 
-    gcstring name = m[NAME_STRING];
-    gcstring s = m[SOCKET_STRING];
+    gcstring& name = m[NAME_STRING];
+    gcstring& s = m[SOCKET_STRING];
     int socket_int = atoi(s.c_str());
     //assert(sockInt != 0);
     Socket* socket = SocketCollection::instance().get_by_id(socket_int);
 
-    if (!name.compare(WIFU_SOCKET_NAME)) {
+    if (!name.compare(WIFU_RECVFROM_NAME)) {
+        dispatch(new ReceiveEvent(m, get_file(), socket));
+        return;
+
+    } else if (!name.compare(WIFU_SENDTO_NAME)) {
+        dispatch(new SendEvent(m, get_file(), socket));
+        return;
+
+    } else if (!name.compare(WIFU_BIND_NAME)) {
+        dispatch(new BindEvent(m, get_file(), socket));
+        return;
+
+    } else if (!name.compare(WIFU_LISTEN_NAME)) {
+        dispatch(new ListenEvent(m, get_file(), socket));
+        return;
+
+    } else if (!name.compare(WIFU_ACCEPT_NAME)) {
+        dispatch(new AcceptEvent(m, get_file(), socket));
+        return;
+
+    } else if (!name.compare(WIFU_CONNECT_NAME)) {
+        dispatch(new ConnectEvent(m, get_file(), socket));
+        return;
+
+    } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
+        dispatch(new GetSocketOptionEvent(m, get_file(), socket));
+        return;
+
+    } else if (!name.compare(WIFU_SETSOCKOPT_NAME)) {
+        dispatch(new SetSocketOptionEvent(m, get_file(), socket));
+        return;
+
+    } else if (!name.compare(WIFU_CLOSE_NAME)) {
+        dispatch(new CloseEvent(m, get_file(), socket));
+        return;
+
+    } else if (!name.compare(WIFU_SOCKET_NAME)) {
 
 
         int domain = atoi(m[DOMAIN_STRING].c_str());
@@ -35,7 +71,7 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
             Socket* socket = new Socket(domain, type, protocol);
             SocketCollection::instance().push(socket);
 
-            dispatch(new SocketEvent(message, get_file(), socket));
+            dispatch(new SocketEvent(m, get_file(), socket));
             return;
 
         } else {
@@ -52,41 +88,6 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
         }
 
 
-    } else if (!name.compare(WIFU_BIND_NAME)) {
-        dispatch(new BindEvent(message, get_file(), socket));
-        return;
-
-    } else if (!name.compare(WIFU_LISTEN_NAME)) {
-        dispatch(new ListenEvent(message, get_file(), socket));
-        return;
-
-    } else if (!name.compare(WIFU_ACCEPT_NAME)) {
-        dispatch(new AcceptEvent(message, get_file(), socket));
-        return;
-
-    } else if (!name.compare(WIFU_SENDTO_NAME)) {
-        dispatch(new SendEvent(message, get_file(), socket));
-        return;
-
-    } else if (!name.compare(WIFU_RECVFROM_NAME)) {
-        dispatch(new ReceiveEvent(message, get_file(), socket));
-        return;
-
-    } else if (!name.compare(WIFU_CONNECT_NAME)) {
-        dispatch(new ConnectEvent(message, get_file(), socket));
-        return;
-
-    } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
-        dispatch(new GetSocketOptionEvent(message, get_file(), socket));
-        return;
-
-    } else if (!name.compare(WIFU_SETSOCKOPT_NAME)) {
-        dispatch(new SetSocketOptionEvent(message, get_file(), socket));
-        return;
-
-    } else if (!name.compare(WIFU_CLOSE_NAME)) {
-        dispatch(new CloseEvent(message, get_file(), socket));
-        return;
     }
 }
 
@@ -95,7 +96,7 @@ void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
     event->put(FILE_STRING, get_file());
     gcstring response;
     event->get_response(response);
-//    cout << "Response: " << response << endl;
+    //    cout << "Response: " << response << endl;
     send_to(event->get_write_file(), response);
 }
 

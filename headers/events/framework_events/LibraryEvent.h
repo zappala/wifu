@@ -32,7 +32,7 @@ public:
      * Parses message which is of a query string format that was received by WiFuEndBackEndLibrary over a Unix socket from the front end.
      * It parses the message into key value pairs and stores them in a map for easy access.
      * 
-     * @param message Message received from the front end library containing the information about the specific BSD socket API call.
+     * @param m Map received from the front end library containing the information about the specific BSD socket API call.
      * @param file The file associated with a Unix socket to write any response to the application.
      * @param socket The Socket object to which this Event belongs.
      *
@@ -41,7 +41,7 @@ public:
      * @see QueryStringParser
      * @see WiFuEndBackEndLibrary
      */
-    LibraryEvent(gcstring& message, gcstring& file, Socket* socket);
+    LibraryEvent(gcstring_map& m, gcstring& file, Socket* socket);
 
     /**
      * Destructor.
