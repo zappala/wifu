@@ -538,6 +538,7 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_RECVFROM_NAME, m, message);
+//        cout << Utils::get_current_time_microseconds_32() << " WifuEndAPILocalSocket::wifu_recvfrom(), sending to back end" << endl;
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);

@@ -25,8 +25,9 @@ void change_dir() {
 }
 
 
+
 int main(int argc, char** argv) {
-    change_dir();
+    //change_dir();
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

@@ -349,7 +349,6 @@ void TCPTahoeReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q
         u_int32_t before_rcv_buffer_size = receive_buffer.size();
         rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);
         u_int32_t after_receive_buffer_size = receive_buffer.size();
-        cout << "Receive Buffer Size: " << after_receive_buffer_size << endl;
         u_int32_t amount_put_in_receive_buffer = after_receive_buffer_size - before_rcv_buffer_size;
         assert(amount_put_in_receive_buffer >= 0);
 

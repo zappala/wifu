@@ -22,3 +22,8 @@ prof:
 	./waf configure -j4 --prof
 	./waf build -j4 --prof
 	./waf install -j4 --prof
+
+dist:
+	./waf configure -j4 --dist
+	./waf build -j4 --dist
+	./waf install -j4 --dist

@@ -69,8 +69,6 @@ private:
     Socket* fake_socket_;
 
     int udp_seq_;
-
-    list<long int, gc_allocator<long int> > send_times_;
 };
 
 #endif	/* _MOCKNETWORKINTERFACE_H */

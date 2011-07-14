@@ -5,6 +5,7 @@
 #include "OptionParser.h"
 #include <stdlib.h>
 #include <bits/basic_string.h>
+#include "Timer.h"
 
 using namespace std;
 
@@ -26,8 +27,7 @@ int main(int argc, char** argv) {
     optionparser.parse(argc, argv, long_options);
     if (optionparser.present(bindaddr)) {
         hostaddr = optionparser.argument(bindaddr);
-    }
-    else {
+    } else {
         cout << "Binding address required!\n";
         cout << "Use option --address <addr>\n";
         return -1;
@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     if (optionparser.present(portarg)) {
         port = atoi(optionparser.argument(portarg).c_str());
     }
-    
+
     system("cp wifu-end /tmp/");
     chdir("/tmp");
     system("./wifu-end --network standard");
@@ -43,7 +43,8 @@ int main(int argc, char** argv) {
 
     AddressPort to_bind(hostaddr, port);
 
-    int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+    int server = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
+    //int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
     assert(server > 0);
 
     int result = wifu_bind(server, (const struct sockaddr*) to_bind.get_network_struct_ptr(), sizeof (struct sockaddr_in));
@@ -55,27 +56,30 @@ int main(int argc, char** argv) {
     struct sockaddr_in addr;
     socklen_t length = sizeof (addr);
     int connection;
-    int size = 5000;
-    char buffer[size];
 
 
     while ((connection = wifu_accept(server, (struct sockaddr*) &addr, &length)) > 0) {
         AddressPort remote(&addr);
         cout << "Connection Established to: " << remote.to_s() << endl;
 
-        int count = 0;
+        int size = 50000;
+        char buffer[size];
+        gcstring all_received = "";
+
+        Timer recv_timer;
         while (true) {
             memset(buffer, 0, size);
-            int received = wifu_recv(connection, buffer, size, 0);
-            if (received <= 0) {
-                cout << "Breaking" << endl;
+            int return_value = wifu_recv(connection, buffer, 10000, 0);
+            recv_timer.start();
+
+            if (return_value == 0) {
                 break;
             }
-            cout << "Message# " << count++ << ": " << buffer << endl;
+            all_received.append(buffer);
         }
-        wifu_close(connection);
+        recv_timer.stop();
+    cout << "Duration (us) to recv " << all_received.size() << " bytes from " << remote.to_s() << ": " << recv_timer.get_duration_microseconds() << endl;
     }
-    
     wifu_close(server);
 
     sleep(1);

@@ -1,24 +1,11 @@
 #include "MockNetworkInterface.h"
 
-
-#define logger PacketLogger::instance()
-
 MockNetworkInterface& MockNetworkInterface::instance() {
     static MockNetworkInterface instance_;
     return instance_;
 }
 
 MockNetworkInterface::~MockNetworkInterface() {
-    u_int64_t total = 0;
-    u_int64_t size = send_times_.size();
-    while (!send_times_.empty()) {
-        total += send_times_.front();
-        send_times_.pop_front();
-    }
-
-    u_int64_t average = total / size;
-    cout << "Number of packets sent: " << size << endl;
-    cout << "Average time to log a packet (us): " << average << endl;
 
 }
 
@@ -85,15 +72,10 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
     //        cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
     assert(p);
     //        cout << p->to_s_format() << endl;
-    cout << p->to_s() << endl;
-
-    Timer timer;
-    timer.start();
+    //cout << p->to_s() << endl;
+    //usleep(0);
 
     logger.log(p);
-
-    timer.stop();
-    send_times_.push_back(timer.get_duration_microseconds());
 
     // drop the packet
     //    cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
@@ -146,6 +128,7 @@ void MockNetworkInterface::receive(WiFuPacket* p) {
     logger.log(p);
     //    cout << p->to_s_format() << endl;
     //    cout << p->to_s() << endl << endl;
+
 
     Event* response = new NetworkReceivePacketEvent(s, p);
     Dispatcher::instance().enqueue(response);

@@ -15,6 +15,9 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
 
     //            cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
 
+
+
+
     gcstring_map m;
     QueryStringParser::parse(message, m);
 
@@ -25,6 +28,7 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
     Socket* socket = SocketCollection::instance().get_by_id(socket_int);
 
     if (!name.compare(WIFU_RECVFROM_NAME)) {
+//        cout << Utils::get_current_time_microseconds_32() << " WifuEndBackEndLibrary::receive(), ReceiveEvent to be dispatched" << endl;
         dispatch(new ReceiveEvent(m, get_file(), socket));
         return;
 
@@ -97,6 +101,7 @@ void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
     gcstring response;
     event->get_response(response);
     //    cout << "Response: " << response << endl;
+    
     send_to(event->get_write_file(), response);
 }
 

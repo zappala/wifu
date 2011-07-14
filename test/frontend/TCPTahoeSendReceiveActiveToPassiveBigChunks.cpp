@@ -38,7 +38,7 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
 
     // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
-    int size = 50000;
+    int size = 30000;
     char buffer[size];
     gcstring all_received = "";
 
@@ -46,9 +46,9 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
     while (true) {
 
         memset(buffer, 0, size);
-        cout << "Calling recv()" << endl;
-        int return_value = wifu_recv(connection, &buffer, 10000, 0);
-        cout << "Returning from recv()" << endl;
+        //cout <<  Utils::get_current_time_microseconds_32() << " calling recv() " << endl;
+        int return_value = wifu_recv(connection, buffer, 20000, 0);
+        //cout <<  Utils::get_current_time_microseconds_32() << " return from recv(), recevied " << return_value << " bytes" << endl;
         recv_timer.start();
 
         if (return_value == 0) {
@@ -58,7 +58,7 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
 
         all_received.append(buffer);
 
-        cout << "Total received: " << all_received.size() << endl;
+//        cout << "Total received: " << all_received.size() << endl;
     }
 
     recv_timer.stop();

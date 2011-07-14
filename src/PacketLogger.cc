@@ -22,6 +22,7 @@ void PacketLogger::log(WiFuPacket* packet) {
     bool should_flush = items_.size() >= flush_count_;
     lock_.post();
 
+
     if (should_flush) {
         flush();
     }
@@ -33,6 +34,8 @@ void PacketLogger::flush() {
     if (fileout_.fail()) {
         throw IOError();
     }
+
+    assert(fileout_.is_open());
 
     const char fake_ethernet_header[FAKE_ETHERNET_HEADER_SIZE] = {0x00, 0x50, 0x56, 0xb7, 0x16, 0xc7, 0x00, 0x0f, 0xfe, 0xfe, 0x52, 0x17, 0x08, 0x00};
 
@@ -82,7 +85,6 @@ void PacketLogger::imodule_timer_fired(Event* e) {
     TimerFiredEvent* event = (TimerFiredEvent*) e;
     if (timeout_ == event->get_timeout_event()) {
         flush();
-
     }
 }
 

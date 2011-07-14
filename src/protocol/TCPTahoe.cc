@@ -1,5 +1,4 @@
 #include "protocol/TCPTahoe.h"
-#include "MockNetworkInterface.h"
 
 TCPTahoe::TCPTahoe(int protocol, IContextContainerFactory* factory) : Protocol(protocol), factory_(factory) {
     states_we_can_send_ack_.insert(type_name(Established));
@@ -60,6 +59,10 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c->get_reliability();
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c->get_connection_manager();
     //    cout << p->to_s() << endl;
+
+//    if (p->get_data_length_bytes() > 0) {
+//        cout << Utils::get_current_time_microseconds_32() << " TCPTahoe::icontext_receive_packet(): received " << p->get_data_length_bytes() << " bytes" << endl;
+//    }
 
     if (!p->is_valid_tcp_checksum()) {
         return;
@@ -226,7 +229,7 @@ void TCPTahoe::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEve
 void TCPTahoe::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = (TCPTahoeIContextContainer*) map_.find(s)->second;
-    
+
     int available_space = get_available_room_in_send_buffer(e);
 
     if (available_space > 0) {
@@ -242,7 +245,7 @@ void TCPTahoe::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
 
 void TCPTahoe::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
 
-//    cout << "TCPTahoe::icontext_receive()" << endl;
+//    cout << Utils::get_current_time_microseconds_32() << " TCPTahoe::icontext_receive()" << endl;
 
     Socket* s = e->get_socket();
     BasicIContextContainer* c = map_.find(s)->second;

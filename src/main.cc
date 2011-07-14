@@ -10,7 +10,8 @@
 #include <errno.h>
 #include <time.h>
 #include <unistd.h>
-#include <stdexcept>
+#include <stab.h>
+#include <sys/stat.h>
 #include <string.h>
 #include <assert.h>
 #include <signal.h>
@@ -318,6 +319,14 @@ void setup_network_interface(gcstring& type) {
     }
 }
 
+void change_dir() {
+    const char* dir = "wifu-end-output";
+    system("rm -rf wifu-end-output");
+    system("mkdir wifu-end-output");
+    system("chmod -R 777 wifu-end-output");
+    chdir(dir);
+}
+
 int main(int argc, char** argv) {
     GC_INIT();
 
@@ -355,6 +364,7 @@ int main(int argc, char** argv) {
     }
 
 
+
     if (optionparser.present(network)) {
         network_type = optionparser.argument(network);
     }
@@ -376,7 +386,7 @@ int main(int argc, char** argv) {
     dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
     dispatcher.map_event(type_name(TimerFiredEvent), &PacketLogger::instance());
 
-    // Packet Logger
+    //     Packet Logger
     if (optionparser.present(logger_threshold)) {
         int value = atoi(optionparser.argument(logger_threshold).c_str());
         PacketLogger::instance().set_flush_threshold(value);
@@ -400,6 +410,9 @@ int main(int argc, char** argv) {
     // Closes the file by setting the path to NULL
     // pantheios_be_file_setFilePath(NULL, PANTHEIOS_BEID_ALL);
     cout << "Exiting" << endl;
+
+    // this is so we can profile wifu-end
+//    change_dir();
 
     return (EXIT_SUCCESS);
 }

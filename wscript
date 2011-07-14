@@ -25,6 +25,11 @@ def set_options(opt):
 					action="store_true", default=False,
 					dest='prof')
 
+	opt.add_option('--dist',
+					help=('Compile for distribution.'),
+					action="store_true", default=False,
+					dest='dist')
+
 def configure(conf):
 	print('→ configuring the project')
 	conf.check_tool('compiler_cxx')
@@ -82,6 +87,14 @@ def configure(conf):
 		# for use with gprof
 		conf.env['CXXFLAGS'] += ['-pg']
 		conf.env['LINKFLAGS'] += ['-pg']
+		# Optimizations: -O, -O0 (off), -O1, -O2, -O3 (the higher the number, the more optimization it does, and the harder to debug it)
+		conf.env['CXXFLAGS'] += ['-O0']
+		# turn off coverage scanner
+		conf.env['CXXFLAGS'] += ['--cs-off']
+		conf.env['LINKFLAGS'] += ['--cs-off']
+
+	if Options.options.dist:
+		print "Configuring for distribution!"
 		# Optimizations: -O, -O0 (off), -O1, -O2, -O3 (the higher the number, the more optimization it does, and the harder to debug it)
 		conf.env['CXXFLAGS'] += ['-O0']
 		# turn off coverage scanner
@@ -329,8 +342,8 @@ def build(bld):
 		build_wifu_end_test(bld)
 		build_wifu_frontend_test(bld)
 	
-	#build_simple_tcp_sender(bld)
-	#build_simple_tcp_receiver(bld)
+	build_simple_tcp_sender(bld)
+	build_simple_tcp_receiver(bld)
 
 #	bld.add_post_fun(post)
 
