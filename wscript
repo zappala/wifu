@@ -76,6 +76,8 @@ def configure(conf):
 		conf.env['LIBPATH'] += ['../lib']
 		conf.env['CXXFLAGS'] += [ '-m32']
 		conf.env['LINKFLAGS'] += ['-m32']
+		# we need to do the distribution flags as well for 32-bit
+		Options.options.dist = True
 
 	if Options.options.debug:
 		print "Configuring with debugging symbols"
@@ -96,10 +98,12 @@ def configure(conf):
 	if Options.options.dist:
 		print "Configuring for distribution!"
 		# Optimizations: -O, -O0 (off), -O1, -O2, -O3 (the higher the number, the more optimization it does, and the harder to debug it)
-		conf.env['CXXFLAGS'] += ['-O0']
+		conf.env['CXXFLAGS'] += ['-O3']
 		# turn off coverage scanner
 		conf.env['CXXFLAGS'] += ['--cs-off']
 		conf.env['LINKFLAGS'] += ['--cs-off']
+		# turn off asserts
+		conf.env['CXXFLAGS'] += ['-DNDEBUG']
 
 
 def post(ctx):
