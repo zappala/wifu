@@ -13,7 +13,7 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
     // TODO: this method is way too long (and will likely get bigger)
     // TODO: refactor this method to use objects as much as possible
 
-    //            cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
+//                cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
 
 
 
@@ -100,8 +100,10 @@ void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
     event->put(FILE_STRING, get_file());
     gcstring response;
     event->get_response(response);
-    //    cout << "Response: " << response << endl;
-    
+//        cout << "Response: " << response << endl;
+//    if (!event->get_name().compare(WIFU_RECVFROM_NAME)) {
+//        cout << Utils::get_current_time_microseconds_32() << " WifuEndBackEndLibrary::imodule_library_response()" << endl;
+//    }
     send_to(event->get_write_file(), response);
 }
 

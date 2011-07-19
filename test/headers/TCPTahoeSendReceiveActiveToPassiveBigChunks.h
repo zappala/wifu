@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <sys/socket.h>
 
 #include "gtest/gtest.h"
 #include "../applib/wifu_socket.h"

@@ -80,6 +80,11 @@ public:
      */
     gcstring& get_write_file();
 
+    /**
+     * @return A referene to the name of the method this Event is in reponse to.
+     */
+    gcstring& get_name();
+
 private:
 
     /**

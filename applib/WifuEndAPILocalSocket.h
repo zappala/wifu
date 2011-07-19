@@ -522,6 +522,7 @@ public:
      */
     ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr, socklen_t *__restrict addr_len) {
                 //cout << "wifu_recvfrom()" << endl;
+//        cout << Utils::get_current_time_microseconds_32() << " WifuEndAPILocalSocket::wifu_recvfrom()" << endl;
         gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
@@ -547,6 +548,7 @@ public:
 
         //        cout << "wifu_recvfrom(), waiting" << endl;
         data->get_semaphore()->wait();
+//        cout << Utils::get_current_time_microseconds_32() << " WifuEndAPILocalSocket::wifu_recvfrom(), response received from back end" << endl;
 
         ssize_t ret_val = data->get_return_value();
         // TODO: fill in the actual vale of addr_len and addr according to man 2 recvfrom()

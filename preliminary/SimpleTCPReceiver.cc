@@ -36,10 +36,10 @@ int main(int argc, char** argv) {
         port = atoi(optionparser.argument(portarg).c_str());
     }
 
-    system("cp wifu-end /tmp/");
-    chdir("/tmp");
-    system("./wifu-end --network standard");
-    sleep(1);
+//    system("cp wifu-end /tmp/");
+//    chdir("/tmp");
+//    system("./wifu-end --network standard");
+//    sleep(1);
 
     AddressPort to_bind(hostaddr, port);
 
@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
         Timer recv_timer;
         while (true) {
             memset(buffer, 0, size);
-            int return_value = wifu_recv(connection, buffer, 10000, 0);
+            int return_value = wifu_recv(connection, buffer, 30000, 0);
             recv_timer.start();
 
             if (return_value == 0) {
@@ -83,5 +83,5 @@ int main(int argc, char** argv) {
     wifu_close(server);
 
     sleep(1);
-    system("killall wifu-end");
+//    system("killall wifu-end");
 }

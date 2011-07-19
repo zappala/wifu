@@ -77,6 +77,7 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 #define WIFU_PORT 9438
 
 // must fit in 8 bits
+#define DUMMY_PROTO 205
 #define SIMPLE_TCP 206
 #define TCP_TAHOE 207
 #define TCP_ATP 208
@@ -89,12 +90,18 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 #define TCP_FEW_DELAYEDACK 214
 #define TCP_AP_FEW_DELAYEDACK 215
 
+// TODO: figure out path MTU on the fly.
+// ethernet MTU
 #define MTU 1500
+
+// localhost MTU
+//#define MTU 16436
+
 #define MAX_TTL 65
 
 // TODO: switch these lines so we can have a bigger/smaller send/receive buffer sizes.
 // http://linux.die.net/man/7/tcp
-#define MAX_BUFFER_SIZE 87380 
+#define MAX_BUFFER_SIZE 87380
 //#define MAX_BUFFER_SIZE 2
 
 // Clock defines

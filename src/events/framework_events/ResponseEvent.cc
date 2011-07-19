@@ -33,3 +33,7 @@ void ResponseEvent::execute(IModule* m) {
 gcstring& ResponseEvent::get_write_file() {
     return file_;
 }
+
+gcstring& ResponseEvent::get_name() {
+    return name_;
+}

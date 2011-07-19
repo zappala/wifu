@@ -58,6 +58,7 @@
 #include "protocol/SimpleUDP.h"
 #include "protocol/TCPTahoe_DelayedACKs.h"
 #include "protocol/TCP_FeW.h"
+#include "protocol/DummyProtocol.h"
 //#include "protocol/TCPAP.h"
 
 //packet types
@@ -161,6 +162,33 @@ void register_tcp_tahoe() {
     dispatcher.map_event(type_name(DeleteSocketEvent), &TCPTahoe::instance());
     dispatcher.map_event(type_name(SetSocketOptionEvent), &TCPTahoe::instance());
     dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPTahoe::instance());
+}
+
+void register_dummy_proto() {
+    ProtocolManager::instance().support(DUMMY_PROTO);
+    NetworkInterfaceFactory::instance().create().register_protocol(DUMMY_PROTO, new TCPPacketFactory());
+
+    dispatcher.map_event(type_name(SocketEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(BindEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(ListenEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(ConnectEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(AcceptEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(SendPacketEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(TimerFiredEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(ResendPacketEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(ReceiveEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(SendEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(SendBufferNotFullEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(CloseEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(DeleteSocketEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(SetSocketOptionEvent), &DummyProtocol::instance());
+    dispatcher.map_event(type_name(GetSocketOptionEvent), &DummyProtocol::instance());
 }
 
 void register_tcp_atp() {
@@ -298,13 +326,14 @@ void register_ap() {
 
 void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
-    register_simple_tcp();
+    //    register_simple_tcp();
     register_tcp_tahoe();
-    register_tcp_atp();
-    register_udp();
-    register_delayed_ack();
-    register_few();
-    register_ap();
+    //    register_tcp_atp();
+    //    register_udp();
+    //    register_delayed_ack();
+    //    register_few();
+    //    register_ap();
+    register_dummy_proto();
 }
 
 void setup_network_interface(gcstring& type) {
@@ -412,7 +441,7 @@ int main(int argc, char** argv) {
     cout << "Exiting" << endl;
 
     // this is so we can profile wifu-end
-//    change_dir();
+    //    change_dir();
 
     return (EXIT_SUCCESS);
 }

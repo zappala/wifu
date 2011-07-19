@@ -1,6 +1,6 @@
 #include "../headers/TCPTahoeSendReceiveActiveToPassiveBigChunks.h"
 
-void* tahoe_active_to_passive_big_chunks_thread(void* args) {
+void* dummy_active_to_passive_big_chunks_thread(void* args) {
 
     struct var* v = (struct var*) args;
     AddressPort* to_bind = v->to_bind_;
@@ -49,7 +49,7 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
 
         memset(buffer, 0, size);
         u_int64_t start = Utils::get_current_time_microseconds_64();
-        int return_value = wifu_recv(connection, buffer, 40000, 0);
+        int return_value = wifu_recv(connection, buffer, 10000, 0);
         durations.push_back(Utils::get_current_time_microseconds_64() - start);
         recv_timer.start();
 
@@ -89,7 +89,7 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void tahoe_active_to_passive_big_chunks(int protocol, gcstring message) {
+void dummy_active_to_passive_big_chunks(int protocol, gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
     pthread_t t;
@@ -110,7 +110,7 @@ void tahoe_active_to_passive_big_chunks(int protocol, gcstring message) {
     //Specify the number of bytes to send here.
     v.expected_string = message;
 
-    if (pthread_create(&(t), NULL, &tahoe_active_to_passive_big_chunks_thread, &(v)) != 0) {
+    if (pthread_create(&(t), NULL, &dummy_active_to_passive_big_chunks_thread, &(v)) != 0) {
         FAIL() << "Error creating new thread in IntegrationTest.h";
     }
 
@@ -160,54 +160,42 @@ void tahoe_active_to_passive_big_chunks(int protocol, gcstring message) {
     v.done_->wait();
 }
 
-TEST_F(BackEndTest, tahoeSendReceiveTestActiveBigChunks100000) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(100000));
+TEST_F(BackEndMockTestDropNone, dummySendReceiveTestActiveBigChunks1000) {
+    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(1000));
 }
 
-TEST_F(BackEndTest, tahoeSendReceiveTestActiveBigChunks1000000) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000000));
+TEST_F(BackEndMockTestDropNone, dummySendReceiveTestActiveBigChunks10000) {
+    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(10000));
 }
 
-TEST_F(BackEndTest, tahoeSendReceiveTestActiveBigChunks10000000) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(10000000));
+TEST_F(BackEndMockTestDropNone, dummySendReceiveTestActiveBigChunks65535) {
+    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(65535));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks1000) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000));
+TEST_F(BackEndMockTestDropNone, dummySendReceiveTestActiveBigChunks87380) {
+    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(87380));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks10000) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(10000));
+TEST_F(BackEndMockTestDropNone, dummySendReceiveTestActiveBigChunks100000) {
+    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(100000));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks65535) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(65535));
+TEST_F(BackEndMockTestDropNone, dummySendReceiveTestActiveBigChunks1000000) {
+    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(1000000));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks87380) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(87380));
+TEST_F(BackEndMockTestDropNone, dummySendReceiveTestActiveBigChunks10000000) {
+    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(10000000));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks100000) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(100000));
+TEST_F(BackEndMockTestDropRandom10Percent, dummySendReceiveTestActiveBigChunks10000) {
+    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(10000));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks1000000) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000000));
+TEST_F(BackEndMockTestDropRandom10Percent, dummySendReceiveTestActiveBigChunks100000) {
+    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(100000));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks10000000) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(10000000));
-}
-
-TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveBigChunks10000) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(10000));
-}
-
-TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveBigChunks100000) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(100000));
-}
-
-TEST_F(BackEndMockTestDropRandom20Percent, tahoeSendReceiveTestActiveBigChunks100000) {
-    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(100000));
+TEST_F(BackEndMockTestDropRandom20Percent, dummySendReceiveTestActiveBigChunks100000) {
+    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(100000));
 }

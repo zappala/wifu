@@ -45,20 +45,18 @@ int main(int argc, char** argv) {
         num_bytes = atoi(optionparser.argument(num).c_str());
     }
 
-    system("cp wifu-end /tmp/");
-    chdir("/tmp");
-    system("./wifu-end --network standard");
-    sleep(1);
+//    system("cp wifu-end /tmp/");
+//    chdir("/tmp");
+//    system("./wifu-end --network standard");
+//    sleep(1);
 
     gcstring message = RandomStringGenerator::get_data(num_bytes);
-
 
     AddressPort to_connect(dest, port);
     //int client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
     int client = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
     int result = wifu_connect(client, (const struct sockaddr*) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     assert(!result);
-
 
     int index = 0;
     int chunk = 10000;
@@ -83,5 +81,5 @@ int main(int argc, char** argv) {
     wifu_close(client);
 
     sleep(1);
-    system("killall wifu-end");
+//    system("killall wifu-end");
 }

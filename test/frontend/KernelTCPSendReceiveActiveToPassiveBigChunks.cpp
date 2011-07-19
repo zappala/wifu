@@ -42,12 +42,16 @@ void* kernel_active_to_passive_big_chunks_thread(void* args) {
     char buffer[size];
     gcstring all_received = "";
 
+    list<u_int64_t, gc_allocator<u_int64_t> > durations;
+
     Timer recv_timer;
 
     while (true) {
 
         memset(buffer, 0, size);
+        u_int64_t start = Utils::get_current_time_microseconds_64();
         int return_value = recv(connection, &buffer, 10000, 0);
+        durations.push_back(Utils::get_current_time_microseconds_64() - start);
         recv_timer.start();
 
         if (return_value == 0) {
@@ -55,16 +59,28 @@ void* kernel_active_to_passive_big_chunks_thread(void* args) {
             break;
         }
 
-        gcstring actual(buffer);
-        all_received.append(actual);
+//        gcstring actual(buffer);
+//        all_received.append(actual);
     }
 
     recv_timer.stop();
+
+    // get rid of the first sample, it might have been delayed.
+    durations.pop_front();
+    u_int64_t total = 0;
+    u_int64_t durations_size = durations.size();
+    while (!durations.empty()) {
+        total += durations.front();
+        durations.pop_front();
+    }
+
+    cout << "Average on wifu to call and return from recv(): " << (total / durations_size) << endl;
+
     cout << "Duration (us) to recv: " << expected.size() << " bytes on localhost: " << recv_timer.get_duration_microseconds() << endl;
 
     close(connection);
     close(server);
-    EXPECT_EQ(expected, all_received);
+//    EXPECT_EQ(expected, all_received);
     done->post();
 }
 
