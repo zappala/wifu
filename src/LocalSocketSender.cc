@@ -48,4 +48,11 @@ void LocalSocketSender::init() {
         perror("Error Creating Socket");
         exit(-1);
     }
+
+    socklen_t optval = MAX_BUFFER_SIZE;
+    int value = setsockopt(socket_, SOL_SOCKET, SO_SNDBUF, &optval, sizeof (optval));
+    if (value) {
+        perror("setsockopt");
+        exit(EXIT_FAILURE);
+    }
 }

@@ -34,9 +34,12 @@ public:
     virtual void icontext_send(QueueProcessor<Event*>* q, SendEvent* e);
     virtual void icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e);
 
+    virtual void icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
+    virtual void icontext_receive_buffer_not_full(QueueProcessor<Event*>* q, ReceiveBufferNotFullEvent* e);
+
 private:
     void set_socket_buffer_sizes(Socket* s, int size);
-    void dispatch_received_data(ReceiveEvent* e);
+    void dispatch_received_data(QueueProcessor<Event*>* q, ReceiveEvent* e);
     
 };
 

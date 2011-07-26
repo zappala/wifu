@@ -49,7 +49,7 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
 
         memset(buffer, 0, size);
         u_int64_t start = Utils::get_current_time_microseconds_64();
-        int return_value = wifu_recv(connection, buffer, 40000, 0);
+        int return_value = wifu_recv(connection, buffer, 10000, 0);
         durations.push_back(Utils::get_current_time_microseconds_64() - start);
         recv_timer.start();
 
@@ -67,6 +67,9 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
 
     // get rid of the first sample, it might have been delayed.
     durations.pop_front();
+    // get rid of the last sample as it is a return of 0
+    durations.pop_back();
+    
     u_int64_t total = 0;
     u_int64_t durations_size = durations.size();
     while (!durations.empty()) {

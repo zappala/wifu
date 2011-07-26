@@ -18,11 +18,11 @@ int LocalSocketReceiver::get_socket() {
     return socket_;
 }
 
-gcstring & LocalSocketReceiver::get_file() {
+gcstring& LocalSocketReceiver::get_file() {
     return file_;
 }
 
-void LocalSocketReceiver::recv(gcstring & message) {
+void LocalSocketReceiver::recv(gcstring& message) {
     sem_.wait();
     callback_->receive(message);
     sem_.post();
@@ -54,6 +54,13 @@ void LocalSocketReceiver::init(void) {
         exit(EXIT_FAILURE);
     }
 
+    optval = MAX_BUFFER_SIZE;
+    value = setsockopt(get_socket(), SOL_SOCKET, SO_RCVBUF, &optval, sizeof (optval));
+    if (value) {
+        perror("setsockopt");
+        exit(EXIT_FAILURE);
+    }
+
     if (bind(get_socket(), (const struct sockaddr *) & server, SUN_LEN(&server)) < 0) {
         perror("Bind");
         exit(-1);
@@ -71,7 +78,7 @@ void LocalSocketReceiver::init(void) {
     obj.sem.wait();
 }
 
-void * unix_receive_handler(void* arg) {
+void* unix_receive_handler(void* arg) {
     struct local_socket_receiver_obj* obj = (struct local_socket_receiver_obj*) arg;
 
     LocalSocketReceiver * receiver = obj->receiver;

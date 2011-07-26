@@ -32,7 +32,7 @@ void DummyProtocol::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
     AddressPort* remote = source->get_local_address_port();
 
     Socket* s = SocketCollection::instance().get_by_local_and_remote_ap(local, remote);
-    
+
     s->get_receive_buffer().append((const char*) e->get_data(), e->data_length());
 
     // Respond to the sending socket
@@ -43,8 +43,8 @@ void DummyProtocol::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
 
     // Try to receive on the receiving socket
     DummyProtocolIContextContainer* container = (DummyProtocolIContextContainer*) map_.find(s)->second;
-    if(container->get_receive_event() && !s->get_receive_buffer().empty()) {
-        dispatch_received_data(container->get_receive_event());
+    if (container->get_receive_event() && !s->get_receive_buffer().empty()) {
+        dispatch_received_data(q, container->get_receive_event());
         container->set_receive_event(0);
     }
 }
@@ -52,11 +52,30 @@ void DummyProtocol::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
 void DummyProtocol::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
     Socket* s = e->get_socket();
     if (!s->get_receive_buffer().empty()) {
-        dispatch_received_data(e);
+        dispatch_received_data(q, e);
     } else {
         DummyProtocolIContextContainer* container = (DummyProtocolIContextContainer*) map_.find(s)->second;
         assert(!container->get_receive_event());
         container->set_receive_event(e);
+    }
+}
+
+void DummyProtocol::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
+    TCPPacket* p = (TCPPacket*) e->get_packet();
+    Socket* s = e->get_socket();
+    if (p->is_tcp_fin() && !s->get_receive_buffer().empty()) {
+        DummyProtocolIContextContainer* c = (DummyProtocolIContextContainer*) map_.find(s)->second;
+        c->set_saved_fin(e);
+        return;
+    }
+    TCPTahoe::icontext_receive_packet(q, e);
+}
+
+void DummyProtocol::icontext_receive_buffer_not_full(QueueProcessor<Event*>* q, ReceiveBufferNotFullEvent* e) {
+    Socket* s = e->get_socket();
+    DummyProtocolIContextContainer* c = (DummyProtocolIContextContainer*) map_.find(s)->second;
+    if (c->get_saved_fin() && s->get_receive_buffer().empty()) {
+        dispatch(c->get_saved_fin());
     }
 }
 
@@ -66,7 +85,7 @@ void DummyProtocol::set_socket_buffer_sizes(Socket* s, int size) {
     s->get_resend_buffer().reserve(size);
 }
 
-void DummyProtocol::dispatch_received_data(ReceiveEvent* e) {
+void DummyProtocol::dispatch_received_data(QueueProcessor<Event*>* q, ReceiveEvent* e) {
     Socket* s = e->get_socket();
     int buffer_size = e->get_receive_buffer_size();
 
@@ -83,5 +102,5 @@ void DummyProtocol::dispatch_received_data(ReceiveEvent* e) {
     response->put(ERRNO, Utils::itoa(0));
 
     dispatch(response);
-    //q->enqueue(new ReceiveBufferNotFullEvent(s));
+    q->enqueue(new ReceiveBufferNotFullEvent(s));
 }

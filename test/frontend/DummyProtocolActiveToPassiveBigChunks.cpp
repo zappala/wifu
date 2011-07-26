@@ -38,7 +38,7 @@ void* dummy_active_to_passive_big_chunks_thread(void* args) {
 
     // TODO: Check the results of wifu_accept, probably need to wait for send, recv to be implemented
 
-    int size = 50000;
+    int size = 100001;
     char buffer[size];
     gcstring all_received = "";
 
@@ -47,41 +47,43 @@ void* dummy_active_to_passive_big_chunks_thread(void* args) {
     Timer recv_timer;
     while (true) {
 
-        memset(buffer, 0, size);
+//        memset(buffer, 0, size);
         u_int64_t start = Utils::get_current_time_microseconds_64();
         int return_value = wifu_recv(connection, buffer, 10000, 0);
         durations.push_back(Utils::get_current_time_microseconds_64() - start);
         recv_timer.start();
 
         if (return_value == 0) {
-            //                        cout << "Close Thread BREAK" << endl;
             break;
         }
-
-        all_received.append(buffer);
-
-        //        cout << "Total received: " << all_received.size() << endl;
+//        all_received.append(buffer);
     }
 
     recv_timer.stop();
 
     // get rid of the first sample, it might have been delayed.
     durations.pop_front();
+    // get rid of the last sample as it is a return of 0
+    durations.pop_back();
+    
     u_int64_t total = 0;
     u_int64_t durations_size = durations.size();
     while (!durations.empty()) {
-        total += durations.front();
+        u_int64_t current = durations.front();
+//        cout << current << endl;
+        total += current;
         durations.pop_front();
     }
 
     cout << "Average on wifu to call and return from recv(): " << (total / durations_size) << endl;
     cout << "Number of samples: " << durations_size << endl;
 
-    cout << "Duration (us) to recv: " << expected.size() << " bytes on localhost: " << recv_timer.get_duration_microseconds() << endl;
+    cout << "Duration (us) to recv: " << all_received.size() << " bytes on localhost: " << recv_timer.get_duration_microseconds() << endl;
 
     wifu_close(connection);
     wifu_close(server);
-    EXPECT_EQ(expected, all_received);
+//    EXPECT_EQ(expected.size(), all_received.size());
+//    EXPECT_EQ(expected, all_received);
     done->post();
 }
 
@@ -132,7 +134,7 @@ void dummy_active_to_passive_big_chunks(int protocol, gcstring message) {
     cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
     int index = 0;
-    int chunk = 10000;
+    int chunk = 100000;
     int num_sent = 0;
 
 
@@ -186,16 +188,4 @@ TEST_F(BackEndMockTestDropNone, dummySendReceiveTestActiveBigChunks1000000) {
 
 TEST_F(BackEndMockTestDropNone, dummySendReceiveTestActiveBigChunks10000000) {
     dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(10000000));
-}
-
-TEST_F(BackEndMockTestDropRandom10Percent, dummySendReceiveTestActiveBigChunks10000) {
-    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(10000));
-}
-
-TEST_F(BackEndMockTestDropRandom10Percent, dummySendReceiveTestActiveBigChunks100000) {
-    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(100000));
-}
-
-TEST_F(BackEndMockTestDropRandom20Percent, dummySendReceiveTestActiveBigChunks100000) {
-    dummy_active_to_passive_big_chunks(DUMMY_PROTO, random_string(100000));
 }
