@@ -28,7 +28,7 @@ void TCPTahoeReliabilityContext::set_initialized() {
     initialized_ = true;
 }
 
-u_int32_t TCPTahoeReliabilityContext::get_rcv_nxt() {
+u_int32_t TCPTahoeReliabilityContext::get_rcv_nxt() const {
     return rcv_nxt_;
 }
 
@@ -36,7 +36,7 @@ void TCPTahoeReliabilityContext::set_rcv_nxt(u_int32_t rcv_nxt) {
     rcv_nxt_ = rcv_nxt;
 }
 
-u_int16_t TCPTahoeReliabilityContext::get_rcv_wnd() {
+u_int16_t TCPTahoeReliabilityContext::get_rcv_wnd() const {
     return rcv_wnd_;
 }
 
@@ -44,7 +44,15 @@ void TCPTahoeReliabilityContext::set_rcv_wnd(u_int16_t rcv_wnd) {
     rcv_wnd_ = rcv_wnd;
 }
 
-TimeoutEvent* TCPTahoeReliabilityContext::get_timeout_event() {
+u_int16_t TCPTahoeReliabilityContext::get_last_sent_rcv_wnd() const {
+    return last_sent_rcv_wnd_;
+}
+
+void TCPTahoeReliabilityContext::set_last_sent_rcv_wnd(u_int16_t last_sent_rcv_wnd) {
+    last_sent_rcv_wnd_ = last_sent_rcv_wnd;
+}
+
+TimeoutEvent* TCPTahoeReliabilityContext::get_timeout_event() const {
     return timer_;
 }
 
@@ -52,7 +60,7 @@ void TCPTahoeReliabilityContext::set_timeout_event(TimeoutEvent* e) {
     timer_ = e;
 }
 
-double TCPTahoeReliabilityContext::get_rto() {
+double TCPTahoeReliabilityContext::get_rto() const {
     return rto_;
 }
 
@@ -60,7 +68,7 @@ void TCPTahoeReliabilityContext::set_rto(double rto) {
     rto_ = rto;
 }
 
-u_int32_t TCPTahoeReliabilityContext::get_duplicate_ack_number() {
+u_int32_t TCPTahoeReliabilityContext::get_duplicate_ack_number() const {
     return duplicate_ack_number_;
 }
 
@@ -68,7 +76,7 @@ void TCPTahoeReliabilityContext::set_duplicate_ack_number(u_int32_t num) {
     duplicate_ack_number_ = num;
 }
 
-int TCPTahoeReliabilityContext::get_duplicates() {
+int TCPTahoeReliabilityContext::get_duplicates() const {
     return duplicates_;
 }
 
@@ -80,7 +88,7 @@ TCPPacketBuffer& TCPTahoeReliabilityContext::get_receive_window() {
     return receive_window_;
 }
 
-ReceiveEvent* TCPTahoeReliabilityContext::get_receive_event() {
+ReceiveEvent* TCPTahoeReliabilityContext::get_receive_event() const {
     return receive_event_;
 }
 
@@ -88,7 +96,7 @@ void TCPTahoeReliabilityContext::set_receive_event(ReceiveEvent* e) {
     receive_event_ = e;
 }
 
-u_int32_t TCPTahoeReliabilityContext::get_echo_reply() {
+u_int32_t TCPTahoeReliabilityContext::get_echo_reply() const {
     return echo_reply_;
 }
 
@@ -96,7 +104,7 @@ void TCPTahoeReliabilityContext::set_echo_reply(u_int32_t echo_reply) {
     echo_reply_ = echo_reply;
 }
 
-double TCPTahoeReliabilityContext::get_srtt() {
+double TCPTahoeReliabilityContext::get_srtt() const {
     return srtt_;
 }
 
@@ -104,7 +112,7 @@ void TCPTahoeReliabilityContext::set_srtt(double srtt) {
     srtt_ = srtt;
 }
 
-double TCPTahoeReliabilityContext::get_rttvar() {
+double TCPTahoeReliabilityContext::get_rttvar() const {
     return rttvar_;
 }
 

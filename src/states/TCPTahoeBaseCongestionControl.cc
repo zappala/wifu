@@ -66,7 +66,10 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    if (p->is_tcp_ack() && between_equal_right(ccc->get_snd_una(), p->get_tcp_ack_number(), ccc->get_snd_max())) {
+    bool between_and_equal = between_equal(ccc->get_snd_una(), p->get_tcp_ack_number(), ccc->get_snd_max());
+    bool between_and_equal_right = between_equal_right(ccc->get_snd_una(), p->get_tcp_ack_number(), ccc->get_snd_max());
+
+    if (p->is_tcp_ack() && between_and_equal) {
         ccc->set_snd_una(p->get_tcp_ack_number());
 
         // In case we get an ack for something later than snd.nxt
@@ -85,12 +88,10 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
             ccc->set_snd_wnd2(p->get_tcp_ack_number());
         }
 
-        if (ccc->is_data_sent()) {
+        // only update the cwnd variable if this packet is not a duplicate
+        if (between_and_equal_right && ccc->is_data_sent()) {
             set_cwnd(c, q, e);
         }
-
-        //cout << "TCPTahoeBaseCongestionControl::state_receive_packet(), num outstanding: " << ccc->get_num_outstanding() << endl;
-        //cout << "TCPTahoeBaseCongestionControl::state_receive_packet(), max allowed to send: " << ccc->get_max_allowed_to_send() << endl;
 
         // check to see if there is room to send data
         assert(ccc->get_num_outstanding() <= ccc->get_max_allowed_to_send());
@@ -110,7 +111,6 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
                 ccc->set_probe_timer(0);
                 Dispatcher::instance().enqueue(cancel_timer);
             }
-//            cout << "TCPTahoeBaseCongestionControl::state_receive_packet(), sending packets" << endl;
             send_packets(c, q, e);
         }
     }

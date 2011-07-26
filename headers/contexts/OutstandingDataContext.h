@@ -10,6 +10,9 @@
 
 #include "Context.h"
 #include "Math.h"
+#include "packet/TCPPacket.h"
+#include "packet/TCPTimestampOption.h"
+
 #include <sys/types.h>
 
 /**
@@ -46,6 +49,17 @@ public:
      * @param iss The initial send sequence number to save.
      */
     void set_iss(u_int32_t iss);
+
+    /**
+     * @return The maximum segment size for this TCP.
+     */
+    u_int16_t get_mss() const;
+
+    /**
+     * Sets the maximum segment size for this TCP.
+     * @param mss The maximum segment size to set.
+     */
+    void set_mss(u_int16_t mss);
 
     /**
      * @return SND_NXT, defined as the sequence number of next byte to send.
@@ -87,6 +101,11 @@ private:
      * Initial send sequence number.
      */
     u_int32_t iss_;
+
+    /**
+     * Maximum segment size.
+     */
+    u_int16_t mss_;
 
     /**
      * Sequence number of the next byte to send.

@@ -59,7 +59,7 @@ public:
      * From RFC 793.
      * @return The next in order expected byte.
      */
-    u_int32_t get_rcv_nxt();
+    u_int32_t get_rcv_nxt() const;
 
     /**
      * From RFC 793.
@@ -72,7 +72,7 @@ public:
      * From RFC 793.
      * @return The number of bytes that the receiver is willing to accept.
      */
-    u_int16_t get_rcv_wnd();
+    u_int16_t get_rcv_wnd() const;
 
     /**
      * From RFC 793.
@@ -82,9 +82,23 @@ public:
     void set_rcv_wnd(u_int16_t rcv_wnd);
 
     /**
+     * From RFC 793.
+     * We need to know if the last sent rcv_wnd was 0.
+     * @return The last value of rcv_wnd_ that was sent in an ack.
+     */
+    u_int16_t get_last_sent_rcv_wnd() const;
+
+    /**
+     * From RFC 793.
+     * We need to know if the last sent rcv_wnd was 0.
+     * @param last_sent_rcv_wnd The last value of rcv_wnd_ that was sent in an ack.
+     */
+    void set_last_sent_rcv_wnd(u_int16_t last_sent_rcv_wnd);
+
+    /**
      * @return The TimeoutEvent used to indicate when we need to resend due to not receiving any acknowledgements.
      */
-    TimeoutEvent* get_timeout_event();
+    TimeoutEvent* get_timeout_event() const;
 
     /**
      * Saves e as the TimeoutEvent we will expect to get when it fires.
@@ -96,7 +110,7 @@ public:
      * From RFC 2988.
      * @return The current retransmission timeout value in seconds.
      */
-    double get_rto();
+    double get_rto() const;
 
     /**
      * From RFC 2988.
@@ -110,7 +124,7 @@ public:
      * @return The latest ack numer we have receieved.
      * This is used to compare to an incoming ack to see if we have seen it before or not.
      */
-    u_int32_t get_duplicate_ack_number();
+    u_int32_t get_duplicate_ack_number() const;
 
     /**
      * From RFC 2001 (fast retransmit).
@@ -123,7 +137,7 @@ public:
      * From RFC 2001 (fast retransmit).
      * @return The number of duplicate acks we have seen.
      */
-    int get_duplicates();
+    int get_duplicates() const;
 
     /**
      * From RFC 2001 (fast retransmit).
@@ -141,7 +155,7 @@ public:
     /**
      * @return The ReceiveEvent representing a request from the application to receive data from the receive bufffer.
      */
-    ReceiveEvent* get_receive_event();
+    ReceiveEvent* get_receive_event() const;
 
     /**
      * Saves the request from the application to receive data.
@@ -153,7 +167,7 @@ public:
      * From RFC 1323.
      * @return The latest timestamp value we have received.
      */
-    u_int32_t get_echo_reply();
+    u_int32_t get_echo_reply() const;
 
     /**
      * From RFC 1323.
@@ -166,7 +180,7 @@ public:
      * RFC 2988.
      * @return The smoothed RTT.
      */
-    double get_srtt();
+    double get_srtt() const;
 
     /**
      * RFC 2988.
@@ -179,7 +193,7 @@ public:
      * RFC 2988.
      * @return The RTT variance.
      */
-    double get_rttvar();
+    double get_rttvar() const;
 
     /**
      * RFC 2988.
@@ -187,7 +201,7 @@ public:
      * @param rttvar The RTT variance.
      */
     void set_rttvar(double rttvar);
-    
+
 private:
 
     /**
@@ -206,6 +220,14 @@ private:
      * Number of bytes that this receiver can currently buffer.
      */
     u_int16_t rcv_wnd_;
+
+    /**
+     * RFC 793 (kind of)
+     * The last sent receive window.
+     * This will be used to check if the receiver sent a window of 0.
+     * Upon the application removing data from the receive buffer, we are now able to receive more data.
+     */
+    u_int16_t last_sent_rcv_wnd_;
 
     /**
      * TimeoutEvent to compare to when a TimerFires.

@@ -150,17 +150,6 @@ public:
     u_int32_t get_max_allowed_to_send() const;
 
     /**
-     * @return The maximum segment size.
-     */
-    u_int16_t get_mss() const;
-
-    /**
-     * Saves the maximum segment size.
-     * @param mss The new value of the maximum segment size.
-     */
-    void set_mss(u_int16_t mss);
-
-    /**
      * @return True if any non-control bit data has been sent.
      */
     bool is_data_sent() const;

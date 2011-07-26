@@ -33,6 +33,7 @@ public:
     virtual void state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e);
     virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     virtual void state_receive_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, ReceiveBufferNotEmptyEvent* e);
+    virtual void state_receive_buffer_not_full(Context* c, QueueProcessor<Event*>* q, ReceiveBufferNotFullEvent* e);
     virtual void state_receive(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e);
 
 protected:
@@ -50,6 +51,7 @@ protected:
     virtual void check_and_start_timer(Context*c, SendPacketEvent* e);
     virtual void append_control_bytes_to_send_buffer(SendPacketEvent* e);
     virtual void insert_timestamp(Context* c, TCPPacket* p);
+    virtual void set_and_save_receive_window_size(Context* c, TCPPacket* p);
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="state_receive_packet() helper functions">

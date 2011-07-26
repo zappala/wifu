@@ -9,15 +9,14 @@ TCPTahoeReliabilityState::~TCPTahoeReliabilityState() {
 }
 
 void TCPTahoeReliabilityState::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e) {
-    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
-    set_sequence_number_and_update_window_variables(rc, p);
-    set_ack_number_and_bit(rc, p);
+    set_sequence_number_and_update_window_variables(c, p);
+    set_ack_number_and_bit(c, p);
     check_and_start_timer(c, e);
     append_control_bytes_to_send_buffer(e);
     insert_timestamp(c, p);
-    p->set_tcp_receive_window_size(rc->get_rcv_wnd());
+    set_and_save_receive_window_size(c, p);
 }
 
 void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
@@ -50,6 +49,13 @@ void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, QueueP
 //        cout << "TCPTahoeReliabilityState::state_receive_buffer_not_empty(), receive event exists" << endl;
         create_and_dispatch_received_data(c, q, rc->get_receive_event());
         rc->set_receive_event(0);
+    }
+}
+
+void TCPTahoeReliabilityState::state_receive_buffer_not_full(Context* c, QueueProcessor<Event*>* q, ReceiveBufferNotFullEvent* e) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+    if(rc->get_last_sent_rcv_wnd() == 0 && rc->get_rcv_wnd() > rc->get_mss()) {
+        create_and_dispatch_ack(c, q, e);
     }
 }
 
@@ -223,7 +229,13 @@ void TCPTahoeReliabilityState::insert_timestamp(Context* c, TCPPacket* p) {
     if (rc->get_echo_reply()) {
         option->set_echo_reply(rc->get_echo_reply());
     }
-}// </editor-fold>
+}
+
+void TCPTahoeReliabilityState::set_and_save_receive_window_size(Context* c, TCPPacket* p) {
+    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
+    p->set_tcp_receive_window_size(rc->get_rcv_wnd());
+    rc->set_last_sent_rcv_wnd(rc->get_rcv_wnd());
+} // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="state_receive_packet() helper functions">
 

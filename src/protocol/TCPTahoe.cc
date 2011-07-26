@@ -70,7 +70,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
 
     // validate any ack number
     if (p->is_tcp_ack() && !is_valid_ack_number(rc, p)) {
-        //        cout << "INVALID ACK NUMBER" << endl;
+//                cout << "INVALID ACK NUMBER" << endl;
         rc->icontext_receive_packet(q, e);
         return;
     }
@@ -80,7 +80,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
     // We add on the case where no context exists for us to check (RCV.NXT == 0)
     if (!is_valid_sequence_number(rc, p)) {
         // TODO: is this the correct check?
-        //        cout << "INVALID SEQUENCE NUMBER" << endl;
+//                cout << "INVALID SEQUENCE NUMBER" << endl;
         //        cout << "Current state: " << cmc->get_state_name() << endl;
 
         // See my notes for May 25, 2011 for why this must be - RB
@@ -117,7 +117,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
     // I guess we could simply cache it again if we are not ready to close???
     // See my notes on May 25, 2011 -RB
     if (p->is_tcp_fin() && rc->get_rcv_wnd() < MAX_TCP_RECEIVE_WINDOW_SIZE) {
-        //        cout << "Saving FIN" << endl;
+//                cout << "Saving FIN" << endl;
         c->set_saved_fin(e);
         return;
     }
