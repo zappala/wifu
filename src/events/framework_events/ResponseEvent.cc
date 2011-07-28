@@ -26,18 +26,18 @@ void ResponseEvent::put(const char* key, gcstring value) {
     put(k, value);
 }
 
-//gcstring& ResponseEvent::get(const char* key) {
-//    gcstring k = gcstring(key);
-//    return get(k);
-//}
-//
-//gcstring& ResponseEvent::get(gcstring& key) {
-//    gcstring_map::iterator itr = m_.find(key);
-//    if(itr != m_.end()) {
-//        return itr->second;
-//    }
-//    return gcstring::;
-//}
+gcstring* ResponseEvent::get(const char* key) {
+    gcstring k = gcstring(key);
+    return get(k);
+}
+
+gcstring* ResponseEvent::get(gcstring& key) {
+    gcstring_map::iterator itr = m_.find(key);
+    if(itr != m_.end()) {
+        return &(itr->second);
+    }
+    return NULL;
+}
 
 void ResponseEvent::execute(IModule* m) {
     m->imodule_library_response(this);

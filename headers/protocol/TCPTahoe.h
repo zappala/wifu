@@ -30,7 +30,6 @@ protected:
 
     int get_available_room_in_send_buffer(SendEvent* e);
     void save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e, int available_room_in_send_buffer);
-    void create_and_dispatch_received_data(QueueProcessor<Event*>* q, ReceiveEvent* e);
 
     bool is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacket* p);
     bool is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p);

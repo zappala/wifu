@@ -6,11 +6,8 @@ void QueryStringParser::parse(gcstring& message, gcstring_map& values) {
         throw WiFuException("Malformed query");
     }
 
-    gcstring name = message.substr(0, end);
-
-    values[NAME_STRING] = name;
+    values.insert(pair<gcstring, gcstring>(NAME_STRING, message.substr(0, end)));
     gcstring key;
-    gcstring value;
     size_t begin;
 
     while (1) {
@@ -27,10 +24,7 @@ void QueryStringParser::parse(gcstring& message, gcstring_map& values) {
         // Find Value
         begin = end + 1;
         end = message.find_first_of('&', begin);
-        value = message.substr(begin, end - begin);
-
-        values[key] = value;
-        // TODO: could we make it a bit better (faster) by putting the data at the end of the message?
+        values.insert(pair<gcstring, gcstring>(key, message.substr(begin, end - begin)));
     }
 }
 

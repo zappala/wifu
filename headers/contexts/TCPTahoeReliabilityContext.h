@@ -202,6 +202,10 @@ public:
      */
     void set_rttvar(double rttvar);
 
+    int get_receive_index() const;
+
+    void set_receive_index(int receive_index);
+
 private:
 
     /**
@@ -279,6 +283,8 @@ private:
      * RTT variance in seconds.
      */
     double rttvar_;
+
+    int receive_index_;
 
 };
 

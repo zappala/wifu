@@ -490,6 +490,7 @@ public:
         }
 
         gcstring message;
+        message.reserve(2 * n);
         QueryStringParser::create(WIFU_SENDTO_NAME, m, message);
         send_to(write_file_, message);
 

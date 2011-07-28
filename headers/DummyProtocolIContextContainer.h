@@ -21,8 +21,14 @@ public:
 
     void set_receive_event(ReceiveEvent* e);
 
+    int get_receive_index() const;
+
+    void set_receive_index(int receive_index);
+
 private:
     ReceiveEvent* receive_event_;
+
+    int receive_index_;
 };
 
 #endif	/* DUMMYPROTOCOLICONTEXTCONTAINER_H */

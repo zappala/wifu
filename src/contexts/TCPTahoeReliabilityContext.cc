@@ -1,18 +1,19 @@
 #include "contexts/TCPTahoeReliabilityContext.h"
 
-TCPTahoeReliabilityContext::TCPTahoeReliabilityContext(u_int32_t iss) : 
-    OutstandingDataContext(iss),
-    initialized_(false),
-    rcv_nxt_(0),
-    rcv_wnd_(MAX_TCP_RECEIVE_WINDOW_SIZE),
-    timer_(0),
-    duplicate_ack_number_(0),
-    duplicates_(0),
-    receive_event_(0),
-    rto_(INITIAL_RTO),
-    srtt_(-1.0),
-    rttvar_(-1.0) {
-    
+TCPTahoeReliabilityContext::TCPTahoeReliabilityContext(u_int32_t iss) :
+OutstandingDataContext(iss),
+initialized_(false),
+rcv_nxt_(0),
+rcv_wnd_(MAX_TCP_RECEIVE_WINDOW_SIZE),
+timer_(0),
+duplicate_ack_number_(0),
+duplicates_(0),
+receive_event_(0),
+rto_(INITIAL_RTO),
+srtt_(-1.0),
+rttvar_(-1.0),
+receive_index_(0) {
+
     set_state(new TCPTahoeReliabilityState());
 }
 
@@ -118,4 +119,12 @@ double TCPTahoeReliabilityContext::get_rttvar() const {
 
 void TCPTahoeReliabilityContext::set_rttvar(double rttvar) {
     rttvar_ = rttvar;
+}
+
+int TCPTahoeReliabilityContext::get_receive_index() const {
+    return receive_index_;
+}
+
+void TCPTahoeReliabilityContext::set_receive_index(int receive_index) {
+    receive_index_ = receive_index;
 }

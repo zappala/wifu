@@ -19,6 +19,7 @@ struct var {
     Semaphore* sem_;
     Semaphore* flag_;
     Semaphore* done_;
+    Semaphore* done_sending_;
     AddressPort* to_bind_;
     //int countdown_;
     //int rec_buf_;

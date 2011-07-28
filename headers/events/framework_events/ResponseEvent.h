@@ -63,19 +63,19 @@ public:
      */
     void put(const char* key, gcstring value);
 
-//    /**
-//     * Gets the value associated with key.
-//     * @param key The key of the pair.
-//     * @return the value associated with key if found, gcstring::npos otherwise.
-//     */
-//    gcstring& get(const char* key);
-//
-//    /**
-//     * Gets the value associated with key.
-//     * @param key The key of the pair.
-//     * @return the value associated with key if found, gcstring::npos otherwise.
-//     */
-//    gcstring& get(gcstring& key);
+    /**
+     * Gets the value associated with key.
+     * @param key The key of the pair.
+     * @return the value associated with key if found, NULL otherwise.
+     */
+    gcstring* get(const char* key);
+
+    /**
+     * Gets the value associated with key.
+     * @param key The key of the pair.
+     * @return the value associated with key if found, NULL otherwise.
+     */
+    gcstring* get(gcstring& key);
 
     /**
      * Calls IModule::imodule_library_response() and passes this ResponseEvent in as the argument.

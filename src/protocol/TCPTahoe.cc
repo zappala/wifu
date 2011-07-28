@@ -367,25 +367,6 @@ void TCPTahoe::save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEve
     q->enqueue(new SendBufferNotEmptyEvent(s));
 }
 
-void TCPTahoe::create_and_dispatch_received_data(QueueProcessor<Event*>* q, ReceiveEvent* e) {
-    Socket* s = e->get_socket();
-    int buffer_size = e->get_receive_buffer_size();
-
-    // TODO: fix this to remove an extra data copy
-    gcstring data = s->get_receive_buffer().substr(0, buffer_size);
-    s->get_receive_buffer().erase(0, data.size());
-
-    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-    response->put(BUFFER_STRING, data);
-    response->put(ADDRESS_STRING, s->get_remote_address_port()->get_address());
-    response->put(PORT_STRING, Utils::itoa(s->get_remote_address_port()->get_port()));
-    response->put(RETURN_VALUE_STRING, Utils::itoa(data.size()));
-    response->put(ERRNO, Utils::itoa(0));
-
-    dispatch(response);
-    q->enqueue(new ReceiveBufferNotFullEvent(s));
-}
-
 bool TCPTahoe::is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacket* p) {
 
     // This is the check to ensure we still continue if there is no context yet

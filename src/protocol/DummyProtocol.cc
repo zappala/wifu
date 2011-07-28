@@ -87,18 +87,24 @@ void DummyProtocol::set_socket_buffer_sizes(Socket* s, int size) {
 
 void DummyProtocol::dispatch_received_data(QueueProcessor<Event*>* q, ReceiveEvent* e) {
     Socket* s = e->get_socket();
+    DummyProtocolIContextContainer* c = (DummyProtocolIContextContainer*) map_.find(s)->second;
     int buffer_size = e->get_receive_buffer_size();
 
-    // TODO: change this to use gcstring::data() so we avoid the copy in substr
-    gcstring data = s->get_receive_buffer().substr(0, buffer_size);
-    int length = data.size();
-    s->get_receive_buffer().erase(0, length);
-
     ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-    response->put(BUFFER_STRING, data);
+
+    response->put(BUFFER_STRING, s->get_receive_buffer().substr(c->get_receive_index(), buffer_size));
+    int length = response->get(BUFFER_STRING)->size();
+    //s->get_receive_buffer().erase(0, length);
+    c->set_receive_index(c->get_receive_index() + length);
+    if(c->get_receive_index() >= s->get_receive_buffer().size()) {
+        s->get_receive_buffer().clear();
+        c->set_receive_index(0);
+        //cout << "Calling clear" << endl;
+    }
+
     response->put(ADDRESS_STRING, s->get_remote_address_port()->get_address());
     response->put(PORT_STRING, Utils::itoa(s->get_remote_address_port()->get_port()));
-    response->put(RETURN_VALUE_STRING, Utils::itoa(data.size()));
+    response->put(RETURN_VALUE_STRING, Utils::itoa(length));
     response->put(ERRNO, Utils::itoa(0));
 
     dispatch(response);

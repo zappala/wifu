@@ -7,6 +7,7 @@ void* dummy_active_to_passive_big_chunks_thread(void* args) {
     Semaphore* sem = v->sem_;
     Semaphore* flag = v->flag_;
     Semaphore* done = v->done_;
+    Semaphore* done_sending = v->done_sending_;
     gcstring expected;
     expected.reserve(v->expected_string.size());
     expected = v->expected_string;
@@ -45,6 +46,10 @@ void* dummy_active_to_passive_big_chunks_thread(void* args) {
     list<u_int64_t, gc_allocator<u_int64_t> > durations;
 
     Timer recv_timer;
+
+    done_sending->wait();
+    cout << "Starting to Receive" << endl;
+
     while (true) {
 
 //        memset(buffer, 0, size);
@@ -70,7 +75,7 @@ void* dummy_active_to_passive_big_chunks_thread(void* args) {
     u_int64_t durations_size = durations.size();
     while (!durations.empty()) {
         u_int64_t current = durations.front();
-//        cout << current << endl;
+        cout << current << endl;
         total += current;
         durations.pop_front();
     }
@@ -103,9 +108,11 @@ void dummy_active_to_passive_big_chunks(int protocol, gcstring message) {
     v.sem_ = new Semaphore();
     v.flag_ = new Semaphore();
     v.done_ = new Semaphore();
+    v.done_sending_ = new Semaphore();
     v.sem_->init(0);
     v.flag_->init(0);
     v.done_->init(0);
+    v.done_sending_->init(0);
     v.to_bind_ = new AddressPort("127.0.0.1", 5002);
     v.protocol_ = protocol;
 
@@ -155,6 +162,8 @@ void dummy_active_to_passive_big_chunks(int protocol, gcstring message) {
     send_timer.stop();
     cout << "Duration (us) to send: " << message.size() << " bytes on localhost: " << send_timer.get_duration_microseconds() << endl;
     //    cout << "Done sending" << endl;
+
+    v.done_sending_->post();
 
     EXPECT_EQ(message.length(), num_sent);
 
