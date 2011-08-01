@@ -29,11 +29,16 @@ int main(int argc, char** argv) {
     gcstring protocolarg = "protocol";
     int protocol = TCP_TAHOE;
 
+    gcstring chunkarg = "chunk";
+    // The number of bytes we are willing to receive each time we call recv().
+    int chunk = 10000;
+
     static struct option long_options[] = {
         {bindaddr.c_str(), required_argument, NULL, 0},
         {portarg.c_str(), required_argument, NULL, 0},
         {apiarg.c_str(), required_argument, NULL, 0},
         {protocolarg.c_str(), required_argument, NULL, 0},
+        {chunkarg.c_str(), required_argument, NULL, 0},
         {0, 0, 0, 0}
     };
 
@@ -60,10 +65,15 @@ int main(int argc, char** argv) {
         protocol = atoi(optionparser.argument(protocolarg).c_str());
     }
 
+    if(optionparser.present(chunkarg)) {
+        chunk = atoi(optionparser.argument(chunkarg).c_str());
+    }
+
     cout << bindaddr << " " << hostaddr << endl;
     cout << portarg << " " << port << endl;
     cout << apiarg << " " << api->get_type() << endl;
     cout << protocolarg << " " << protocol << endl;
+    cout << chunkarg << " " << chunk << endl;
 
     AddressPort to_bind(hostaddr, port);
 
@@ -90,7 +100,7 @@ int main(int argc, char** argv) {
         AddressPort remote(&addr);
         cout << "Connection Established to: " << remote.to_s() << endl;
 
-        int size = 50000;
+        int size = chunk + 1;
         char buffer[size];
         gcstring all_received = "";
         int num_received = 0;
@@ -98,7 +108,7 @@ int main(int argc, char** argv) {
         Timer recv_timer;
         while (true) {
             //memset(buffer, 0, size);
-            int return_value = api->custom_recv(connection, buffer, 30000, 0);
+            int return_value = api->custom_recv(connection, buffer, chunk, 0);
             recv_timer.start();
 
             if (return_value == 0) {

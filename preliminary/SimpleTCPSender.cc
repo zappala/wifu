@@ -32,12 +32,17 @@ int main(int argc, char** argv) {
     gcstring protocolarg = "protocol";
     int protocol = TCP_TAHOE;
 
+    gcstring chunkarg = "chunk";
+    // The number of bytes we are willing to receive each time we call recv().
+    int chunk = 10000;
+
     static struct option long_options[] = {
         {destination.c_str(), required_argument, NULL, 0},
         {destport.c_str(), required_argument, NULL, 0},
         {num.c_str(), required_argument, NULL, 0},
         {apiarg.c_str(), required_argument, NULL, 0},
         {protocolarg.c_str(), required_argument, NULL, 0},
+        {chunkarg.c_str(), required_argument, NULL, 0},
         {0, 0, 0, 0}
     };
 
@@ -68,11 +73,16 @@ int main(int argc, char** argv) {
         protocol = atoi(optionparser.argument(protocolarg).c_str());
     }
 
+    if(optionparser.present(chunkarg)) {
+        chunk = atoi(optionparser.argument(chunkarg).c_str());
+    }
+
     cout << destination << " " << dest << endl;
     cout << destport << " " << port << endl;
     cout << apiarg << " " << api->get_type() << endl;
     cout << protocolarg << " " << protocol << endl;
     cout << num << " " << num_bytes << endl;
+    cout << chunkarg << " " << chunk << endl;
 
     gcstring message = RandomStringGenerator::get_data(num_bytes);
 
@@ -82,7 +92,6 @@ int main(int argc, char** argv) {
     assert(!result);
 
     int index = 0;
-    int chunk = 10000;
     int num_sent = 0;
 
     Timer send_timer;
