@@ -24,6 +24,7 @@
 #include "Semaphore.h"
 #include "defines.h"
 #include "GarbageCollector.h"
+#include "Utils.h"
 
 #define MESSAGE_SIZE 2000
 

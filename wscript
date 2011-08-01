@@ -293,13 +293,15 @@ def build_wifu_frontend_test(bld):
 
 def build_simple_tcp_sender(bld):
 	files = bld.glob('preliminary/SimpleTCPSender.cc')
+	files += bld.glob('preliminary/WiFuSocketAPI.cc')
+	files += bld.glob('preliminary/KernelSocketAPI.cc')
 	files += bld.glob('applib/*.cc')
 	files += bld.glob('src/AddressPort.cc')
 
 	if Options.options.bit_32:
 		sender = bld(features='cxx cprogram',
 			source=files,
-			includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
 			libpath = '../lib/gc/gc_32',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-end-api',
@@ -307,7 +309,7 @@ def build_simple_tcp_sender(bld):
 	else:
 		sender = bld(features='cxx cprogram',
 			source=files,
-			includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
 			libpath = '../lib/gc/gc_64',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-end-api',
@@ -315,13 +317,15 @@ def build_simple_tcp_sender(bld):
 
 def build_simple_tcp_receiver(bld):
 	files = bld.glob('preliminary/SimpleTCPReceiver.cc')
+	files += bld.glob('preliminary/WiFuSocketAPI.cc')
+	files += bld.glob('preliminary/KernelSocketAPI.cc')
 	files += bld.glob('applib/*.cc')
 	files += bld.glob('src/AddressPort.cc')
 
 	if Options.options.bit_32:
 		receiver = bld(features='cxx cprogram',
 			source=files,
-			includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
 			libpath = '../lib/gc/gc_32',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-end-api',
@@ -329,7 +333,7 @@ def build_simple_tcp_receiver(bld):
 	else:
 		receiver = bld(features='cxx cprogram',
 			source=files,
-			includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
 			libpath = '../lib/gc/gc_64',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-end-api',

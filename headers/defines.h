@@ -92,10 +92,10 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 
 // TODO: figure out path MTU on the fly.
 // ethernet MTU
-//#define MTU 1500
+#define MTU 1500
 
 // localhost MTU
-#define MTU 16436
+//#define MTU 16436
 
 #define MAX_TTL 65
 

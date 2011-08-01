@@ -1,4 +1,5 @@
 #include "LocalSocketReceiver.h"
+#include "Utils.h"
 
 LocalSocketReceiver::LocalSocketReceiver(gcstring& file, LocalSocketReceiverCallback* callback) : file_(file), callback_(callback) {
     init();
@@ -94,7 +95,9 @@ void* unix_receive_handler(void* arg) {
     int nread;
 
     while (1) {
+        //u_int64_t start = Utils::get_current_time_microseconds_64();
         nread = recv(socket, buf, MAX_BUFFER_SIZE, 0);
+        //u_int64_t end = Utils::get_current_time_microseconds_64();
         if (nread < 0) {
             if (errno == EINTR)
                 continue;
@@ -107,6 +110,8 @@ void* unix_receive_handler(void* arg) {
 
         s.assign(buf, nread);
         receiver->recv(s);
+
+        //cout << "Time: " << end - start << " Num: " << nread << endl;
     }
 }
 

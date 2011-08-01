@@ -145,7 +145,6 @@ void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, Que
     if(rc->get_receive_index() >= s->get_receive_buffer().size()) {
         s->get_receive_buffer().clear();
         rc->set_receive_index(0);
-        cout << "Calling clear" << endl;
     }
 
     response->put(ADDRESS_STRING, s->get_remote_address_port()->get_address());
