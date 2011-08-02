@@ -6,11 +6,12 @@
 __author__ = "rbuck"
 __date__ = "$Aug 2, 2011 9:33:17 AM$"
 
+import time
+
 from FileOps import *
 from RemoteCommand import Command
 from fileparser import FileParser
 import optparse
-import time
 
 class Configuration():
 	def __init__(self, file, username):
@@ -57,9 +58,12 @@ class ExecutableCopier():
 		self.wifu = "../bin/wifu-end"
 		self.sender_application = "../bin/simple-tcp-sender"
 		self.receiver_application = "../bin/simple-tcp-receiver"
-		
+
+		self.api = "api"
 
 	def copy_wifu(self):
+		
+		
 		sender = self.config.get_sender_node()
 		receiver = self.config.get_receiver_node()
 
@@ -96,7 +100,9 @@ class ExecutableCopier():
 	def copy_all(self):
 		threads = []
 
-		threads.extend(self.copy_wifu())
+		if(self.config.dictionary[self.api] == "wifu"):
+			threads.extend(self.copy_wifu())
+			
 		threads.append(self.copy_sender_application())
 		threads.append(self.copy_receiver_application())
 
@@ -118,19 +124,13 @@ class ExecutableManager():
 		self.port = "port"
 		self.api = "api"
 		self.protocol = "protocol"
-#		port 5000
-#		api wifu
-#		protocol 207
 
 		# sender options
 		self.num = "num"
 		self.sendingChunk = "sendingChunk"
-#		num 100000
-#		sendingChunk 20000
 
 		# receiver options
 		self.receivingChunk = "receivingChunk"
-#		receivingChunk 50000
 		
 	def get_wifu_command(self):
 		command = "sudo ./wifu-end"
@@ -145,6 +145,9 @@ class ExecutableManager():
 		return command
 
 	def start_wifu(self):
+
+		if(self.config.dictionary[self.api] != "wifu"):
+			return;
 
 		chdir_command = "cd " + self.config.dir
 		wifu_command = self.get_wifu_command()
@@ -178,6 +181,9 @@ class ExecutableManager():
 		time.sleep(1)
 
 	def kill_wifu(self):
+		if(self.config.dictionary[self.api] != "wifu"):
+			return;
+
 		command = "sudo killall wifu-end"
 
 		sender = self.config.get_sender_node()
@@ -202,7 +208,7 @@ class ExecutableManager():
 			c.join()
 
 
-	def get_receiver_command(self):
+	def get_receiver_command(self, outfile=None):
 		receiver_command = "sudo ./simple-tcp-receiver"
 
 		if self.receiverAddress in self.config.dictionary:
@@ -216,9 +222,12 @@ class ExecutableManager():
 		if self.receivingChunk in self.config.dictionary:
 			receiver_command += " --chunk " + self.config.dictionary[self.receivingChunk]
 
+		if outfile:
+			receiver_command += " > " + outfile
+			
 		return receiver_command
 
-	def get_sender_command(self):
+	def get_sender_command(self, outfile=None):
 		sender_command = "sudo ./simple-tcp-sender"
 
 		if self.receiverAddress in self.config.dictionary:
@@ -234,6 +243,9 @@ class ExecutableManager():
 		if self.num in self.config.dictionary:
 			sender_command += " --num " + self.config.dictionary[self.num]
 
+		if outfile:
+			sender_command += " > " + outfile
+
 		return sender_command
 	
 	
@@ -245,26 +257,32 @@ class ExecutableManager():
 		receiver_node = self.config.get_receiver_node()
 		chdir_command = "cd " + self.config.dir
 
-		receiver_command = self.get_receiver_command()
+		nodes = []
+
+
+		# start up the receiver
+		receiver_log = "recever.log"
+		receiver_command = self.get_receiver_command(receiver_log)
 		receiver_commands = []
 		receiver_commands.append(chdir_command)
 		receiver_commands.append(receiver_command)
 
-		nodes = []
 
-		# start up the receiver
+
 		receiver = Command(receiver_node, self.config.username, receiver_commands)
 		nodes.append(receiver)
 		receiver.start()
 		receiver.running.wait()
 		time.sleep(1)
 
-		sender_command = self.get_sender_command()
+		# start up the sender
+		sender_log = "sender.log"
+		sender_command = self.get_sender_command(sender_log)
 		sender_commands = []
 		sender_commands.append(chdir_command)
 		sender_commands.append(sender_command)
 
-		# start up the sender
+
 		sender = Command(sender_node, self.config.username, sender_commands)
 		nodes.append(sender)
 		sender.start()
@@ -276,6 +294,24 @@ class ExecutableManager():
 			node.join()
 
 		self.kill_wifu()
+
+		# get data
+		data_path = "data/"
+		sender_grabber = FileGrabber(sender_node, self.config.dir + sender_log, data_path, self.config.username)
+		sender_grabber.start()
+
+		receiver_grabber = FileGrabber(receiver_node, self.config.dir + receiver_log, data_path, self.config.username)
+		receiver_grabber.start()
+
+		sender_grabber.join()
+		receiver_grabber.join()
+
+		sender_remover = FileRemover(sender_node, self.config.dir + sender_log, self.config.username)
+		sender_remover.remove()
+
+		receiver_remover = FileRemover(receiver_node, self.config.dir + receiver_log, self.config.username)
+		receiver_remover.remove()
+
 
 if __name__ == "__main__":
 

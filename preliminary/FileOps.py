@@ -14,32 +14,32 @@ sys.path.append("/home/ilab/pylib")
 from directory import *
 
 class FileGrabber(threading.Thread):
-    """
-    Grabs a file from a remote machine
-    """
-    def __init__(self, srcNode, srcPath, destPath, username):
+	"""
+	Grabs a file from a remote machine
+	"""
+	def __init__(self, srcNode, srcPath, destPath, username):
 		threading.Thread.__init__(self)
-		print "in grabber"
 		self.srcNode = srcNode
 		self.srcPath = srcPath
 		self.destPath = destPath
 		self.username = username
 
-    def grab(self):
-        print "Grabbing file %s from [%s]" %(self.srcPath, self.srcNode)
-        command = 'scp'
-        src = '%s@%s:%s' % (self.username, self.srcNode, self.srcPath)
-        dest = self.destPath
-        self.__mkdir(self.destPath)
-        subprocess.call([command,src,dest])
-
-    def __mkdir(self, path):
-        maker = Directory(path)
-        maker.make()
+	def grab(self):
+		print "Grabbing file %s from [%s]" %(self.srcPath, self.srcNode)
+		command = 'scp'
+		src = '%s@%s:%s' % (self.username, self.srcNode, self.srcPath)
+		dest = self.destPath
+		self.__mkdir(self.destPath)
+		subprocess.call([command,src,dest])
 
 	def run(self):
-		print "in run"
 		self.grab()
+
+	def __mkdir(self, path):
+		maker = Directory(path)
+		maker.make()
+
+	
 
 class FilePusher(threading.Thread):
     """

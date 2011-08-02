@@ -106,6 +106,7 @@ int main(int argc, char** argv) {
     int num_received = 0;
 
     list<u_int64_t, gc_allocator<u_int64_t> > durations;
+    list<int, gc_allocator<int> > sizes;
     u_int64_t start;
     int return_value;
 
@@ -123,6 +124,9 @@ int main(int argc, char** argv) {
             return_value = api->custom_recv(connection, buffer, chunk, 0);
             durations.push_back(Utils::get_current_time_microseconds_64() - start);
             recv_timer.start();
+            
+            sizes.push_back(return_value);
+            
 
             if (return_value == 0) {
                 break;
@@ -132,25 +136,12 @@ int main(int argc, char** argv) {
         }
         recv_timer.stop();
 
-        // get rid of the first sample, it might have been delayed.
-        durations.pop_front();
-        // get rid of the last sample as it is a return of 0
-        durations.pop_back();
-
-        u_int64_t total = 0;
-        u_int64_t durations_size = durations.size();
+        
         while (!durations.empty()) {
-            total += durations.front();
+            cout << "recv " << durations.front() << " " << sizes.front() << endl;
             durations.pop_front();
+            sizes.pop_front();
         }
-        cout << "Average to recv(): " << total / durations_size << endl;
-
-        cout << "recv ";
-        while (!durations.empty()) {
-            cout << durations.front() << " ";
-            durations.pop_front();
-        }
-        cout << endl;
 
         api->custom_close(connection);
         cout << "Duration (us) to recv " << num_received << " bytes from " << remote.to_s() << ": " << recv_timer.get_duration_microseconds() << endl;
