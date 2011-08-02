@@ -54,13 +54,9 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
         recv_timer.start();
 
         if (return_value == 0) {
-            //                        cout << "Close Thread BREAK" << endl;
             break;
         }
-
 //        all_received.append(buffer);
-
-        //        cout << "Total received: " << all_received.size() << endl;
     }
 
     recv_timer.stop();

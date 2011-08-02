@@ -10,6 +10,9 @@
 #include "headers/WiFuSocketAPI.h"
 #include "headers/KernelSocketAPI.h"
 #include <errno.h>
+#include <list>
+#include <algorithm>
+#include "Utils.h"
 
 using namespace std;
 
@@ -65,7 +68,7 @@ int main(int argc, char** argv) {
         protocol = atoi(optionparser.argument(protocolarg).c_str());
     }
 
-    if(optionparser.present(chunkarg)) {
+    if (optionparser.present(chunkarg)) {
         chunk = atoi(optionparser.argument(chunkarg).c_str());
     }
 
@@ -96,19 +99,29 @@ int main(int argc, char** argv) {
     socklen_t length = sizeof (addr);
     int connection;
 
+
+    int size = chunk + 1;
+    char buffer[size];
+    gcstring all_received = "";
+    int num_received = 0;
+
+    list<u_int64_t, gc_allocator<u_int64_t> > durations;
+    u_int64_t start;
+    int return_value;
+
+
     while ((connection = api->custom_accept(server, (struct sockaddr*) &addr, &length)) > 0) {
         AddressPort remote(&addr);
         cout << "Connection Established to: " << remote.to_s() << endl;
-
-        int size = chunk + 1;
-        char buffer[size];
-        gcstring all_received = "";
-        int num_received = 0;
-
         Timer recv_timer;
+        num_received = 0;
+        durations.clear();
+
         while (true) {
             //memset(buffer, 0, size);
-            int return_value = api->custom_recv(connection, buffer, chunk, 0);
+            start = Utils::get_current_time_microseconds_64();
+            return_value = api->custom_recv(connection, buffer, chunk, 0);
+            durations.push_back(Utils::get_current_time_microseconds_64() - start);
             recv_timer.start();
 
             if (return_value == 0) {
@@ -118,9 +131,32 @@ int main(int argc, char** argv) {
             num_received += return_value;
         }
         recv_timer.stop();
+
+        // get rid of the first sample, it might have been delayed.
+        durations.pop_front();
+        // get rid of the last sample as it is a return of 0
+        durations.pop_back();
+
+        u_int64_t total = 0;
+        u_int64_t durations_size = durations.size();
+        while (!durations.empty()) {
+            total += durations.front();
+            durations.pop_front();
+        }
+        cout << "Average to recv(): " << total / durations_size << endl;
+
+        cout << "recv ";
+        while (!durations.empty()) {
+            cout << durations.front() << " ";
+            durations.pop_front();
+        }
+        cout << endl;
+
         api->custom_close(connection);
         cout << "Duration (us) to recv " << num_received << " bytes from " << remote.to_s() << ": " << recv_timer.get_duration_microseconds() << endl;
 
+        // this needs to be here to automate it (get a prompt back)
+        break;
     }
 
     api->custom_close(server);

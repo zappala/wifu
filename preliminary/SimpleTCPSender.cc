@@ -113,5 +113,4 @@ int main(int argc, char** argv) {
     api->custom_close(client);
 
     sleep(1);
-//    system("killall wifu-end");
 }

@@ -321,6 +321,7 @@ def build_simple_tcp_receiver(bld):
 	files += bld.glob('preliminary/KernelSocketAPI.cc')
 	files += bld.glob('applib/*.cc')
 	files += bld.glob('src/AddressPort.cc')
+	files += bld.glob('src/Utils.cc')
 
 	if Options.options.bit_32:
 		receiver = bld(features='cxx cprogram',
