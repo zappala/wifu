@@ -29,7 +29,7 @@ class FileGrabber(threading.Thread):
 		command = 'scp'
 		src = '%s@%s:%s' % (self.username, self.srcNode, self.srcPath)
 		dest = self.destPath
-		self.__mkdir(self.destPath)
+		#self.__mkdir(self.destPath)
 		subprocess.call([command,src,dest])
 
 	def run(self):

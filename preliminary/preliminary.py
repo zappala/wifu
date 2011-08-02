@@ -6,17 +6,22 @@
 __author__ = "rbuck"
 __date__ = "$Aug 2, 2011 9:33:17 AM$"
 
+import sys
 import time
 
 from FileOps import *
 from RemoteCommand import Command
 from fileparser import FileParser
 import optparse
+sys.path.append("/home/ilab/pylib")
+from directory import *
+import os
 
 class Configuration():
-	def __init__(self, file, username):
+	def __init__(self, file, username, iterations):
 		self.file = file
 		self.username = username
+		self.iterations = iterations
 		self.dictionary = {}
 		self.parse()
 		self.dir = "/tmp/"
@@ -133,7 +138,7 @@ class ExecutableManager():
 		self.receivingChunk = "receivingChunk"
 		
 	def get_wifu_command(self):
-		command = "sudo ./wifu-end"
+		command = "sudo nice -n -20 ./wifu-end"
 		
 		if self.loggerThreshold in self.config.dictionary:
 			command += " --logger_threshold " + self.config.dictionary[self.loggerThreshold]
@@ -209,7 +214,7 @@ class ExecutableManager():
 
 
 	def get_receiver_command(self, outfile=None):
-		receiver_command = "sudo ./simple-tcp-receiver"
+		receiver_command = "sudo nice -n -20 ./simple-tcp-receiver"
 
 		if self.receiverAddress in self.config.dictionary:
 			receiver_command += " --address " + self.config.dictionary[self.receiverAddress]
@@ -228,7 +233,7 @@ class ExecutableManager():
 		return receiver_command
 
 	def get_sender_command(self, outfile=None):
-		sender_command = "sudo ./simple-tcp-sender"
+		sender_command = "sudo nice -n -20 ./simple-tcp-sender"
 
 		if self.receiverAddress in self.config.dictionary:
 			sender_command += " --destination " + self.config.dictionary[self.receiverAddress]
@@ -251,81 +256,125 @@ class ExecutableManager():
 	
 
 	def execute(self):
-		self.start_wifu()
 
-		sender_node = self.config.get_sender_node()
-		receiver_node = self.config.get_receiver_node()
-		chdir_command = "cd " + self.config.dir
+		current_time = str(time.ctime()).replace(' ', '_')
+		base_path = "data/" + self.config.file + "_" + current_time + "/"
 
-		nodes = []
+		maker = Directory(base_path)
+		maker.make()
 
+		os.system("cp " + self.config.file + " " + base_path)
 
-		# start up the receiver
-		receiver_log = "recever.log"
-		receiver_command = self.get_receiver_command(receiver_log)
-		receiver_commands = []
-		receiver_commands.append(chdir_command)
-		receiver_commands.append(receiver_command)
+		for i in range(0, self.config.iterations):
 
+			data_path = base_path + "/" + str(i) + "/"
 
+			# files will be put in a directory with the following format
+			# data/[configfilename.conf]-[current_time]/[iteration]/
+			maker = Directory(data_path)
+			maker.make()
 
-		receiver = Command(receiver_node, self.config.username, receiver_commands)
-		nodes.append(receiver)
-		receiver.start()
-		receiver.running.wait()
-		time.sleep(1)
+			self.start_wifu()
 
-		# start up the sender
-		sender_log = "sender.log"
-		sender_command = self.get_sender_command(sender_log)
-		sender_commands = []
-		sender_commands.append(chdir_command)
-		sender_commands.append(sender_command)
+			sender_node = self.config.get_sender_node()
+			receiver_node = self.config.get_receiver_node()
+			chdir_command = "cd " + self.config.dir
+
+			nodes = []
 
 
-		sender = Command(sender_node, self.config.username, sender_commands)
-		nodes.append(sender)
-		sender.start()
+			# start up the receiver
+			receiver_log = "receiver.log"
+			receiver_command = self.get_receiver_command(receiver_log)
+			receiver_commands = []
+			receiver_commands.append(chdir_command)
+			receiver_commands.append(receiver_command)
 
-		for node in nodes:
-			node.done.wait()
-			node.go.set()
-			node.finished.wait()
-			node.join()
 
-		self.kill_wifu()
 
-		# get data
-		data_path = "data/"
-		sender_grabber = FileGrabber(sender_node, self.config.dir + sender_log, data_path, self.config.username)
-		sender_grabber.start()
+			receiver = Command(receiver_node, self.config.username, receiver_commands)
+			nodes.append(receiver)
+			receiver.start()
+			receiver.running.wait()
+			time.sleep(1)
 
-		receiver_grabber = FileGrabber(receiver_node, self.config.dir + receiver_log, data_path, self.config.username)
-		receiver_grabber.start()
+			# start up the sender
+			sender_log = "sender.log"
+			sender_command = self.get_sender_command(sender_log)
+			sender_commands = []
+			sender_commands.append(chdir_command)
+			sender_commands.append(sender_command)
 
-		sender_grabber.join()
-		receiver_grabber.join()
 
-		sender_remover = FileRemover(sender_node, self.config.dir + sender_log, self.config.username)
-		sender_remover.remove()
+			sender = Command(sender_node, self.config.username, sender_commands)
+			nodes.append(sender)
+			sender.start()
 
-		receiver_remover = FileRemover(receiver_node, self.config.dir + receiver_log, self.config.username)
-		receiver_remover.remove()
+			for node in nodes:
+				node.done.wait()
+				node.go.set()
+				node.finished.wait()
+				node.join()
+
+			self.kill_wifu()
+
+			# get data
+
+			sender_grabber = FileGrabber(sender_node, self.config.dir + sender_log, data_path, self.config.username)
+			sender_grabber.start()
+
+			receiver_grabber = FileGrabber(receiver_node, self.config.dir + receiver_log, data_path, self.config.username)
+			receiver_grabber.start()
+
+			pcap_file = "wifu-log.pcap"
+
+			if(self.config.dictionary[self.api] == "wifu"):
+				sender_pcap_grabber = FileGrabber(sender_node, self.config.dir + pcap_file, data_path + "sender-wifu-log.pcap", self.config.username)
+				sender_pcap_grabber.start()
+
+				receiver_pcap_grabber = FileGrabber(receiver_node, self.config.dir + pcap_file, data_path + "receiver-wifu-log.pcap", self.config.username)
+				receiver_pcap_grabber.start()
+
+				sender_pcap_grabber.join()
+				receiver_pcap_grabber.join()
+
+			sender_grabber.join()
+			receiver_grabber.join()
+
+#			sender_remover = FileRemover(sender_node, self.config.dir + sender_log, self.config.username)
+#			sender_remover.remove()
+#
+#			receiver_remover = FileRemover(receiver_node, self.config.dir + receiver_log, self.config.username)
+#			receiver_remover.remove()
+
+		
 
 
 if __name__ == "__main__":
 
+	start = time.time()
+
 	parser = optparse.OptionParser()
 	parser.add_option("-u", "--username", dest="username", help="Username used to copy files to nodes.  Must also be in the sudoers file on the nodes.")
-	parser.add_option("-c", "--config", dest="config", help="Configuration file containing necessary information to run preliminary executables.", metavar="FILE", default="config/ilab1.conf")
+	parser.add_option("-c", "--config", dest="config", help="Configuration file containing necessary information to run preliminary executables.")
+	parser.add_option("-i", "--iterations", dest="iterations", help="Number of iterations to run.", type="int", default=1)
+
+	#TODO: use argparse instead (need python 2.7) as it will allow for variable length args with nargs='?' (nargs='*')
+
+	
 
 	(options, args) = parser.parse_args()
 	username = options.username
 	config = options.config
+	iterations = options.iterations
 
-	c = Configuration(config, username)
+	c = Configuration(config, username, iterations)
 	e = ExecutableCopier(c)
 	e.copy_all()
 
 	manager = ExecutableManager(c)
 	manager.execute()
+
+	end = time.time()
+
+	print "Duration (seconds) to do " + str(iterations) + " run(s): " + str(end - start)
