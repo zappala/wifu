@@ -17,14 +17,21 @@ sys.path.append("/home/ilab/pylib")
 from directory import *
 import os
 
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from pylab import *
+
 class Configuration():
-	def __init__(self, file, username, iterations):
+	def __init__(self, file, username):
 		self.file = file
 		self.username = username
-		self.iterations = iterations
+		
 		self.dictionary = {}
 		self.parse()
 		self.dir = "/tmp/"
+
+		self.iterations = int(self.dictionary["iterations"])
 
 	def parse(self):
 		parser = FileParser()
@@ -63,8 +70,6 @@ class ExecutableCopier():
 		self.wifu = "../bin/wifu-end"
 		self.sender_application = "../bin/simple-tcp-sender"
 		self.receiver_application = "../bin/simple-tcp-receiver"
-
-		self.api = "api"
 
 	def copy_wifu(self):
 		
@@ -105,9 +110,7 @@ class ExecutableCopier():
 	def copy_all(self):
 		threads = []
 
-		if(self.config.dictionary[self.api] == "wifu"):
-			threads.extend(self.copy_wifu())
-			
+		threads.extend(self.copy_wifu())
 		threads.append(self.copy_sender_application())
 		threads.append(self.copy_receiver_application())
 
@@ -127,8 +130,8 @@ class ExecutableManager():
 
 		# common options between sender and receiver
 		self.port = "port"
-		self.api = "api"
-		self.protocol = "protocol"
+		self.wifu = "wifu"
+		self.kernel = "kernel"
 
 		# sender options
 		self.num = "num"
@@ -150,10 +153,6 @@ class ExecutableManager():
 		return command
 
 	def start_wifu(self):
-
-		if(self.config.dictionary[self.api] != "wifu"):
-			return;
-
 		chdir_command = "cd " + self.config.dir
 		wifu_command = self.get_wifu_command()
 
@@ -186,9 +185,6 @@ class ExecutableManager():
 		time.sleep(1)
 
 	def kill_wifu(self):
-		if(self.config.dictionary[self.api] != "wifu"):
-			return;
-
 		command = "sudo killall wifu-end"
 
 		sender = self.config.get_sender_node()
@@ -213,40 +209,46 @@ class ExecutableManager():
 			c.join()
 
 
-	def get_receiver_command(self, outfile=None):
+	def get_receiver_command(self, api, outfile=None):
 		receiver_command = "sudo nice -n -20 ./simple-tcp-receiver"
 
 		if self.receiverAddress in self.config.dictionary:
 			receiver_command += " --address " + self.config.dictionary[self.receiverAddress]
 		if self.port in self.config.dictionary:
 			receiver_command += " --port " + self.config.dictionary[self.port]
-		if self.api in self.config.dictionary:
-			receiver_command += " --api " + self.config.dictionary[self.api]
-		if self.protocol in self.config.dictionary:
-			receiver_command += " --protocol " + self.config.dictionary[self.protocol]
 		if self.receivingChunk in self.config.dictionary:
 			receiver_command += " --chunk " + self.config.dictionary[self.receivingChunk]
+
+		if api == self.kernel and self.kernel in self.config.dictionary:
+			receiver_command += " --protocol " + self.config.dictionary[self.kernel]
+		elif api == self.wifu and self.wifu in self.config.dictionary:
+			receiver_command += " --protocol " + self.config.dictionary[self.wifu]
+
+		receiver_command += " --api " + api
 
 		if outfile:
 			receiver_command += " > " + outfile
 			
 		return receiver_command
 
-	def get_sender_command(self, outfile=None):
+	def get_sender_command(self, api, outfile=None):
 		sender_command = "sudo nice -n -20 ./simple-tcp-sender"
 
 		if self.receiverAddress in self.config.dictionary:
 			sender_command += " --destination " + self.config.dictionary[self.receiverAddress]
 		if self.port in self.config.dictionary:
 			sender_command += " --port " + self.config.dictionary[self.port]
-		if self.api in self.config.dictionary:
-			sender_command += " --api " + self.config.dictionary[self.api]
-		if self.protocol in self.config.dictionary:
-			sender_command += " --protocol " + self.config.dictionary[self.protocol]
 		if self.sendingChunk in self.config.dictionary:
 			sender_command += " --chunk " + self.config.dictionary[self.sendingChunk]
 		if self.num in self.config.dictionary:
 			sender_command += " --num " + self.config.dictionary[self.num]
+
+		if api == self.kernel and self.kernel in self.config.dictionary:
+			sender_command += " --protocol " + self.config.dictionary[self.kernel]
+		elif api == self.wifu and self.wifu in self.config.dictionary:
+			sender_command += " --protocol " + self.config.dictionary[self.wifu]
+
+		sender_command += " --api " + api
 
 		if outfile:
 			sender_command += " > " + outfile
@@ -267,86 +269,209 @@ class ExecutableManager():
 
 		for i in range(0, self.config.iterations):
 
-			data_path = base_path + "/" + str(i) + "/"
+			for api in ['wifu', 'kernel']:
 
-			# files will be put in a directory with the following format
-			# data/[configfilename.conf]-[current_time]/[iteration]/
-			maker = Directory(data_path)
-			maker.make()
+				data_path = base_path + "/" + str(i) + "/"
 
-			self.start_wifu()
+				# files will be put in a directory with the following format
+				# data/[configfilename.conf]-[current_time]/[iteration]/
+				maker = Directory(data_path)
+				maker.make()
 
-			sender_node = self.config.get_sender_node()
-			receiver_node = self.config.get_receiver_node()
-			chdir_command = "cd " + self.config.dir
+				if api == 'wifu':
+					self.start_wifu()
 
-			nodes = []
+				sender_node = self.config.get_sender_node()
+				receiver_node = self.config.get_receiver_node()
+				chdir_command = "cd " + self.config.dir
 
-
-			# start up the receiver
-			receiver_log = "receiver.log"
-			receiver_command = self.get_receiver_command(receiver_log)
-			receiver_commands = []
-			receiver_commands.append(chdir_command)
-			receiver_commands.append(receiver_command)
+				nodes = []
 
 
-
-			receiver = Command(receiver_node, self.config.username, receiver_commands)
-			nodes.append(receiver)
-			receiver.start()
-			receiver.running.wait()
-			time.sleep(1)
-
-			# start up the sender
-			sender_log = "sender.log"
-			sender_command = self.get_sender_command(sender_log)
-			sender_commands = []
-			sender_commands.append(chdir_command)
-			sender_commands.append(sender_command)
+				# start up the receiver
+				receiver_log = "receiver_" + api +".log"
+				receiver_command = self.get_receiver_command(api, receiver_log)
+				receiver_commands = []
+				receiver_commands.append(chdir_command)
+				receiver_commands.append(receiver_command)
 
 
-			sender = Command(sender_node, self.config.username, sender_commands)
-			nodes.append(sender)
-			sender.start()
 
-			for node in nodes:
-				node.done.wait()
-				node.go.set()
-				node.finished.wait()
-				node.join()
+				receiver = Command(receiver_node, self.config.username, receiver_commands)
+				nodes.append(receiver)
+				receiver.start()
+				receiver.running.wait()
+				time.sleep(1)
 
-			self.kill_wifu()
+				# start up the sender
+				sender_log = "sender_" + api + ".log"
+				sender_command = self.get_sender_command(api, sender_log)
+				sender_commands = []
+				sender_commands.append(chdir_command)
+				sender_commands.append(sender_command)
 
-			# get data
 
-			sender_grabber = FileGrabber(sender_node, self.config.dir + sender_log, data_path, self.config.username)
-			sender_grabber.start()
+				sender = Command(sender_node, self.config.username, sender_commands)
+				nodes.append(sender)
+				sender.start()
 
-			receiver_grabber = FileGrabber(receiver_node, self.config.dir + receiver_log, data_path, self.config.username)
-			receiver_grabber.start()
+				for node in nodes:
+					node.done.wait()
+					node.go.set()
+					node.finished.wait()
+					node.join()
 
-			pcap_file = "wifu-log.pcap"
+				if api == 'wifu':
+					self.kill_wifu()
 
-			if(self.config.dictionary[self.api] == "wifu"):
-				sender_pcap_grabber = FileGrabber(sender_node, self.config.dir + pcap_file, data_path + "sender-wifu-log.pcap", self.config.username)
-				sender_pcap_grabber.start()
+				# get data
 
-				receiver_pcap_grabber = FileGrabber(receiver_node, self.config.dir + pcap_file, data_path + "receiver-wifu-log.pcap", self.config.username)
-				receiver_pcap_grabber.start()
+				sender_grabber = FileGrabber(sender_node, self.config.dir + sender_log, data_path, self.config.username)
+				sender_grabber.start()
 
-				sender_pcap_grabber.join()
-				receiver_pcap_grabber.join()
+				receiver_grabber = FileGrabber(receiver_node, self.config.dir + receiver_log, data_path, self.config.username)
+				receiver_grabber.start()
 
-			sender_grabber.join()
-			receiver_grabber.join()
+				pcap_file = "wifu-log.pcap"
 
-#			sender_remover = FileRemover(sender_node, self.config.dir + sender_log, self.config.username)
-#			sender_remover.remove()
-#
-#			receiver_remover = FileRemover(receiver_node, self.config.dir + receiver_log, self.config.username)
-#			receiver_remover.remove()
+				if api == "wifu":
+					sender_pcap_grabber = FileGrabber(sender_node, self.config.dir + pcap_file, data_path + "sender_wifu_log.pcap", self.config.username)
+					sender_pcap_grabber.start()
 
+					receiver_pcap_grabber = FileGrabber(receiver_node, self.config.dir + pcap_file, data_path + "receiver_wifu_log.pcap", self.config.username)
+					receiver_pcap_grabber.start()
+
+					sender_pcap_grabber.join()
+					receiver_pcap_grabber.join()
+
+				sender_grabber.join()
+				receiver_grabber.join()
+		return base_path
+
+class PreliminaryGrapher:
+	def __init__(self, data_path):
+		self.data_path = data_path
+		self.graph_path = self.data_path.replace("data", "graphs")
+		self.configuration = self.__get_configuration()
+
+		# these must be called after config is setup
+		self.receive_files = self.__get_receive_files()
+		self.send_files = self.__get_send_files()
+
+
+	def __get_log_files(self, regex):
+		files =[]
+		for i in range (0, self.configuration.iterations):
+			d = Directory(self.data_path + str(i) + "/")
+			temp = d.get_files_re(regex)
+			files.extend(temp)
+		return files
+
+	def __get_receive_files(self):
+		return self.__get_log_files("receiver.*\.log")
+
+	def __get_send_files(self):
+		return self.__get_log_files("sender.*\.log")
+
+	def __get_configuration(self):
+		d = Directory(self.data_path)
+		files = d.get_files()
+		assert len(files) == 1
+		return Configuration(files[0], "fake_username")
+
+	def graph_goodput(self):
+		num_bytes = float(self.configuration.dictionary["num"])
+
+		kernel_receive = []
+		kernel_send = []
+		wifu_receive = []
+		wifu_send = []
+
+		parser = FileParser()
+
+		#create vectors of goodput
+		for file in self.receive_files:
+			lines = parser.parse(file)
+			wifu = "receiver_wifu.log" in file
+			for line in lines:
+				if line.startswith("Duration"):
+					values = line.split(' ')
+					assert len(values) == 10
+					duration = float(values[9])
+					# assuming one kilo == 1000
+					rate = (num_bytes * 8 / 1000000) / (duration / 1000000)
+					if wifu:
+						wifu_receive.append(rate)
+					else:
+						kernel_receive.append(rate)
+
+		for file in self.send_files:
+			lines = parser.parse(file)
+			wifu = "sender_wifu.log" in file
+			for line in lines:
+				if line.startswith("Duration"):
+					values = line.split(' ')
+					assert len(values) == 10
+					duration = float(values[9])
+					# assuming one kilo == 1000
+					rate = (num_bytes * 8 / 1000000) / (duration / 1000000)
+					if wifu:
+						wifu_send.append(rate)
+					else:
+						kernel_send.append(rate)
+
+
+
+
+		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
+#		figure()
+#		bp = plt.boxplot(data)
+#		ylabel('Rate (Mbps)')
+
+
+		fig = plt.figure(figsize=(10,6))
+		fig.canvas.set_window_title('A Boxplot Example')
+		ax1 = fig.add_subplot(111)
+		plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
+
+		bp = plt.boxplot(data, notch=0, sym='+', vert=1, whis=1.5)
+		plt.setp(bp['boxes'], color='black')
+		plt.setp(bp['whiskers'], color='black')
+		plt.setp(bp['fliers'], color='red', marker='+')
+
+		# Add a horizontal grid to the plot, but make it very light in color
+		# so we can use it for reading data values but not be distracting
+		ax1.yaxis.grid(True, linestyle='-', which='major', color='lightgrey', alpha=0.5)
+
+		# Hide these grid behind plot objects
+		ax1.set_axisbelow(True)
+		ax1.set_title('Comparison WiFu and Kernel Sending and Receiving Rates')
+		ax1.set_xlabel('Type')
+		ax1.set_ylabel('Rate (Mbps)')
+
+		# Set the axes ranges and axes labels
+		ax1.set_xlim(0.5, 4+0.5)
+#		top = 2000
+#		bottom = 0
+#		ax1.set_ylim(bottom, top)
+		ax1.set_ylim(xmin=0)
+
+		xtickNames = plt.setp(ax1, xticklabels=["Kernel Send", "WiFu Send", "Kernel Receive", "WiFu Receive"])
+		#plt.setp(xtickNames, rotation=45, fontsize=8)
+		plt.setp(xtickNames, fontsize=10)
+
+		d = Directory(self.graph_path)
+		d.make()
+		savefig(self.graph_path + 'send_receive_rate_boxplot.png')
+
+
+
+
+
+
+
+
+					
 		
 
 
@@ -357,24 +482,26 @@ if __name__ == "__main__":
 	parser = optparse.OptionParser()
 	parser.add_option("-u", "--username", dest="username", help="Username used to copy files to nodes.  Must also be in the sudoers file on the nodes.")
 	parser.add_option("-c", "--config", dest="config", help="Configuration file containing necessary information to run preliminary executables.")
-	parser.add_option("-i", "--iterations", dest="iterations", help="Number of iterations to run.", type="int", default=1)
 
 	#TODO: use argparse instead (need python 2.7) as it will allow for variable length args with nargs='?' (nargs='*')
-
-	
 
 	(options, args) = parser.parse_args()
 	username = options.username
 	config = options.config
-	iterations = options.iterations
 
-	c = Configuration(config, username, iterations)
+	c = Configuration(config, username)
 	e = ExecutableCopier(c)
 	e.copy_all()
 
 	manager = ExecutableManager(c)
-	manager.execute()
+	path = manager.execute()
 
 	end = time.time()
 
-	print "Duration (seconds) to do " + str(iterations) + " run(s): " + str(end - start)
+	print "Duration (seconds) to do " + str(c.iterations) + " run(s): " + str(end - start)
+
+	print "Graphing..."
+	grapher = PreliminaryGrapher(path)
+	grapher.graph_goodput()
+	
+	print "All done."
