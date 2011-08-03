@@ -226,14 +226,6 @@ private:
     u_int16_t rcv_wnd_;
 
     /**
-     * RFC 793 (kind of)
-     * The last sent receive window.
-     * This will be used to check if the receiver sent a window of 0.
-     * Upon the application removing data from the receive buffer, we are now able to receive more data.
-     */
-    u_int16_t last_sent_rcv_wnd_;
-
-    /**
      * TimeoutEvent to compare to when a TimerFires.
      */
     TimeoutEvent* timer_;

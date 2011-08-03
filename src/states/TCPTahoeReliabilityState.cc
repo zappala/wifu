@@ -52,13 +52,6 @@ void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, QueueP
     }
 }
 
-void TCPTahoeReliabilityState::state_receive_buffer_not_full(Context* c, QueueProcessor<Event*>* q, ReceiveBufferNotFullEvent* e) {
-    TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
-    if(rc->get_last_sent_rcv_wnd() == 0 && rc->get_rcv_wnd() > rc->get_mss()) {
-        create_and_dispatch_ack(c, q, e);
-    }
-}
-
 void TCPTahoeReliabilityState::state_receive(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
@@ -141,6 +134,13 @@ void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, Que
 
     rc->set_receive_index(rc->get_receive_index() + length);
     //s->get_receive_buffer().erase(0, length);
+
+    if(rc->get_rcv_wnd() + length >= 2 * rc->get_rcv_wnd()) {
+        // send notification packet because our receive window has at least doubled in size
+        // RFC 2581 Section 4.2 and RFC 813 (I think?)
+        create_and_dispatch_ack(c, q, e);
+    }
+
     rc->set_rcv_wnd(rc->get_rcv_wnd() + length);
     if(rc->get_receive_index() >= s->get_receive_buffer().size()) {
         s->get_receive_buffer().clear();
@@ -239,7 +239,6 @@ void TCPTahoeReliabilityState::insert_timestamp(Context* c, TCPPacket* p) {
 void TCPTahoeReliabilityState::set_and_save_receive_window_size(Context* c, TCPPacket* p) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     p->set_tcp_receive_window_size(rc->get_rcv_wnd());
-    rc->set_last_sent_rcv_wnd(rc->get_rcv_wnd());
 } // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="state_receive_packet() helper functions">

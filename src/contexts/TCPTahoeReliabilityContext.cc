@@ -45,14 +45,6 @@ void TCPTahoeReliabilityContext::set_rcv_wnd(u_int16_t rcv_wnd) {
     rcv_wnd_ = rcv_wnd;
 }
 
-u_int16_t TCPTahoeReliabilityContext::get_last_sent_rcv_wnd() const {
-    return last_sent_rcv_wnd_;
-}
-
-void TCPTahoeReliabilityContext::set_last_sent_rcv_wnd(u_int16_t last_sent_rcv_wnd) {
-    last_sent_rcv_wnd_ = last_sent_rcv_wnd;
-}
-
 TimeoutEvent* TCPTahoeReliabilityContext::get_timeout_event() const {
     return timer_;
 }
