@@ -291,6 +291,7 @@ void TCPTahoeReliabilityState::handle_valid_ack(Context* c, QueueProcessor<Event
         rc->set_snd_nxt(rc->get_snd_una());
     }
 
+    // TODO: Replace this erase()
     s->get_send_buffer().erase(0, num_acked);
 
     // TODO: this may need to move if we decide that we want to open up the send buffer on things other than data acks

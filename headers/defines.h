@@ -106,8 +106,9 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 #define UNIX_SOCKET_MAX_BUFFER_SIZE 131071
 
 // The TCP send and receive buffers are limited to the values in /proc/sys/net/ipv4/tcp_rmem
-// We set it to the maximum.  August 3, 2011 -- RB
-#define TCP_SOCKET_MAX_BUFFER_SIZE 4194304
+// However, we need to be a little smart here.  We need to look into this a bit more.
+//#define TCP_SOCKET_MAX_BUFFER_SIZE 4194304
+#define TCP_SOCKET_MAX_BUFFER_SIZE UNIX_SOCKET_MAX_BUFFER_SIZE
 //#define MAX_BUFFER_SIZE 2
 
 // Clock defines
