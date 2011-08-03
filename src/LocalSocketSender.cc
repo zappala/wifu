@@ -49,7 +49,7 @@ void LocalSocketSender::init() {
         exit(-1);
     }
 
-    socklen_t optval = MAX_BUFFER_SIZE;
+    socklen_t optval = UNIX_SOCKET_MAX_BUFFER_SIZE;
     int value = setsockopt(socket_, SOL_SOCKET, SO_SNDBUF, &optval, sizeof (optval));
     if (value) {
         perror("setsockopt");

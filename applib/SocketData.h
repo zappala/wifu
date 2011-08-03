@@ -192,7 +192,7 @@ private:
     /**
      * Buffer which will store the payload from the back-end (on calls like recv()).
      */
-    unsigned char payload_[MAX_BUFFER_SIZE];
+    unsigned char payload_[UNIX_SOCKET_MAX_BUFFER_SIZE];
 
     /**
      * The length of the payload.

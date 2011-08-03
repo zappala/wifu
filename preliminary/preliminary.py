@@ -291,7 +291,7 @@ class ExecutableManager():
 				# start up the receiver
 				receiver_log = "receiver_" + api +".log"
 				receiver_command = self.get_receiver_command(api, receiver_log)
-				receiver_commands = []
+				receiver_commands = ['ls']
 				receiver_commands.append(chdir_command)
 				receiver_commands.append(receiver_command)
 
@@ -306,7 +306,7 @@ class ExecutableManager():
 				# start up the sender
 				sender_log = "sender_" + api + ".log"
 				sender_command = self.get_sender_command(api, sender_log)
-				sender_commands = []
+				sender_commands = ['ls']
 				sender_commands.append(chdir_command)
 				sender_commands.append(sender_command)
 
@@ -320,6 +320,7 @@ class ExecutableManager():
 					node.go.set()
 					node.finished.wait()
 					node.join()
+					print node.return_values
 
 				if api == 'wifu':
 					self.kill_wifu()

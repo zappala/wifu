@@ -494,7 +494,7 @@ public:
         QueryStringParser::create(WIFU_SENDTO_NAME, m, message);
         send_to(write_file_, message);
 
-        assert(message.length() <= MAX_BUFFER_SIZE);
+        assert(message.length() <= UNIX_SOCKET_MAX_BUFFER_SIZE);
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();

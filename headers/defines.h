@@ -103,7 +103,11 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 // http://linux.die.net/man/7/tcp
 // 131071 is the rmem_max and wmem_max values as defined in /proc/sys/net/core/[r|w]mem_max file as of July 26, 2011 -- RB
 // I checked  these values on both the ilab and mesh machines.
-#define MAX_BUFFER_SIZE 131071
+#define UNIX_SOCKET_MAX_BUFFER_SIZE 131071
+
+// The TCP send and receive buffers are limited to the values in /proc/sys/net/ipv4/tcp_rmem
+// We set it to the maximum.  August 3, 2011 -- RB
+#define TCP_SOCKET_MAX_BUFFER_SIZE 4194304
 //#define MAX_BUFFER_SIZE 2
 
 // Clock defines

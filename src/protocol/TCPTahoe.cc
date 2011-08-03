@@ -347,7 +347,7 @@ void TCPTahoe::icontext_get_socket_option(QueueProcessor<Event*>* q, GetSocketOp
 
 int TCPTahoe::get_available_room_in_send_buffer(SendEvent* e) {
     Socket* s = e->get_socket();
-    int available = MAX_BUFFER_SIZE - s->get_send_buffer().size();
+    int available = TCP_SOCKET_MAX_BUFFER_SIZE - s->get_send_buffer().size();
     assert(0 <= available);
     return available;
 }

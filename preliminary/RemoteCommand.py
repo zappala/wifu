@@ -22,20 +22,21 @@ class Command(threading.Thread):
     want to override the doCommand method
     """
     def __init__(self, host, username, commands):
-        """
-        * host: the host name of the remote machine
-        * username: the username you use to login to the remote machine
-        * commands: the command(s) to run
-        """
-        threading.Thread.__init__(self)
-        self.host = host
-        self.username = username
-        self.commands = commands
-        self.done = threading.Event()
-        self.go = threading.Event()
-        self.running = threading.Event()
-        self.finished = threading.Event()
-        self.child = False
+		"""
+		* host: the host name of the remote machine
+		* username: the username you use to login to the remote machine
+		* commands: the command(s) to run
+		"""
+		threading.Thread.__init__(self)
+		self.host = host
+		self.username = username
+		self.commands = commands
+		self.done = threading.Event()
+		self.go = threading.Event()
+		self.running = threading.Event()
+		self.finished = threading.Event()
+		self.child = False
+		self.return_values = {}
 
     def login(self):
         """ Login to the remote host. """
@@ -70,10 +71,12 @@ class Command(threading.Thread):
 
         # run each command
         for command in self.commands:
-            print "[%s] Running %s" % (self.host, command)
-            self.child.sendline('%s' % command)
-            self.running.set()
-            self.child.prompt(timeout=None)
+			print "[%s] Running %s" % (self.host, command)
+			self.child.sendline('%s' % command)
+			self.running.set()
+			self.child.prompt(timeout=None)
+			self.return_values[command] = self.child.before
+			
 
         # tell the caller we are done
         self.done.set()

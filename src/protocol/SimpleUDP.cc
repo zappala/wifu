@@ -312,7 +312,7 @@ void SimpleUDP::icontext_get_socket_option(QueueProcessor<Event*>* q, GetSocketO
 bool SimpleUDP::is_room_in_send_buffer(SendEvent* e) {
     Socket* s = e->get_socket();
     int num_bytes_to_send = e->data_length();
-    return s->get_send_buffer().size() + num_bytes_to_send <= MAX_BUFFER_SIZE;
+    return s->get_send_buffer().size() + num_bytes_to_send <= UNIX_SOCKET_MAX_BUFFER_SIZE;
 }
 
 void SimpleUDP::save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e) {

@@ -55,7 +55,7 @@ void LocalSocketReceiver::init(void) {
         exit(EXIT_FAILURE);
     }
 
-    optval = MAX_BUFFER_SIZE;
+    optval = UNIX_SOCKET_MAX_BUFFER_SIZE;
     value = setsockopt(get_socket(), SOL_SOCKET, SO_RCVBUF, &optval, sizeof (optval));
     if (value) {
         perror("setsockopt");
@@ -87,16 +87,16 @@ void* unix_receive_handler(void* arg) {
 
     obj->sem.post();
 
-    char buf[MAX_BUFFER_SIZE];
+    char buf[UNIX_SOCKET_MAX_BUFFER_SIZE];
 
     gcstring s;
-    s.reserve(MAX_BUFFER_SIZE);
+    s.reserve(UNIX_SOCKET_MAX_BUFFER_SIZE);
 
     int nread;
 
     while (1) {
         //u_int64_t start = Utils::get_current_time_microseconds_64();
-        nread = recv(socket, buf, MAX_BUFFER_SIZE, 0);
+        nread = recv(socket, buf, UNIX_SOCKET_MAX_BUFFER_SIZE, 0);
         //u_int64_t end = Utils::get_current_time_microseconds_64();
         if (nread < 0) {
             if (errno == EINTR)
