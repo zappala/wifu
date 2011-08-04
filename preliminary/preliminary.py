@@ -71,6 +71,9 @@ class ExecutableCopier():
 		self.sender_application = "../bin/simple-tcp-sender"
 		self.receiver_application = "../bin/simple-tcp-receiver"
 
+		self.sysctl_wifu = "config/sysctl_wifu.conf"
+		self.sysctl_default = "config/sysctl_default.conf"
+
 	def copy_wifu(self):
 		
 		
@@ -107,10 +110,30 @@ class ExecutableCopier():
 
 		return pusher
 
+	def copy_sysctl_config(self):
+		sender = self.config.get_sender_node()
+		receiver = self.config.get_receiver_node()
+
+		all = []
+		all.append(sender)
+		if not self.config.equal_sender_receiver():
+			all.append(receiver)
+
+		threads = []
+
+		for node in all:
+			for file in [self.sysctl_wifu, self.sysctl_default]:
+				pusher = FilePusher(node, self.config.dir, file, self.config.username)
+				threads.append(pusher)
+				pusher.start()
+
+		return threads
+
 	def copy_all(self):
 		threads = []
 
 		threads.extend(self.copy_wifu())
+		threads.extend(self.copy_sysctl_config())
 		threads.append(self.copy_sender_application())
 		threads.append(self.copy_receiver_application())
 
@@ -287,12 +310,14 @@ class ExecutableManager():
 
 				nodes = []
 
+				sysctl_command = "sudo sysctl -p /tmp/sysctl_wifu.conf"
 
 				# start up the receiver
 				receiver_log = "receiver_" + api +".log"
 				receiver_command = self.get_receiver_command(api, receiver_log)
-				receiver_commands = ['ls']
+				receiver_commands = []
 				receiver_commands.append(chdir_command)
+				receiver_commands.append(sysctl_command)
 				receiver_commands.append(receiver_command)
 
 
@@ -306,8 +331,9 @@ class ExecutableManager():
 				# start up the sender
 				sender_log = "sender_" + api + ".log"
 				sender_command = self.get_sender_command(api, sender_log)
-				sender_commands = ['ls']
+				sender_commands = []
 				sender_commands.append(chdir_command)
+				sender_commands.append(sysctl_command)
 				sender_commands.append(sender_command)
 
 
@@ -320,10 +346,25 @@ class ExecutableManager():
 					node.go.set()
 					node.finished.wait()
 					node.join()
-					print node.return_values
+#					print node.return_values
 
 				if api == 'wifu':
 					self.kill_wifu()
+
+				a = []
+
+				sysctl_command = "sudo sysctl -p /tmp/sysctl_default.conf"
+
+				for node in [sender_node, receiver_node]:
+					n = Command(node, self.config.username, sysctl_command)
+					a.append(n)
+					n.start()
+
+				for node in a:
+					node.done.wait()
+					node.go.set()
+					node.finished.wait()
+					node.join()
 
 				# get data
 
