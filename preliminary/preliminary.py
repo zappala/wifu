@@ -424,10 +424,10 @@ class PreliminaryGrapher:
 		return files
 
 	def __get_receive_files(self):
-		return self.__get_log_files("receiver.*\.log")
+		return self.__get_log_files("receiver_(kernel|wifu)\.log")
 
 	def __get_send_files(self):
-		return self.__get_log_files("sender.*\.log")
+		return self.__get_log_files("sender_(kernel|wifu)\.log")
 
 	def __get_configuration(self):
 		d = Directory(self.data_path)
@@ -457,7 +457,7 @@ class PreliminaryGrapher:
 		ax1.set_ylabel('Rate (Mbps)')
 
 		# Set the axes ranges and axes labels
-		ax1.set_xlim(0.5, 4+0.5)
+		ax1.set_xlim(0.5, len(data) + 0.5)
 #		top = 2000
 #		bottom = 0
 #		ax1.set_ylim(bottom, top)
@@ -471,7 +471,7 @@ class PreliminaryGrapher:
 		d.make()
 		savefig(filename)
 
-	def graph_goodputs(self):
+	def graph_loop_goodputs(self):
 		num_bytes = float(self.configuration.dictionary["num"])
 
 		kernel_receive = []
@@ -513,9 +513,82 @@ class PreliminaryGrapher:
 						kernel_send.append(rate)
 
 		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
+		print "Looping data: ", data
 		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Entire Loop)'
-		filename = self.graph_path + 'send_receive_rate_boxplot.png'
+		filename = self.graph_path + 'send_receive_rate_boxplot_loop.png'
 		self.__graph_boxplot(data, title, filename)
+
+	def graph_function_goodputs(self):
+		num_bytes = float(self.configuration.dictionary["num"])
+
+		kernel_receive = []
+		kernel_send = []
+		wifu_receive = []
+		wifu_send = []
+
+		parser = FileParser()
+
+		#create vectors of goodput
+		for file in self.receive_files:
+			lines = parser.parse(file)
+			wifu = "receiver_wifu.log" in file
+			total_time = 0.0
+			total_bytes = 0
+			for line in lines:
+				if line.startswith("recv "):
+					values = line.split(' ')
+					assert len(values) == 4
+					start = int(values[1])
+					end = int(values[2])
+					bytes = int(values[3])
+					duration = end - start
+					assert duration > 0
+					total_time += duration
+					total_bytes += bytes
+
+			assert total_bytes == num_bytes
+			# assuming one kilo == 1000
+			rate = (num_bytes * 8.0 / 1000000.0) / (total_time / 1000000.0)
+			if wifu:
+				wifu_receive.append(rate)
+			else:
+				kernel_receive.append(rate)
+
+		for file in self.send_files:
+			lines = parser.parse(file)
+			wifu = "sender_wifu.log" in file
+			total_time = 0.0
+			total_bytes = 0
+			for line in lines:
+				if line.startswith("send "):
+					values = line.split(' ')
+					assert len(values) == 4
+					start = int(values[1])
+					end = int(values[2])
+					bytes = int(values[3])
+					duration = end - start
+					assert duration > 0
+					total_time += duration
+					total_bytes += bytes
+
+
+			assert total_bytes == num_bytes
+			# assuming one kilo == 1000
+			rate = (num_bytes * 8 / 1000000) / (total_time / 1000000)
+			if wifu:
+				wifu_send.append(rate)
+			else:
+				kernel_send.append(rate)
+
+		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
+		print "Function data: ", data
+		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Function Call)'
+		filename = self.graph_path + 'send_receive_rate_boxplot_function.png'
+		self.__graph_boxplot(data, title, filename)
+
+	def graph(self):
+		self.graph_loop_goodputs()
+		self.graph_function_goodputs()
 
 
 if __name__ == "__main__":
@@ -545,6 +618,6 @@ if __name__ == "__main__":
 
 	print "Graphing..."
 	grapher = PreliminaryGrapher(path)
-	grapher.graph_goodputs()
+	grapher.graph()
 	
 	print "All done."
