@@ -55,6 +55,10 @@ def configure(conf):
 	#Always use these
 	conf.env['STATICLIB'] += ['pantheios.1.fe.all.gcc44']
 	conf.env['STATICLIB'] += ['pantheios.1.util.gcc44']
+
+	conf.env['CPPPATH'] += ['../lib/pantheios/include']
+	conf.env['CPPPATH'] += ['../lib/stlsoft/include']
+	conf.env['CPPPATH'] += ['../lib/gc/include']
 	
 	conf.env['LIB_RT'] = ['rt']
 	
@@ -138,7 +142,7 @@ def build_blaster(bld):
 	if Options.options.bit_32:
 		udp_blaster = bld(features='cxx cprogram',
 		source=udp_files,
-		includes='headers lib/gc/include',
+		includes='headers',
 		libpath = ['../lib/gc/gc_32'],
 		staticlib = ['gccpp','gc','cord'],
 		uselib='PTHREAD RT',
@@ -146,7 +150,7 @@ def build_blaster(bld):
 	else:
 		udp_blaster = bld(features='cxx cprogram',
 		source=udp_files,
-		includes='headers lib/gc/include',
+		includes='headers',
 		libpath = ['../lib/gc/gc_64'],
 		staticlib = ['gccpp','gc','cord'],
 		uselib='PTHREAD RT',
@@ -179,9 +183,9 @@ def build_staticlib(bld):
 	if Options.options.bit_32:
 		lib = bld(features='cxx cstaticlib',
 		source=api_files,
-		includes='applib headers headers/exceptions lib/gc/include',
+		includes='applib headers headers/exceptions',
 			ccflags="-c -fPIC",
-			export_incdirs='applib lib/gc/include',
+			export_incdirs='applib',
 			uselib='PTHREAD RT',
 			libpath = ['../lib/gc/gc_32'],
 			staticlib = ['gccpp','gc','cord'],
@@ -189,9 +193,9 @@ def build_staticlib(bld):
 	else:
 		lib = bld(features='cxx cstaticlib',
 		source=api_files,
-		includes='applib headers headers/exceptions lib/gc/include',
+		includes='applib headers headers/exceptions',
 			ccflags="-c -fPIC",
-			export_incdirs='applib lib/gc/include',
+			export_incdirs='applib',
 			uselib='PTHREAD RT',
 			libpath = ['../lib/gc/gc_64'],
 			staticlib = ['gccpp','gc','cord'],
@@ -215,7 +219,7 @@ def build_wifu(bld):
 	if Options.options.bit_32:
 		exe = bld(features='cxx cprogram',
 		source=src_files,
-		includes='headers lib/gc/include lib/pantheios/include lib/stlsoft/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors headers/states/tcp-ap headers/states/atp headers/events/protocol_events headers/events/framework_events',
+		includes='headers  headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors headers/states/tcp-ap headers/states/atp headers/events/protocol_events headers/events/framework_events',
 		uselib='PTHREAD RT',
 			libpath = ['../lib/gc/gc_32'],
 			staticlib = ['gccpp','gc','cord'],
@@ -223,7 +227,7 @@ def build_wifu(bld):
 	else:
 		exe = bld(features='cxx cprogram',
 		source=src_files,
-		includes='headers lib/gc/include lib/pantheios/include lib/stlsoft/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors headers/states/tcp-ap headers/states/atp headers/events/protocol_events headers/events/framework_events',
+		includes='headers headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors headers/states/tcp-ap headers/states/atp headers/events/protocol_events headers/events/framework_events',
 		uselib='PTHREAD RT',
 			libpath = ['../lib/gc/gc_64'],
 			staticlib = ['gccpp','gc','cord'],
@@ -252,7 +256,7 @@ def build_wifu_end_test(bld):
 	if Options.options.bit_32:
 		test_end = bld(features='cxx cprogram',
 		source=filesToUse,
-		includes='preliminary headers lib/gc/include lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers headers/states/tcp-ap headers/states/atp headers/events/framework_events headers/events/protocol_events',
+		includes='preliminary headers lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers headers/states/tcp-ap headers/states/atp headers/events/framework_events headers/events/protocol_events',
 		uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_32',
 			staticlib = ['gccpp','gc','cord'],
@@ -260,7 +264,7 @@ def build_wifu_end_test(bld):
 	else:
 		test_end = bld(features='cxx cprogram',
 		source=filesToUse,
-		includes='preliminary headers lib/gc/include lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers headers/states/tcp-ap headers/states/atp headers/events/framework_events headers/events/protocol_events',
+		includes='preliminary headers lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/end/headers headers/states/tcp-ap headers/states/atp headers/events/framework_events headers/events/protocol_events',
 		uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_64',
 			staticlib = ['gccpp','gc','cord'],
@@ -277,7 +281,7 @@ def build_wifu_frontend_test(bld):
 	if Options.options.bit_32:
 		test_frontend = bld(features='cxx cprogram',
 			source=test_frontend_files,
-			includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+			includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_32',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-end-api',
@@ -285,7 +289,7 @@ def build_wifu_frontend_test(bld):
 	else:
 		test_frontend = bld(features='cxx cprogram',
 			source=test_frontend_files,
-			includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+			includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_64',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-end-api',
@@ -301,7 +305,7 @@ def build_simple_tcp_sender(bld):
 	if Options.options.bit_32:
 		sender = bld(features='cxx cprogram',
 			source=files,
-			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_32',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-end-api',
@@ -309,7 +313,7 @@ def build_simple_tcp_sender(bld):
 	else:
 		sender = bld(features='cxx cprogram',
 			source=files,
-			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_64',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-end-api',
@@ -326,7 +330,7 @@ def build_simple_tcp_receiver(bld):
 	if Options.options.bit_32:
 		receiver = bld(features='cxx cprogram',
 			source=files,
-			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_32',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-end-api',
@@ -334,7 +338,7 @@ def build_simple_tcp_receiver(bld):
 	else:
 		receiver = bld(features='cxx cprogram',
 			source=files,
-			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gc/include lib/gtest/include',
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_64',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-end-api',

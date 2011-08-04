@@ -80,6 +80,9 @@
 // logging
 #include "Logger.h"
 
+// Global Pantheios Variable(s)
+const PAN_CHAR_T PANTHEIOS_FE_PROCESS_IDENTITY[] = "wifu-end";
+
 
 using namespace std;
 

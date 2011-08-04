@@ -294,7 +294,7 @@ class ExecutableManager():
 
 			for api in ['wifu', 'kernel']:
 
-				data_path = base_path + "/" + str(i) + "/"
+				data_path = base_path + str(i) + "/"
 
 				# files will be put in a directory with the following format
 				# data/[configfilename.conf]-[current_time]/[iteration]/
@@ -353,10 +353,14 @@ class ExecutableManager():
 
 				a = []
 
+				finalizing_commands = []
 				sysctl_command = "sudo sysctl -p /tmp/sysctl_default.conf"
+				chmod_command = "sudo chmod o+r /tmp/wifu-end.log"
+				finalizing_commands.append(sysctl_command)
+				finalizing_commands.append(chmod_command)
 
 				for node in [sender_node, receiver_node]:
-					n = Command(node, self.config.username, sysctl_command)
+					n = Command(node, self.config.username, finalizing_commands)
 					a.append(n)
 					n.start()
 
@@ -375,6 +379,7 @@ class ExecutableManager():
 				receiver_grabber.start()
 
 				pcap_file = "wifu-log.pcap"
+				wifu_log = "wifu-end.log"
 
 				if api == "wifu":
 					sender_pcap_grabber = FileGrabber(sender_node, self.config.dir + pcap_file, data_path + "sender_wifu_log.pcap", self.config.username)
@@ -383,8 +388,17 @@ class ExecutableManager():
 					receiver_pcap_grabber = FileGrabber(receiver_node, self.config.dir + pcap_file, data_path + "receiver_wifu_log.pcap", self.config.username)
 					receiver_pcap_grabber.start()
 
+					receiver_wifu_end_log_grabber = FileGrabber(receiver_node, self.config.dir + wifu_log, data_path + "receiver_wifu_end.log", self.config.username)
+					receiver_wifu_end_log_grabber.start()
+
+					sender_wifu_end_log_grabber = FileGrabber(sender_node, self.config.dir + wifu_log, data_path + "sender_wifu_end.log", self.config.username)
+					sender_wifu_end_log_grabber.start()
+
 					sender_pcap_grabber.join()
 					receiver_pcap_grabber.join()
+
+					receiver_wifu_end_log_grabber.join()
+					sender_wifu_end_log_grabber.join()
 
 				sender_grabber.join()
 				receiver_grabber.join()
@@ -421,7 +435,43 @@ class PreliminaryGrapher:
 		assert len(files) == 1
 		return Configuration(files[0], "fake_username")
 
-	def graph_goodput(self):
+	def __graph_boxplot(self, data, title, filename):
+		fig = plt.figure(figsize=(10,6))
+		fig.canvas.set_window_title('A Boxplot Example')
+		ax1 = fig.add_subplot(111)
+		plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
+
+		bp = plt.boxplot(data, notch=0, sym='+', vert=1, whis=1.5)
+		plt.setp(bp['boxes'], color='black')
+		plt.setp(bp['whiskers'], color='black')
+		plt.setp(bp['fliers'], color='red', marker='+')
+
+		# Add a horizontal grid to the plot, but make it very light in color
+		# so we can use it for reading data values but not be distracting
+		ax1.yaxis.grid(True, linestyle='-', which='major', color='lightgrey', alpha=0.5)
+
+		# Hide these grid behind plot objects
+		ax1.set_axisbelow(True)
+		ax1.set_title(title)
+		ax1.set_xlabel('Type')
+		ax1.set_ylabel('Rate (Mbps)')
+
+		# Set the axes ranges and axes labels
+		ax1.set_xlim(0.5, 4+0.5)
+#		top = 2000
+#		bottom = 0
+#		ax1.set_ylim(bottom, top)
+		ax1.set_ylim(xmin=0)
+
+		xtickNames = plt.setp(ax1, xticklabels=["Kernel Send", "WiFu Send", "Kernel Receive", "WiFu Receive"])
+		#plt.setp(xtickNames, rotation=45, fontsize=8)
+		plt.setp(xtickNames, fontsize=10)
+
+		d = Directory(self.graph_path)
+		d.make()
+		savefig(filename)
+
+	def graph_goodputs(self):
 		num_bytes = float(self.configuration.dictionary["num"])
 
 		kernel_receive = []
@@ -462,59 +512,10 @@ class PreliminaryGrapher:
 					else:
 						kernel_send.append(rate)
 
-
-
-
 		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
-#		figure()
-#		bp = plt.boxplot(data)
-#		ylabel('Rate (Mbps)')
-
-
-		fig = plt.figure(figsize=(10,6))
-		fig.canvas.set_window_title('A Boxplot Example')
-		ax1 = fig.add_subplot(111)
-		plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
-
-		bp = plt.boxplot(data, notch=0, sym='+', vert=1, whis=1.5)
-		plt.setp(bp['boxes'], color='black')
-		plt.setp(bp['whiskers'], color='black')
-		plt.setp(bp['fliers'], color='red', marker='+')
-
-		# Add a horizontal grid to the plot, but make it very light in color
-		# so we can use it for reading data values but not be distracting
-		ax1.yaxis.grid(True, linestyle='-', which='major', color='lightgrey', alpha=0.5)
-
-		# Hide these grid behind plot objects
-		ax1.set_axisbelow(True)
-		ax1.set_title('Comparison WiFu and Kernel Sending and Receiving Rates')
-		ax1.set_xlabel('Type')
-		ax1.set_ylabel('Rate (Mbps)')
-
-		# Set the axes ranges and axes labels
-		ax1.set_xlim(0.5, 4+0.5)
-#		top = 2000
-#		bottom = 0
-#		ax1.set_ylim(bottom, top)
-		ax1.set_ylim(xmin=0)
-
-		xtickNames = plt.setp(ax1, xticklabels=["Kernel Send", "WiFu Send", "Kernel Receive", "WiFu Receive"])
-		#plt.setp(xtickNames, rotation=45, fontsize=8)
-		plt.setp(xtickNames, fontsize=10)
-
-		d = Directory(self.graph_path)
-		d.make()
-		savefig(self.graph_path + 'send_receive_rate_boxplot.png')
-
-
-
-
-
-
-
-
-					
-		
+		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Entire Loop)'
+		filename = self.graph_path + 'send_receive_rate_boxplot.png'
+		self.__graph_boxplot(data, title, filename)
 
 
 if __name__ == "__main__":
@@ -544,6 +545,6 @@ if __name__ == "__main__":
 
 	print "Graphing..."
 	grapher = PreliminaryGrapher(path)
-	grapher.graph_goodput()
+	grapher.graph_goodputs()
 	
 	print "All done."

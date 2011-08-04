@@ -29,6 +29,8 @@
 #include "events/framework_events/SetSocketOptionEvent.h"
 #include "PortManager.h"
 
+#include "Logger.h"
+
 /**
  * Translates string messages received from the front-end library into Event objects
  * and enqueues them to the dispatcher (and visa-versa).
@@ -52,6 +54,12 @@ public:
 
 private:
     WifuEndBackEndLibrary();
+
+    list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
+    list<gcstring, gc_allocator<gcstring> > recv_response_sizes_;
+
+    list<u_int64_t, gc_allocator<u_int64_t> > send_events_, send_response_events_;
+    list<gcstring, gc_allocator<gcstring> > send_response_sizes_;
 
 };
 

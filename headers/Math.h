@@ -8,6 +8,7 @@
 #ifndef MATH_H
 #define	MATH_H
 
+#include <limits.h>
 #include <sys/types.h>
 
 /**

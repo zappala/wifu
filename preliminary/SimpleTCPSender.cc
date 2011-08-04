@@ -12,7 +12,9 @@
 #include "headers/ISocketAPI.h"
 #include "headers/WiFuSocketAPI.h"
 #include "headers/KernelSocketAPI.h"
+#include "Utils.h"
 
+#include <list>
 
 using namespace std;
 
@@ -58,22 +60,22 @@ int main(int argc, char** argv) {
         port = atoi(optionparser.argument(destport).c_str());
     }
     int num_bytes = 1000;
-    if(optionparser.present(num)) {
+    if (optionparser.present(num)) {
         num_bytes = atoi(optionparser.argument(num).c_str());
     }
 
-    if(optionparser.present(apiarg)) {
+    if (optionparser.present(apiarg)) {
         gcstring api_type = optionparser.argument(apiarg);
-        if(!api_type.compare("kernel")) {
+        if (!api_type.compare("kernel")) {
             api = new KernelSocketAPI();
         }
     }
 
-    if(optionparser.present(protocolarg)) {
+    if (optionparser.present(protocolarg)) {
         protocol = atoi(optionparser.argument(protocolarg).c_str());
     }
 
-    if(optionparser.present(chunkarg)) {
+    if (optionparser.present(chunkarg)) {
         chunk = atoi(optionparser.argument(chunkarg).c_str());
     }
 
@@ -92,7 +94,11 @@ int main(int argc, char** argv) {
     assert(!result);
 
     int index = 0;
-    int num_sent = 0;
+
+    list<u_int64_t, gc_allocator<u_int64_t> > starts, ends;
+    list<int, gc_allocator<int> > sizes;
+
+    int sent;
 
     Timer send_timer;
     send_timer.start();
@@ -104,13 +110,27 @@ int main(int argc, char** argv) {
         }
         const char* data = message.data() + index;
 
-        int sent = api->custom_send(client, data, chunk, 0);
-        num_sent += sent;
+        starts.push_back(Utils::get_current_time_microseconds_64());
+        sent = api->custom_send(client, data, chunk, 0);
+        ends.push_back(Utils::get_current_time_microseconds_64());
+        sizes.push_back(sent);
+
+
+
         index += sent;
     }
     send_timer.stop();
-    cout << "Duration (us) to send " << message.size() << " bytes to " << to_connect.to_s() << ": " << send_timer.get_duration_microseconds() << endl;
     api->custom_close(client);
+
+    while (!starts.empty()) {
+        cout << "send " << starts.front() << " " << ends.front() << " " << sizes.front() << endl;
+        starts.pop_front();
+        ends.pop_front();
+        sizes.pop_front();
+    }
+
+    cout << "Duration (us) to send " << index << " bytes to " << to_connect.to_s() << ": " << send_timer.get_duration_microseconds() << endl;
+
 
     sleep(1);
 }

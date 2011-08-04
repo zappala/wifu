@@ -1,8 +1,4 @@
-#include <limits.h>
-
 #include "Math.h"
-
-
 
 bool between_equal(u_int32_t left, u_int32_t number, u_int32_t right) {
     return less_than_or_equal(left, number) && less_than_or_equal(number, right);

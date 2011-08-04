@@ -10,6 +10,10 @@
 #include "OptionParser.h"
 #include <signal.h>
 
+#include "Logger.h"
+
+const PAN_CHAR_T PANTHEIOS_FE_PROCESS_IDENTITY[] = "wifu-frontend-test";
+
 using namespace std;
 
 void change_dir() {

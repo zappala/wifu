@@ -105,9 +105,8 @@ int main(int argc, char** argv) {
     gcstring all_received = "";
     int num_received = 0;
 
-    list<u_int64_t, gc_allocator<u_int64_t> > durations;
+    list<u_int64_t, gc_allocator<u_int64_t> > starts, ends;
     list<int, gc_allocator<int> > sizes;
-    u_int64_t start;
     int return_value;
 
 
@@ -116,13 +115,14 @@ int main(int argc, char** argv) {
         cout << "Connection Established to: " << remote.to_s() << endl;
         Timer recv_timer;
         num_received = 0;
-        durations.clear();
+        starts.clear();
+        ends.clear();
 
         while (true) {
             //memset(buffer, 0, size);
-            start = Utils::get_current_time_microseconds_64();
+            starts.push_back(Utils::get_current_time_microseconds_64());
             return_value = api->custom_recv(connection, buffer, chunk, 0);
-            durations.push_back(Utils::get_current_time_microseconds_64() - start);
+            ends.push_back(Utils::get_current_time_microseconds_64());
             recv_timer.start();
             
             sizes.push_back(return_value);
@@ -137,9 +137,10 @@ int main(int argc, char** argv) {
         recv_timer.stop();
 
         
-        while (!durations.empty()) {
-            cout << "recv " << durations.front() << " " << sizes.front() << endl;
-            durations.pop_front();
+        while (!starts.empty()) {
+            cout << "recv " << starts.front() << " " << ends.front() << " " << sizes.front() << endl;
+            starts.pop_front();
+            ends.pop_front();
             sizes.pop_front();
         }
 
