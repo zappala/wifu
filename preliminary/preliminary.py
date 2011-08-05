@@ -15,6 +15,7 @@ from fileparser import FileParser
 import optparse
 sys.path.append("/home/ilab/pylib")
 from directory import *
+from Stats import *
 import os
 
 import matplotlib
@@ -313,7 +314,7 @@ class ExecutableManager():
 				sysctl_command = "sudo sysctl -p /tmp/sysctl_wifu.conf"
 
 				# start up the receiver
-				receiver_log = "receiver_" + api +".log"
+				receiver_log = "receiver_" + api + ".log"
 				receiver_command = self.get_receiver_command(api, receiver_log)
 				receiver_commands = []
 				receiver_commands.append(chdir_command)
@@ -416,7 +417,7 @@ class PreliminaryGrapher:
 
 
 	def __get_log_files(self, regex):
-		files =[]
+		files = []
 		for i in range (0, self.configuration.iterations):
 			d = Directory(self.data_path + str(i) + "/")
 			temp = d.get_files_re(regex)
@@ -436,7 +437,7 @@ class PreliminaryGrapher:
 		return Configuration(files[0], "fake_username")
 
 	def __graph_boxplot(self, data, title, filename):
-		fig = plt.figure(figsize=(10,6))
+		fig = plt.figure(figsize=(10, 6))
 		fig.canvas.set_window_title('A Boxplot Example')
 		ax1 = fig.add_subplot(111)
 		plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
@@ -513,7 +514,7 @@ class PreliminaryGrapher:
 						kernel_send.append(rate)
 
 		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
-		print "Looping data: ", data
+	#		print "Looping data: ", data
 		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Entire Loop)'
 		filename = self.graph_path + 'send_receive_rate_boxplot_loop.png'
 		self.__graph_boxplot(data, title, filename)
@@ -582,7 +583,7 @@ class PreliminaryGrapher:
 				kernel_send.append(rate)
 
 		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
-		print "Function data: ", data
+	#		print "Function data: ", data
 		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Function Call)'
 		filename = self.graph_path + 'send_receive_rate_boxplot_function.png'
 		self.__graph_boxplot(data, title, filename)
@@ -647,7 +648,7 @@ class PreliminaryGrapher:
 			wifu_send.append(rate)
 
 		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
-		print "Inside unix socket data: ", data
+	#		print "Inside unix socket data: ", data
 		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Inside Unix Socket)'
 		filename = self.graph_path + 'send_receive_rate_boxplot_inside_unix_socket.png'
 		self.__graph_boxplot(data, title, filename)
@@ -711,7 +712,7 @@ class PreliminaryGrapher:
 			wifu_send.append(rate)
 
 		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
-		print "Outside Socket Data: ", data
+		#print "Outside Socket Data: ", data
 		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Outside Socket Call)'
 		filename = self.graph_path + 'send_receive_rate_boxplot_outside_unix_socket.png'
 		self.__graph_boxplot(data, title, filename)
@@ -720,8 +721,38 @@ class PreliminaryGrapher:
 	def graph(self):
 		loop_data = self.graph_loop_goodputs()
 		function_data = self.graph_function_goodputs()
-		inside_unix_socket_data = self.graph_inside_unix_socket_goodputs(function_data)
 		outside_unix_socket_data = self.graph_outside_unix_socket_goodputs(function_data)
+		inside_unix_socket_data = self.graph_inside_unix_socket_goodputs(function_data)
+		
+
+		s = Stats()
+		print "Stats of 25th, 50th, and 75th percentiles in Mbps...\n"
+		print "Entire loop:"
+		print "Kernel Send:\t", s.get_25th_percentile(loop_data[0]), "\t", s.median(loop_data[0]), "\t", s.get_75th_percentile(loop_data[0])
+		print "WiFu Send:\t", s.get_25th_percentile(loop_data[1]), "\t", s.median(loop_data[1]), "\t", s.get_75th_percentile(loop_data[1])
+		print "Kernel Receive:\t", s.get_25th_percentile(loop_data[2]), "\t", s.median(loop_data[2]), "\t", s.get_75th_percentile(loop_data[2])
+		print "WiFu Receive:\t", s.get_25th_percentile(loop_data[3]), "\t", s.median(loop_data[3]), "\t", s.get_75th_percentile(loop_data[3])
+		
+		print ""
+		print "Function Call:"
+		print "Kernel Send:\t", s.get_25th_percentile(function_data[0]), "\t", s.median(function_data[0]), "\t", s.get_75th_percentile(function_data[0])
+		print "WiFu Send:\t", s.get_25th_percentile(function_data[1]), "\t", s.median(function_data[1]), "\t", s.get_75th_percentile(function_data[1])
+		print "Kernel Receive:\t", s.get_25th_percentile(function_data[2]), "\t", s.median(function_data[2]), "\t", s.get_75th_percentile(function_data[2])
+		print "WiFu Receive:\t", s.get_25th_percentile(function_data[3]), "\t", s.median(function_data[3]), "\t", s.get_75th_percentile(function_data[3])
+
+		print ""
+		print "Outside Unix Socket Call:"
+		print "Kernel Send:\t", s.get_25th_percentile(outside_unix_socket_data[0]), "\t", s.median(outside_unix_socket_data[0]), "\t", s.get_75th_percentile(outside_unix_socket_data[0])
+		print "WiFu Send:\t", s.get_25th_percentile(outside_unix_socket_data[1]), "\t", s.median(outside_unix_socket_data[1]), "\t", s.get_75th_percentile(outside_unix_socket_data[1])
+		print "Kernel Receive:\t", s.get_25th_percentile(outside_unix_socket_data[2]), "\t", s.median(outside_unix_socket_data[2]), "\t", s.get_75th_percentile(outside_unix_socket_data[2])
+		print "WiFu Receive:\t", s.get_25th_percentile(outside_unix_socket_data[3]), "\t", s.median(outside_unix_socket_data[3]), "\t", s.get_75th_percentile(outside_unix_socket_data[3])
+
+		print ""
+		print "Inside Unix Socket Call:"
+		print "Kernel Send:\t", s.get_25th_percentile(inside_unix_socket_data[0]), "\t", s.median(inside_unix_socket_data[0]), "\t", s.get_75th_percentile(inside_unix_socket_data[0])
+		print "WiFu Send:\t", s.get_25th_percentile(inside_unix_socket_data[1]), "\t", s.median(inside_unix_socket_data[1]), "\t", s.get_75th_percentile(inside_unix_socket_data[1])
+		print "Kernel Receive:\t", s.get_25th_percentile(inside_unix_socket_data[2]), "\t", s.median(inside_unix_socket_data[2]), "\t", s.get_75th_percentile(inside_unix_socket_data[2])
+		print "WiFu Receive:\t", s.get_25th_percentile(inside_unix_socket_data[3]), "\t", s.median(inside_unix_socket_data[3]), "\t", s.get_75th_percentile(inside_unix_socket_data[3])
 
 
 if __name__ == "__main__":
