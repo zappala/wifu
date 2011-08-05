@@ -1,4 +1,5 @@
 #include "LocalSocketSender.h"
+#include "Utils.h"
 
 LocalSocketSender::LocalSocketSender() {
     init();
@@ -17,12 +18,12 @@ LocalSocketSender::~LocalSocketSender() {
 
 
 // TODO: do we need to protect destinations_ with a semaphore?
-ssize_t LocalSocketSender::send_to(gcstring& socket_file, gcstring& message) {
+ssize_t LocalSocketSender::send_to(gcstring& socket_file, gcstring& message, u_int64_t* send_time /* = time */) {
     struct sockaddr_un* destination = destinations_[socket_file];
     if (!destination) {
         destination = create_socket(socket_file);
     }
-    
+    *send_time = Utils::get_current_time_microseconds_64();
     return sendto(socket_, message.data(), message.size(), 0, (const struct sockaddr*) destination, SUN_LEN(destination));
 }
 

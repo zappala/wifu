@@ -122,7 +122,7 @@ public:
      * @see SocketData
      */
     void receive(gcstring& message, u_int64_t& receive_time) {
-//                cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
+        //                cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
@@ -137,13 +137,13 @@ public:
         SocketData* data = sockets.get(socket);
         if (!data && !response_[NAME_STRING].compare(WIFU_CLOSE_NAME)) {
             // We already closed
-//            cout << "WifuEndAPILocalSocket::receive(), Already closed" << message << endl;
+            //            cout << "WifuEndAPILocalSocket::receive(), Already closed" << message << endl;
             return;
         }
 
         if (!data) {
-//            cout << "Socket: " << socket << " is deleted" << endl;
-//            cout << "Message: " << message << endl;
+            //            cout << "Socket: " << socket << " is deleted" << endl;
+            //            cout << "Message: " << message << endl;
 
             //TODO: is this really an error?
             assert(data);
@@ -156,13 +156,12 @@ public:
             //cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
             recv_response_events_.push_back(receive_time);
             recv_response_sizes_.push_back(response_[RETURN_VALUE_STRING]);
-            
+
             data->set_payload(response_[BUFFER_STRING], response_[BUFFER_STRING].length());
         } else if (!response_[NAME_STRING].compare(WIFU_SENDTO_NAME)) {
             send_response_events_.push_back(receive_time);
             send_response_sizes_.push_back(response_[RETURN_VALUE_STRING]);
-        }
-        else if (!response_[NAME_STRING].compare(WIFU_GETSOCKOPT_NAME)) {
+        } else if (!response_[NAME_STRING].compare(WIFU_GETSOCKOPT_NAME)) {
             gcstring response = response_[BUFFER_STRING];
             int length = atoi(response_[LENGTH_STRING].c_str());
             data->set_payload(response, length);
@@ -202,7 +201,8 @@ public:
         m[PROTOCOL_STRING] = Utils::itoa(protocol);
         gcstring message;
         QueryStringParser::create(WIFU_SOCKET_NAME, m, message);
-        send_to(write_file_, message);
+        u_int64_t time;
+        send_to(write_file_, message, &time);
 
         socket_signal_.wait();
 
@@ -252,7 +252,8 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_BIND_NAME, m, message);
-        send_to(write_file_, message);
+        u_int64_t time;
+        send_to(write_file_, message, &time);
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
@@ -291,7 +292,8 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_GETSOCKOPT_NAME, m, message);
-        send_to(write_file_, message);
+        u_int64_t time;
+        send_to(write_file_, message, &time);
 
         //TODO: Fill in optval and optlen according to man 2 getsockopt
         SocketData* data = sockets.get(fd);
@@ -333,8 +335,8 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_SETSOCKOPT_NAME, m, message);
-
-        send_to(write_file_, message);
+        u_int64_t time;
+        send_to(write_file_, message, &time);
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
@@ -374,7 +376,8 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_LISTEN_NAME, m, message);
-        send_to(write_file_, message);
+        u_int64_t time;
+        send_to(write_file_, message, &time);
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
@@ -419,7 +422,8 @@ public:
         gcstring message;
         QueryStringParser::create(WIFU_ACCEPT_NAME, m, message);
         //        cout << "WifuEndAPILocalSocket::wifu_accept(), sending message to back end." << endl;
-        send_to(write_file_, message);
+        u_int64_t time;
+        send_to(write_file_, message, &time);
 
         SocketData* data = sockets.get(fd);
 
@@ -512,8 +516,10 @@ public:
         gcstring message;
         message.reserve(2 * n);
         QueryStringParser::create(WIFU_SENDTO_NAME, m, message);
-        send_events_.push_back(Utils::get_current_time_microseconds_64());
-        send_to(write_file_, message);
+
+        u_int64_t time;
+        send_to(write_file_, message, &time);
+        send_events_.push_back(time);
 
         assert(message.length() <= UNIX_SOCKET_MAX_BUFFER_SIZE);
 
@@ -543,8 +549,8 @@ public:
      * The return value may also be 0 if the peer performed an orderly shutdown.
      */
     ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr, socklen_t *__restrict addr_len) {
-                //cout << "wifu_recvfrom()" << endl;
-//        cout << Utils::get_current_time_microseconds_32() << " WifuEndAPILocalSocket::wifu_recvfrom()" << endl;
+        //cout << "wifu_recvfrom()" << endl;
+        //        cout << Utils::get_current_time_microseconds_32() << " WifuEndAPILocalSocket::wifu_recvfrom()" << endl;
         gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
@@ -561,10 +567,11 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_RECVFROM_NAME, m, message);
-//        cout << Utils::get_current_time_microseconds_32() << " WifuEndAPILocalSocket::wifu_recvfrom(), sending to back end" << endl;
+        //        cout << Utils::get_current_time_microseconds_32() << " WifuEndAPILocalSocket::wifu_recvfrom(), sending to back end" << endl;
 
-        receive_events_.push_back(Utils::get_current_time_microseconds_64());
-        send_to(write_file_, message);
+        u_int64_t time;
+        send_to(write_file_, message, &time);
+        receive_events_.push_back(time);
 
         SocketData* data = sockets.get(fd);
         assert(data != NULL);
@@ -572,7 +579,7 @@ public:
 
         //        cout << "wifu_recvfrom(), waiting" << endl;
         data->get_semaphore()->wait();
-//        cout << Utils::get_current_time_microseconds_32() << " WifuEndAPILocalSocket::wifu_recvfrom(), response received from back end" << endl;
+        //        cout << Utils::get_current_time_microseconds_32() << " WifuEndAPILocalSocket::wifu_recvfrom(), response received from back end" << endl;
 
         ssize_t ret_val = data->get_return_value();
         // TODO: fill in the actual vale of addr_len and addr according to man 2 recvfrom()
@@ -613,7 +620,8 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_CONNECT_NAME, m, message);
-        send_to(write_file_, message);
+        u_int64_t time;
+        send_to(write_file_, message, &time);
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
@@ -635,7 +643,8 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_CLOSE_NAME, m, message);
-        send_to(write_file_, message);
+        u_int64_t time;
+        send_to(write_file_, message, &time);
 
         SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();

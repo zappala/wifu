@@ -55,8 +55,8 @@ namespace {
         LocalSocketFullDuplexImpl1 s1(file1);
 
         gcstring message = "This is a test message";
-
-        ssize_t sent = s1.send_to(file1, message);
+        u_int64_t time;
+        ssize_t sent = s1.send_to(file1, message, &time);
 
         if (sent < 0) {
             cout << "Error in sending: " << errno << endl;

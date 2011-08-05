@@ -99,7 +99,8 @@ namespace {
 
             gcstring response_message;
             QueryStringParser::create(name, response, response_message);
-            send_to(m[FILE_STRING], response_message);
+            u_int64_t time;
+            send_to(m[FILE_STRING], response_message, &time);
         }
 
         gcstring& get_last_message() {

@@ -136,7 +136,8 @@ void WifuEndBackEndLibrary::receive(gcstring& message, u_int64_t& receive_time) 
             // TODO: We may need to wait for a response from the internal system
             gcstring response_message;
             QueryStringParser::create(name, response, response_message);
-            send_to(m[FILE_STRING], response_message);
+            u_int64_t time;
+            send_to(m[FILE_STRING], response_message, &time);
         }
 
 
@@ -149,19 +150,21 @@ void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
     gcstring response;
     event->get_response(response);
     //        cout << "Response: " << response << endl;
+    u_int64_t time;
+    send_to(event->get_write_file(), response, &time);
     if (!event->get_name().compare(WIFU_RECVFROM_NAME)) {
         //cout << Utils::get_current_time_microseconds_32() << " WifuEndBackEndLibrary::imodule_library_response()" << endl;
         //log_INFORMATIONAL("recv_response_event ", (pan_uint64_t) Utils::get_current_time_microseconds_64());
-        recv_response_events_.push_back(Utils::get_current_time_microseconds_64());
+        recv_response_events_.push_back(time);
         recv_response_sizes_.push_back(*(event->get(RETURN_VALUE_STRING)));
     }
     else if (!event->get_name().compare(WIFU_SENDTO_NAME)) {
         //cout << Utils::get_current_time_microseconds_32() << " WifuEndBackEndLibrary::imodule_library_response()" << endl;
         //log_INFORMATIONAL("recv_response_event ", (pan_uint64_t) Utils::get_current_time_microseconds_64());
-        send_response_events_.push_back(Utils::get_current_time_microseconds_64());
+        send_response_events_.push_back(time);
         send_response_sizes_.push_back(*(event->get(RETURN_VALUE_STRING)));
     }
-    send_to(event->get_write_file(), response);
+    
 }
 
 WifuEndBackEndLibrary::WifuEndBackEndLibrary() : LocalSocketFullDuplex("/tmp/WS"), Module() {
