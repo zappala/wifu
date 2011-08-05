@@ -23,10 +23,8 @@ gcstring& LocalSocketReceiver::get_file() {
     return file_;
 }
 
-void LocalSocketReceiver::recv(gcstring& message) {
-    sem_.wait();
-    callback_->receive(message);
-    sem_.post();
+LocalSocketReceiverCallback* LocalSocketReceiver::get_callback() const {
+    return callback_;
 }
 
 void LocalSocketReceiver::init(void) {
@@ -82,7 +80,7 @@ void LocalSocketReceiver::init(void) {
 void* unix_receive_handler(void* arg) {
     struct local_socket_receiver_obj* obj = (struct local_socket_receiver_obj*) arg;
 
-    LocalSocketReceiver * receiver = obj->receiver;
+    LocalSocketReceiverCallback* receiver = obj->receiver->get_callback();
     int socket = obj->sock;
 
     obj->sem.post();
@@ -93,11 +91,12 @@ void* unix_receive_handler(void* arg) {
     s.reserve(UNIX_SOCKET_MAX_BUFFER_SIZE);
 
     int nread;
+    u_int64_t time;
 
     while (1) {
         //u_int64_t start = Utils::get_current_time_microseconds_64();
         nread = recv(socket, buf, UNIX_SOCKET_MAX_BUFFER_SIZE, 0);
-        //u_int64_t end = Utils::get_current_time_microseconds_64();
+        time = Utils::get_current_time_microseconds_64();
         if (nread < 0) {
             if (errno == EINTR)
                 continue;
@@ -109,7 +108,7 @@ void* unix_receive_handler(void* arg) {
         }
 
         s.assign(buf, nread);
-        receiver->recv(s);
+        receiver->receive(s, time);
 
         //cout << "Time: " << end - start << " Num: " << nread << endl;
     }

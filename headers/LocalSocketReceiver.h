@@ -72,8 +72,7 @@ public:
 
     gcstring & get_file();
 
-    void recv(gcstring & message);
-    virtual void receive(gcstring & message) = 0;
+    LocalSocketReceiverCallback* get_callback() const;
 
 
 

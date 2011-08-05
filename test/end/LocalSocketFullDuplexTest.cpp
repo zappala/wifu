@@ -34,7 +34,7 @@ namespace {
 
         }
 
-        void receive(gcstring& message) {
+        void receive(gcstring& message, u_int64_t& receive_time) {
             last_received_ = message;
         }
 

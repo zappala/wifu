@@ -121,9 +121,8 @@ public:
      *
      * @see SocketData
      */
-    void receive(gcstring& message) {
+    void receive(gcstring& message, u_int64_t& receive_time) {
 //                cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
-        u_int64_t time = Utils::get_current_time_microseconds_64();
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
@@ -155,12 +154,12 @@ public:
 
         if (!response_[NAME_STRING].compare(WIFU_RECVFROM_NAME)) {
             //cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
-            recv_response_events_.push_back(time);
+            recv_response_events_.push_back(receive_time);
             recv_response_sizes_.push_back(response_[RETURN_VALUE_STRING]);
             
             data->set_payload(response_[BUFFER_STRING], response_[BUFFER_STRING].length());
         } else if (!response_[NAME_STRING].compare(WIFU_SENDTO_NAME)) {
-            send_response_events_.push_back(time);
+            send_response_events_.push_back(receive_time);
             send_response_sizes_.push_back(response_[RETURN_VALUE_STRING]);
         }
         else if (!response_[NAME_STRING].compare(WIFU_GETSOCKOPT_NAME)) {

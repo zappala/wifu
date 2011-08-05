@@ -48,7 +48,7 @@ public:
      *
      * @param message Message received from the front-end API
      */
-    void receive(gcstring& message);
+    void receive(gcstring& message, u_int64_t& receive_time);
 
     void imodule_library_response(Event* e);
 

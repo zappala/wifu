@@ -22,6 +22,7 @@ ssize_t LocalSocketSender::send_to(gcstring& socket_file, gcstring& message) {
     if (!destination) {
         destination = create_socket(socket_file);
     }
+    
     return sendto(socket_, message.data(), message.size(), 0, (const struct sockaddr*) destination, SUN_LEN(destination));
 }
 

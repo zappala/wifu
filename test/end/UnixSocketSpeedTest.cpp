@@ -28,7 +28,7 @@ namespace {
             
         }
 
-        virtual void receive(gcstring& message) {
+        virtual void receive(gcstring& message, u_int64_t& receive_time) {
 //            cout << message << endl;
         }
     };
