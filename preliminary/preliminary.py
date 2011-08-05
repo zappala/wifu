@@ -651,6 +651,7 @@ class PreliminaryGrapher:
 		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Inside Unix Socket)'
 		filename = self.graph_path + 'send_receive_rate_boxplot_inside_unix_socket.png'
 		self.__graph_boxplot(data, title, filename)
+		return data
 
 	def graph_outside_unix_socket_goodputs(self, function_goodputs_data):
 		num_bytes = float(self.configuration.dictionary["num"])
@@ -717,10 +718,10 @@ class PreliminaryGrapher:
 		return data
 
 	def graph(self):
-		self.graph_loop_goodputs()
-		data = self.graph_function_goodputs()
-		self.graph_inside_unix_socket_goodputs(data)
-		self.graph_outside_unix_socket_goodputs(data)
+		loop_data = self.graph_loop_goodputs()
+		function_data = self.graph_function_goodputs()
+		inside_unix_socket_data = self.graph_inside_unix_socket_goodputs(function_data)
+		outside_unix_socket_data = self.graph_outside_unix_socket_goodputs(function_data)
 
 
 if __name__ == "__main__":
@@ -730,26 +731,31 @@ if __name__ == "__main__":
 	parser = optparse.OptionParser()
 	parser.add_option("-u", "--username", dest="username", help="Username used to copy files to nodes.  Must also be in the sudoers file on the nodes.")
 	parser.add_option("-c", "--config", dest="config", help="Configuration file containing necessary information to run preliminary executables.")
+	parser.add_option("-g", "--graph", dest="graph", help="Only do graphing of the specified path.")
 
 	#TODO: use argparse instead (need python 2.7) as it will allow for variable length args with nargs='?' (nargs='*')
 
 	(options, args) = parser.parse_args()
 	username = options.username
 	config = options.config
+	graph = options.graph + "/"
 
-	c = Configuration(config, username)
-	e = ExecutableCopier(c)
-	e.copy_all()
+	graph_path = graph
 
-	manager = ExecutableManager(c)
-	path = manager.execute()
+	if graph is None:
+		c = Configuration(config, username)
+		e = ExecutableCopier(c)
+		e.copy_all()
 
-	end = time.time()
+		manager = ExecutableManager(c)
+		graph_path = manager.execute()
 
-	print "Duration (seconds) to do " + str(c.iterations) + " run(s): " + str(end - start)
+		end = time.time()
+
+		print "Duration (seconds) to do " + str(c.iterations) + " run(s): " + str(end - start)
 
 	print "Graphing..."
-	grapher = PreliminaryGrapher(path)
+	grapher = PreliminaryGrapher(graph_path)
 	grapher.graph()
 	
 	print "All done."
