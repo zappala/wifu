@@ -652,10 +652,75 @@ class PreliminaryGrapher:
 		filename = self.graph_path + 'send_receive_rate_boxplot_inside_unix_socket.png'
 		self.__graph_boxplot(data, title, filename)
 
+	def graph_outside_unix_socket_goodputs(self, function_goodputs_data):
+		num_bytes = float(self.configuration.dictionary["num"])
+
+		kernel_receive = function_goodputs_data[2]
+		kernel_send = function_goodputs_data[0]
+		wifu_receive = []
+		wifu_send = []
+
+		parser = FileParser()
+
+		files = self.__get_log_files("receiver_wifu\.log")
+
+		#create vectors of goodput
+		for file in files:
+			lines = parser.parse(file)
+			total_time = 0.0
+			total_bytes = 0
+			for line in lines:
+				if line.startswith("recv_unix_socket"):
+					values = line.split(' ')
+					assert len(values) == 4
+					start = int(values[1])
+					end = int(values[2])
+					bytes = int(values[3])
+					duration = end - start
+					assert duration > 0
+					total_time += duration
+					total_bytes += bytes
+
+			assert total_bytes == num_bytes
+			# assuming one kilo == 1000
+			rate = (num_bytes * 8.0 / 1000000.0) / (total_time / 1000000.0)
+			wifu_receive.append(rate)
+
+		files = self.__get_log_files("sender_wifu\.log")
+
+		for file in files:
+			lines = parser.parse(file)
+			total_time = 0.0
+			total_bytes = 0
+			for line in lines:
+				if line.startswith("send_unix_socket"):
+					values = line.split(' ')
+					assert len(values) == 4
+					start = int(values[1])
+					end = int(values[2])
+					bytes = int(values[3])
+					duration = end - start
+					assert duration > 0
+					total_time += duration
+					total_bytes += bytes
+
+			assert total_bytes == num_bytes
+			# assuming one kilo == 1000
+			rate = (num_bytes * 8 / 1000000) / (total_time / 1000000)
+			wifu_send.append(rate)
+
+		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
+		print "Outside Socket Data: ", data
+		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Outside Socket Call)'
+		filename = self.graph_path + 'send_receive_rate_boxplot_outside_unix_socket.png'
+		self.__graph_boxplot(data, title, filename)
+		return data
+
 	def graph(self):
 		self.graph_loop_goodputs()
 		data = self.graph_function_goodputs()
 		self.graph_inside_unix_socket_goodputs(data)
+		self.graph_outside_unix_socket_goodputs(data)
 
 
 if __name__ == "__main__":
