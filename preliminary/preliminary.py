@@ -517,6 +517,7 @@ class PreliminaryGrapher:
 		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Entire Loop)'
 		filename = self.graph_path + 'send_receive_rate_boxplot_loop.png'
 		self.__graph_boxplot(data, title, filename)
+		return data
 
 	def graph_function_goodputs(self):
 		num_bytes = float(self.configuration.dictionary["num"])
@@ -585,30 +586,32 @@ class PreliminaryGrapher:
 		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Function Call)'
 		filename = self.graph_path + 'send_receive_rate_boxplot_function.png'
 		self.__graph_boxplot(data, title, filename)
+		return data
 
-	def graph_inside_unix_socket_goodputs(self):
+	def graph_inside_unix_socket_goodputs(self, function_goodputs_data):
 		num_bytes = float(self.configuration.dictionary["num"])
 
-		kernel_receive = []
-		kernel_send = []
+		kernel_receive = function_goodputs_data[2]
+		kernel_send = function_goodputs_data[0]
 		wifu_receive = []
 		wifu_send = []
 
 		parser = FileParser()
 
+		files = self.__get_log_files("receiver_wifu_end\.log")
+
 		#create vectors of goodput
-		for file in self.receive_files:
+		for file in files:
 			lines = parser.parse(file)
-			wifu = "receiver_wifu.log" in file
 			total_time = 0.0
 			total_bytes = 0
 			for line in lines:
-				if line.startswith("recv "):
+				if "recv_backend" in line:
 					values = line.split(' ')
-					assert len(values) == 4
-					start = int(values[1])
-					end = int(values[2])
-					bytes = int(values[3])
+					assert len(values) == 9
+					start = int(values[6])
+					end = int(values[7])
+					bytes = int(values[8])
 					duration = end - start
 					assert duration > 0
 					total_time += duration
@@ -617,23 +620,21 @@ class PreliminaryGrapher:
 			assert total_bytes == num_bytes
 			# assuming one kilo == 1000
 			rate = (num_bytes * 8.0 / 1000000.0) / (total_time / 1000000.0)
-			if wifu:
-				wifu_receive.append(rate)
-			else:
-				kernel_receive.append(rate)
+			wifu_receive.append(rate)
 
-		for file in self.send_files:
+		files = self.__get_log_files("sender_wifu_end\.log")
+
+		for file in files:
 			lines = parser.parse(file)
-			wifu = "sender_wifu.log" in file
 			total_time = 0.0
 			total_bytes = 0
 			for line in lines:
-				if line.startswith("send "):
+				if "send_backend" in line:
 					values = line.split(' ')
-					assert len(values) == 4
-					start = int(values[1])
-					end = int(values[2])
-					bytes = int(values[3])
+					assert len(values) == 9
+					start = int(values[6])
+					end = int(values[7])
+					bytes = int(values[8])
 					duration = end - start
 					assert duration > 0
 					total_time += duration
@@ -643,21 +644,18 @@ class PreliminaryGrapher:
 			assert total_bytes == num_bytes
 			# assuming one kilo == 1000
 			rate = (num_bytes * 8 / 1000000) / (total_time / 1000000)
-			if wifu:
-				wifu_send.append(rate)
-			else:
-				kernel_send.append(rate)
+			wifu_send.append(rate)
 
 		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
-		print "Function data: ", data
-		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Function Call)'
-		filename = self.graph_path + 'send_receive_rate_boxplot_function.png'
+		print "Inside unix socket data: ", data
+		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Inside Unix Socket)'
+		filename = self.graph_path + 'send_receive_rate_boxplot_inside_unix_socket.png'
 		self.__graph_boxplot(data, title, filename)
 
 	def graph(self):
 		self.graph_loop_goodputs()
-		self.graph_function_goodputs()
-		self.graph_inside_unix_socket_goodputs()
+		data = self.graph_function_goodputs()
+		self.graph_inside_unix_socket_goodputs(data)
 
 
 if __name__ == "__main__":

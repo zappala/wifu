@@ -14,6 +14,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <stdlib.h>
+#include <list>
 
 #include "QueryStringParser.h"
 #include "LocalSocketFullDuplex.h"
@@ -95,7 +96,19 @@ public:
      * Destructor
      */
     virtual ~WifuEndAPILocalSocket() {
+        while (!recv_response_sizes_.empty()) {
+            cout << "recv_unix_socket " << receive_events_.front() << " " << recv_response_events_.front() << " " << recv_response_sizes_.front() << endl;
+            receive_events_.pop_front();
+            recv_response_events_.pop_front();
+            recv_response_sizes_.pop_front();
+        }
 
+        while (!send_response_sizes_.empty()) {
+            cout << "send_unix_socket " << send_events_.front() << " " << send_response_events_.front() << " " << send_response_sizes_.front() << endl;
+            send_events_.pop_front();
+            send_response_events_.pop_front();
+            send_response_sizes_.pop_front();
+        }
     }
 
     /**
@@ -110,6 +123,7 @@ public:
      */
     void receive(gcstring& message) {
 //                cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
+        u_int64_t time = Utils::get_current_time_microseconds_64();
         response_.clear();
         QueryStringParser::parse(message, response_);
         int socket = atoi(response_[SOCKET_STRING].c_str());
@@ -141,8 +155,15 @@ public:
 
         if (!response_[NAME_STRING].compare(WIFU_RECVFROM_NAME)) {
             //cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
+            recv_response_events_.push_back(time);
+            recv_response_sizes_.push_back(response_[RETURN_VALUE_STRING]);
+            
             data->set_payload(response_[BUFFER_STRING], response_[BUFFER_STRING].length());
-        } else if (!response_[NAME_STRING].compare(WIFU_GETSOCKOPT_NAME)) {
+        } else if (!response_[NAME_STRING].compare(WIFU_SENDTO_NAME)) {
+            send_response_events_.push_back(time);
+            send_response_sizes_.push_back(response_[RETURN_VALUE_STRING]);
+        }
+        else if (!response_[NAME_STRING].compare(WIFU_GETSOCKOPT_NAME)) {
             gcstring response = response_[BUFFER_STRING];
             int length = atoi(response_[LENGTH_STRING].c_str());
             data->set_payload(response, length);
@@ -492,6 +513,7 @@ public:
         gcstring message;
         message.reserve(2 * n);
         QueryStringParser::create(WIFU_SENDTO_NAME, m, message);
+        send_events_.push_back(Utils::get_current_time_microseconds_64());
         send_to(write_file_, message);
 
         assert(message.length() <= UNIX_SOCKET_MAX_BUFFER_SIZE);
@@ -541,6 +563,8 @@ public:
         gcstring message;
         QueryStringParser::create(WIFU_RECVFROM_NAME, m, message);
 //        cout << Utils::get_current_time_microseconds_32() << " WifuEndAPILocalSocket::wifu_recvfrom(), sending to back end" << endl;
+
+        receive_events_.push_back(Utils::get_current_time_microseconds_64());
         send_to(write_file_, message);
 
         SocketData* data = sockets.get(fd);
@@ -642,6 +666,13 @@ private:
      * Response received from the back-end.  The key is the method name, the value is the message.
      */
     gcstring_map response_;
+
+
+    list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
+    list<gcstring, gc_allocator<gcstring> > recv_response_sizes_;
+
+    list<u_int64_t, gc_allocator<u_int64_t> > send_events_, send_response_events_;
+    list<gcstring, gc_allocator<gcstring> > send_response_sizes_;
 };
 
 #endif	/* _WIFUENDAPILOCALSOCKET_H */

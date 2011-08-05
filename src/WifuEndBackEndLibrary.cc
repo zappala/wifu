@@ -64,7 +64,8 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
     //                cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
 
 
-
+    // Here so we can include time to parse.
+    u_int64_t time = Utils::get_current_time_microseconds_64();
 
     gcstring_map m;
     QueryStringParser::parse(message, m);
@@ -78,12 +79,12 @@ void WifuEndBackEndLibrary::receive(gcstring& message) {
     if (!name.compare(WIFU_RECVFROM_NAME)) {
         //        cout << Utils::get_current_time_microseconds_32() << " WifuEndBackEndLibrary::receive(), ReceiveEvent to be dispatched" << endl;
         //log_INFORMATIONAL("recv_event ");
-        receive_events_.push_back(Utils::get_current_time_microseconds_64());
+        receive_events_.push_back(time);
         dispatch(new ReceiveEvent(m, get_file(), socket));
         return;
 
     } else if (!name.compare(WIFU_SENDTO_NAME)) {
-        send_events_.push_back(Utils::get_current_time_microseconds_64());
+        send_events_.push_back(time);
         dispatch(new SendEvent(m, get_file(), socket));
         return;
 
