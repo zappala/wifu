@@ -277,6 +277,21 @@ public:
             return -1;
         }
 
+        SocketData* data = sockets.get(fd);
+
+        u_int64_t start = Utils::get_current_time_microseconds_64();
+        struct BindMessage* bind_message = reinterpret_cast<struct BindMessage*> (data->get_payload());
+        bind_message->message_type = WIFU_BIND;
+        bind_message->length = sizeof (struct BindMessage);
+        memcpy(&(bind_message->source), get_address(), sizeof(struct sockaddr_un));
+        // No FD yet
+        memcpy(&(bind_message->addr), addr, len);
+        bind_message->len = len;
+
+        send_to(&back_end_, bind_message, bind_message->length);
+
+        u_int64_t middle = Utils::get_current_time_microseconds_64();
+
         AddressPort ap((struct sockaddr_in*) addr);
 
         gcstring_map m;
@@ -291,7 +306,10 @@ public:
         u_int64_t time;
         send_to(write_file_, message, &time);
 
-        SocketData* data = sockets.get(fd);
+        u_int64_t end = Utils::get_current_time_microseconds_64();
+        cout << "Bind duration packet: " << middle - start << endl;
+        cout << "Bind duration string: " << end - middle << endl;
+        
         data->get_semaphore()->wait();
 
         int error = data->get_error();
