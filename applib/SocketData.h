@@ -45,7 +45,7 @@ public:
      * Destructor.
      */
     virtual ~SocketData() {
-        delete sem_;
+
     }
 
     /**

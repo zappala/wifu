@@ -769,7 +769,7 @@ if __name__ == "__main__":
 	(options, args) = parser.parse_args()
 	username = options.username
 	config = options.config
-	graph = options.graph + "/"
+	graph = options.graph
 
 	graph_path = graph
 
