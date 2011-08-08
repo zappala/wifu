@@ -14,6 +14,8 @@
 #include <map>
 #include "GarbageCollector.h"
 
+#define SOCKET_DATA_POOL_INITIAL_SIZE 10
+
 
 typedef std::basic_string<char, std::char_traits<char>, gc_allocator<char> > gcstring;
 typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair<gcstring, gcstring> > > gcstring_map;

@@ -26,6 +26,7 @@
 #include "IDGenerator.h"
 #include "SocketDataMap.h"
 #include "SocketData.h"
+#include "SocketDataPool.h"
 
 
 #define sockets SocketDataMap::instance()
@@ -51,6 +52,9 @@ private:
     WifuEndAPILocalSocket() : LocalSocketFullDuplex(get_filename().c_str()), write_file_("/tmp/WS") {
         socket_signal_.init(0);
         socket_mutex_.init(1);
+
+        // make sure we initialize at startup
+        SocketDataPool::instance();
 
     }
 
@@ -128,7 +132,7 @@ public:
         int socket = atoi(response_[SOCKET_STRING].c_str());
 
         if (!response_[NAME_STRING].compare(WIFU_SOCKET_NAME)) {
-            sockets.put(0, new SocketData());
+            
             sockets.get(0)->set_return_value(socket);
             socket_signal_.post();
             return;
@@ -194,6 +198,10 @@ public:
      */
     int wifu_socket(int domain, int type, int protocol) {
         socket_mutex_.wait();
+        u_int64_t start = Utils::get_current_time_microseconds_64();
+        sockets.put(0, SocketDataPool::instance().get());
+        u_int64_t end = Utils::get_current_time_microseconds_64();
+        cout << "Time to create socket data: " << end - start << endl;
         gcstring_map m;
         m[FILE_STRING] = get_file();
         m[DOMAIN_STRING] = Utils::itoa(domain);
@@ -650,7 +658,9 @@ public:
         data->get_semaphore()->wait();
         int return_value = data->get_return_value();
 
-        sockets.delete_at(fd);
+        sockets.erase_at(fd);
+        SocketDataPool::instance().release(data);
+        
         return return_value;
     }
 

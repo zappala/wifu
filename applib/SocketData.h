@@ -11,6 +11,7 @@
 #include "Semaphore.h"
 #include "defines.h"
 #include "AddressPort.h"
+#include "GarbageCollector.h"
 
 /**
  * Object which stores responses from the back-end.
@@ -22,7 +23,7 @@
  *
  * @see SocketDataMap
  */
-class SocketData {
+class SocketData : public gc {
 public:
 
     /**
