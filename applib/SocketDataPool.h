@@ -23,7 +23,6 @@ private:
     void init() {
         mutex_.init(1);
         grow(SOCKET_DATA_POOL_INITIAL_SIZE);
-        
     }
 
     void grow() {
@@ -67,6 +66,20 @@ public:
         mutex_.wait();
         socket_data_list_.push_back(item);
         mutex_.post();
+    }
+
+    int size() {
+        mutex_.wait();
+        int s = socket_data_list_.size();
+        mutex_.post();
+        return s;
+    }
+
+    int capacity() {
+        mutex_.wait();
+        int c = size_;
+        mutex_.post();
+        return c;
     }
 };
 
