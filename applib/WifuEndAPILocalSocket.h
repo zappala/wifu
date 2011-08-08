@@ -28,6 +28,7 @@
 #include "SocketData.h"
 #include "SocketDataPool.h"
 
+#include "MessageStructDefinitions.h"
 
 #define sockets SocketDataMap::instance()
 
@@ -52,6 +53,10 @@ private:
     WifuEndAPILocalSocket() : LocalSocketFullDuplex(get_filename().c_str()), write_file_("/tmp/WS") {
         socket_signal_.init(0);
         socket_mutex_.init(1);
+
+        memset(&back_end_, 0, sizeof (struct sockaddr_un));
+        back_end_.sun_family = AF_LOCAL;
+        strcpy(back_end_.sun_path, write_file_.c_str());
 
         // make sure we initialize at startup
         SocketDataPool::instance();
@@ -132,7 +137,7 @@ public:
         int socket = atoi(response_[SOCKET_STRING].c_str());
 
         if (!response_[NAME_STRING].compare(WIFU_SOCKET_NAME)) {
-            
+
             sockets.get(0)->set_return_value(socket);
             socket_signal_.post();
             return;
@@ -184,6 +189,10 @@ public:
         data->get_semaphore()->post();
     }
 
+    void receive(unsigned char* message, int length, u_int64_t& receive_time) {
+        
+    }
+
     /**
      * Non-blocking.
      * Creates a socket message and sends it to the back end.
@@ -198,10 +207,24 @@ public:
      */
     int wifu_socket(int domain, int type, int protocol) {
         socket_mutex_.wait();
+
+        SocketData* d = SocketDataPool::instance().get();
+        sockets.put(0, d);
+
         u_int64_t start = Utils::get_current_time_microseconds_64();
-        sockets.put(0, SocketDataPool::instance().get());
-        u_int64_t end = Utils::get_current_time_microseconds_64();
-        cout << "Time to create socket data: " << end - start << endl;
+        struct SocketMessage* socket_message = reinterpret_cast<struct SocketMessage*> (d->get_payload());
+        socket_message->message_type = WIFU_SOCKET;
+        socket_message->length = sizeof (struct SocketMessage);
+        memcpy(&(socket_message->source), get_address(), sizeof(struct sockaddr_un));
+        // No FD yet
+        socket_message->domain = domain;
+        socket_message->type = type;
+        socket_message->protocol = protocol;
+        
+        send_to(&back_end_, socket_message, socket_message->length);
+
+        u_int64_t middle = Utils::get_current_time_microseconds_64();
+
         gcstring_map m;
         m[FILE_STRING] = get_file();
         m[DOMAIN_STRING] = Utils::itoa(domain);
@@ -211,6 +234,11 @@ public:
         QueryStringParser::create(WIFU_SOCKET_NAME, m, message);
         u_int64_t time;
         send_to(write_file_, message, &time);
+
+        u_int64_t end = Utils::get_current_time_microseconds_64();
+
+        cout << "Socket duration packet: " << middle - start << endl;
+        cout << "Socket duration string: " << end - middle << endl;
 
         socket_signal_.wait();
 
@@ -660,7 +688,7 @@ public:
 
         sockets.erase_at(fd);
         SocketDataPool::instance().release(data);
-        
+
         return return_value;
     }
 
@@ -669,6 +697,8 @@ private:
      * The file this WifuEndAPILocalSocket will write to in order to send messages to the back-end (/tmp/WS).
      */
     gcstring write_file_;
+
+    struct sockaddr_un back_end_;
 
     /**
      * Special Semaphore used to indicate we are sending/receiving a wifu_socket message.

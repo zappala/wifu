@@ -1,4 +1,5 @@
 #include "WifuEndBackEndLibrary.h"
+#include "MessageStructDefinitions.h"
 
 WifuEndBackEndLibrary& WifuEndBackEndLibrary::instance() {
     static WifuEndBackEndLibrary instance_;
@@ -10,7 +11,7 @@ WifuEndBackEndLibrary::~WifuEndBackEndLibrary() {
     log_INFORMATIONAL("recv_events_size: ", pantheios::i(receive_events_.size()), " recv_response_events_size: ", pantheios::i(recv_response_events_.size()), " recv_response_sizes_size: ", pantheios::i(recv_response_sizes_.size()));
     log_INFORMATIONAL("send_events_size: ", pantheios::i(send_events_.size()), " send_response_events_size: ", pantheios::i(send_response_events_.size()), " send_response_sizes_size: ", pantheios::i(send_response_sizes_.size()));
 
-    while(!recv_response_events_.empty()) {
+    while (!recv_response_events_.empty()) {
 
         int size = 1000;
         char start[size];
@@ -32,7 +33,7 @@ WifuEndBackEndLibrary::~WifuEndBackEndLibrary() {
         recv_response_sizes_.pop_front();
     }
 
-    while(!send_response_events_.empty()) {
+    while (!send_response_events_.empty()) {
 
         int size = 1000;
         char start[size];
@@ -53,7 +54,7 @@ WifuEndBackEndLibrary::~WifuEndBackEndLibrary() {
         send_response_events_.pop_front();
         send_response_sizes_.pop_front();
     }
-    
+
 
 }
 
@@ -64,7 +65,11 @@ void WifuEndBackEndLibrary::receive(gcstring& message, u_int64_t& receive_time) 
     //                cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
 
     gcstring_map m;
-    QueryStringParser::parse(message, m);
+    try {
+        QueryStringParser::parse(message, m);
+    } catch (WiFuException e) {
+        return;
+    }
 
     gcstring& name = m[NAME_STRING];
     gcstring& s = m[SOCKET_STRING];
@@ -144,6 +149,51 @@ void WifuEndBackEndLibrary::receive(gcstring& message, u_int64_t& receive_time) 
     }
 }
 
+void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_t& receive_time) {
+    struct GenericMessage* gm = reinterpret_cast<struct GenericMessage*> (message);
+
+    switch (gm->message_type) {
+        case WIFU_SOCKET:
+            cout << "WIFU_SOCKET" << endl;
+            break;
+        case WIFU_BIND:
+            cout << "WIFU_BIND" << endl;
+            break;
+        case WIFU_LISTEN:
+            cout << "WIFU_LISTEN" << endl;
+            break;
+        case WIFU_ACCEPT:
+            cout << "WIFU_ACCEPT" << endl;
+            break;
+        case WIFU_SENDTO:
+        case WIFU_SEND:
+            cout << "WIFU_SEND(TO)" << endl;
+            break;
+        case WIFU_RECVFROM:
+        case WIFU_RECV:
+            cout << "WIFU_RECV(FROM)" << endl;
+            break;
+        case WIFU_CONNECT:
+            cout << "WIFU_CONNECT" << endl;
+            break;
+        case WIFU_GETSOCKOPT:
+            cout << "WIFU_GETSOCKOPT" << endl;
+            break;
+        case WIFU_SETSOCKOPT:
+            cout << "WIFU_SETSOCKOPT" << endl;
+            break;
+        case WIFU_CLOSE:
+            cout << "WIFU_CLOSE" << endl;
+            break;
+        case WIFU_PRECLOSE:
+            cout << "WIFU_PRECLOSE" << endl;
+            break;
+        default:
+            return;
+            //throw WiFuException("Unknown message type");
+    }
+}
+
 void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
     ResponseEvent* event = (ResponseEvent*) e;
     event->put(FILE_STRING, get_file());
@@ -157,14 +207,13 @@ void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
         //log_INFORMATIONAL("recv_response_event ", (pan_uint64_t) Utils::get_current_time_microseconds_64());
         recv_response_events_.push_back(time);
         recv_response_sizes_.push_back(*(event->get(RETURN_VALUE_STRING)));
-    }
-    else if (!event->get_name().compare(WIFU_SENDTO_NAME)) {
+    } else if (!event->get_name().compare(WIFU_SENDTO_NAME)) {
         //cout << Utils::get_current_time_microseconds_32() << " WifuEndBackEndLibrary::imodule_library_response()" << endl;
         //log_INFORMATIONAL("recv_response_event ", (pan_uint64_t) Utils::get_current_time_microseconds_64());
         send_response_events_.push_back(time);
         send_response_sizes_.push_back(*(event->get(RETURN_VALUE_STRING)));
     }
-    
+
 }
 
 WifuEndBackEndLibrary::WifuEndBackEndLibrary() : LocalSocketFullDuplex("/tmp/WS"), Module() {

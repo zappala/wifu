@@ -74,6 +74,8 @@ public:
 
     LocalSocketReceiverCallback* get_callback() const;
 
+    struct sockaddr_un* get_address();
+
 
 
 private:
@@ -82,6 +84,7 @@ private:
     pthread_t thread_;
     LocalSocketReceiverCallback * callback_;
     int socket_;
+    struct sockaddr_un server_;
 
     void init(void);
 };

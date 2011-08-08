@@ -27,16 +27,20 @@ LocalSocketReceiverCallback* LocalSocketReceiver::get_callback() const {
     return callback_;
 }
 
+struct sockaddr_un* LocalSocketReceiver::get_address() {
+    return &server_;
+}
+
 void LocalSocketReceiver::init(void) {
 
     sem_.init(1);
 
-    struct sockaddr_un server;
+    
 
     // setup socket address structure
-    memset(&server, 0, sizeof (server));
-    server.sun_family = AF_LOCAL;
-    strcpy(server.sun_path, file_.c_str());
+    memset(&server_, 0, sizeof (server_));
+    server_.sun_family = AF_LOCAL;
+    strcpy(server_.sun_path, file_.c_str());
 
     // create socket
     socket_ = socket(AF_LOCAL, SOCK_DGRAM, 0);
@@ -60,7 +64,7 @@ void LocalSocketReceiver::init(void) {
         exit(EXIT_FAILURE);
     }
 
-    if (bind(get_socket(), (const struct sockaddr *) & server, SUN_LEN(&server)) < 0) {
+    if (bind(get_socket(), (const struct sockaddr *) & server_, SUN_LEN(&server_)) < 0) {
         perror("Bind");
         exit(-1);
     }
@@ -85,7 +89,7 @@ void* unix_receive_handler(void* arg) {
 
     obj->sem.post();
 
-    char buf[UNIX_SOCKET_MAX_BUFFER_SIZE];
+    unsigned char buf[UNIX_SOCKET_MAX_BUFFER_SIZE];
 
     gcstring s;
     s.reserve(UNIX_SOCKET_MAX_BUFFER_SIZE);
@@ -107,8 +111,9 @@ void* unix_receive_handler(void* arg) {
             break;
         }
 
-        s.assign(buf, nread);
+        s.assign((const char*) buf, nread);
         receiver->receive(s, time);
+        receiver->receive(buf, nread, time);
 
         //cout << "Time: " << end - start << " Num: " << nread << endl;
     }

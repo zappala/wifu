@@ -31,6 +31,10 @@ namespace {
         virtual void receive(gcstring& message, u_int64_t& receive_time) {
 //            cout << message << endl;
         }
+
+        virtual void receive(unsigned char* message, int length, u_int64_t& receive_time) {
+            
+        }
     };
 
     TEST(UnixSocketSpeedTest, A) {

@@ -103,6 +103,10 @@ namespace {
             send_to(m[FILE_STRING], response_message, &time);
         }
 
+        void receive(unsigned char* message, int length, u_int64_t& receive_time) {
+            
+        }
+
         gcstring& get_last_message() {
             return last_message_;
         }

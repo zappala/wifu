@@ -38,6 +38,10 @@ namespace {
             last_received_ = message;
         }
 
+        void receive(unsigned char* message, int length, u_int64_t& receive_time) {
+
+        }
+
         gcstring& get_last_received() {
             return last_received_;
         }

@@ -29,6 +29,9 @@ public:
     virtual ~LocalSocketSender();
 
     ssize_t send_to(gcstring& socket_file, gcstring& message, u_int64_t* send_time /* = time */);
+
+    ssize_t send_to(struct sockaddr_un* destination, void* buffer, size_t length);
+
 private:
     map<gcstring, struct sockaddr_un*, std::less<gcstring>, gc_allocator<std::pair<gcstring, struct sockaddr_un*> > > destinations_;
     struct sockaddr_un* create_socket(gcstring& socket_file);

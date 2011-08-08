@@ -27,6 +27,10 @@ ssize_t LocalSocketSender::send_to(gcstring& socket_file, gcstring& message, u_i
     return sendto(socket_, message.data(), message.size(), 0, (const struct sockaddr*) destination, SUN_LEN(destination));
 }
 
+ssize_t LocalSocketSender::send_to(struct sockaddr_un* destination, void* buffer, size_t length) {
+    return sendto(socket_, buffer, length, 0, reinterpret_cast<const struct sockaddr*>(destination), SUN_LEN(destination));
+}
+
 struct sockaddr_un* LocalSocketSender::create_socket(gcstring& socket_file) {
     struct sockaddr_un* destination = new struct sockaddr_un;
 

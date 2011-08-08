@@ -46,6 +46,20 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 #define WIFU_CLOSE_NAME "wifu_close"
 #define WIFU_PRECLOSE_NAME "wifu_preclose"
 
+#define WIFU_SOCKET 1
+#define WIFU_BIND 2
+#define WIFU_LISTEN 3
+#define WIFU_ACCEPT 4
+#define WIFU_SEND 5
+#define WIFU_SENDTO 6
+#define WIFU_RECV 7
+#define WIFU_RECVFROM 8
+#define WIFU_CONNECT 9
+#define WIFU_GETSOCKOPT 10
+#define WIFU_SETSOCKOPT 11
+#define WIFU_CLOSE 12
+#define WIFU_PRECLOSE 13
+
 // variable names
 #define SOCKET_STRING "socket"
 #define FILE_STRING "file"
