@@ -299,32 +299,25 @@ namespace {
         u_int32_t time = Utils::get_current_time_microseconds_32();
     }
 
-    TEST(StringEraseTest, A) {
-        list<u_int64_t, gc_allocator<u_int64_t> > durations;
-        int size = 10000000;
-        int remove_size = 10000;
+    class C : public gc {
+    public:
+        int a;
+        unsigned char buffer[UNIX_SOCKET_MAX_BUFFER_SIZE];
+    };
+
+    TEST(BigBufferAllocation, A) {
+
+        int count = 1;
+        u_int64_t start = Utils::get_current_time_microseconds_64();
+
+        for(int i = 0; i < count; ++i) {
+            C* c = new C();
+        }
+        u_int64_t end = Utils::get_current_time_microseconds_64();
+
+        cout << end - start << endl;
+
         
-        gcstring s;
-        s.reserve(size);
-        s.assign(RandomStringGenerator::get_data(size).c_str());
-
-        while (!s.empty()) {
-            u_int64_t start = Utils::get_current_time_microseconds_64();
-            s.clear();
-            durations.push_back(Utils::get_current_time_microseconds_64() - start);
-        }
-
-        u_int64_t total = 0;
-        u_int64_t durations_size = durations.size();
-        while (!durations.empty()) {
-            u_int64_t current = durations.front();
-            cout << current << endl;
-            total += current;
-            durations.pop_front();
-        }
-
-        cout << "Average to erase part of a string: " << (total / durations_size) << endl;
-
 
     }
 }

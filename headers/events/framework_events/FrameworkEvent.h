@@ -33,6 +33,14 @@ public:
     FrameworkEvent(Socket* s);
 
     /**
+     * Constructs an Event with a LOW Priority.
+     *
+     * @see Event
+     * @see Priority
+     */
+    FrameworkEvent();
+
+    /**
      * Destructor.
      */
     virtual ~FrameworkEvent();

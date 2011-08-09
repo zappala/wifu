@@ -4,6 +4,10 @@ FrameworkEvent::FrameworkEvent(Socket* s) : Event(s, LOW) {
 
 }
 
+FrameworkEvent::FrameworkEvent() : Event() {
+
+}
+
 FrameworkEvent::~FrameworkEvent() {
     
 }

@@ -14,6 +14,7 @@
 #include "FrameworkEvent.h"
 #include "QueryStringParser.h"
 #include "Utils.h"
+#include "MessageStructDefinitions.h"
 
 using namespace std;
 
@@ -43,6 +44,8 @@ public:
      */
     LibraryEvent(gcstring_map& m, gcstring& file, Socket* socket);
 
+    
+
     /**
      * Destructor.
      */
@@ -69,6 +72,16 @@ public:
      */
     gcstring_map& get_map();
 
+
+    LibraryEvent();
+    virtual void execute(IModule* m);
+
+    void save_buffer(unsigned char* buffer, u_int32_t length);
+    struct sockaddr_un* get_source() const;
+    u_int32_t get_message_type() const;
+    unsigned char* get_buffer();
+    u_int32_t get_buffer_length() const;
+
 private:
 
     /**
@@ -85,6 +98,15 @@ private:
      * File representing a socket to which any ResponseEvent must use to correctly transmit data back to the front end.
      */
     gcstring file_;
+
+    /**
+     * Buffer to store messages from the front end.
+     */
+    unsigned char buffer_[UNIX_SOCKET_MAX_BUFFER_SIZE];
+
+    u_int32_t buffer_length_;
+
+    struct FrontEndMessage* message_;
 
 };
 

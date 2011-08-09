@@ -144,8 +144,6 @@ void WifuEndBackEndLibrary::receive(gcstring& message, u_int64_t& receive_time) 
             u_int64_t time;
             send_to(m[FILE_STRING], response_message, &time);
         }
-
-
     }
 }
 
@@ -154,7 +152,16 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 
     switch (gm->message_type) {
         case WIFU_SOCKET:
-            cout << "WIFU_SOCKET" << endl;
+        {
+            cout << "WIFU_SOCKET: " << endl;
+            LibraryEvent* event = new LibraryEvent();
+            SocketEvent* se = static_cast<SocketEvent*> (event);
+            SocketEvent* se1 = (SocketEvent*) event;
+            cout << type_name(event) << endl;
+            cout << type_name(se) << endl;
+            cout << type_name(se1) << endl;
+            cout << type_name(*se) << endl;
+        }
             break;
         case WIFU_BIND:
             cout << "WIFU_BIND" << endl;
