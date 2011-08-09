@@ -190,7 +190,7 @@ public:
     }
 
     void receive(unsigned char* message, int length, u_int64_t& receive_time) {
-        
+
     }
 
     /**
@@ -215,12 +215,12 @@ public:
         struct SocketMessage* socket_message = reinterpret_cast<struct SocketMessage*> (d->get_payload());
         socket_message->message_type = WIFU_SOCKET;
         socket_message->length = sizeof (struct SocketMessage);
-        memcpy(&(socket_message->source), get_address(), sizeof(struct sockaddr_un));
+        memcpy(&(socket_message->source), get_address(), sizeof (struct sockaddr_un));
         // No FD yet
         socket_message->domain = domain;
         socket_message->type = type;
         socket_message->protocol = protocol;
-        
+
         send_to(&back_end_, socket_message, socket_message->length);
 
         u_int64_t middle = Utils::get_current_time_microseconds_64();
@@ -283,8 +283,9 @@ public:
         struct BindMessage* bind_message = reinterpret_cast<struct BindMessage*> (data->get_payload());
         bind_message->message_type = WIFU_BIND;
         bind_message->length = sizeof (struct BindMessage);
-        memcpy(&(bind_message->source), get_address(), sizeof(struct sockaddr_un));
-        // No FD yet
+        memcpy(&(bind_message->source), get_address(), sizeof (struct sockaddr_un));
+
+        bind_message->fd = fd;
         memcpy(&(bind_message->addr), addr, len);
         bind_message->len = len;
 
@@ -309,7 +310,7 @@ public:
         u_int64_t end = Utils::get_current_time_microseconds_64();
         cout << "Bind duration packet: " << middle - start << endl;
         cout << "Bind duration string: " << end - middle << endl;
-        
+
         data->get_semaphore()->wait();
 
         int error = data->get_error();
@@ -337,6 +338,20 @@ public:
      */
     int wifu_getsockopt(int fd, int level, int optname, void *__restrict optval, socklen_t *__restrict optlen) {
 
+        SocketData* data = sockets.get(fd);
+
+        struct GetSockOptMessage* getsockopt_message = reinterpret_cast<struct GetSockOptMessage*> (data->get_payload());
+        getsockopt_message->message_type = WIFU_GETSOCKOPT;
+        getsockopt_message->length = sizeof (struct GetSockOptMessage);
+        memcpy(&(getsockopt_message->source), get_address(), sizeof (struct sockaddr_un));
+
+        getsockopt_message->fd = fd;
+        getsockopt_message->level = level;
+        getsockopt_message->optname = optname;
+        getsockopt_message->optlen = *optlen;
+
+        send_to(&back_end_, getsockopt_message, getsockopt_message->length);
+
         gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
@@ -349,8 +364,6 @@ public:
         u_int64_t time;
         send_to(write_file_, message, &time);
 
-        //TODO: Fill in optval and optlen according to man 2 getsockopt
-        SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
 
         socklen_t len = data->get_payload_length();
@@ -376,8 +389,24 @@ public:
      *
      * @return 0 if call was successfull, -1 otherwise (and ERRNO is set appropriately).
      */
-    int wifu_setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen) {
+    int wifu_setsockopt(int fd, int level, int optname, const void* optval, socklen_t optlen) {
         assert(optlen < BUFFER_SIZE);
+
+        SocketData* data = sockets.get(fd);
+
+        struct SetSockOptMessage* setsockopt_message = reinterpret_cast<struct SetSockOptMessage*> (data->get_payload());
+        setsockopt_message->message_type = WIFU_SETSOCKOPT;
+        setsockopt_message->length = sizeof (struct SetSockOptMessage) +optlen;
+        memcpy(&(setsockopt_message->source), get_address(), sizeof (struct sockaddr_un));
+
+        setsockopt_message->fd = fd;
+        setsockopt_message->level = level;
+        setsockopt_message->optname = optname;
+        setsockopt_message->optlen = optlen;
+        // struct ptr + 1 increases the pointer by one size of the struct
+        memcpy(setsockopt_message + 1, optval, optlen);
+
+        send_to(&back_end_, setsockopt_message, setsockopt_message->length);
 
         gcstring_map m;
         m[FILE_STRING] = get_file();
@@ -392,7 +421,6 @@ public:
         u_int64_t time;
         send_to(write_file_, message, &time);
 
-        SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
 
         int return_value = data->get_return_value();
@@ -422,6 +450,19 @@ public:
             return -1;
         }
 
+        SocketData* data = sockets.get(fd);
+
+        u_int64_t start = Utils::get_current_time_microseconds_64();
+        struct ListenMessage* listen_message = reinterpret_cast<struct ListenMessage*> (data->get_payload());
+        listen_message->message_type = WIFU_LISTEN;
+        listen_message->length = sizeof (struct ListenMessage);
+        memcpy(&(listen_message->source), get_address(), sizeof (struct sockaddr_un));
+
+        listen_message->fd = fd;
+        listen_message->n = n;
+
+        send_to(&back_end_, listen_message, listen_message->length);
+        u_int64_t middle = Utils::get_current_time_microseconds_64();
 
         gcstring_map m;
         m[FILE_STRING] = get_file();
@@ -433,7 +474,10 @@ public:
         u_int64_t time;
         send_to(write_file_, message, &time);
 
-        SocketData* data = sockets.get(fd);
+        u_int64_t end = Utils::get_current_time_microseconds_64();
+        cout << "Listen duration packet: " << middle - start << endl;
+        cout << "Listen duration string: " << end - middle << endl;
+
         data->get_semaphore()->wait();
 
         int error = data->get_error();
@@ -461,6 +505,27 @@ public:
      */
     int wifu_accept(int fd, struct sockaddr* addr, socklen_t *__restrict addr_len) {
 
+        SocketData* data = sockets.get(fd);
+
+        u_int64_t start = Utils::get_current_time_microseconds_64();
+        struct AcceptMessage* accept_message = reinterpret_cast<struct AcceptMessage*> (data->get_payload());
+        accept_message->message_type = WIFU_ACCEPT;
+        accept_message->length = sizeof (struct AcceptMessage);
+        memcpy(&(accept_message->source), get_address(), sizeof (struct sockaddr_un));
+
+        accept_message->fd = fd;
+
+        if (addr != NULL && addr_len != NULL) {
+            memcpy(&(accept_message->addr), addr, *addr_len);
+            accept_message->len = *addr_len;
+        }
+        else {
+            accept_message->len = 0;
+        }
+
+        send_to(&back_end_, accept_message, accept_message->length);
+        u_int64_t middle = Utils::get_current_time_microseconds_64();
+
         gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
@@ -479,7 +544,9 @@ public:
         u_int64_t time;
         send_to(write_file_, message, &time);
 
-        SocketData* data = sockets.get(fd);
+        u_int64_t end = Utils::get_current_time_microseconds_64();
+        cout << "Accept duration packet: " << middle - start << endl;
+        cout << "Accept duration string: " << end - middle << endl;
 
         data->get_semaphore()->wait();
 
@@ -550,6 +617,28 @@ public:
      */
     ssize_t wifu_sendto(int fd, const void* buf, size_t n, int flags, const struct sockaddr* addr, socklen_t addr_len) {
 
+        SocketData* data = sockets.get(fd);
+
+        u_int64_t start = Utils::get_current_time_microseconds_64();
+        struct SendToMessage* sendto_message = reinterpret_cast<struct SendToMessage*> (data->get_payload());
+        sendto_message->message_type = WIFU_SENDTO;
+        sendto_message->length = sizeof (struct SendToMessage) +n;
+        memcpy(&(sendto_message->source), get_address(), sizeof (struct sockaddr_un));
+
+        sendto_message->fd = fd;
+        if (addr != 0 && addr_len != 0) {
+            memcpy(&(sendto_message->addr), addr, addr_len);
+            sendto_message->len = addr_len;
+        } else {
+            sendto_message->len = 0;
+        }
+        sendto_message->buffer_length = n;
+        sendto_message->flags = flags;
+        memcpy(sendto_message + 1, buf, n);
+
+        send_to(&back_end_, sendto_message, sendto_message->length);
+        u_int64_t middle = Utils::get_current_time_microseconds_64();
+
         gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
@@ -573,11 +662,15 @@ public:
 
         u_int64_t time;
         send_to(write_file_, message, &time);
+
+        u_int64_t end = Utils::get_current_time_microseconds_64();
+        cout << "Send duration packet: " << middle - start << endl;
+        cout << "Send duration string: " << end - middle << endl;
+
         send_events_.push_back(time);
 
         assert(message.length() <= UNIX_SOCKET_MAX_BUFFER_SIZE);
 
-        SocketData* data = sockets.get(fd);
         data->get_semaphore()->wait();
 
         int return_value = data->get_return_value();
@@ -605,6 +698,29 @@ public:
     ssize_t wifu_recvfrom(int fd, void *__restrict buf, size_t n, int flags, struct sockaddr* addr, socklen_t *__restrict addr_len) {
         //cout << "wifu_recvfrom()" << endl;
         //        cout << Utils::get_current_time_microseconds_32() << " WifuEndAPILocalSocket::wifu_recvfrom()" << endl;
+
+        SocketData* data = sockets.get(fd);
+
+        u_int64_t start = Utils::get_current_time_microseconds_64();
+        struct RecvFromMessage* recvfrom_message = reinterpret_cast<struct RecvFromMessage*> (data->get_payload());
+        recvfrom_message->message_type = WIFU_RECVFROM;
+        recvfrom_message->length = sizeof (struct RecvFromMessage);
+        memcpy(&(recvfrom_message->source), get_address(), sizeof (struct sockaddr_un));
+
+        recvfrom_message->fd = fd;
+        if (addr != 0 && addr_len != 0) {
+            memcpy(&(recvfrom_message->addr), addr, *addr_len);
+            recvfrom_message->len = *addr_len;
+        } else {
+            recvfrom_message->len = 0;
+        }
+        recvfrom_message->buffer_length = n;
+        recvfrom_message->flags = flags;
+
+        send_to(&back_end_, recvfrom_message, recvfrom_message->length);
+        u_int64_t middle = Utils::get_current_time_microseconds_64();
+
+
         gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
@@ -625,9 +741,13 @@ public:
 
         u_int64_t time;
         send_to(write_file_, message, &time);
+
+        u_int64_t end = Utils::get_current_time_microseconds_64();
+        cout << "Recv duration packet: " << middle - start << endl;
+        cout << "Recv duration string: " << end - middle << endl;
+
         receive_events_.push_back(time);
 
-        SocketData* data = sockets.get(fd);
         assert(data != NULL);
         assert(data->get_semaphore() != NULL);
 
@@ -663,6 +783,21 @@ public:
         assert(addr != NULL);
         assert(sizeof (struct sockaddr_in) == len);
 
+        SocketData* data = sockets.get(fd);
+
+        u_int64_t start = Utils::get_current_time_microseconds_64();
+        struct ConnectMessage* connect_message = reinterpret_cast<struct ConnectMessage*> (data->get_payload());
+        connect_message->message_type = WIFU_CONNECT;
+        connect_message->length = sizeof (struct ConnectMessage);
+        memcpy(&(connect_message->source), get_address(), sizeof (struct sockaddr_un));
+
+        connect_message->fd = fd;
+        memcpy(&(connect_message->addr), addr, len);
+        connect_message->len = len;
+
+        send_to(&back_end_, connect_message, connect_message->length);
+        u_int64_t middle = Utils::get_current_time_microseconds_64();
+
         gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
@@ -677,7 +812,10 @@ public:
         u_int64_t time;
         send_to(write_file_, message, &time);
 
-        SocketData* data = sockets.get(fd);
+        u_int64_t end = Utils::get_current_time_microseconds_64();
+        cout << "Connect duration packet: " << middle - start << endl;
+        cout << "Connect duration string: " << end - middle << endl;
+
         data->get_semaphore()->wait();
 
         int return_value = data->get_return_value();
@@ -691,6 +829,21 @@ public:
      * @return 0 if call was successfull, -1 otherwise (and ERRNO is set appropriately).
      */
     int wifu_close(int fd) {
+
+        SocketData* data = sockets.get(fd);
+
+        u_int64_t start = Utils::get_current_time_microseconds_64();
+        struct CloseMessage* connect_message = reinterpret_cast<struct CloseMessage*> (data->get_payload());
+        connect_message->message_type = WIFU_CLOSE;
+        connect_message->length = sizeof (struct CloseMessage);
+        memcpy(&(connect_message->source), get_address(), sizeof (struct sockaddr_un));
+
+        connect_message->fd = fd;
+
+        send_to(&back_end_, connect_message, connect_message->length);
+        u_int64_t middle = Utils::get_current_time_microseconds_64();
+
+
         gcstring_map m;
         m[FILE_STRING] = get_file();
         m[SOCKET_STRING] = Utils::itoa(fd);
@@ -700,7 +853,10 @@ public:
         u_int64_t time;
         send_to(write_file_, message, &time);
 
-        SocketData* data = sockets.get(fd);
+        u_int64_t end = Utils::get_current_time_microseconds_64();
+        cout << "Close duration packet: " << middle - start << endl;
+        cout << "Close duration string: " << end - middle << endl;
+
         data->get_semaphore()->wait();
         int return_value = data->get_return_value();
 

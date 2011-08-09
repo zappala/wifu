@@ -12,7 +12,7 @@
 #include <sys/socket.h>
 
 struct GenericMessage {
-    u_int16_t message_type;
+    u_int32_t message_type;
     u_int32_t length;
     int fd;
 };
