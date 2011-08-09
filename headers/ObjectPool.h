@@ -1,28 +1,29 @@
 /* 
- * File:   SocketDataPool.h
+ * File:   ObjectPool.h
  * Author: rbuck
  *
  * Created on August 8, 2011, 11:29 AM
  */
 
-#ifndef SOCKETDATAPOOL_H
-#define	SOCKETDATAPOOL_H
+#ifndef OBJECTPOOL_H
+#define	OBJECTPOOL_H
 
 #include <list>
 
-#include "SocketData.h"
+#include "../applib/SocketData.h"
 #include "defines.h"
 #include "GarbageCollector.h"
 
-class SocketDataPool : public gc {
+template<class T>
+class ObjectPool : public gc {
 private:
-    SocketDataPool() : size_(0) {
+    ObjectPool() : size_(0) {
         init();
     }
 
     void init() {
         mutex_.init(1);
-        grow(SOCKET_DATA_POOL_INITIAL_SIZE);
+        grow(POOL_INITIAL_SIZE);
     }
 
     void grow() {
@@ -31,46 +32,46 @@ private:
 
     void grow(int num) {
         for(int i = 0; i < num; ++i) {
-            socket_data_list_.push_back(new SocketData());
+            object_list_.push_back(new T());
             ++size_;
         }
     }
 
     Semaphore mutex_;
-    list<SocketData*, gc_allocator<SocketData*> > socket_data_list_;
+    list<T*, gc_allocator<T*> > object_list_;
     int size_;
 
 public:
 
-    virtual ~SocketDataPool() {
+    virtual ~ObjectPool() {
         
     }
 
-    static SocketDataPool& instance() {
-        static SocketDataPool instance_;
+    static ObjectPool<T>& instance() {
+        static ObjectPool<T> instance_;
         return instance_;
     }
 
-    SocketData* get() {
+    T* get() {
         mutex_.wait();
-        if(socket_data_list_.size() <= 0) {
+        if(object_list_.size() <= 0) {
             grow();
         }
-        SocketData* item = socket_data_list_.front();
-        socket_data_list_.pop_front();
+        T* item = object_list_.front();
+        object_list_.pop_front();
         mutex_.post();
         return item;
     }
 
-    void release(SocketData* item) {
+    void release(T* item) {
         mutex_.wait();
-        socket_data_list_.push_back(item);
+        object_list_.push_back(item);
         mutex_.post();
     }
 
     int size() {
         mutex_.wait();
-        int s = socket_data_list_.size();
+        int s = object_list_.size();
         mutex_.post();
         return s;
     }
@@ -83,5 +84,5 @@ public:
     }
 };
 
-#endif	/* SOCKETDATAPOOL_H */
+#endif	/* OBJECTPOOL_H */
 

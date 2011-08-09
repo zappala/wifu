@@ -26,7 +26,7 @@
 #include "IDGenerator.h"
 #include "SocketDataMap.h"
 #include "SocketData.h"
-#include "SocketDataPool.h"
+#include "ObjectPool.h"
 
 #include "MessageStructDefinitions.h"
 
@@ -59,7 +59,7 @@ private:
         strcpy(back_end_.sun_path, write_file_.c_str());
 
         // make sure we initialize at startup
-        SocketDataPool::instance();
+        ObjectPool<SocketData>::instance();
 
     }
 
@@ -208,7 +208,7 @@ public:
     int wifu_socket(int domain, int type, int protocol) {
         socket_mutex_.wait();
 
-        SocketData* d = SocketDataPool::instance().get();
+        SocketData* d = ObjectPool<SocketData>::instance().get();
         sockets.put(0, d);
 
         u_int64_t start = Utils::get_current_time_microseconds_64();
@@ -861,7 +861,7 @@ public:
         int return_value = data->get_return_value();
 
         sockets.erase_at(fd);
-        SocketDataPool::instance().release(data);
+        ObjectPool<SocketData>::instance().release(data);
 
         return return_value;
     }
