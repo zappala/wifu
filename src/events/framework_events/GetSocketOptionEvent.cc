@@ -4,6 +4,10 @@ GetSocketOptionEvent::GetSocketOptionEvent(gcstring_map& m, gcstring& file, Sock
 
 }
 
+GetSocketOptionEvent::GetSocketOptionEvent() : SocketOptionEvent() {
+    
+}
+
 GetSocketOptionEvent::~GetSocketOptionEvent() {
 
 }

@@ -4,6 +4,10 @@ SocketEvent::SocketEvent(gcstring_map& m, gcstring& file, Socket* socket) : Libr
 
 }
 
+SocketEvent::SocketEvent() : LibraryEvent() {
+
+}
+
 SocketEvent::~SocketEvent() {
 
 }

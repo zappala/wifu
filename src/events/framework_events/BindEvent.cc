@@ -4,6 +4,10 @@ BindEvent::BindEvent(gcstring_map& m, gcstring& file, Socket* s) : LibraryEvent(
 
 }
 
+BindEvent::BindEvent() : LibraryEvent() {
+    
+}
+
 BindEvent::~BindEvent() {
 
 }

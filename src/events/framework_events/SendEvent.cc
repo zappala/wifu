@@ -4,6 +4,10 @@ SendEvent::SendEvent(gcstring_map& m, gcstring& file, Socket* s) : LibraryEvent(
 
 }
 
+SendEvent::SendEvent() : LibraryEvent() {
+    
+}
+
 void SendEvent::execute(IModule* m) {
     m->imodule_library_send(this);
 }

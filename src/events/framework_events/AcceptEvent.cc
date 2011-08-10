@@ -4,6 +4,10 @@ AcceptEvent::AcceptEvent(gcstring_map& m, gcstring& file, Socket* s) : LibraryEv
 
 }
 
+AcceptEvent::AcceptEvent() : LibraryEvent() {
+
+}
+
 AcceptEvent::~AcceptEvent() {
 
 }

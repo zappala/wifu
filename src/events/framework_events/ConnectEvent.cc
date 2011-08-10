@@ -3,6 +3,10 @@
 ConnectEvent::ConnectEvent(gcstring_map& m, gcstring& file, Socket* s) : LibraryEvent(m, file, s), destination_(0) {
 }
 
+ConnectEvent::ConnectEvent() : LibraryEvent() {
+    
+}
+
 ConnectEvent::~ConnectEvent() {
 }
 

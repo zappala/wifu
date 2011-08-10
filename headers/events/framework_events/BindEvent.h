@@ -32,6 +32,8 @@ public:
      */
     BindEvent(gcstring_map& m, gcstring& file, Socket* s);
 
+    BindEvent();
+
     /**
      * Destructor.
      */

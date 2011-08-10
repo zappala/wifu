@@ -150,55 +150,101 @@ void WifuEndBackEndLibrary::receive(gcstring& message, u_int64_t& receive_time) 
 void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_t& receive_time) {
     struct GenericMessage* gm = reinterpret_cast<struct GenericMessage*> (message);
 
+    LibraryEvent* e = NULL;
+    Socket* socket = SocketCollection::instance().get_by_id(gm->fd);
+    
     switch (gm->message_type) {
         case WIFU_SOCKET:
         {
+
+            e = ObjectPool<SocketEvent>::instance().get();
+
+            struct SocketMessage* sm = reinterpret_cast<struct SocketMessage*> (message);
+
+            if (ProtocolManager::instance().is_supported(sm->domain, sm->type, sm->protocol)) {
+                socket = new Socket(sm->domain, sm->type, sm->protocol);
+                SocketCollection::instance().push(socket);
+            } else {
+//                 TODO: build response
+
+//                gcstring_map response;
+//                response[SOCKET_STRING] = s;
+//                response[FILE_STRING] = get_file();
+//                response[SOCKET_STRING] = Utils::itoa(-1);
+//                response[ERRNO] = Utils::itoa(EPROTONOSUPPORT);
+//                // TODO: May not always want to respond immediately
+//                // TODO: We may need to wait for a response from the internal system
+//                gcstring response_message;
+//                QueryStringParser::create(name, response, response_message);
+//                u_int64_t time;
+//                send_to(m[FILE_STRING], response_message, &time);
+            }
             cout << "WIFU_SOCKET: " << endl;
-            LibraryEvent* event = new LibraryEvent();
-            SocketEvent* se = static_cast<SocketEvent*> (event);
-            SocketEvent* se1 = (SocketEvent*) event;
-            cout << type_name(event) << endl;
-            cout << type_name(se) << endl;
-            cout << type_name(se1) << endl;
-            cout << type_name(*se) << endl;
+
         }
             break;
+
         case WIFU_BIND:
             cout << "WIFU_BIND" << endl;
+            e = ObjectPool<BindEvent>::instance().get();
             break;
+
         case WIFU_LISTEN:
             cout << "WIFU_LISTEN" << endl;
+            e = ObjectPool<ListenEvent>::instance().get();
             break;
+
         case WIFU_ACCEPT:
             cout << "WIFU_ACCEPT" << endl;
+            e = ObjectPool<AcceptEvent>::instance().get();
             break;
+
         case WIFU_SENDTO:
         case WIFU_SEND:
             cout << "WIFU_SEND(TO)" << endl;
+            e = ObjectPool<SendEvent>::instance().get();
             break;
+
         case WIFU_RECVFROM:
         case WIFU_RECV:
             cout << "WIFU_RECV(FROM)" << endl;
+            e = ObjectPool<ReceiveEvent>::instance().get();
             break;
+
         case WIFU_CONNECT:
             cout << "WIFU_CONNECT" << endl;
+            e = ObjectPool<ConnectEvent>::instance().get();
             break;
+
         case WIFU_GETSOCKOPT:
             cout << "WIFU_GETSOCKOPT" << endl;
+            e = ObjectPool<GetSocketOptionEvent>::instance().get();
             break;
+
         case WIFU_SETSOCKOPT:
             cout << "WIFU_SETSOCKOPT" << endl;
+            e = ObjectPool<SetSocketOptionEvent>::instance().get();
             break;
+
         case WIFU_CLOSE:
             cout << "WIFU_CLOSE" << endl;
+            e = ObjectPool<CloseEvent>::instance().get();
             break;
-        case WIFU_PRECLOSE:
-            cout << "WIFU_PRECLOSE" << endl;
-            break;
+
         default:
             return;
             //throw WiFuException("Unknown message type");
     }
+
+    //TODO: insert socket
+
+
+    if(e) {
+        e->set_socket(socket);
+        e->save_buffer(message, length);
+//        dispatch(e);
+    }
+
 }
 
 void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
@@ -224,5 +270,16 @@ void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
 }
 
 WifuEndBackEndLibrary::WifuEndBackEndLibrary() : LocalSocketFullDuplex("/tmp/WS"), Module() {
+    ObjectPool<SocketEvent>::instance();
+    ObjectPool<BindEvent>::instance();
+    ObjectPool<ListenEvent>::instance();
+    ObjectPool<AcceptEvent>::instance();
+    ObjectPool<SendEvent>::instance();
+    ObjectPool<ReceiveEvent>::instance();
+    ObjectPool<ConnectEvent>::instance();
+    ObjectPool<GetSocketOptionEvent>::instance();
+    ObjectPool<SetSocketOptionEvent>::instance();
+    ObjectPool<CloseEvent>::instance();
+
     log_INFORMATIONAL("WiFuBackEndLibrary Created");
 }

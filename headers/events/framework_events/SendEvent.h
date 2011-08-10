@@ -32,6 +32,8 @@ public:
      */
     SendEvent(gcstring_map& m, gcstring& file, Socket* s);
 
+    SendEvent();
+
     /**
      * Calls IModule::imodule_library_send() and passes this SendEvent in as the argument.
      *

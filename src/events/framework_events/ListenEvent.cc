@@ -3,6 +3,10 @@
 ListenEvent::ListenEvent(gcstring_map& m, gcstring& file, Socket* s) : LibraryEvent(m, file, s) {
 }
 
+ListenEvent::ListenEvent() : LibraryEvent() {
+    
+}
+
 ListenEvent::~ListenEvent() {
 }
 

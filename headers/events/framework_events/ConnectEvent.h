@@ -31,6 +31,8 @@ public:
      */
     ConnectEvent(gcstring_map& m, gcstring& file, Socket* s);
 
+    ConnectEvent();
+
     /**
      * Destructor.
      */

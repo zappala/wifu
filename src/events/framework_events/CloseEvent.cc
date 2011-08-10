@@ -4,6 +4,10 @@ CloseEvent::CloseEvent(gcstring_map& m, gcstring& file, Socket* s) : LibraryEven
 
 }
 
+CloseEvent::CloseEvent() : LibraryEvent() {
+    
+}
+
 CloseEvent::~CloseEvent() {
 
 }

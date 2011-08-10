@@ -34,6 +34,8 @@ public:
      */
     SetSocketOptionEvent(gcstring_map& m, gcstring& file, Socket* s);
 
+    SetSocketOptionEvent();
+
     /**
      * Destructor.
      */

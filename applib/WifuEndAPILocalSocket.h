@@ -216,7 +216,9 @@ public:
         socket_message->message_type = WIFU_SOCKET;
         socket_message->length = sizeof (struct SocketMessage);
         memcpy(&(socket_message->source), get_address(), sizeof (struct sockaddr_un));
-        // No FD yet
+        
+        // Put in a bad fd so it will not be found on the back end
+        socket_message->fd = -1;
         socket_message->domain = domain;
         socket_message->type = type;
         socket_message->protocol = protocol;

@@ -26,6 +26,10 @@ private:
         grow(POOL_INITIAL_SIZE);
     }
 
+    void grow() {
+        grow((size_ * 2) - size_);
+    }
+
     void grow(int num) {
         for(int i = 0; i < num; ++i) {
             object_list_.push_back(new T());
@@ -79,11 +83,7 @@ public:
         return c;
     }
 
-    void grow() {
-        mutex_.wait();
-        grow((size_ * 2) - size_);
-        mutex_.post();
-    }
+    
 };
 
 #endif	/* OBJECTPOOL_H */

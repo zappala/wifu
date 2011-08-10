@@ -4,6 +4,10 @@ SocketOptionEvent::SocketOptionEvent(gcstring_map& m, gcstring& file, Socket* s)
 
 }
 
+SocketOptionEvent::SocketOptionEvent() : LibraryEvent() {
+    
+}
+
 SocketOptionEvent::~SocketOptionEvent() {
 
 }

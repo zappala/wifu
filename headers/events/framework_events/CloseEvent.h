@@ -33,6 +33,8 @@ public:
      */
     CloseEvent(gcstring_map& m, gcstring& file, Socket* s);
 
+    CloseEvent();
+
     /**
      * Destructor.
      */

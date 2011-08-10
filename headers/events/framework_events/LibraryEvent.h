@@ -44,8 +44,6 @@ public:
      */
     LibraryEvent(gcstring_map& m, gcstring& file, Socket* socket);
 
-    
-
     /**
      * Destructor.
      */

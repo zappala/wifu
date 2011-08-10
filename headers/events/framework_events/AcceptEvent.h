@@ -32,6 +32,8 @@ public:
      */
     AcceptEvent(gcstring_map& m, gcstring& file, Socket* s);
 
+    AcceptEvent();
+
     /**
      * Destructor.
      */
