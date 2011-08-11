@@ -20,11 +20,11 @@ TEST_F(BackEndTest, socketTest) {
     // socket
     for (int i = 0; i < 100; i++) {
         // Check valid
-        int socket = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
-        ASSERT_TRUE(socket >= 0);
+        int socket = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
+        ASSERT_GE(socket, 0);
 
         // Check invalid (i != SIMPLE_TCP)
         socket = wifu_socket(AF_INET, SOCK_STREAM, i);
-        ASSERT_TRUE(socket == -1);
+        ASSERT_EQ(socket, -1);
     }
 }

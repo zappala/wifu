@@ -91,9 +91,6 @@ void* unix_receive_handler(void* arg) {
 
     unsigned char buf[UNIX_SOCKET_MAX_BUFFER_SIZE];
 
-    gcstring s;
-    s.reserve(UNIX_SOCKET_MAX_BUFFER_SIZE);
-
     int nread;
     u_int64_t time;
 
@@ -111,10 +108,7 @@ void* unix_receive_handler(void* arg) {
             break;
         }
 
-        s.assign((const char*) buf, nread);
-        receiver->receive(s, time);
         receiver->receive(buf, nread, time);
-
         //cout << "Time: " << end - start << " Num: " << nread << endl;
     }
 }

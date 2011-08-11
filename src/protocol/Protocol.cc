@@ -11,6 +11,7 @@ Protocol::~Protocol() {
 }
 
 void Protocol::imodule_library_socket(Event* e) {
+    cout << "Protocol::imodule_library_socket()" << endl;
     SocketEvent* event = (SocketEvent*) e;
 
     Socket* s = event->get_socket();
@@ -28,7 +29,7 @@ void Protocol::imodule_library_socket(Event* e) {
     response_event->set_socket(s);
     response_event->set_message_type(event->get_message_type());
     response_event->set_destination(event->get_source());
-    response_event->set_return_value(0);
+    response_event->set_return_value(s->get_socket_id());
     response_event->set_errno(0);
     response_event->set_fd(event->get_fd());
 
@@ -37,6 +38,7 @@ void Protocol::imodule_library_socket(Event* e) {
 //    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
 
     dispatch(response_event);
+    cout << "Leaving Protocol::imodule_library_socket()" << endl;
 }
 
 void Protocol::imodule_library_bind(Event* e) {

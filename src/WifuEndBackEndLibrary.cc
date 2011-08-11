@@ -154,7 +154,7 @@ void WifuEndBackEndLibrary::receive(gcstring& message, u_int64_t& receive_time) 
 }
 
 void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_t& receive_time) {
-    struct GenericMessage* gm = reinterpret_cast<struct GenericMessage*> (message);
+    struct GenericMessage* gm = (struct GenericMessage*) message;
 
     LibraryEvent* e = NULL;
     Socket* socket = SocketCollection::instance().get_by_id(gm->fd);
@@ -163,7 +163,7 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
         case WIFU_SOCKET:
         {
             e = ObjectPool<SocketEvent>::instance().get();
-            struct SocketMessage* sm = reinterpret_cast<struct SocketMessage*> (message);
+            struct SocketMessage* sm = (struct SocketMessage*) message;
 
             if (ProtocolManager::instance().is_supported(sm->domain, sm->type, sm->protocol)) {
                 socket = new Socket(sm->domain, sm->type, sm->protocol);
@@ -243,11 +243,13 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
         e->set_socket(socket);
         e->save_buffer(message, length);
         dispatch(e);
+        cout << "Message Dispatched" << endl;
     }
 
 }
 
 void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
+    cout << "WifuEndBackEndLibrary::imodule_library_response()" << endl;
     ResponseEvent* event = (ResponseEvent*) e;
     u_int64_t time;
     send_to(event->get_destination(), event->get_buffer(), event->get_length(), &time);
