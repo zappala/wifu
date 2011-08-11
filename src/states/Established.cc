@@ -103,8 +103,6 @@ void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Ne
 
         return;
     }
-
-
 }
 
 bool Established::state_can_receive(Context*, Socket* s) {

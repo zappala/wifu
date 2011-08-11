@@ -32,16 +32,16 @@ TEST_F(BackEndTest, bindTest) {
     int badfd = 4000;
     int result = wifu_bind(badfd, (const struct sockaddr *) & to_bind, length);
     ASSERT_EQ(EBADF, errno);
-    ASSERT_TRUE(result < 0);
+    ASSERT_LT(result, 0);
 
     // Should be successful
-    int socket = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+    int socket = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
     result = wifu_bind(socket, (const struct sockaddr *) & to_bind, length);
     ASSERT_EQ(0, result);
 
 
     // Should fail (already bound)
     result = wifu_bind(socket, (const struct sockaddr *) & to_bind, length);
-    ASSERT_TRUE(result < 0);
+    ASSERT_LT(result, 0);
     ASSERT_EQ(EINVAL, errno);
 }

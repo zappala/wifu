@@ -209,6 +209,7 @@ public:
 
         if (!data) {
             //TODO: is this really an error?
+            cout << response->message_type << endl;
             assert(data);
             return;
         }
@@ -393,7 +394,9 @@ public:
 
         data->get_semaphore()->wait();
 
-        int return_value = data->get_return_value();
+        struct SetSockOptResponseMessage* setsockopt_response = (struct SetSockOptResponseMessage*) data->get_payload();
+
+        int return_value = setsockopt_response->return_value;
         data->get_flag()->post();
         return return_value;
     }
@@ -435,12 +438,11 @@ public:
 
         data->get_semaphore()->wait();
 
-        int error = data->get_error();
-        if (error) {
-            errno = error;
+        struct ListenResponseMessage* listen_response = (struct ListenResponseMessage*) data->get_payload();
+        if (listen_response->error) {
+            errno = listen_response->error;
         }
-
-        int return_value = data->get_return_value();
+        int return_value = listen_response->return_value;
         data->get_flag()->post();
         return return_value;
     }
@@ -481,14 +483,13 @@ public:
 
         data->get_semaphore()->wait();
 
-        socklen_t length = data->get_address_port_length();
-        memcpy(addr_len, &length, sizeof (socklen_t));
-        memcpy(addr, data->get_address_port()->get_network_struct_ptr(), (size_t) length);
+        struct AcceptResponseMessage* accept_response = (struct AcceptResponseMessage*) data->get_payload();
 
-        int new_socket = data->get_return_value();
-        sockets.put(new_socket, new SocketData());
+        memcpy(addr_len, &(accept_response->addr_len), sizeof (socklen_t));
+        memcpy(addr, &(accept_response->addr), (size_t) accept_response->addr_len);
 
-        //        cout << "WifuEndAPILocalSocket::wifu_accept(), returning..." << endl;
+        int new_socket = accept_response->return_value;
+        sockets.put(new_socket, ObjectPool<SocketData>::instance().get());
         data->get_flag()->post();
         return new_socket;
     }
@@ -572,7 +573,8 @@ public:
 
         data->get_semaphore()->wait();
 
-        int return_value = data->get_return_value();
+        struct SendToResponseMessage* sendto_response = (struct SendToResponseMessage*) data->get_payload();
+        int return_value = sendto_response->return_value;
         data->get_flag()->post();
         return return_value;
     }
@@ -624,11 +626,12 @@ public:
 
         data->get_semaphore()->wait();
 
-        ssize_t ret_val = data->get_return_value();
+        struct RecvFromResponseMessage* recvfrom_response = (struct RecvFromResponseMessage*) data->get_payload();
+        ssize_t ret_val = recvfrom_response->return_value;
         // TODO: fill in the actual vale of addr_len and addr according to man 2 recvfrom()
 
         if (ret_val > 0) {
-            memcpy(buf, data->get_payload(), ret_val);
+            memcpy(buf, recvfrom_response + 1, ret_val);
         }
 
         data->get_flag()->post();
@@ -668,7 +671,8 @@ public:
 
         data->get_semaphore()->wait();
 
-        int return_value = data->get_return_value();
+        struct ConnectResponseMessage* connect_response = (struct ConnectResponseMessage*) data->get_payload();
+        int return_value = connect_response->return_value;
         data->get_flag()->post();
         return return_value;
     }
@@ -693,7 +697,9 @@ public:
         send_to(&back_end_, connect_message, connect_message->length, &time);
 
         data->get_semaphore()->wait();
-        int return_value = data->get_return_value();
+
+        struct CloseResponseMessage* close_response = (struct CloseResponseMessage*) data->get_payload();
+        int return_value = close_response->return_value;
 
         sockets.erase_at(fd);
         ObjectPool<SocketData>::instance().release(data);
@@ -718,12 +724,6 @@ private:
      * Semaphore to only allow one call to wifu_socket at a time.
      */
     BinarySemaphore socket_mutex_;
-
-    /**
-     * Response received from the back-end.  The key is the method name, the value is the message.
-     */
-    gcstring_map response_;
-
 
     list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
     list<gcstring, gc_allocator<gcstring> > recv_response_sizes_;
