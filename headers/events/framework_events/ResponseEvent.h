@@ -45,7 +45,7 @@ public:
     void set_length(u_int32_t length);
     u_int32_t get_length() const;
 
-    struct sockaddr_un* get_destination() const;
+    struct sockaddr_un* get_destination();
     void set_destination(struct sockaddr_un* destination);
 
     struct GenericResponseMessage* get_response();

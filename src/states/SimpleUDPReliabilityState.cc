@@ -132,7 +132,7 @@ void SimpleUDPReliabilityState::state_receive(Context* c, QueueProcessor<Event*>
 void SimpleUDPReliabilityState::create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
     //SimpleUDPReliabilityContext* rc = (SimpleUDPReliabilityContext*) c;
     Socket* s = e->get_socket();
-    size_t buffer_size = e->get_buffer_length();
+    size_t buffer_size = e->get_data_length();
 
     RecvFromResponseEvent* response = (RecvFromResponseEvent*) ObjectPool<ResponseEvent>::instance().get();
     response->set_socket(s);

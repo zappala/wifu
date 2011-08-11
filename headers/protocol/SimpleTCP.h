@@ -20,10 +20,13 @@
 #include "events/protocol_events/ReceiveBufferNotEmptyEvent.h"
 #include "events/protocol_events/SendBufferNotEmptyEvent.h"
 #include "events/protocol_events/SendBufferNotFullEvent.h"
+#include "events/framework_events/RecvFromResponseEvent.h"
 
 #include "CacheMap.h"
 #include "SimpleTCPCache.h"
 #include "packet/TCPTimestampOption.h"
+
+#include "ObjectPool.h"
 
 
 class SimpleTCP : public Protocol {

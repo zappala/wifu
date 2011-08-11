@@ -29,6 +29,8 @@
 #include "events/framework_events/ReceiveEvent.h"
 #include "events/protocol_events/ResendPacketEvent.h"
 #include "events/framework_events/ResponseEvent.h"
+#include "events/framework_events/AcceptResponseEvent.h"
+#include "events/framework_events/GetSockOptResponseEvent.h"
 #include "events/protocol_events/SendBufferNotEmptyEvent.h"
 #include "events/protocol_events/SendBufferNotFullEvent.h"
 #include "events/framework_events/SendEvent.h"
@@ -55,6 +57,8 @@
 
 #include "packet/TCPPacket.h"
 #include "packet/ATPPacket.h"
+
+#include "ObjectPool.h"
 
 class Protocol : public Module, public IContext {
 public:

@@ -60,9 +60,9 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c->get_connection_manager();
     //    cout << p->to_s() << endl;
 
-//    if (p->get_data_length_bytes() > 0) {
-//        cout << Utils::get_current_time_microseconds_32() << " TCPTahoe::icontext_receive_packet(): received " << p->get_data_length_bytes() << " bytes" << endl;
-//    }
+    //    if (p->get_data_length_bytes() > 0) {
+    //        cout << Utils::get_current_time_microseconds_32() << " TCPTahoe::icontext_receive_packet(): received " << p->get_data_length_bytes() << " bytes" << endl;
+    //    }
 
     if (!p->is_valid_tcp_checksum()) {
         return;
@@ -70,7 +70,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
 
     // validate any ack number
     if (p->is_tcp_ack() && !is_valid_ack_number(rc, p)) {
-//                cout << "INVALID ACK NUMBER" << endl;
+        //                cout << "INVALID ACK NUMBER" << endl;
         rc->icontext_receive_packet(q, e);
         return;
     }
@@ -80,7 +80,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
     // We add on the case where no context exists for us to check (RCV.NXT == 0)
     if (!is_valid_sequence_number(rc, p)) {
         // TODO: is this the correct check?
-//                cout << "INVALID SEQUENCE NUMBER" << endl;
+        //                cout << "INVALID SEQUENCE NUMBER" << endl;
         //        cout << "Current state: " << cmc->get_state_name() << endl;
 
         // See my notes for May 25, 2011 for why this must be - RB
@@ -117,7 +117,7 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
     // I guess we could simply cache it again if we are not ready to close???
     // See my notes on May 25, 2011 -RB
     if (p->is_tcp_fin() && rc->get_rcv_wnd() < MAX_TCP_RECEIVE_WINDOW_SIZE) {
-//                cout << "Saving FIN" << endl;
+        //                cout << "Saving FIN" << endl;
         c->set_saved_fin(e);
         return;
     }
@@ -200,10 +200,19 @@ void TCPTahoe::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
         c->set_saved_close_event(e);
     }
 
-    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
-    response->put(ERRNO, Utils::itoa(0));
-    dispatch(response);
+    ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
+    response_event->set_default_length();
+    response_event->set_socket(s);
+    response_event->set_message_type(e->get_message_type());
+    response_event->set_destination(e->get_source());
+    response_event->set_return_value(0);
+    response_event->set_errno(0);
+    response_event->set_fd(e->get_fd());
+
+//    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+//    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+//    response->put(ERRNO, Utils::itoa(0));
+    dispatch(response_event);
 }
 
 void TCPTahoe::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFiredEvent* e) {
@@ -245,7 +254,7 @@ void TCPTahoe::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
 
 void TCPTahoe::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
 
-//    cout << Utils::get_current_time_microseconds_32() << " TCPTahoe::icontext_receive()" << endl;
+    //    cout << Utils::get_current_time_microseconds_32() << " TCPTahoe::icontext_receive()" << endl;
 
     Socket* s = e->get_socket();
     BasicIContextContainer* c = map_.find(s)->second;
@@ -356,14 +365,23 @@ void TCPTahoe::save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEve
     const char* data = (const char*) e->get_data();
 
     Socket* s = e->get_socket();
-    int num_to_insert = min(available_room_in_send_buffer, (int) e->data_length());
+    int num_to_insert = min(available_room_in_send_buffer, (int) e->get_data_length());
     s->get_send_buffer().append(data, num_to_insert);
 
-    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-    response->put(RETURN_VALUE_STRING, Utils::itoa(num_to_insert));
-    response->put(ERRNO, Utils::itoa(0));
+    ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
+    response_event->set_default_length();
+    response_event->set_socket(s);
+    response_event->set_message_type(e->get_message_type());
+    response_event->set_destination(e->get_source());
+    response_event->set_return_value(num_to_insert);
+    response_event->set_errno(0);
+    response_event->set_fd(e->get_fd());
 
-    dispatch(response);
+//    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+//    response->put(RETURN_VALUE_STRING, Utils::itoa(num_to_insert));
+//    response->put(ERRNO, Utils::itoa(0));
+
+    dispatch(response_event);
     q->enqueue(new SendBufferNotEmptyEvent(s));
 }
 

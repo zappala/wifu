@@ -27,6 +27,7 @@ void Established::state_enter(Context* c) {
             response_event->set_message_type(event->get_message_type());
             response_event->set_return_value(0);
             response_event->set_socket(event->get_socket());
+            response_event->set_fd(event->get_fd());
 
 //            response = new ResponseEvent(event->get_socket(), event->get_name(), event->get_map()[FILE_STRING]);
 //            response->put(ERRNO, Utils::itoa(0));
@@ -92,6 +93,7 @@ void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Ne
         response_event->set_message_type(WIFU_PRECLOSE);
         response_event->set_return_value(0);
         response_event->set_socket(s);
+        response_event->set_fd(0);
 
         //        gcstring name = WIFU_PRECLOSE_NAME;
         //        ResponseEvent* response_event = new ResponseEvent(s, name, cmc->get_file());

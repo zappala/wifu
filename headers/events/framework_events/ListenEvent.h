@@ -23,15 +23,6 @@ using namespace std;
 class ListenEvent : public LibraryEvent {
 public:
 
-    /**
-     * Constructs a ListenEvent.
-     *
-     * @param m Map received from the front end library containing the information about the listen() BSD socket API call and some bookkeeping information.
-     * @param file The file associated with a Unix socket to write any response to the application.
-     * @param s The Socket object to which this Event belongs.
-     */
-    ListenEvent(gcstring_map& m, gcstring& file, Socket* s);
-
     ListenEvent();
 
     /**

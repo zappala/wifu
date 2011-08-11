@@ -36,12 +36,12 @@ void ResponseEvent::set_errno(int error) {
     response_->error = error;
 }
 
-struct sockaddr_un* ResponseEvent::get_destination() const {
-    return destination_;
+struct sockaddr_un* ResponseEvent::get_destination() {
+    return &destination_;
 }
 
 void ResponseEvent::set_destination(struct sockaddr_un* destination) {
-    memcpy(destination_, destination, sizeof (struct sockaddr_un));
+    memcpy(&destination_, destination, sizeof (struct sockaddr_un));
 }
 
 struct GenericResponseMessage* ResponseEvent::get_response() {

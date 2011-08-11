@@ -24,15 +24,6 @@ using namespace std;
 class SocketEvent : public LibraryEvent {
 public:
 
-    /**
-     * Constructs a SocketEvent.
-     *
-     * @param m Map received from the front end library containing the information about the socket() BSD socket API call and some bookkeeping information.
-     * @param file The file associated with a Unix socket to write any response to the application.
-     * @param s The Socket object to which this Event belongs.
-     */
-    SocketEvent(gcstring_map& m, gcstring& file, Socket* socket);
-
     SocketEvent();
 
     /**

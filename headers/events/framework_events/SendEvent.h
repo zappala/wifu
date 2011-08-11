@@ -8,7 +8,7 @@
 #ifndef _SENDEVENT_H
 #define	_SENDEVENT_H
 
-#include "LibraryEvent.h"
+#include "DataEvent.h"
 
 using namespace std;
 
@@ -20,7 +20,7 @@ using namespace std;
  * @see LibraryEvent
  *
  */
-class SendEvent : public LibraryEvent {
+class SendEvent : public DataEvent {
 public:
 
     SendEvent();

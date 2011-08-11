@@ -124,7 +124,7 @@ void TCPTahoeReliabilityState::resend_data(Context* c, QueueProcessor<Event*>* q
 void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
-    size_t buffer_size = e->get_buffer_length();
+    size_t buffer_size = e->get_data_length();
 
     RecvFromResponseEvent* response = (RecvFromResponseEvent*) ObjectPool<ResponseEvent>::instance().get();
     response->set_socket(s);

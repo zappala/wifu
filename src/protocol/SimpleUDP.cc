@@ -60,7 +60,7 @@ void SimpleUDP::icontext_listen(QueueProcessor<Event*>* q, ListenEvent* e) {
 }
 
 void SimpleUDP::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-//    cout << "SimpleUDP::icontext_receive_packet(): " << endl;
+    //    cout << "SimpleUDP::icontext_receive_packet(): " << endl;
 
     Socket* s = e->get_socket();
     SimpleUDPIContextContainer* c = map_.find(s)->second;
@@ -71,7 +71,7 @@ void SimpleUDP::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceiv
 
     //cout << "SimpleUDP::Received a packet, are we lacking a ResponseEvent?\n";
     //cout << "Packet details: " << p->to_s() << endl;
-    
+
     rc->icontext_receive_packet(q, e);
 }
 
@@ -85,11 +85,11 @@ void SimpleUDP::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent*
     //c->get_connection_manager()->icontext_send_packet(q, e);
     //c->get_congestion_control()->icontext_send_packet(q, e);
 
-//        cout << "SimpleUDP::icontext_send_packet(): " << endl;
+    //        cout << "SimpleUDP::icontext_send_packet(): " << endl;
     //    cout << p->to_s() << endl;
 
     //Support rate limiters! This will fire the send_network_packet event at the right time.
-    c->get_rate_limiter()->icontext_send_packet(q,e);
+    c->get_rate_limiter()->icontext_send_packet(q, e);
 
     //Send.  Uncomment if we remove rate limiters.
     //send_network_packet(e->get_socket(), p);
@@ -111,11 +111,20 @@ void SimpleUDP::icontext_connect(QueueProcessor<Event*>* q, ConnectEvent* e) {
     //c->get_congestion_control()->icontext_connect(q, e);
     //cout << "SimpleUDP::icontext_connect() finished." << endl;
 
-    ResponseEvent* response = new ResponseEvent(e->get_socket(), e->get_name(), e->get_map()[FILE_STRING]);
-            response->put(ERRNO, Utils::itoa(0));
-            response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+    ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
+    response_event->set_default_length();
+    response_event->set_socket(e->get_socket());
+    response_event->set_message_type(e->get_message_type());
+    response_event->set_destination(e->get_source());
+    response_event->set_return_value(0);
+    response_event->set_errno(0);
+    response_event->set_fd(e->get_fd());
 
-    dispatch(response);
+//    ResponseEvent* response = new ResponseEvent(e->get_socket(), e->get_name(), e->get_map()[FILE_STRING]);
+//    response->put(ERRNO, Utils::itoa(0));
+//    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+
+    dispatch(response_event);
 }
 
 void SimpleUDP::icontext_accept(QueueProcessor<Event*>* q, AcceptEvent* e) {
@@ -137,35 +146,45 @@ void SimpleUDP::icontext_new_connection_established(QueueProcessor<Event*>* q, C
 }
 
 void SimpleUDP::icontext_new_connection_initiated(QueueProcessor<Event*>* q, ConnectionInitiatedEvent* e) {
-//    Socket* listening_socket = e->get_socket();
-//    Socket* new_socket = e->get_new_socket();
-//
-//    SimpleUDPIContextContainer* listening_cc = map_.find(listening_socket)->second;
-//    map_[new_socket] = listening_cc;
-//
-//    SimpleUDPIContextContainer* new_cc = new SimpleUDPIContextContainer();
-//    map_[listening_socket] = new_cc;
-//
-//    new_cc->get_reliability()->icontext_new_connection_initiated(q, e);
-//    new_cc->get_connection_manager()->icontext_new_connection_initiated(q, e);
-//    new_cc->get_congestion_control()->icontext_new_connection_initiated(q, e);
+    //    Socket* listening_socket = e->get_socket();
+    //    Socket* new_socket = e->get_new_socket();
+    //
+    //    SimpleUDPIContextContainer* listening_cc = map_.find(listening_socket)->second;
+    //    map_[new_socket] = listening_cc;
+    //
+    //    SimpleUDPIContextContainer* new_cc = new SimpleUDPIContextContainer();
+    //    map_[listening_socket] = new_cc;
+    //
+    //    new_cc->get_reliability()->icontext_new_connection_initiated(q, e);
+    //    new_cc->get_connection_manager()->icontext_new_connection_initiated(q, e);
+    //    new_cc->get_congestion_control()->icontext_new_connection_initiated(q, e);
 }
 
 void SimpleUDP::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
     Socket* s = e->get_socket();
-//    SimpleUDPIContextContainer* c = map_.find(s)->second;
-//
-//
-//    if (s->get_send_buffer().empty()) {
-//        c->get_connection_manager()->icontext_close(q, e);
-//    } else {
-//        c->set_saved_close_event(e);
-//    }
-//
-    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
-    response->put(ERRNO, Utils::itoa(0));
-    dispatch(response);
+    //    SimpleUDPIContextContainer* c = map_.find(s)->second;
+    //
+    //
+    //    if (s->get_send_buffer().empty()) {
+    //        c->get_connection_manager()->icontext_close(q, e);
+    //    } else {
+    //        c->set_saved_close_event(e);
+    //    }
+    //
+
+    ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
+    response_event->set_default_length();
+    response_event->set_socket(s);
+    response_event->set_message_type(e->get_message_type());
+    response_event->set_destination(e->get_source());
+    response_event->set_return_value(0);
+    response_event->set_errno(0);
+    response_event->set_fd(e->get_fd());
+    
+//    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+//    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+//    response->put(ERRNO, Utils::itoa(0));
+    dispatch(response_event);
 }
 
 void SimpleUDP::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFiredEvent* e) {
@@ -175,18 +194,18 @@ void SimpleUDP::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFired
     c->get_reliability()->icontext_timer_fired_event(q, e);
     //c->get_connection_manager()->icontext_timer_fired_event(q, e);
     //c->get_congestion_control()->icontext_timer_fired_event(q, e);
-    c->get_rate_limiter()->icontext_timer_fired_event(q,e);
+    c->get_rate_limiter()->icontext_timer_fired_event(q, e);
 }
 
 void SimpleUDP::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEvent* e) {
-//    cout << "SimpleUDP::icontext_resend_packet()" << endl;
+    //    cout << "SimpleUDP::icontext_resend_packet()" << endl;
 
-//    Socket* s = e->get_socket();
-//    SimpleUDPIContextContainer* c = map_.find(s)->second;
-//
-//    c->get_congestion_control()->icontext_resend_packet(q, e);
-//    c->get_reliability()->icontext_resend_packet(q, e);
-//    c->get_connection_manager()->icontext_resend_packet(q, e);
+    //    Socket* s = e->get_socket();
+    //    SimpleUDPIContextContainer* c = map_.find(s)->second;
+    //
+    //    c->get_congestion_control()->icontext_resend_packet(q, e);
+    //    c->get_reliability()->icontext_resend_packet(q, e);
+    //    c->get_connection_manager()->icontext_resend_packet(q, e);
 }
 
 void SimpleUDP::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
@@ -234,7 +253,7 @@ void SimpleUDP::icontext_receive_buffer_not_empty(QueueProcessor<Event*>* q, Rec
 }
 
 void SimpleUDP::icontext_receive_buffer_not_full(QueueProcessor<Event*>* q, ReceiveBufferNotFullEvent* e) {
-//    cout << "SimpleUDP::icontext_receive_buffer_not_full()" << endl;
+    //    cout << "SimpleUDP::icontext_receive_buffer_not_full()" << endl;
     Socket* s = e->get_socket();
     SimpleUDPIContextContainer* c = map_.find(s)->second;
 
@@ -311,41 +330,62 @@ void SimpleUDP::icontext_get_socket_option(QueueProcessor<Event*>* q, GetSocketO
 
 bool SimpleUDP::is_room_in_send_buffer(SendEvent* e) {
     Socket* s = e->get_socket();
-    int num_bytes_to_send = e->data_length();
+    int num_bytes_to_send = e->get_data_length();
     return s->get_send_buffer().size() + num_bytes_to_send <= UNIX_SOCKET_MAX_BUFFER_SIZE;
 }
 
 void SimpleUDP::save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e) {
-    int num_bytes_to_send = e->data_length();
+    int num_bytes_to_send = e->get_data_length();
     const char* data = (const char*) e->get_data();
 
     Socket* s = e->get_socket();
     s->get_send_buffer().append(data, num_bytes_to_send);
 
-    //cout << "SimpleUDP::save_in_buffer_and_send_events: Responding to client.\n";
-    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-    response->put(RETURN_VALUE_STRING, Utils::itoa(num_bytes_to_send));
-    response->put(ERRNO, Utils::itoa(0));
+    ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
+    response_event->set_default_length();
+    response_event->set_socket(s);
+    response_event->set_message_type(e->get_message_type());
+    response_event->set_destination(e->get_source());
+    response_event->set_return_value(num_bytes_to_send);
+    response_event->set_errno(0);
+    response_event->set_fd(e->get_fd());
 
-    dispatch(response);
+    //cout << "SimpleUDP::save_in_buffer_and_send_events: Responding to client.\n";
+//    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+//    response->put(RETURN_VALUE_STRING, Utils::itoa(num_bytes_to_send));
+//    response->put(ERRNO, Utils::itoa(0));
+
+    dispatch(response_event);
     q->enqueue(new SendBufferNotEmptyEvent(s));
 }
 
 void SimpleUDP::create_and_dispatch_received_data(QueueProcessor<Event*>* q, ReceiveEvent* e) {
     Socket* s = e->get_socket();
-    int buffer_size = e->get_receive_buffer_size();
+    size_t buffer_size = e->get_data_length();
 
-    gcstring data = s->get_receive_buffer().substr(0, buffer_size);
-    s->get_receive_buffer().erase(0, data.size());
+    RecvFromResponseEvent* response = (RecvFromResponseEvent*) ObjectPool<ResponseEvent>::instance().get();
+    response->set_socket(s);
+    response->set_message_type(e->get_message_type());
+    response->set_fd(e->get_fd());
+    response->set_destination(e->get_source());
+    response->set_addr(s->get_remote_address_port()->get_network_struct_ptr(), sizeof(struct sockaddr_in));
+    // done in set length
+    //response->set_return_value(length);
+    response->set_errno(0);
 
-    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-    response->put(BUFFER_STRING, data);
-    response->put(ADDRESS_STRING, s->get_remote_address_port()->get_address());
-    response->put(PORT_STRING, Utils::itoa(s->get_remote_address_port()->get_port()));
-    response->put(RETURN_VALUE_STRING, Utils::itoa(data.size()));
-    response->put(ERRNO, Utils::itoa(0));
+    int length = min(s->get_receive_buffer().size(), buffer_size);
+    response->set_return_buffer((unsigned char*) s->get_receive_buffer().data(), length);
+    s->get_receive_buffer().erase(0, length);
+
+//    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+//    response->put(BUFFER_STRING, data);
+//    response->put(ADDRESS_STRING, s->get_remote_address_port()->get_address());
+//    response->put(PORT_STRING, Utils::itoa(s->get_remote_address_port()->get_port()));
+//    response->put(RETURN_VALUE_STRING, Utils::itoa(data.size()));
+//    response->put(ERRNO, Utils::itoa(0));
 
     dispatch(response);
-    q->enqueue(new ReceiveBufferNotFullEvent(s));
+    //    cout << "SimpleTCP::create_and_dispatch_received_data(), dispatching receive buffer not full event" << endl;
+    dispatch(new ReceiveBufferNotFullEvent(s));
 }
 
