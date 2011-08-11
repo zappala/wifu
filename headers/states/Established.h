@@ -23,6 +23,8 @@
 #include "events/framework_events/CloseEvent.h"
 #include "events/protocol_events/ReceiveBufferNotFullEvent.h"
 
+#include "ObjectPool.h"
+
 #include "packet/TCPPacket.h"
 
 using namespace std;

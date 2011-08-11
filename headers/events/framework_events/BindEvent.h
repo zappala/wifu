@@ -23,15 +23,6 @@ using namespace std;
 class BindEvent : public LibraryEvent {
 public:
 
-    /**
-     * Constructs a BindEvent.
-     *
-     * @param m Map received from the front end library containing the information about the bind() BSD socket API call and some bookkeeping information.
-     * @param file The file associated with a Unix socket to write any response to the application.
-     * @param s The Socket object to which this Event belongs.
-     */
-    BindEvent(gcstring_map& m, gcstring& file, Socket* s);
-
     BindEvent();
 
     /**
@@ -48,6 +39,9 @@ public:
      * @see IModule::imodule_library_bind()
      */
     void execute(IModule* m);
+
+    struct sockaddr_in* get_addr();
+    socklen_t get_addr_len();
 
 };
 

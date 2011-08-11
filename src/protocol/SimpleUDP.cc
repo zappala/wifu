@@ -100,7 +100,7 @@ void SimpleUDP::icontext_connect(QueueProcessor<Event*>* q, ConnectEvent* e) {
     Socket* s = e->get_socket();
     SimpleUDPIContextContainer* c = map_.find(s)->second;
 
-    AddressPort* destination = e->get_destination();
+    AddressPort* destination = e->get_address();
     //cout << "This is a print line: " << destination->to_s() << endl;
     s->set_remote_address_port(destination);
     gcstring source = SourceGetter::instance().get_source_address(destination->get_address());

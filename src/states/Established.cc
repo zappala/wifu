@@ -10,22 +10,30 @@ Established::~Established() {
 
 void Established::state_enter(Context* c) {
     // TODO: spawn new Socket.
-//    cout << "Established::enter()" << endl;
+    //    cout << "Established::enter()" << endl;
 
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
-    ResponseEvent* response;
-
     ConnectEvent* event = cmc->get_connect_event();
 
 
     switch (cmc->get_connection_type()) {
         case ACTIVE_OPEN:
-//            cout << "Established::enter(), Active Open" << endl;
-            response = new ResponseEvent(event->get_socket(), event->get_name(), event->get_map()[FILE_STRING]);
-            response->put(ERRNO, Utils::itoa(0));
-            response->put(RETURN_VALUE_STRING, Utils::itoa(0));
-            Dispatcher::instance().enqueue(response);
+        {
+            //            cout << "Established::enter(), Active Open" << endl;
+            ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
+            response_event->set_default_length();
+            response_event->set_destination(event->get_source());
+            response_event->set_errno(0);
+            response_event->set_message_type(event->get_message_type());
+            response_event->set_return_value(0);
+            response_event->set_socket(event->get_socket());
+
+//            response = new ResponseEvent(event->get_socket(), event->get_name(), event->get_map()[FILE_STRING]);
+//            response->put(ERRNO, Utils::itoa(0));
+//            response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+            Dispatcher::instance().enqueue(response_event);
             break;
+        }
         case ESTABLISHED:
         case PASSIVE_OPEN:
         default:
@@ -37,12 +45,12 @@ void Established::state_enter(Context* c) {
 }
 
 void Established::state_exit(Context* c) {
-//    cout << "Established::exit()" << endl;
+    //    cout << "Established::exit()" << endl;
 
 }
 
 void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-//    cout << "Established::receive_packet()" << endl;
+    //    cout << "Established::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();
@@ -55,7 +63,7 @@ void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Ne
     }
 
     if (packet->is_tcp_fin()) {
-//        cout << "Established::receive_packet(), FIN" << endl;
+        //        cout << "Established::receive_packet(), FIN" << endl;
 
         unsigned char* data = (unsigned char*) "";
         AddressPort* destination = s->get_remote_address_port();
@@ -76,10 +84,19 @@ void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Ne
 
         cmc->set_state(new CloseWait());
 
-        gcstring name = WIFU_PRECLOSE_NAME;
-        ResponseEvent* response_event = new ResponseEvent(s, name, cmc->get_file());
-        response_event->put(RETURN_VALUE_STRING, Utils::itoa(0));
-        response_event->put(ERRNO, Utils::itoa(0));
+        ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
+        response_event->set_default_length();
+        response_event->set_destination(cmc->get_front_end_socket());
+        response_event->set_errno(0);
+        // TODO: may need to change this to WIFU_RECVFROM
+        response_event->set_message_type(WIFU_PRECLOSE);
+        response_event->set_return_value(0);
+        response_event->set_socket(s);
+
+        //        gcstring name = WIFU_PRECLOSE_NAME;
+        //        ResponseEvent* response_event = new ResponseEvent(s, name, cmc->get_file());
+        //        response_event->put(RETURN_VALUE_STRING, Utils::itoa(0));
+        //        response_event->put(ERRNO, Utils::itoa(0));
         Dispatcher::instance().enqueue(response_event);
 
         return;
@@ -97,7 +114,7 @@ bool Established::state_can_send(Context*, Socket* s) {
 }
 
 void Established::state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent* e) {
-//    cout << "Established::state_close()" << endl;
+    //    cout << "Established::state_close()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     Socket* s = e->get_socket();
 
@@ -122,7 +139,7 @@ void Established::state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent*
         SendPacketEvent* event = new SendPacketEvent(s, response);
         q->enqueue(event);
 
-        
+
 
 
         return;

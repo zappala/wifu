@@ -42,11 +42,11 @@ void ConnectionManagerContext::set_accept_event(AcceptEvent* e) {
     a_event_ = e;
 }
 
-gcstring& ConnectionManagerContext::get_file() {
+sockaddr_un* ConnectionManagerContext::get_front_end_socket() {
     if(c_event_) {
-        return c_event_->get_map()[FILE_STRING];
+        return c_event_->get_source();
     }
-    return a_event_->get_map()[FILE_STRING];
+    return a_event_->get_source();
 }
 
 Socket* ConnectionManagerContext::get_socket() {

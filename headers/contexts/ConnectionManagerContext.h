@@ -119,9 +119,9 @@ public:
     void set_connection_type(ConnectionType type);
 
     /**
-     * @return The unix socket file that the front end is receiving messages on.
+     * @return The unix socket that the front end is receiving messages on.
      */
-    gcstring& get_file();
+    sockaddr_un* get_front_end_socket();
 
     /**
      * @return A pointer to the Socket which is using this conneciton manager FSM.

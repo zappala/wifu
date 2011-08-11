@@ -13,15 +13,15 @@ SocketOptionEvent::~SocketOptionEvent() {
 }
 
 int SocketOptionEvent::get_option_name() {
-    return atoi(get_map()[OPTION_NAME_STRING].c_str());
+    return ((struct SockOptMessage*) get_buffer())->optname;
 }
 
 int SocketOptionEvent::get_level() {
-    return atoi(get_map()[LEVEL_STRING].c_str());
+    return ((struct SockOptMessage*) get_buffer())->level;
 }
 
 socklen_t SocketOptionEvent::get_option_length() {
-    return atoi(get_map()[LENGTH_STRING].c_str());
+    return ((struct SockOptMessage*) get_buffer())->optlen;
 }
 
 pair<int, int> SocketOptionEvent::get_level_name_pair() {

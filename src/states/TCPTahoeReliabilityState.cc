@@ -1,5 +1,6 @@
 #include "states/TCPTahoeReliabilityState.h"
 
+
 TCPTahoeReliabilityState::TCPTahoeReliabilityState() {
 
 }
@@ -123,17 +124,22 @@ void TCPTahoeReliabilityState::resend_data(Context* c, QueueProcessor<Event*>* q
 void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
-    int buffer_size = e->get_receive_buffer_size();
+    size_t buffer_size = e->get_buffer_length();
 
-    // TODO: change this to use gcstring::data() so we avoid the copy in substr
-    
-    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
+    RecvFromResponseEvent* response = (RecvFromResponseEvent*) ObjectPool<ResponseEvent>::instance().get();
+    response->set_socket(s);
+    response->set_message_type(e->get_message_type());
+    response->set_fd(e->get_fd());
+    response->set_destination(e->get_source());
+    response->set_addr(s->get_remote_address_port()->get_network_struct_ptr(), sizeof(struct sockaddr_in));
+    // done in set length
+    //response->set_return_value(length);
+    response->set_errno(0);
 
-    response->put(BUFFER_STRING, s->get_receive_buffer().substr(rc->get_receive_index(), buffer_size));
-    int length = response->get(BUFFER_STRING)->size();
+    int length = min(s->get_receive_buffer().size(), buffer_size);
+    response->set_return_buffer((unsigned char*) s->get_receive_buffer().data(), length);
 
     rc->set_receive_index(rc->get_receive_index() + length);
-    //s->get_receive_buffer().erase(0, length);
 
     if(rc->get_rcv_wnd() + length >= 2 * rc->get_rcv_wnd()) {
         // send notification packet because our receive window has at least doubled in size
@@ -146,11 +152,6 @@ void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, Que
         s->get_receive_buffer().clear();
         rc->set_receive_index(0);
     }
-
-    response->put(ADDRESS_STRING, s->get_remote_address_port()->get_address());
-    response->put(PORT_STRING, Utils::itoa(s->get_remote_address_port()->get_port()));
-    response->put(RETURN_VALUE_STRING, Utils::itoa(length));
-    response->put(ERRNO, Utils::itoa(0));
 
     Dispatcher::instance().enqueue(response);
     q->enqueue(new ReceiveBufferNotFullEvent(s));

@@ -27,18 +27,26 @@ struct SocketMessage : public FrontEndMessage {
     int protocol;
 };
 
-struct BindMessage : public FrontEndMessage {
+struct AddressMessage : public FrontEndMessage {
     struct sockaddr_in addr;
     socklen_t len;
 };
 
-struct GetSockOptMessage : public FrontEndMessage {
+struct BindMessage : public AddressMessage {
+    
+};
+
+struct SockOptMessage : public FrontEndMessage {
     int level;
     int optname;
     socklen_t optlen;
 };
 
-struct SetSockOptMessage : public GetSockOptMessage {
+struct GetSockOptMessage : public SockOptMessage {
+
+};
+
+struct SetSockOptMessage : public SockOptMessage {
     // Data of the optval goes after the header.
 };
 
@@ -46,21 +54,24 @@ struct ListenMessage : public FrontEndMessage {
     int n;
 };
 
-struct AcceptMessage : public BindMessage {
+struct AcceptMessage : public AddressMessage {
     // Has the same parameters as Bind
 };
 
-struct SendToMessage : public BindMessage {
+struct DataMessage : public AddressMessage {
     size_t buffer_length;
     int flags;
+};
+
+struct SendToMessage : public DataMessage {
     // Buffer data goes at the end
 };
 
-struct RecvFromMessage : public SendToMessage {
+struct RecvFromMessage : public DataMessage {
     // same parameters as sendto, except we don't pass in buffer
 };
 
-struct ConnectMessage : public BindMessage {
+struct ConnectMessage : public AddressMessage {
     // same parameters as bind
 };
 
@@ -97,16 +108,20 @@ struct ListenResponseMessage : public GenericResponseMessage {
     // just need return value and errno
 };
 
-struct AcceptResponseMessage : public GenericResponseMessage {
+struct AddressResponseMessage : public GenericResponseMessage {
     struct sockaddr_in addr;
     socklen_t addr_len;
+};
+
+struct AcceptResponseMessage : public AddressResponseMessage {
+    
 };
 
 struct SendToResponseMessage : public GenericResponseMessage {
     // just need return value (probably need errno too...)
 };
 
-struct RecvFromResponseMessage : public GenericResponseMessage {
+struct RecvFromResponseMessage : public AddressResponseMessage {
     // size of buffer returned is in the return value
     // buffer of data goes after this header
 };

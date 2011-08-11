@@ -8,7 +8,7 @@
 #ifndef _ACCEPTEVENT_H
 #define	_ACCEPTEVENT_H
 
-#include "LibraryEvent.h"
+#include "AddressEvent.h"
 
 using namespace std;
 
@@ -20,17 +20,8 @@ using namespace std;
  * @see LibraryEvent
  * 
  */
-class AcceptEvent : public LibraryEvent {
+class AcceptEvent : public AddressEvent {
 public:
-
-    /**
-     * Constructs an AcceptEvent.
-     * 
-     * @param m Map received from the front end library containing the information about the accept() BSD socket API call and some bookkeeping information.
-     * @param file The file associated with a Unix socket to write any response to the application.
-     * @param s The Socket object to which this Event belongs.
-     */
-    AcceptEvent(gcstring_map& m, gcstring& file, Socket* s);
 
     AcceptEvent();
 

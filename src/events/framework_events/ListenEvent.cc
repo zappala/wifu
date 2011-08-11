@@ -15,5 +15,5 @@ void ListenEvent::execute(IModule* m) {
 }
 
 int ListenEvent::get_back_log() {
-    return atoi(get_map()[N_STRING].c_str());
+    return ((struct ListenMessage*) get_buffer())->n;
 }

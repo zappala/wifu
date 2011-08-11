@@ -51,10 +51,12 @@ public:
      */
     void execute(IModule* m);
 
-    /**
-     * @return The value to set the option to.
-     */
-    gcstring& get_option_value();
+//    /**
+//     * @return The value to set the option to.
+//     */
+//    gcstring& get_option_value();
+
+    void* get_option_value();
 
     /**
      * Helper function to create the value pair used in the SocketOptions map.

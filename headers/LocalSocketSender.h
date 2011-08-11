@@ -30,7 +30,7 @@ public:
 
     ssize_t send_to(gcstring& socket_file, gcstring& message, u_int64_t* send_time /* = time */);
 
-    ssize_t send_to(struct sockaddr_un* destination, void* buffer, size_t length);
+    ssize_t send_to(struct sockaddr_un* destination, void* buffer, size_t length, u_int64_t* send_time);
 
 private:
     map<gcstring, struct sockaddr_un*, std::less<gcstring>, gc_allocator<std::pair<gcstring, struct sockaddr_un*> > > destinations_;

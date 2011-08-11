@@ -1,52 +1,53 @@
 #include "events/framework_events/ResponseEvent.h"
 
-ResponseEvent::ResponseEvent(Socket* socket, gcstring& name, gcstring& file) : FrameworkEvent(socket), name_(name), file_(file) {
-
+ResponseEvent::ResponseEvent() : BufferEvent() {
+    response_ = (struct GenericResponseMessage*) get_buffer();
 }
 
 ResponseEvent::~ResponseEvent() {
 
 }
 
-void ResponseEvent::get_response(gcstring& response) {
-    m_[SOCKET_STRING] = Utils::itoa(get_socket()->get_socket_id());
-    QueryStringParser::create(name_, m_, response);
+void ResponseEvent::set_message_type(u_int32_t message_type) {
+    response_->message_type = message_type;
 }
 
-// TODO: fix this so we can pass references
-
-void ResponseEvent::put(gcstring& key, gcstring& value) {
-    m_[key] = value;
+void ResponseEvent::set_default_length() {
+    response_->length = sizeof(struct GenericResponseMessage);
 }
 
-// TODO: fix this so we can pass references
-
-void ResponseEvent::put(const char* key, gcstring value) {
-    gcstring k = gcstring(key);
-    put(k, value);
+void ResponseEvent::set_length(u_int32_t length) {
+    response_->length = length;
 }
 
-gcstring* ResponseEvent::get(const char* key) {
-    gcstring k = gcstring(key);
-    return get(k);
+u_int32_t ResponseEvent::get_length() const {
+    return response_->length;
 }
 
-gcstring* ResponseEvent::get(gcstring& key) {
-    gcstring_map::iterator itr = m_.find(key);
-    if(itr != m_.end()) {
-        return &(itr->second);
-    }
-    return NULL;
+void ResponseEvent::set_fd(int fd) {
+    response_->fd = fd;
+}
+
+void ResponseEvent::set_return_value(int return_value) {
+    response_->return_value = return_value;
+}
+
+void ResponseEvent::set_errno(int error) {
+    response_->error = error;
+}
+
+struct sockaddr_un* ResponseEvent::get_destination() const {
+    return destination_;
+}
+
+void ResponseEvent::set_destination(struct sockaddr_un* destination) {
+    memcpy(destination_, destination, sizeof (struct sockaddr_un));
+}
+
+struct GenericResponseMessage* ResponseEvent::get_response() {
+    return response_;
 }
 
 void ResponseEvent::execute(IModule* m) {
     m->imodule_library_response(this);
-}
-
-gcstring& ResponseEvent::get_write_file() {
-    return file_;
-}
-
-gcstring& ResponseEvent::get_name() {
-    return name_;
 }

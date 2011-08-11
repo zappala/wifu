@@ -15,7 +15,7 @@ void Closed::state_connect(Context* c, QueueProcessor<Event*>* q, ConnectEvent* 
     cmc->set_connection_type(ACTIVE_OPEN);
     cmc->set_connect_event(e);
 
-    gcstring dest_string = e->get_destination()->get_address();
+    gcstring dest_string = e->get_address()->get_address();
 
     unsigned char* data = (unsigned char*) "";
     TCPPacket* p = new TCPPacket();
@@ -25,7 +25,7 @@ void Closed::state_connect(Context* c, QueueProcessor<Event*>* q, ConnectEvent* 
     gcstring address = SourceGetter::instance().get_source_address(dest_string);
     
     AddressPort* source = new AddressPort(address, port);
-    AddressPort* destination = e->get_destination();
+    AddressPort* destination = e->get_address();
     
     s->set_local_address_port(source);
     s->set_remote_address_port(destination);

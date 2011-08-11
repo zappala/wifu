@@ -1,10 +1,6 @@
 #include "events/framework_events/AcceptEvent.h"
 
-AcceptEvent::AcceptEvent(gcstring_map& m, gcstring& file, Socket* s) : LibraryEvent(m, file, s) {
-
-}
-
-AcceptEvent::AcceptEvent() : LibraryEvent() {
+AcceptEvent::AcceptEvent() : AddressEvent() {
 
 }
 

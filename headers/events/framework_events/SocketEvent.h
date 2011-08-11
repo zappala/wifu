@@ -50,6 +50,11 @@ public:
      */
     void execute(IModule* m);
 
+    int get_domain();
+    int get_type();
+    int get_protocol();
+
+
 };
 
 #endif	/* SOCKETEVENT_H */

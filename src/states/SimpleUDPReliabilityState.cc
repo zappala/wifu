@@ -132,23 +132,21 @@ void SimpleUDPReliabilityState::state_receive(Context* c, QueueProcessor<Event*>
 void SimpleUDPReliabilityState::create_and_dispatch_received_data(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
     //SimpleUDPReliabilityContext* rc = (SimpleUDPReliabilityContext*) c;
     Socket* s = e->get_socket();
-    int buffer_size = e->get_receive_buffer_size();
+    size_t buffer_size = e->get_buffer_length();
 
-    // TODO: change this to use gcstring::data() so we avoid the copy in substr
-    gcstring data = s->get_receive_buffer().substr(0, buffer_size);
-    int length = data.size();
-    s->get_receive_buffer().erase(0, length);
+    RecvFromResponseEvent* response = (RecvFromResponseEvent*) ObjectPool<ResponseEvent>::instance().get();
+    response->set_socket(s);
+    response->set_message_type(e->get_message_type());
+    response->set_fd(e->get_fd());
+    response->set_destination(e->get_source());
+    response->set_addr(s->get_remote_address_port()->get_network_struct_ptr(), sizeof(struct sockaddr_in));
+    // done in set length
+    //response->set_return_value(length);
+    response->set_errno(0);
 
-    //rc->set_rcv_wnd(rc->get_rcv_wnd() + length);
+    int length = min(s->get_receive_buffer().size(), buffer_size);
+    response->set_return_buffer((unsigned char*) s->get_receive_buffer().data(), length);
 
-    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-    response->put(BUFFER_STRING, data);
-    response->put(ADDRESS_STRING, s->get_remote_address_port()->get_address());
-    response->put(PORT_STRING, Utils::itoa(s->get_remote_address_port()->get_port()));
-    response->put(RETURN_VALUE_STRING, Utils::itoa(data.size()));
-    response->put(ERRNO, Utils::itoa(0));
-
-    //cout << "SimpleUDPReliabilityState::create_and_dispatch_received_data(): dispatching ResponseEvent.\n";
     Dispatcher::instance().enqueue(response);
     q->enqueue(new ReceiveBufferNotFullEvent(s));
 }

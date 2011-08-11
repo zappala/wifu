@@ -23,15 +23,6 @@ using namespace std;
 class SendEvent : public LibraryEvent {
 public:
 
-    /**
-     * Constructs a SendEvent.
-     *
-     * @param m Map received from the front end library containing the information about the send() or sendto() BSD socket API call and some bookkeeping information.
-     * @param file The file associated with a Unix socket to write any response to the application.
-     * @param s The Socket object to which this Event belongs.
-     */
-    SendEvent(gcstring_map& m, gcstring& file, Socket* s);
-
     SendEvent();
 
     /**
@@ -48,23 +39,6 @@ public:
      * @return A pointer to the data buffer to send.
      */
     unsigned char* get_data();
-
-    /**
-     * @return The length (in bytes) of the data to send.
-     */
-    ssize_t data_length();
-
-private:
-
-    /**
-     * Pointer to the buffer of data to send.
-     */
-    unsigned char * data_;
-
-    /**
-     * The length (in bytes) of the data to send.
-     */
-    ssize_t data_length_;
 };
 
 #endif	/* _SENDEVENT_H */

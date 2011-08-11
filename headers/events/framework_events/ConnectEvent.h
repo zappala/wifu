@@ -8,7 +8,7 @@
 #ifndef _CONNECTEVENT_H
 #define	_CONNECTEVENT_H
 
-#include "LibraryEvent.h"
+#include "AddressEvent.h"
 #include "Socket.h"
 
 /**
@@ -19,17 +19,8 @@
  * @see LibraryEvent
  *
  */
-class ConnectEvent : public LibraryEvent {
+class ConnectEvent : public AddressEvent {
 public:
-
-    /**
-     * Constructs a ConnectEvent.
-     *
-     * @param m Map received from the front end library containing the information about the connect() BSD socket API call and some bookkeeping information.
-     * @param file The file associated with a Unix socket to write any response to the application.
-     * @param s The Socket object to which this Event belongs.
-     */
-    ConnectEvent(gcstring_map& m, gcstring& file, Socket* s);
 
     ConnectEvent();
 
@@ -47,26 +38,6 @@ public:
      * @see IModule::imodule_library_connect()
      */
     void execute(IModule* m);
-
-    /**
-     * The first time this function is called the source address and port will need to be
-     * retrieved from the internal map and used in creation of an AddressPort object.
-     * The pointer to this created object is returned each time (only one AddressPort object is created).
-     *
-     * This is the destination host to connect to.
-     *
-     * @return The destination address and port passed into the connect() socket call and which will identify the host to connect to.
-     */
-    AddressPort* get_destination();
-
-private:
-
-    /**
-     * Pointer so we can lazily-evaluate and save the AddressPort when we call ConnectEvent::get_destination().
-     * Holds the remote address and port to connect to.
-     */
-    AddressPort* destination_;
-
 };
 
 #endif	/* _CONNECTEVENT_H */

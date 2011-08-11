@@ -223,7 +223,8 @@ public:
         socket_message->type = type;
         socket_message->protocol = protocol;
 
-        send_to(&back_end_, socket_message, socket_message->length);
+        u_int64_t time;
+        send_to(&back_end_, socket_message, socket_message->length, &time);
 
         u_int64_t middle = Utils::get_current_time_microseconds_64();
 
@@ -234,7 +235,6 @@ public:
         m[PROTOCOL_STRING] = Utils::itoa(protocol);
         gcstring message;
         QueryStringParser::create(WIFU_SOCKET_NAME, m, message);
-        u_int64_t time;
         send_to(write_file_, message, &time);
 
         u_int64_t end = Utils::get_current_time_microseconds_64();
@@ -291,7 +291,8 @@ public:
         memcpy(&(bind_message->addr), addr, len);
         bind_message->len = len;
 
-        send_to(&back_end_, bind_message, bind_message->length);
+        u_int64_t time;
+        send_to(&back_end_, bind_message, bind_message->length, &time);
 
         u_int64_t middle = Utils::get_current_time_microseconds_64();
 
@@ -306,7 +307,6 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_BIND_NAME, m, message);
-        u_int64_t time;
         send_to(write_file_, message, &time);
 
         u_int64_t end = Utils::get_current_time_microseconds_64();
@@ -352,7 +352,8 @@ public:
         getsockopt_message->optname = optname;
         getsockopt_message->optlen = *optlen;
 
-        send_to(&back_end_, getsockopt_message, getsockopt_message->length);
+        u_int64_t time;
+        send_to(&back_end_, getsockopt_message, getsockopt_message->length, &time);
 
         gcstring_map m;
         m[FILE_STRING] = get_file();
@@ -363,7 +364,6 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_GETSOCKOPT_NAME, m, message);
-        u_int64_t time;
         send_to(write_file_, message, &time);
 
         data->get_semaphore()->wait();
@@ -408,7 +408,8 @@ public:
         // struct ptr + 1 increases the pointer by one size of the struct
         memcpy(setsockopt_message + 1, optval, optlen);
 
-        send_to(&back_end_, setsockopt_message, setsockopt_message->length);
+        u_int64_t time;
+        send_to(&back_end_, setsockopt_message, setsockopt_message->length, &time);
 
         gcstring_map m;
         m[FILE_STRING] = get_file();
@@ -420,7 +421,6 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_SETSOCKOPT_NAME, m, message);
-        u_int64_t time;
         send_to(write_file_, message, &time);
 
         data->get_semaphore()->wait();
@@ -463,7 +463,8 @@ public:
         listen_message->fd = fd;
         listen_message->n = n;
 
-        send_to(&back_end_, listen_message, listen_message->length);
+        u_int64_t time;
+        send_to(&back_end_, listen_message, listen_message->length, &time);
         u_int64_t middle = Utils::get_current_time_microseconds_64();
 
         gcstring_map m;
@@ -473,7 +474,6 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_LISTEN_NAME, m, message);
-        u_int64_t time;
         send_to(write_file_, message, &time);
 
         u_int64_t end = Utils::get_current_time_microseconds_64();
@@ -525,7 +525,8 @@ public:
             accept_message->len = 0;
         }
 
-        send_to(&back_end_, accept_message, accept_message->length);
+        u_int64_t time;
+        send_to(&back_end_, accept_message, accept_message->length, &time);
         u_int64_t middle = Utils::get_current_time_microseconds_64();
 
         gcstring_map m;
@@ -543,7 +544,6 @@ public:
         gcstring message;
         QueryStringParser::create(WIFU_ACCEPT_NAME, m, message);
         //        cout << "WifuEndAPILocalSocket::wifu_accept(), sending message to back end." << endl;
-        u_int64_t time;
         send_to(write_file_, message, &time);
 
         u_int64_t end = Utils::get_current_time_microseconds_64();
@@ -638,7 +638,8 @@ public:
         sendto_message->flags = flags;
         memcpy(sendto_message + 1, buf, n);
 
-        send_to(&back_end_, sendto_message, sendto_message->length);
+        u_int64_t time;
+        send_to(&back_end_, sendto_message, sendto_message->length, &time);
         u_int64_t middle = Utils::get_current_time_microseconds_64();
 
         gcstring_map m;
@@ -662,7 +663,6 @@ public:
         message.reserve(2 * n);
         QueryStringParser::create(WIFU_SENDTO_NAME, m, message);
 
-        u_int64_t time;
         send_to(write_file_, message, &time);
 
         u_int64_t end = Utils::get_current_time_microseconds_64();
@@ -719,7 +719,8 @@ public:
         recvfrom_message->buffer_length = n;
         recvfrom_message->flags = flags;
 
-        send_to(&back_end_, recvfrom_message, recvfrom_message->length);
+        u_int64_t time;
+        send_to(&back_end_, recvfrom_message, recvfrom_message->length, &time);
         u_int64_t middle = Utils::get_current_time_microseconds_64();
 
 
@@ -741,7 +742,6 @@ public:
         QueryStringParser::create(WIFU_RECVFROM_NAME, m, message);
         //        cout << Utils::get_current_time_microseconds_32() << " WifuEndAPILocalSocket::wifu_recvfrom(), sending to back end" << endl;
 
-        u_int64_t time;
         send_to(write_file_, message, &time);
 
         u_int64_t end = Utils::get_current_time_microseconds_64();
@@ -797,7 +797,8 @@ public:
         memcpy(&(connect_message->addr), addr, len);
         connect_message->len = len;
 
-        send_to(&back_end_, connect_message, connect_message->length);
+        u_int64_t time;
+        send_to(&back_end_, connect_message, connect_message->length, &time);
         u_int64_t middle = Utils::get_current_time_microseconds_64();
 
         gcstring_map m;
@@ -811,7 +812,6 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_CONNECT_NAME, m, message);
-        u_int64_t time;
         send_to(write_file_, message, &time);
 
         u_int64_t end = Utils::get_current_time_microseconds_64();
@@ -842,7 +842,8 @@ public:
 
         connect_message->fd = fd;
 
-        send_to(&back_end_, connect_message, connect_message->length);
+        u_int64_t time;
+        send_to(&back_end_, connect_message, connect_message->length, &time);
         u_int64_t middle = Utils::get_current_time_microseconds_64();
 
 
@@ -852,7 +853,6 @@ public:
 
         gcstring message;
         QueryStringParser::create(WIFU_CLOSE_NAME, m, message);
-        u_int64_t time;
         send_to(write_file_, message, &time);
 
         u_int64_t end = Utils::get_current_time_microseconds_64();

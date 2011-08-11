@@ -27,7 +27,8 @@ ssize_t LocalSocketSender::send_to(gcstring& socket_file, gcstring& message, u_i
     return sendto(socket_, message.data(), message.size(), 0, (const struct sockaddr*) destination, SUN_LEN(destination));
 }
 
-ssize_t LocalSocketSender::send_to(struct sockaddr_un* destination, void* buffer, size_t length) {
+ssize_t LocalSocketSender::send_to(struct sockaddr_un* destination, void* buffer, size_t length, u_int64_t* send_time) {
+    *send_time = Utils::get_current_time_microseconds_64();
     return sendto(socket_, buffer, length, 0, reinterpret_cast<const struct sockaddr*>(destination), SUN_LEN(destination));
 }
 

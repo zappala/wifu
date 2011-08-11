@@ -9,11 +9,12 @@
 #define	RESPONSEEVENT_H
 
 
-#include "FrameworkEvent.h"
+#include "BufferEvent.h"
 #include "QueryStringParser.h"
 #include "Socket.h"
 #include "Utils.h"
 #include "defines.h"
+#include "MessageStructDefinitions.h"
 
 using namespace std;
 
@@ -26,56 +27,28 @@ using namespace std;
  * @see FrameworkEvent
  * @see WiFuEntBackEndLibrary
  */
-class ResponseEvent : public FrameworkEvent {
+class ResponseEvent : public BufferEvent {
 public:
 
-    /**
-     * Constructs a ResponseEvent
-     * @param socket The Socket object to which this Event belongs.
-     * @param name Name of the BSD socket function which we are responding to (socket, bind, listend, recv, etc.).
-     * @param file The location of the file the Unix socket is going to receive this response on.
-     */
-    ResponseEvent(Socket* socket, gcstring& name, gcstring& file);
+    ResponseEvent();
 
     /**
      * Destructor.
      */
     virtual ~ResponseEvent();
 
+    void set_message_type(u_int32_t message_type);
+    void set_fd(int fd);
+    void set_return_value(int return_value);
+    void set_errno(int error);
+    void set_default_length();
+    void set_length(u_int32_t length);
+    u_int32_t get_length() const;
 
-    /**
-     * Creates a response from the internal map.
-     * @param response A reference to a string to store the response in.
-     */
-    void get_response(gcstring& response);
+    struct sockaddr_un* get_destination() const;
+    void set_destination(struct sockaddr_un* destination);
 
-    /**
-     * Inserts a key-value pair into the response.
-     * @param key The key of the pair.
-     * @param value The value of the pair.
-     */
-    void put(gcstring& key, gcstring& value);
-
-    /**
-     * Inserts a key-value pair into the response.
-     * @param key The key of the pair.
-     * @param value The value of the pair.
-     */
-    void put(const char* key, gcstring value);
-
-    /**
-     * Gets the value associated with key.
-     * @param key The key of the pair.
-     * @return the value associated with key if found, NULL otherwise.
-     */
-    gcstring* get(const char* key);
-
-    /**
-     * Gets the value associated with key.
-     * @param key The key of the pair.
-     * @return the value associated with key if found, NULL otherwise.
-     */
-    gcstring* get(gcstring& key);
+    struct GenericResponseMessage* get_response();
 
     /**
      * Calls IModule::imodule_library_response() and passes this ResponseEvent in as the argument.
@@ -89,33 +62,9 @@ public:
      */
     void execute(IModule* m);
 
-    /**
-     * @return A reference to the file used by a Unix socket that this ResponseEvent will send to.
-     */
-    gcstring& get_write_file();
-
-    /**
-     * @return A referene to the name of the method this Event is in reponse to.
-     */
-    gcstring& get_name();
-
 private:
-
-    /**
-     * Name of the BSD socket function we are responding to.
-     */
-    gcstring name_;
-
-    /**
-     * The file used by a Unix socket that this ResponseEvent will send to.
-     */
-    gcstring file_;
-
-    /**
-     * A map of the key-value pairs to send to the front end.
-     */
-    gcstring_map m_;
-            
+    struct GenericResponseMessage* response_;
+    struct sockaddr_un destination_;
 };
 
 #endif	/* RESPONSEEVENT_H */
