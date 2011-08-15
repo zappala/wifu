@@ -51,7 +51,7 @@ void Established::state_exit(Context* c) {
 }
 
 void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-    //    cout << "Established::receive_packet()" << endl;
+//        cout << "Established::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();
@@ -93,7 +93,8 @@ void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Ne
         response_event->set_message_type(WIFU_PRECLOSE);
         response_event->set_return_value(0);
         response_event->set_socket(s);
-        response_event->set_fd(0);
+        response_event->set_fd(s->get_socket_id());
+//        cout << "Established::state_receive_packet()" << endl;
 
         //        gcstring name = WIFU_PRECLOSE_NAME;
         //        ResponseEvent* response_event = new ResponseEvent(s, name, cmc->get_file());

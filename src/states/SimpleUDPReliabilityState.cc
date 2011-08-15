@@ -146,6 +146,7 @@ void SimpleUDPReliabilityState::create_and_dispatch_received_data(Context* c, Qu
 
     int length = min(s->get_receive_buffer().size(), buffer_size);
     response->set_return_buffer((unsigned char*) s->get_receive_buffer().data(), length);
+    s->get_receive_buffer().erase(length);
 
     Dispatcher::instance().enqueue(response);
     q->enqueue(new ReceiveBufferNotFullEvent(s));

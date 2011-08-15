@@ -190,13 +190,16 @@ void TCPTahoe::icontext_new_connection_initiated(QueueProcessor<Event*>* q, Conn
 }
 
 void TCPTahoe::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
+    cout << "TCPTahoe::icontext_close()" << endl;
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = (TCPTahoeIContextContainer*) map_.find(s)->second;
 
 
     if (s->get_send_buffer().empty() && !c->get_saved_send_event()) {
+        cout << "Send buffer is empty and no saved send event" << endl;
         c->get_connection_manager()->icontext_close(q, e);
     } else {
+        cout << "else statement" << endl;
         c->set_saved_close_event(e);
     }
 
@@ -254,7 +257,7 @@ void TCPTahoe::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
 
 void TCPTahoe::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
 
-    //    cout << Utils::get_current_time_microseconds_32() << " TCPTahoe::icontext_receive()" << endl;
+        cout << Utils::get_current_time_microseconds_32() << " TCPTahoe::icontext_receive()" << endl;
 
     Socket* s = e->get_socket();
     BasicIContextContainer* c = map_.find(s)->second;

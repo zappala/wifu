@@ -64,7 +64,7 @@ void* tahoe_close_active_to_passive_thread(void* args) {
         int return_value = wifu_recv(connection, &buffer, 1, 0);
 
         if (return_value == 0) {
-            //            cout << "Close Thread BREAK" << endl;
+                        cout << "Close Thread BREAK" << endl;
             break;
         }
 

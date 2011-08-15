@@ -194,6 +194,12 @@ public:
 
         struct GenericResponseMessage* response = (struct GenericResponseMessage*) message;
 
+        cout << "Message type: " << response->message_type << endl;
+        cout << "Return value: " << response->return_value << endl;
+        cout << "FD: " << response->fd << endl;
+        cout << "Errno: " << response->error << endl;
+        cout << "Length: " << response->length << endl << endl;
+
         if (response->message_type == WIFU_SOCKET) {
             sockets.get(0)->set_payload(message, length);
             socket_signal_.post();
@@ -209,7 +215,7 @@ public:
 
         if (!data) {
             //TODO: is this really an error?
-            cout << response->message_type << endl;
+
             assert(data);
             return;
         }
@@ -310,7 +316,7 @@ public:
         if (bind_response->error) {
             errno = bind_response->error;
         }
-        int return_value = bind_response->error;
+        int return_value = bind_response->return_value;
         data->get_flag()->post();
 
         return return_value;
@@ -482,6 +488,7 @@ public:
         send_to(&back_end_, accept_message, accept_message->length, &time);
 
         data->get_semaphore()->wait();
+        cout << "Done waiting in accept()" << endl;
 
         struct AcceptResponseMessage* accept_response = (struct AcceptResponseMessage*) data->get_payload();
 
@@ -733,4 +740,5 @@ private:
 };
 
 #endif	/* _WIFUENDAPILOCALSOCKET_H */
+
 

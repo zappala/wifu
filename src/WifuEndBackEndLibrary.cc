@@ -70,87 +70,87 @@ void WifuEndBackEndLibrary::receive(gcstring& message, u_int64_t& receive_time) 
 
     //                cout << "WifuEndBackEndLibrary::receive(), message: " << message << endl;
 
-//    gcstring_map m;
-//    try {
-//        QueryStringParser::parse(message, m);
-//    } catch (WiFuException e) {
-//        return;
-//    }
-//
-//    gcstring& name = m[NAME_STRING];
-//    gcstring& s = m[SOCKET_STRING];
-//    int socket_int = atoi(s.c_str());
-//    //assert(sockInt != 0);
-//    Socket* socket = SocketCollection::instance().get_by_id(socket_int);
-//
-//    if (!name.compare(WIFU_RECVFROM_NAME)) {
-//        //        cout << Utils::get_current_time_microseconds_32() << " WifuEndBackEndLibrary::receive(), ReceiveEvent to be dispatched" << endl;
-//        //log_INFORMATIONAL("recv_event ");
-//        receive_events_.push_back(receive_time);
-//        dispatch(new ReceiveEvent(m, get_file(), socket));
-//        return;
-//
-//    } else if (!name.compare(WIFU_SENDTO_NAME)) {
-//        send_events_.push_back(receive_time);
-//        dispatch(new SendEvent(m, get_file(), socket));
-//        return;
-//
-//    } else if (!name.compare(WIFU_BIND_NAME)) {
-//        dispatch(new BindEvent(m, get_file(), socket));
-//        return;
-//
-//    } else if (!name.compare(WIFU_LISTEN_NAME)) {
-//        dispatch(new ListenEvent(m, get_file(), socket));
-//        return;
-//
-//    } else if (!name.compare(WIFU_ACCEPT_NAME)) {
-//        dispatch(new AcceptEvent(m, get_file(), socket));
-//        return;
-//
-//    } else if (!name.compare(WIFU_CONNECT_NAME)) {
-//        dispatch(new ConnectEvent(m, get_file(), socket));
-//        return;
-//
-//    } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
-//        dispatch(new GetSocketOptionEvent(m, get_file(), socket));
-//        return;
-//
-//    } else if (!name.compare(WIFU_SETSOCKOPT_NAME)) {
-//        dispatch(new SetSocketOptionEvent(m, get_file(), socket));
-//        return;
-//
-//    } else if (!name.compare(WIFU_CLOSE_NAME)) {
-//        dispatch(new CloseEvent(m, get_file(), socket));
-//        return;
-//
-//    } else if (!name.compare(WIFU_SOCKET_NAME)) {
-//
-//
-//        int domain = atoi(m[DOMAIN_STRING].c_str());
-//        int type = atoi(m[TYPE_STRING].c_str());
-//        int protocol = atoi(m[PROTOCOL_STRING].c_str());
-//
-//        if (ProtocolManager::instance().is_supported(domain, type, protocol)) {
-//            Socket* socket = new Socket(domain, type, protocol);
-//            SocketCollection::instance().push(socket);
-//
-//            dispatch(new SocketEvent(m, get_file(), socket));
-//            return;
-//
-//        } else {
-//            gcstring_map response;
-//            response[SOCKET_STRING] = s;
-//            response[FILE_STRING] = get_file();
-//            response[SOCKET_STRING] = Utils::itoa(-1);
-//            response[ERRNO] = Utils::itoa(EPROTONOSUPPORT);
-//            // TODO: May not always want to respond immediately
-//            // TODO: We may need to wait for a response from the internal system
-//            gcstring response_message;
-//            QueryStringParser::create(name, response, response_message);
-//            u_int64_t time;
-//            send_to(m[FILE_STRING], response_message, &time);
-//        }
-//    }
+    //    gcstring_map m;
+    //    try {
+    //        QueryStringParser::parse(message, m);
+    //    } catch (WiFuException e) {
+    //        return;
+    //    }
+    //
+    //    gcstring& name = m[NAME_STRING];
+    //    gcstring& s = m[SOCKET_STRING];
+    //    int socket_int = atoi(s.c_str());
+    //    //assert(sockInt != 0);
+    //    Socket* socket = SocketCollection::instance().get_by_id(socket_int);
+    //
+    //    if (!name.compare(WIFU_RECVFROM_NAME)) {
+    //        //        cout << Utils::get_current_time_microseconds_32() << " WifuEndBackEndLibrary::receive(), ReceiveEvent to be dispatched" << endl;
+    //        //log_INFORMATIONAL("recv_event ");
+    //        receive_events_.push_back(receive_time);
+    //        dispatch(new ReceiveEvent(m, get_file(), socket));
+    //        return;
+    //
+    //    } else if (!name.compare(WIFU_SENDTO_NAME)) {
+    //        send_events_.push_back(receive_time);
+    //        dispatch(new SendEvent(m, get_file(), socket));
+    //        return;
+    //
+    //    } else if (!name.compare(WIFU_BIND_NAME)) {
+    //        dispatch(new BindEvent(m, get_file(), socket));
+    //        return;
+    //
+    //    } else if (!name.compare(WIFU_LISTEN_NAME)) {
+    //        dispatch(new ListenEvent(m, get_file(), socket));
+    //        return;
+    //
+    //    } else if (!name.compare(WIFU_ACCEPT_NAME)) {
+    //        dispatch(new AcceptEvent(m, get_file(), socket));
+    //        return;
+    //
+    //    } else if (!name.compare(WIFU_CONNECT_NAME)) {
+    //        dispatch(new ConnectEvent(m, get_file(), socket));
+    //        return;
+    //
+    //    } else if (!name.compare(WIFU_GETSOCKOPT_NAME)) {
+    //        dispatch(new GetSocketOptionEvent(m, get_file(), socket));
+    //        return;
+    //
+    //    } else if (!name.compare(WIFU_SETSOCKOPT_NAME)) {
+    //        dispatch(new SetSocketOptionEvent(m, get_file(), socket));
+    //        return;
+    //
+    //    } else if (!name.compare(WIFU_CLOSE_NAME)) {
+    //        dispatch(new CloseEvent(m, get_file(), socket));
+    //        return;
+    //
+    //    } else if (!name.compare(WIFU_SOCKET_NAME)) {
+    //
+    //
+    //        int domain = atoi(m[DOMAIN_STRING].c_str());
+    //        int type = atoi(m[TYPE_STRING].c_str());
+    //        int protocol = atoi(m[PROTOCOL_STRING].c_str());
+    //
+    //        if (ProtocolManager::instance().is_supported(domain, type, protocol)) {
+    //            Socket* socket = new Socket(domain, type, protocol);
+    //            SocketCollection::instance().push(socket);
+    //
+    //            dispatch(new SocketEvent(m, get_file(), socket));
+    //            return;
+    //
+    //        } else {
+    //            gcstring_map response;
+    //            response[SOCKET_STRING] = s;
+    //            response[FILE_STRING] = get_file();
+    //            response[SOCKET_STRING] = Utils::itoa(-1);
+    //            response[ERRNO] = Utils::itoa(EPROTONOSUPPORT);
+    //            // TODO: May not always want to respond immediately
+    //            // TODO: We may need to wait for a response from the internal system
+    //            gcstring response_message;
+    //            QueryStringParser::create(name, response, response_message);
+    //            u_int64_t time;
+    //            send_to(m[FILE_STRING], response_message, &time);
+    //        }
+    //    }
 }
 
 void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_t& receive_time) {
@@ -158,7 +158,7 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 
     LibraryEvent* e = NULL;
     Socket* socket = SocketCollection::instance().get_by_id(gm->fd);
-    
+
     switch (gm->message_type) {
         case WIFU_SOCKET:
         {
@@ -182,7 +182,7 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
             }
             cout << "WIFU_SOCKET: " << endl;
             break;
-        }            
+        }
 
         case WIFU_BIND:
             cout << "WIFU_BIND" << endl;
@@ -202,12 +202,14 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
         case WIFU_SENDTO:
         case WIFU_SEND:
             cout << "WIFU_SEND(TO)" << endl;
+            send_events_.push_back(receive_time);
             e = ObjectPool<SendEvent>::instance().get();
             break;
 
         case WIFU_RECVFROM:
         case WIFU_RECV:
             cout << "WIFU_RECV(FROM)" << endl;
+            receive_events_.push_back(receive_time);
             e = ObjectPool<ReceiveEvent>::instance().get();
             break;
 
@@ -238,8 +240,9 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 
     //TODO: insert socket
 
+    assert(socket);
 
-    if(e) {
+    if (e) {
         e->set_socket(socket);
         e->save_buffer(message, length);
         dispatch(e);
@@ -251,9 +254,19 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
     cout << "WifuEndBackEndLibrary::imodule_library_response()" << endl;
     ResponseEvent* event = (ResponseEvent*) e;
+
+    struct GenericResponseMessage* response = (struct GenericResponseMessage*) event->get_buffer();
+
+    cout << "Sending to: " << event->get_destination()->sun_path << endl;
+    cout << "Message type: " << response->message_type << endl;
+    cout << "Return value: " << response->return_value << endl;
+    cout << "FD: " << response->fd << endl;
+    cout << "Errno: " << response->error << endl;
+    cout << "Length: " << response->length << endl;
+
     u_int64_t time;
     send_to(event->get_destination(), event->get_buffer(), event->get_length(), &time);
-    
+
     if (event->get_response()->message_type == WIFU_RECVFROM) {
         //cout << Utils::get_current_time_microseconds_32() << " WifuEndBackEndLibrary::imodule_library_response()" << endl;
         //log_INFORMATIONAL("recv_response_event ", (pan_uint64_t) Utils::get_current_time_microseconds_64());

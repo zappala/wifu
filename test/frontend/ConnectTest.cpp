@@ -28,7 +28,7 @@ void* thread(void* args) {
     Semaphore* sem = v->sem_;
 
     // Create server
-    int server = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+    int server = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
     int result = wifu_bind(server, (const struct sockaddr *) to_bind->get_network_struct_ptr(), sizeof (struct sockaddr_in));
     EXPECT_EQ(0, result);
     result = wifu_listen(server, 5);
@@ -77,7 +77,7 @@ void connect_test() {
     // Create client
 
     timer.start();
-    client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+    client = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
     result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     timer.stop();
     ASSERT_EQ(0, result);
@@ -97,21 +97,21 @@ void drop_none() {
     NetworkTrace expected;
 
     // send
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
     // receive
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
 
 
     // send
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
 
 
     // send
-    expected.add_packet(get_ack(SIMPLE_TCP));
+    expected.add_packet(get_ack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_ack(SIMPLE_TCP));
+    expected.add_packet(get_ack(TCP_TAHOE));
 
     compare_traces(expected);
 }
@@ -126,23 +126,23 @@ void drop_syn() {
     NetworkTrace expected;
 
     // Send and drop
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
     // resend
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
     // receive
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
 
 
     // send
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
 
 
     // send
-    expected.add_packet(get_ack(SIMPLE_TCP));
+    expected.add_packet(get_ack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_ack(SIMPLE_TCP));
+    expected.add_packet(get_ack(TCP_TAHOE));
 
     compare_traces(expected);
 }
@@ -159,27 +159,27 @@ void drop_synack12_delay_synack12() {
     NetworkTrace expected;
 
     // Send
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
     // receive
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
 
     // send (drop)
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
 
     // resend
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
     // recieve
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
 
     // resend
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
     
     // send
-    expected.add_packet(get_ack(SIMPLE_TCP));
+    expected.add_packet(get_ack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_ack(SIMPLE_TCP));
+    expected.add_packet(get_ack(TCP_TAHOE));
 
     compare_traces(expected);
 }
@@ -194,28 +194,28 @@ void drop_synack12_delay_syn10() {
     NetworkTrace expected;
 
     // Send
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
     // receive
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
 
     // send (drop)
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
 
     // resend (delayed)
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
 
     // resend
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
     
     // send
-    expected.add_packet(get_ack(SIMPLE_TCP));
+    expected.add_packet(get_ack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_ack(SIMPLE_TCP));
+    expected.add_packet(get_ack(TCP_TAHOE));
 
     // receive
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
 
     compare_traces(expected);
 }
@@ -230,27 +230,27 @@ void drop_ack() {
     NetworkTrace expected;
 
     // Send
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
     // receive
-    expected.add_packet(get_syn(SIMPLE_TCP));
+    expected.add_packet(get_syn(TCP_TAHOE));
 
     // send
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
 
     // send
-    expected.add_packet(get_ack(SIMPLE_TCP));
+    expected.add_packet(get_ack(TCP_TAHOE));
 
     // resend
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_synack(SIMPLE_TCP));
+    expected.add_packet(get_synack(TCP_TAHOE));
 
     // send
-    expected.add_packet(get_ack(SIMPLE_TCP));
+    expected.add_packet(get_ack(TCP_TAHOE));
     // receive
-    expected.add_packet(get_ack(SIMPLE_TCP));
+    expected.add_packet(get_ack(TCP_TAHOE));
 
 
     compare_traces(expected);

@@ -107,7 +107,7 @@ void DummyProtocol::dispatch_received_data(QueueProcessor<Event*>* q, ReceiveEve
     // done in set length
     //response->set_return_value(length);
     response->set_errno(0);
-    int length = min(s->get_receive_buffer().size(), buffer_size);
+    int length = min(s->get_receive_buffer().size() - c->get_receive_index(), buffer_size);
     response->set_return_buffer((unsigned char*) s->get_receive_buffer().data(), length);
 
 //    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);

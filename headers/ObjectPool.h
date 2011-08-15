@@ -54,18 +54,21 @@ public:
 
     T* get() {
         mutex_.wait();
-        if(object_list_.size() <= 0) {
-            grow();
-        }
-        T* item = object_list_.front();
-        object_list_.pop_front();
+//        if(object_list_.size() <= 0) {
+//            grow();
+//        }
+//        T* item = object_list_.front();
+//        object_list_.pop_front();
+        
+        T* item = new T;
         mutex_.post();
+
         return item;
     }
 
     void release(T* item) {
         mutex_.wait();
-        object_list_.push_back(item);
+//        object_list_.push_back(item);
         mutex_.post();
     }
 

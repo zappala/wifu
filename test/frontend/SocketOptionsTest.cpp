@@ -18,7 +18,7 @@ using namespace std;
 namespace {
 
     TEST_F(BackEndMockTestDropNone, socketOptionsTestCharacterValue) {
-        int fd = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+        int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
 
         int level = 0;
         int optname = 0;
@@ -42,7 +42,7 @@ namespace {
     }
 
     TEST_F(BackEndMockTestDropNone, socketOptionsTestIntValue) {
-        int fd = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+        int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
 
         int level = 0;
         int optname = 0;
@@ -65,7 +65,7 @@ namespace {
     }
 
     TEST_F(BackEndMockTestDropNone, socketOptionsTestDoubleValue) {
-        int fd = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+        int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
 
         int level = 0;
         int optname = 0;
@@ -88,7 +88,7 @@ namespace {
     }
 
     TEST_F(BackEndMockTestDropNone, socketOptionsTestBoolValue) {
-        int fd = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+        int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
 
         int level = 0;
         int optname = 0;
@@ -111,7 +111,7 @@ namespace {
     }
 
     TEST_F(BackEndMockTestDropNone, socketOptionsTestTimestampValue) {
-        int fd = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+        int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
 
         for (int i = 0; i < 1000; i++) {
 
@@ -136,7 +136,7 @@ namespace {
     }
 
     TEST_F(BackEndMockTestDropNone, socketOptionsTestCharStar) {
-        int fd = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+        int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
 
         for (int i = 0; i < 1000; i++) {
             gcstring optval = rand() % 2 == 1 ? "on" : "off";
@@ -161,7 +161,7 @@ namespace {
     TEST_F(BackEndMockTestDropNone, socketOptionsTestManyIntValues) {
         // This code fails
 
-        //        int fd = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+        //        int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
         //        int max = 18;
         //        unsigned char buffer[BUFFER_SIZE];
         //

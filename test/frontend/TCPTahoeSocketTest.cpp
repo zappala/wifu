@@ -17,6 +17,6 @@ TEST_F(BackEndTest, TCPTahoeSocketTest) {
 
         // Check invalid (i != TCP_TAHOE)
         socket = wifu_socket(AF_INET, SOCK_STREAM, i);
-        ASSERT_TRUE(socket == -1);
+        ASSERT_EQ(-1, socket);
     }
 }

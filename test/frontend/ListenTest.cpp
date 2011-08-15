@@ -33,7 +33,8 @@ TEST_F(BackEndTest, listenTest) {
     to_bind.sin_addr.s_addr = INADDR_ANY;
 
     // Should be successful
-    int socket = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+    int socket = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
+    ASSERT_LT(0, socket);
     result = wifu_bind(socket, (const struct sockaddr *) & to_bind, length);
     ASSERT_EQ(0, result);
     result = wifu_listen(socket, 5);
