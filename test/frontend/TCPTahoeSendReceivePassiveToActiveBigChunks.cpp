@@ -48,7 +48,7 @@ void* tcp_tahoe_passive_to_active_big_chunks_thread(void* args) {
 
     EXPECT_EQ(message.length(), num_sent);
 
-    cout << "Done Sending data" << endl;
+//    cout << "Done Sending data" << endl;
 
     wifu_close(connection);
     wifu_close(server);

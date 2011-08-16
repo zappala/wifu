@@ -11,7 +11,7 @@ Protocol::~Protocol() {
 }
 
 void Protocol::imodule_library_socket(Event* e) {
-    cout << "Protocol::imodule_library_socket()" << endl;
+//    cout << "Protocol::imodule_library_socket()" << endl;
     SocketEvent* event = (SocketEvent*) e;
 
     Socket* s = event->get_socket();
@@ -38,11 +38,11 @@ void Protocol::imodule_library_socket(Event* e) {
 //    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
 
     dispatch(response_event);
-    cout << "Leaving Protocol::imodule_library_socket()" << endl;
+//    cout << "Leaving Protocol::imodule_library_socket()" << endl;
 }
 
 void Protocol::imodule_library_bind(Event* e) {
-    cout << "Protocol::imodule_library_bind()" << endl;
+//    cout << "Protocol::imodule_library_bind()" << endl;
     BindEvent* event = (BindEvent*) e;
 
     int error = 0;
@@ -63,12 +63,10 @@ void Protocol::imodule_library_bind(Event* e) {
         SocketCollection::instance().accept(&v);
 
         if (!v.is_bound()) {
-            cout << "Not bound" << endl;
             socket->set_local_address_port(local);
             icontext_bind(this, event);
             return_val = 0;
         } else {
-            cout << "Already bound bound" << endl;
             error = EINVAL;
         }
 
@@ -167,19 +165,17 @@ void Protocol::imodule_library_accept(Event* e) {
 }
 
 void Protocol::imodule_library_receive(Event* e) {
-            cout << "Protocol::library_receive()" << endl;
+//            cout << "Protocol::library_receive()" << endl;
     ReceiveEvent* event = (ReceiveEvent*) e;
 
     Socket* s = event->get_socket();
 
     if (!sockets_.contains(s)) {
-        cout << "Socket not in container" << endl;
         return;
     }
 
     if (!icontext_can_receive(s)) {
         // TODO: respond with error
-        cout << "Socket not able to receive" << endl;
         return;
     }
 

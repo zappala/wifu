@@ -120,85 +120,10 @@ public:
         }
     }
 
-    /**
-     * This is the callback function where messages received come.
-     * This function fills in the appropriate fields in the SocketData object
-     * associated with the socket id.
-     * Finally it posts on the Semaphore internal to to the above mentioned SocketData object.
-     *
-     * @param message The message received from the back-end.
-     *
-     * @see SocketData
-     */
-    //    void receive(gcstring& message, u_int64_t& receive_time) {
-    //        //                cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
-    //        response_.clear();
-    //        QueryStringParser::parse(message, response_);
-    //        int socket = atoi(response_[SOCKET_STRING].c_str());
-    //
-    //        if (!response_[NAME_STRING].compare(WIFU_SOCKET_NAME)) {
-    //
-    //            sockets.get(0)->set_return_value(socket);
-    //            socket_signal_.post();
-    //            return;
-    //        }
-    //
-    //        SocketData* data = sockets.get(socket);
-    //        if (!data && !response_[NAME_STRING].compare(WIFU_CLOSE_NAME)) {
-    //            // We already closed
-    //            //            cout << "WifuEndAPILocalSocket::receive(), Already closed" << message << endl;
-    //            return;
-    //        }
-    //
-    //        if (!data) {
-    //            //            cout << "Socket: " << socket << " is deleted" << endl;
-    //            //            cout << "Message: " << message << endl;
-    //
-    //            //TODO: is this really an error?
-    //            assert(data);
-    //            return;
-    //        }
-    //
-    //        data->get_flag()->wait();
-    //
-    //        if (!response_[NAME_STRING].compare(WIFU_RECVFROM_NAME)) {
-    //            //cout << "WifuEndAPILocalSocket::receive(): Response:\t" << message << endl;
-    //            recv_response_events_.push_back(receive_time);
-    //            recv_response_sizes_.push_back(response_[RETURN_VALUE_STRING]);
-    //
-    //            data->set_payload(response_[BUFFER_STRING], response_[BUFFER_STRING].length());
-    //        } else if (!response_[NAME_STRING].compare(WIFU_SENDTO_NAME)) {
-    //            send_response_events_.push_back(receive_time);
-    //            send_response_sizes_.push_back(response_[RETURN_VALUE_STRING]);
-    //        } else if (!response_[NAME_STRING].compare(WIFU_GETSOCKOPT_NAME)) {
-    //            gcstring response = response_[BUFFER_STRING];
-    //            int length = atoi(response_[LENGTH_STRING].c_str());
-    //            data->set_payload(response, length);
-    //        } else if (!response_[NAME_STRING].compare(WIFU_ACCEPT_NAME)) {
-    //            gcstring address = response_[ADDRESS_STRING];
-    //            u_int16_t port = atoi(response_[PORT_STRING].c_str());
-    //            AddressPort* ap = new AddressPort(address, port);
-    //            data->set_address_port(ap);
-    //        }
-    //
-    //        int value = atoi(response_[RETURN_VALUE_STRING].c_str());
-    //        int error = atoi(response_[ERRNO].c_str());
-    //
-    //        data->set_error(error);
-    //        data->set_return_value(value);
-    //        data->get_semaphore()->post();
-    //    }
-
     void receive(unsigned char* message, int length, u_int64_t& receive_time) {
-        cout << "WEAPLS::receive()" << endl;
+        //        cout << "WEAPLS::receive()" << endl;
 
         struct GenericResponseMessage* response = (struct GenericResponseMessage*) message;
-
-        cout << "Message type: " << response->message_type << endl;
-        cout << "Return value: " << response->return_value << endl;
-        cout << "FD: " << response->fd << endl;
-        cout << "Errno: " << response->error << endl;
-        cout << "Length: " << response->length << endl << endl;
 
         if (response->message_type == WIFU_SOCKET) {
             sockets.get(0)->set_payload(message, length);
@@ -215,9 +140,16 @@ public:
 
         if (!data) {
             //TODO: is this really an error?
-
             assert(data);
             return;
+        }
+
+        if (response->message_type == WIFU_RECVFROM) {
+            recv_response_events_.push_back(receive_time);
+            recv_response_sizes_.push_back(response->return_value);
+        } else if (response->message_type == WIFU_SENDTO) {
+            send_response_events_.push_back(receive_time);
+            send_response_sizes_.push_back(response->return_value);
         }
 
         data->get_flag()->wait();
@@ -488,7 +420,6 @@ public:
         send_to(&back_end_, accept_message, accept_message->length, &time);
 
         data->get_semaphore()->wait();
-        cout << "Done waiting in accept()" << endl;
 
         struct AcceptResponseMessage* accept_response = (struct AcceptResponseMessage*) data->get_payload();
 
@@ -733,10 +664,10 @@ private:
     BinarySemaphore socket_mutex_;
 
     list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
-    list<gcstring, gc_allocator<gcstring> > recv_response_sizes_;
+    list<int, gc_allocator<int> > recv_response_sizes_;
 
     list<u_int64_t, gc_allocator<u_int64_t> > send_events_, send_response_events_;
-    list<gcstring, gc_allocator<gcstring> > send_response_sizes_;
+    list<int, gc_allocator<int> > send_response_sizes_;
 };
 
 #endif	/* _WIFUENDAPILOCALSOCKET_H */

@@ -683,6 +683,7 @@ class PreliminaryGrapher:
 					total_time += duration
 					total_bytes += bytes
 
+			print total_bytes, " ", num_bytes
 			assert total_bytes == num_bytes
 			# assuming one kilo == 1000
 			rate = (num_bytes * 8.0 / 1000000.0) / (total_time / 1000000.0)

@@ -8,6 +8,7 @@
 #ifndef WIFUENDBACKENDLIBRARY_H
 #define	WIFUENDBACKENDLIBRARY_H
 
+
 #include "LocalSocketFullDuplex.h"
 #include "Module.h"
 #include "QueryStringParser.h"
@@ -30,6 +31,9 @@
 #include "PortManager.h"
 #include "ObjectPool.h"
 #include "Logger.h"
+#include "MessageStructDefinitions.h"
+
+#include <map>
 
 /**
  * Translates string messages received from the front-end library into Event objects
@@ -44,18 +48,18 @@ public:
     /**
      * Callback function when the Unix socket receives a message
      * Will convert the message to an Event and queue it onto the Dispatcher
-     * The guts of this method are copied from test/WifuEndAPItest.h
      *
      * @param message Message received from the front-end API
      */
-    void receive(gcstring& message, u_int64_t& receive_time);
-
     void receive(unsigned char* message, int length, u_int64_t& receive_time);
 
     void imodule_library_response(Event* e);
 
 private:
     WifuEndBackEndLibrary();
+
+    map<int, LibraryEvent*, less<int>, gc_allocator<pair<int, LibraryEvent*> > > event_map_;
+    map<int, LibraryEvent*, less<int>, gc_allocator<pair<int, LibraryEvent*> > >::iterator event_map_iterator_;
 
     list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
     list<u_int32_t, gc_allocator<u_int32_t> > recv_response_sizes_;

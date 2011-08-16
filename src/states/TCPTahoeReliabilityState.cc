@@ -54,15 +54,13 @@ void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, QueueP
 }
 
 void TCPTahoeReliabilityState::state_receive(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
-    cout << "TCPTahoeReliabilityState::state_receive()" << endl;
+//    cout << "TCPTahoeReliabilityState::state_receive()" << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
 
     if (!s->get_receive_buffer().empty()) {
-        cout << "Receive buffer not empty" << endl;
         create_and_dispatch_received_data(c, q, e);
     } else {
-        cout << "Receive buffer empty" << endl;
         assert(!rc->get_receive_event());
         rc->set_receive_event(e);
     }
