@@ -344,6 +344,68 @@ def build_simple_tcp_receiver(bld):
 			uselib_local='wifu-end-api',
 			target='simple-tcp-receiver')
 
+def build_raw_socket_sender(bld):
+	files = bld.glob('preliminary/RawSocketBlasterSender.cc')
+	files += bld.glob('src/packet/*.cc')
+	files += bld.glob('src/visitors/*.cc')
+	files += bld.glob('src/Socket.cc')
+	files += bld.glob('src/observer/*.cc')
+	files += bld.glob('src/exceptions/*.cc')
+	files += bld.glob('src/SocketOptions.cc')
+	files += bld.glob('src/Semaphore.cc')
+	files += bld.glob('src/PortManagerFactory.cc')
+	files += bld.glob('src/AddressPort.cc')
+	files += bld.glob('src/SocketManager.cc')
+	files += bld.glob('src/Math.cc')
+
+	if Options.options.bit_32:
+		receiver = bld(features='cxx cprogram',
+			source=files,
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer',
+			uselib='PTHREAD RT',
+			libpath = '../lib/gc/gc_32',
+			staticlib = ['gccpp', 'gc', 'cord'],
+			target='raw-socket-blaster-sender')
+	else:
+		receiver = bld(features='cxx cprogram',
+			source=files,
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer',
+			uselib='PTHREAD RT',
+			libpath = '../lib/gc/gc_64',
+			staticlib = ['gccpp', 'gc', 'cord'],
+			target='raw-socket-blaster-sender')
+
+def build_raw_socket_receiver(bld):
+	files = bld.glob('preliminary/RawSocketBlasterReceiver.cc')
+	files += bld.glob('src/packet/*.cc')
+	files += bld.glob('src/visitors/*.cc')
+	files += bld.glob('src/Socket.cc')
+	files += bld.glob('src/observer/*.cc')
+	files += bld.glob('src/exceptions/*.cc')
+	files += bld.glob('src/SocketOptions.cc')
+	files += bld.glob('src/Semaphore.cc')
+	files += bld.glob('src/PortManagerFactory.cc')
+	files += bld.glob('src/AddressPort.cc')
+	files += bld.glob('src/SocketManager.cc')
+	files += bld.glob('src/Math.cc')
+
+	if Options.options.bit_32:
+		receiver = bld(features='cxx cprogram',
+			source=files,
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer',
+			uselib='PTHREAD RT',
+			libpath = '../lib/gc/gc_32',
+			staticlib = ['gccpp', 'gc', 'cord'],
+			target='raw-socket-blaster-receiver')
+	else:
+		receiver = bld(features='cxx cprogram',
+			source=files,
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer',
+			uselib='PTHREAD RT',
+			libpath = '../lib/gc/gc_64',
+			staticlib = ['gccpp', 'gc', 'cord'],
+			target='raw-socket-blaster-receiver')
+
 def build(bld):
 #	build_blaster(bld)
 #	build_sink(bld)
@@ -357,6 +419,9 @@ def build(bld):
 	
 	build_simple_tcp_sender(bld)
 	build_simple_tcp_receiver(bld)
+
+	build_raw_socket_receiver(bld)
+	build_raw_socket_sender(bld)
 
 #	bld.add_post_fun(post)
 

@@ -731,30 +731,37 @@ class PreliminaryGrapher:
 		print "Entire loop:"
 		print "Kernel Send:\t", s.get_25th_percentile(loop_data[0]), "\t", s.median(loop_data[0]), "\t", s.get_75th_percentile(loop_data[0])
 		print "WiFu Send:\t", s.get_25th_percentile(loop_data[1]), "\t", s.median(loop_data[1]), "\t", s.get_75th_percentile(loop_data[1])
+		print "WiFu / Kernel Send Ratio for median value:\t", s.median(loop_data[1]) / s.median(loop_data[0])
 		print "Kernel Receive:\t", s.get_25th_percentile(loop_data[2]), "\t", s.median(loop_data[2]), "\t", s.get_75th_percentile(loop_data[2])
 		print "WiFu Receive:\t", s.get_25th_percentile(loop_data[3]), "\t", s.median(loop_data[3]), "\t", s.get_75th_percentile(loop_data[3])
-		
+		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(loop_data[3]) / s.median(loop_data[2])
+
 		print ""
 		print "Function Call:"
 		print "Kernel Send:\t", s.get_25th_percentile(function_data[0]), "\t", s.median(function_data[0]), "\t", s.get_75th_percentile(function_data[0])
 		print "WiFu Send:\t", s.get_25th_percentile(function_data[1]), "\t", s.median(function_data[1]), "\t", s.get_75th_percentile(function_data[1])
+		print "WiFu / Kernel Send Ratio for median value:\t", s.median(function_data[1]) / s.median(function_data[0])
 		print "Kernel Receive:\t", s.get_25th_percentile(function_data[2]), "\t", s.median(function_data[2]), "\t", s.get_75th_percentile(function_data[2])
 		print "WiFu Receive:\t", s.get_25th_percentile(function_data[3]), "\t", s.median(function_data[3]), "\t", s.get_75th_percentile(function_data[3])
+		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(function_data[3]) / s.median(function_data[2])
 
 		print ""
 		print "Outside Unix Socket Call:"
 		print "Kernel Send:\t", s.get_25th_percentile(outside_unix_socket_data[0]), "\t", s.median(outside_unix_socket_data[0]), "\t", s.get_75th_percentile(outside_unix_socket_data[0])
 		print "WiFu Send:\t", s.get_25th_percentile(outside_unix_socket_data[1]), "\t", s.median(outside_unix_socket_data[1]), "\t", s.get_75th_percentile(outside_unix_socket_data[1])
+		print "WiFu / Kernel Send Ratio for median value:\t", s.median(outside_unix_socket_data[1]) / s.median(outside_unix_socket_data[0])
 		print "Kernel Receive:\t", s.get_25th_percentile(outside_unix_socket_data[2]), "\t", s.median(outside_unix_socket_data[2]), "\t", s.get_75th_percentile(outside_unix_socket_data[2])
 		print "WiFu Receive:\t", s.get_25th_percentile(outside_unix_socket_data[3]), "\t", s.median(outside_unix_socket_data[3]), "\t", s.get_75th_percentile(outside_unix_socket_data[3])
+		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(outside_unix_socket_data[3]) / s.median(outside_unix_socket_data[2])
 
 		print ""
 		print "Inside Unix Socket Call:"
 		print "Kernel Send:\t", s.get_25th_percentile(inside_unix_socket_data[0]), "\t", s.median(inside_unix_socket_data[0]), "\t", s.get_75th_percentile(inside_unix_socket_data[0])
 		print "WiFu Send:\t", s.get_25th_percentile(inside_unix_socket_data[1]), "\t", s.median(inside_unix_socket_data[1]), "\t", s.get_75th_percentile(inside_unix_socket_data[1])
+		print "WiFu / Kernel Send Ratio for median value:\t", s.median(inside_unix_socket_data[1]) / s.median(inside_unix_socket_data[0])
 		print "Kernel Receive:\t", s.get_25th_percentile(inside_unix_socket_data[2]), "\t", s.median(inside_unix_socket_data[2]), "\t", s.get_75th_percentile(inside_unix_socket_data[2])
 		print "WiFu Receive:\t", s.get_25th_percentile(inside_unix_socket_data[3]), "\t", s.median(inside_unix_socket_data[3]), "\t", s.get_75th_percentile(inside_unix_socket_data[3])
-
+		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(inside_unix_socket_data[3]) / s.median(inside_unix_socket_data[2])
 
 if __name__ == "__main__":
 
