@@ -16,10 +16,15 @@
 #include "IContextContainerFactory.h"
 #include "TCPTahoeIContextContainerFactory.h"
 #include "contexts/BasicIContextContainer.h"
+#include "Logger.h"
 
 class TCPTahoe : public Protocol {
 private:
     IContextContainerFactory* factory_;
+    
+
+    list<u_int64_t, gc_allocator<u_int64_t> > send_events_, send_response_events_;
+    list<u_int32_t, gc_allocator<u_int32_t> > send_response_sizes_;
 
 protected:
     TCPTahoe(int protocol = TCP_TAHOE, IContextContainerFactory* factory = new TCPTahoeIContextContainerFactory());

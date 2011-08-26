@@ -25,8 +25,11 @@
 #include "ObjectPool.h"
 
 #include "Math.h"
-
+#include "Logger.h"
 class TCPTahoeReliabilityState : public State {
+private:
+    list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
+    list<u_int32_t, gc_allocator<u_int32_t> > recv_response_sizes_;
 public:
     TCPTahoeReliabilityState();
     virtual ~TCPTahoeReliabilityState();
@@ -36,6 +39,8 @@ public:
     virtual void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
     virtual void state_receive_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, ReceiveBufferNotEmptyEvent* e);
     virtual void state_receive(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e);
+
+    virtual void state_delete_socket(Context* c, QueueProcessor<Event*>* q, DeleteSocketEvent* e);
 
 protected:
     virtual void start_timer(Context* c, Socket* s);
