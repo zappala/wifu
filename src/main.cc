@@ -336,7 +336,7 @@ void register_protocols() {
     //    register_delayed_ack();
     //    register_few();
     //    register_ap();
-    register_dummy_proto();
+//    register_dummy_proto();
 }
 
 void setup_network_interface(gcstring& type) {

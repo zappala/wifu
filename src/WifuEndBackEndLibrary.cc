@@ -160,6 +160,8 @@ void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
 
     LibraryEvent* original_event = event_map_iterator_->second;
 
+    // TODO: switch this to be using the original event's message type instead of the typeid
+
     if (typeid (*original_event) == typeid (ReceiveEvent)) {
         recv_response_events_.push_back(time);
         recv_response_sizes_.push_back(event->get_response()->return_value);

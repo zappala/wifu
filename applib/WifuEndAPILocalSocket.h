@@ -144,7 +144,7 @@ public:
             return;
         }
 
-        if (response->message_type == WIFU_RECVFROM) {
+        if (response->message_type == WIFU_RECVFROM || response->message_type == WIFU_PRECLOSE) {
             recv_response_events_.push_back(receive_time);
             recv_response_sizes_.push_back(response->return_value);
         } else if (response->message_type == WIFU_SENDTO) {

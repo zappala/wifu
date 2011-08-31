@@ -784,12 +784,147 @@ class PreliminaryGrapher:
 		self.__graph_boxplot(data, title, filename)
 		return data
 
+	def graph_before_dispatcher_goodputs(self, function_goodputs_data):
+		num_bytes = float(self.configuration.dictionary["num"])
+
+		kernel_receive = function_goodputs_data[2]
+		kernel_send = function_goodputs_data[0]
+		wifu_receive = []
+		wifu_send = []
+
+		parser = FileParser()
+
+		files = self.__get_log_files("receiver_wifu_end\.log")
+
+		#create vectors of goodput
+		for file in files:
+			print file
+			lines = parser.parse(file)
+			total_time = 0.0
+			total_bytes = 0
+			for line in lines:
+				if "recv_before_dispatcher" in line:
+					values = line.split(' ')
+					assert len(values) == 9 or len(values) == 11
+					start = int(values[6])
+					end = int(values[7])
+					bytes = int(values[8])
+					duration = end - start
+					assert duration > 0
+					total_time += duration
+					total_bytes += bytes
+
+			print total_bytes, " ", num_bytes
+			assert total_bytes == num_bytes
+			# assuming one kilo == 1000
+			rate = (num_bytes * 8.0 / 1000000.0) / (total_time / 1000000.0)
+			wifu_receive.append(rate)
+
+		files = self.__get_log_files("sender_wifu_end\.log")
+
+		for file in files:
+			lines = parser.parse(file)
+			total_time = 0.0
+			total_bytes = 0
+			for line in lines:
+				if "send_before_dispatcher" in line:
+					values = line.split(' ')
+					assert len(values) == 9 or len(values) == 11
+					start = int(values[6])
+					end = int(values[7])
+					bytes = int(values[8])
+					duration = end - start
+					assert duration > 0
+					total_time += duration
+					total_bytes += bytes
+
+			print total_bytes, " ", num_bytes
+			assert total_bytes == num_bytes
+			# assuming one kilo == 1000
+			rate = (num_bytes * 8 / 1000000) / (total_time / 1000000)
+			wifu_send.append(rate)
+
+		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
+	#		print "Inside unix socket data: ", data
+		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Dispatcher Before Enqueue)'
+		filename = self.graph_path + 'send_receive_rate_boxplot_dispatcher_before_enqueue.png'
+		self.__graph_boxplot(data, title, filename)
+		return data
+
+	def graph_after_dispatcher_goodputs(self, function_goodputs_data):
+		num_bytes = float(self.configuration.dictionary["num"])
+
+		kernel_receive = function_goodputs_data[2]
+		kernel_send = function_goodputs_data[0]
+		wifu_receive = []
+		wifu_send = []
+
+		parser = FileParser()
+
+		files = self.__get_log_files("receiver_wifu_end\.log")
+
+		#create vectors of goodput
+		for file in files:
+			print file
+			lines = parser.parse(file)
+			total_time = 0.0
+			total_bytes = 0
+			for line in lines:
+				if "recv_after_dispatcher" in line:
+					values = line.split(' ')
+					assert len(values) == 9
+					start = int(values[6])
+					end = int(values[7])
+					bytes = int(values[8])
+					duration = end - start
+					assert duration > 0
+					total_time += duration
+					total_bytes += bytes
+
+			assert total_bytes == num_bytes
+			# assuming one kilo == 1000
+			rate = (num_bytes * 8.0 / 1000000.0) / (total_time / 1000000.0)
+			wifu_receive.append(rate)
+
+		files = self.__get_log_files("sender_wifu_end\.log")
+
+		for file in files:
+			lines = parser.parse(file)
+			total_time = 0.0
+			total_bytes = 0
+			for line in lines:
+				if "send_after_dispatcher" in line:
+					values = line.split(' ')
+					assert len(values) == 9
+					start = int(values[6])
+					end = int(values[7])
+					bytes = int(values[8])
+					duration = end - start
+					assert duration > 0
+					total_time += duration
+					total_bytes += bytes
+
+			print total_bytes, " ", num_bytes
+			assert total_bytes == num_bytes
+			# assuming one kilo == 1000
+			rate = (num_bytes * 8 / 1000000) / (total_time / 1000000)
+			wifu_send.append(rate)
+
+		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
+	#		print "Inside unix socket data: ", data
+		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Dispatcher After Enqueue)'
+		filename = self.graph_path + 'send_receive_rate_boxplot_dispatcher_after_enqueue.png'
+		self.__graph_boxplot(data, title, filename)
+		return data
+
 	def graph(self):
 		loop_data = self.graph_loop_goodputs()
 		function_data = self.graph_function_goodputs()
 		outside_unix_socket_data = self.graph_outside_unix_socket_goodputs(function_data)
 		inside_unix_socket_data = self.graph_inside_unix_socket_goodputs(function_data)
 		inside_tahoe_data = self.graph_inside_tahoe_goodputs(function_data)
+		dispatcher_data = self.graph_before_dispatcher_goodputs(function_data)
+		dispatcher_data_after = self.graph_after_dispatcher_goodputs(function_data)
 		
 
 		s = Stats()
@@ -828,6 +963,24 @@ class PreliminaryGrapher:
 		print "Kernel Receive:\t", s.get_25th_percentile(inside_unix_socket_data[2]), "\t", s.median(inside_unix_socket_data[2]), "\t", s.get_75th_percentile(inside_unix_socket_data[2])
 		print "WiFu Receive:\t", s.get_25th_percentile(inside_unix_socket_data[3]), "\t", s.median(inside_unix_socket_data[3]), "\t", s.get_75th_percentile(inside_unix_socket_data[3])
 		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(inside_unix_socket_data[3]) / s.median(inside_unix_socket_data[2])
+
+		print ""
+		print "Dispatcher Before Enqueue:"
+		print "Kernel Send:\t", s.get_25th_percentile(dispatcher_data[0]), "\t", s.median(dispatcher_data[0]), "\t", s.get_75th_percentile(dispatcher_data[0])
+		print "WiFu Send:\t", s.get_25th_percentile(dispatcher_data[1]), "\t", s.median(dispatcher_data[1]), "\t", s.get_75th_percentile(dispatcher_data[1])
+		print "WiFu / Kernel Send Ratio for median value:\t", s.median(dispatcher_data[1]) / s.median(dispatcher_data[0])
+		print "Kernel Receive:\t", s.get_25th_percentile(dispatcher_data[2]), "\t", s.median(dispatcher_data[2]), "\t", s.get_75th_percentile(dispatcher_data[2])
+		print "WiFu Receive:\t", s.get_25th_percentile(dispatcher_data[3]), "\t", s.median(dispatcher_data[3]), "\t", s.get_75th_percentile(dispatcher_data[3])
+		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(dispatcher_data[3]) / s.median(dispatcher_data[2])
+
+		print ""
+		print "Dispatcher After Enqueue:"
+		print "Kernel Send:\t", s.get_25th_percentile(dispatcher_data_after[0]), "\t", s.median(dispatcher_data_after[0]), "\t", s.get_75th_percentile(dispatcher_data_after[0])
+		print "WiFu Send:\t", s.get_25th_percentile(dispatcher_data_after[1]), "\t", s.median(dispatcher_data_after[1]), "\t", s.get_75th_percentile(dispatcher_data_after[1])
+		print "WiFu / Kernel Send Ratio for median value:\t", s.median(dispatcher_data_after[1]) / s.median(dispatcher_data_after[0])
+		print "Kernel Receive:\t", s.get_25th_percentile(dispatcher_data_after[2]), "\t", s.median(dispatcher_data_after[2]), "\t", s.get_75th_percentile(dispatcher_data_after[2])
+		print "WiFu Receive:\t", s.get_25th_percentile(dispatcher_data_after[3]), "\t", s.median(dispatcher_data_after[3]), "\t", s.get_75th_percentile(dispatcher_data_after[3])
+		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(dispatcher_data_after[3]) / s.median(dispatcher_data_after[2])
 
 		print ""
 		print "Inside Tahoe:"
