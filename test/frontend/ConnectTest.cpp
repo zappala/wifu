@@ -47,7 +47,7 @@ void* thread(void* args) {
     gcstring address("127.0.0.1");
     gcstring res = ap.get_address();
     EXPECT_EQ(address, res);
-//    cout << "Connected to: " << ap.to_s() << endl;
+    cout << "Connected to: " << ap.to_s() << endl;
 
 }
 
@@ -82,7 +82,7 @@ void connect_test() {
     timer.stop();
     ASSERT_EQ(0, result);
 
-//    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
+    cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
     sleep(5);
 }
 
@@ -216,6 +216,17 @@ void drop_synack12_delay_syn10() {
 
     // receive
     expected.add_packet(get_syn(TCP_TAHOE));
+
+    // the syn elicits and ACK because it is now invalid
+
+    TCPPacket* p = get_synack(TCP_TAHOE);
+    p->set_tcp_sequence_number(2);
+    p->set_tcp_syn(false);
+    // send
+    expected.add_packet(p);
+    // receive
+    expected.add_packet(p);
+
 
     compare_traces(expected);
 }
