@@ -37,16 +37,13 @@ void DummyProtocol::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
 
     // Respond to the sending socket
     ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
+    response_event->set_socket(source);
+    response_event->set_message_type(e->get_message_type());
+    response_event->set_fd(e->get_fd());
+    response_event->set_return_value(e->get_data_length());
+    response_event->set_errno(0);
     response_event->set_default_length();
     response_event->set_destination(e->get_source());
-    response_event->set_errno(0);
-    response_event->set_message_type(e->get_message_type());
-    response_event->set_return_value(e->get_data_length());
-    response_event->set_socket(source);
-    response_event->set_fd(e->get_fd());
-    //    ResponseEvent* response = new ResponseEvent(source, e->get_name(), e->get_map()[FILE_STRING]);
-    //    response->put(RETURN_VALUE_STRING, Utils::itoa(e->data_length()));
-    //    response->put(ERRNO, Utils::itoa(0));
     dispatch(response_event);
 
     // Try to receive on the receiving socket
@@ -102,30 +99,22 @@ void DummyProtocol::dispatch_received_data(QueueProcessor<Event*>* q, ReceiveEve
     response->set_socket(s);
     response->set_message_type(e->get_message_type());
     response->set_fd(e->get_fd());
-    response->set_destination(e->get_source());
-    response->set_addr(s->get_remote_address_port()->get_network_struct_ptr(), sizeof (struct sockaddr_in));
     // done in set length
     //response->set_return_value(length);
     response->set_errno(0);
+    // done in set_return_buffer
+    // response->set_length();
+    response->set_destination(e->get_source());
+    response->set_addr(s->get_remote_address_port()->get_network_struct_ptr(), sizeof (struct sockaddr_in));
+    
     int length = min(s->get_receive_buffer().size() - c->get_receive_index(), buffer_size);
     response->set_return_buffer((unsigned char*) s->get_receive_buffer().data(), length);
 
-//    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-
-//    response->put(BUFFER_STRING, s->get_receive_buffer().substr(c->get_receive_index(), buffer_size));
-//    int length = response->get(BUFFER_STRING)->size();
-    //s->get_receive_buffer().erase(0, length);
     c->set_receive_index(c->get_receive_index() + length);
     if (c->get_receive_index() >= s->get_receive_buffer().size()) {
         s->get_receive_buffer().clear();
         c->set_receive_index(0);
-        //cout << "Calling clear" << endl;
     }
-
-//    response->put(ADDRESS_STRING, s->get_remote_address_port()->get_address());
-//    response->put(PORT_STRING, Utils::itoa(s->get_remote_address_port()->get_port()));
-//    response->put(RETURN_VALUE_STRING, Utils::itoa(length));
-//    response->put(ERRNO, Utils::itoa(0));
 
     dispatch(response);
     q->enqueue(new ReceiveBufferNotFullEvent(s));

@@ -57,10 +57,6 @@ private:
         memset(&back_end_, 0, sizeof (struct sockaddr_un));
         back_end_.sun_family = AF_LOCAL;
         strcpy(back_end_.sun_path, write_file_.c_str());
-
-        // make sure we initialize at startup
-        ObjectPool<SocketData>::instance();
-
     }
 
     /**
@@ -173,7 +169,7 @@ public:
     int wifu_socket(int domain, int type, int protocol) {
         socket_mutex_.wait();
 
-        SocketData* d = ObjectPool<SocketData>::instance().get();
+        SocketData* d = new SocketData();
         sockets.put(0, d);
 
         struct SocketMessage* socket_message = (struct SocketMessage*) d->get_payload();
@@ -432,7 +428,7 @@ public:
         }
 
         int new_socket = accept_response->return_value;
-        sockets.put(new_socket, ObjectPool<SocketData>::instance().get());
+        sockets.put(new_socket, new SocketData());
         data->get_flag()->post();
         return new_socket;
     }
@@ -645,8 +641,6 @@ public:
         int return_value = close_response->return_value;
 
         sockets.erase_at(fd);
-        ObjectPool<SocketData>::instance().release(data);
-
         return return_value;
     }
 

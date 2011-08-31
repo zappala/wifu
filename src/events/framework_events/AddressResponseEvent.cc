@@ -1,6 +1,6 @@
 #include "events/framework_events/AddressResponseEvent.h"
 
-AddressResponseEvent::AddressResponseEvent() {
+AddressResponseEvent::AddressResponseEvent() : ResponseEvent() {
 
 }
 
