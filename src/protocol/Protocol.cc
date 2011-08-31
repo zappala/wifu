@@ -25,20 +25,14 @@ void Protocol::imodule_library_socket(Event* e) {
     icontext_socket(this, event);
 
     ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
-    response_event->set_default_length();
     response_event->set_socket(s);
     response_event->set_message_type(event->get_message_type());
-    response_event->set_destination(event->get_source());
+    response_event->set_fd(event->get_fd());
     response_event->set_return_value(s->get_socket_id());
     response_event->set_errno(0);
-    response_event->set_fd(event->get_fd());
-
-//    ResponseEvent* response = new ResponseEvent(s, event->get_name(), event->get_map()[FILE_STRING]);
-//    response->put(ERRNO, Utils::itoa(0));
-//    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
-
+    response_event->set_default_length();
+    response_event->set_destination(event->get_source());
     dispatch(response_event);
-//    cout << "Leaving Protocol::imodule_library_socket()" << endl;
 }
 
 void Protocol::imodule_library_bind(Event* e) {
@@ -75,18 +69,13 @@ void Protocol::imodule_library_bind(Event* e) {
     }
 
     ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
-    response_event->set_default_length();
     response_event->set_socket(socket);
     response_event->set_message_type(event->get_message_type());
-    response_event->set_destination(event->get_source());
+    response_event->set_fd(event->get_fd());
     response_event->set_return_value(return_val);
     response_event->set_errno(error);
-    response_event->set_fd(event->get_fd());
-
-//    ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
-//    response->put(ERRNO, Utils::itoa(error));
-//    response->put(RETURN_VALUE_STRING, Utils::itoa(return_val));
-
+    response_event->set_default_length();
+    response_event->set_destination(event->get_source());
     dispatch(response_event);
 }
 
@@ -120,17 +109,13 @@ void Protocol::imodule_library_listen(Event* e) {
     }
 
     ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
-    response_event->set_default_length();
     response_event->set_socket(socket);
     response_event->set_message_type(event->get_message_type());
-    response_event->set_destination(event->get_source());
+    response_event->set_fd(event->get_fd());
     response_event->set_return_value(return_val);
     response_event->set_errno(error);
-    response_event->set_fd(event->get_fd());
-
-//    ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
-//    response->put(ERRNO, Utils::itoa(error));
-//    response->put(RETURN_VALUE_STRING, Utils::itoa(return_val));
+    response_event->set_default_length();
+    response_event->set_destination(event->get_source());
 
     // TODO: we may not need this if we are pushing things into the FSMs
     socket->make_passive();
@@ -262,21 +247,14 @@ void Protocol::imodule_connection_established(Event* e) {
     AcceptEvent* a_event = event->get_accept_event();
 
     AcceptResponseEvent* response_event = (AcceptResponseEvent*) ObjectPool<ResponseEvent>::instance().get();
-    response_event->set_length(sizeof(struct AcceptResponseMessage));
     response_event->set_socket(socket);
     response_event->set_message_type(a_event->get_message_type());
-    response_event->set_destination(a_event->get_source());
+    response_event->set_fd(a_event->get_fd());
     response_event->set_return_value(new_socket->get_socket_id());
     response_event->set_errno(0);
-    response_event->set_fd(a_event->get_fd());
+    response_event->set_length(sizeof(struct AcceptResponseMessage));
+    response_event->set_destination(a_event->get_source());
     response_event->set_addr(new_socket->get_remote_address_port()->get_network_struct_ptr(), sizeof(struct sockaddr_in));
-
-//    ResponseEvent* response = new ResponseEvent(socket, a_event->get_name(), a_event->get_map()[FILE_STRING]);
-//    response->put(ERRNO, Utils::itoa(0));
-//    response->put(RETURN_VALUE_STRING, Utils::itoa(new_socket->get_socket_id()));
-//    response->put(ADDRESS_STRING, new_socket->get_remote_address_port()->get_address());
-//    response->put(PORT_STRING, Utils::itoa(new_socket->get_remote_address_port()->get_port()));
-
     dispatch(response_event);
 }
 
@@ -405,17 +383,13 @@ void Protocol::imodule_library_set_socket_option(Event* e) {
     icontext_set_socket_option(this, event);
 
     ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
-    response_event->set_default_length();
     response_event->set_socket(socket);
     response_event->set_message_type(event->get_message_type());
-    response_event->set_destination(event->get_source());
+    response_event->set_fd(event->get_fd());
     response_event->set_return_value(0);
     response_event->set_errno(0);
-    response_event->set_fd(event->get_fd());
-
-//    ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
-//    response->put(ERRNO, Utils::itoa(0));
-//    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
+    response_event->set_default_length();
+    response_event->set_destination(event->get_source());
     dispatch(response_event);
 }
 
@@ -436,20 +410,14 @@ void Protocol::imodule_library_get_socket_option(Event* e) {
     }
 
     GetSockOptResponseEvent* response_event = (GetSockOptResponseEvent*) ObjectPool<ResponseEvent>::instance().get();
-    response_event->set_default_length();
     response_event->set_socket(socket);
     response_event->set_message_type(event->get_message_type());
-    response_event->set_destination(event->get_source());
+    response_event->set_fd(event->get_fd());
     response_event->set_return_value(0);
     response_event->set_errno(0);
-    response_event->set_fd(event->get_fd());
+    response_event->set_length(sizeof(struct GetSockOptResponseMessage));
+    response_event->set_destination(event->get_source());
     response_event->set_optval((void*) value.first.data(), value.second);
-    
-//    ResponseEvent* response = new ResponseEvent(socket, event->get_name(), event->get_map()[FILE_STRING]);
-//    response->put(ERRNO, Utils::itoa(0));
-//    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
-//    response->put(BUFFER_STRING, value.first);
-//    response->put(LENGTH_STRING, Utils::itoa(value.second));
     dispatch(response_event);
 
     icontext_get_socket_option(this, event);
