@@ -121,9 +121,10 @@ public:
     }
 
     void receive(unsigned char* message, int length, u_int64_t& receive_time) {
-        //        cout << "WEAPLS::receive()" << endl;
+
 
         struct GenericResponseMessage* response = (struct GenericResponseMessage*) message;
+        cout << "WEAPLS::receive() message type: " << response->message_type << endl;
 
         if (response->message_type == WIFU_SOCKET) {
             sockets.get(0)->set_payload(message, length);
@@ -407,6 +408,8 @@ public:
         accept_message->length = sizeof (struct AcceptMessage);
         memcpy(&(accept_message->source), get_address(), sizeof (struct sockaddr_un));
 
+        cout << "Weapls accept address: " << get_address()->sun_path << endl;
+        cout << "Weapls accept fd: " << fd << endl;
         accept_message->fd = fd;
 
         if (addr != NULL && addr_len != NULL) {
@@ -423,8 +426,10 @@ public:
 
         struct AcceptResponseMessage* accept_response = (struct AcceptResponseMessage*) data->get_payload();
 
-        memcpy(addr_len, &(accept_response->addr_len), sizeof (socklen_t));
-        memcpy(addr, &(accept_response->addr), (size_t) accept_response->addr_len);
+        if (addr != NULL && addr_len != NULL) {
+            memcpy(addr_len, &(accept_response->addr_len), sizeof (socklen_t));
+            memcpy(addr, &(accept_response->addr), (size_t) accept_response->addr_len);
+        }
 
         int new_socket = accept_response->return_value;
         sockets.put(new_socket, ObjectPool<SocketData>::instance().get());

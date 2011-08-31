@@ -262,7 +262,7 @@ void Protocol::imodule_connection_established(Event* e) {
     AcceptEvent* a_event = event->get_accept_event();
 
     AcceptResponseEvent* response_event = (AcceptResponseEvent*) ObjectPool<ResponseEvent>::instance().get();
-    response_event->set_default_length();
+    response_event->set_length(sizeof(struct AcceptResponseMessage));
     response_event->set_socket(socket);
     response_event->set_message_type(a_event->get_message_type());
     response_event->set_destination(a_event->get_source());

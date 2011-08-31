@@ -26,7 +26,10 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
     if ((connection = wifu_accept(server, (struct sockaddr *) & addr, &length)) < 0) {
         // TODO: we need to check errors and make sure they happen when they should
         ADD_FAILURE() << "Problem in Accept";
+        assert(false);
     }
+
+    cout << "Accepted, connection socket #: "<< connection << endl;
 
     flag->post();
 

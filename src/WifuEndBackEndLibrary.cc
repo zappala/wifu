@@ -66,6 +66,7 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 
     LibraryEvent* e = NULL;
     Socket* socket = SocketCollection::instance().get_by_id(gm->fd);
+    cout << "Message Type: " << gm->message_type << endl;
 
     switch (gm->message_type) {
         case WIFU_RECVFROM:
@@ -137,10 +138,11 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 
     assert(socket);
 
+    
     if (e) {
 
         event_map_[socket->get_socket_id()] = e;
-
+//        memset(e->get_buffer(), 0, UNIX_SOCKET_MAX_BUFFER_SIZE);
         e->set_socket(socket);
         e->save_buffer(message, length);
         dispatch(e);
@@ -149,16 +151,22 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 }
 
 void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
-    //    cout << "WifuEndBackEndLibrary::imodule_library_response()" << endl;
+    
     ResponseEvent* event = (ResponseEvent*) e;
+    cout << "WifuEndBackEndLibrary::imodule_library_response(), writing to: " << event->get_destination()->sun_path << endl;
 
     u_int64_t time;
-    send_to(event->get_destination(), event->get_buffer(), event->get_length(), &time);
+
+    ssize_t sent = send_to(event->get_destination(), event->get_buffer(), event->get_length(), &time);
+    cout << "Hello Travis" << endl;
+    assert(sent == event->get_length());
 
     event_map_iterator_ = event_map_.find(event->get_socket()->get_socket_id());
     assert(event_map_iterator_ != event_map_.end());
 
     LibraryEvent* original_event = event_map_iterator_->second;
+    cout << "WifuEndBackEndLibrary::imodule_library_response() message: " << event->get_response()->message_type << endl;
+    cout << "WifuEndBackEndLibrary::imodule_library_response() fd: " << event->get_response()->fd << endl;
 
     // TODO: switch this to be using the original event's message type instead of the typeid
 
