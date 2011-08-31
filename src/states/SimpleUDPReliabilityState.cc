@@ -138,11 +138,13 @@ void SimpleUDPReliabilityState::create_and_dispatch_received_data(Context* c, Qu
     response->set_socket(s);
     response->set_message_type(e->get_message_type());
     response->set_fd(e->get_fd());
+    // done in set set_return_buffer()
+    // response->set_return_value(length);
+    response->set_errno(0);
+    // done in set set_return_buffer()
+    // response->set_length();
     response->set_destination(e->get_source());
     response->set_addr(s->get_remote_address_port()->get_network_struct_ptr(), sizeof(struct sockaddr_in));
-    // done in set length
-    //response->set_return_value(length);
-    response->set_errno(0);
 
     int length = min(s->get_receive_buffer().size(), buffer_size);
     response->set_return_buffer((unsigned char*) s->get_receive_buffer().data(), length);
