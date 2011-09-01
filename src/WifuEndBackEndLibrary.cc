@@ -66,7 +66,7 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 
     LibraryEvent* e = NULL;
     Socket* socket = SocketCollection::instance().get_by_id(gm->fd);
-    cout << "Message Type: " << gm->message_type << endl;
+//    cout << "Message Type: " << gm->message_type << endl;
 
     switch (gm->message_type) {
         case WIFU_RECVFROM:

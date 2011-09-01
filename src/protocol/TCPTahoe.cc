@@ -180,11 +180,6 @@ void TCPTahoe::icontext_connect(QueueProcessor<Event*>* q, ConnectEvent* e) {
     Socket* s = e->get_socket();
     BasicIContextContainer* c = map_.find(s)->second;
 
-    ConnectionManagerContext* cmc = (ConnectionManagerContext*) c->get_connection_manager();
-    cout << "TCPTahoe::icontext_connect()" << endl;
-    cout << "TCPTahoe::icontext_connect(), connection manager state: " << cmc->get_state_name() << endl;
-
-
     c->get_reliability()->icontext_connect(q, e);
     c->get_connection_manager()->icontext_connect(q, e);
     c->get_congestion_control()->icontext_connect(q, e);

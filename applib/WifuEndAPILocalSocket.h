@@ -120,7 +120,7 @@ public:
 
 
         struct GenericResponseMessage* response = (struct GenericResponseMessage*) message;
-        cout << "WEAPLS::receive() message type: " << response->message_type << endl;
+//        cout << "WEAPLS::receive() message type: " << response->message_type << endl;
 
         if (response->message_type == WIFU_SOCKET) {
             sockets.get(0)->set_payload(message, length);
@@ -404,8 +404,6 @@ public:
         accept_message->length = sizeof (struct AcceptMessage);
         memcpy(&(accept_message->source), get_address(), sizeof (struct sockaddr_un));
 
-        cout << "Weapls accept address: " << get_address()->sun_path << endl;
-        cout << "Weapls accept fd: " << fd << endl;
         accept_message->fd = fd;
 
         if (addr != NULL && addr_len != NULL) {

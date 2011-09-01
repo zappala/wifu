@@ -29,8 +29,6 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
         assert(false);
     }
 
-    cout << "Accepted, connection socket #: "<< connection << endl;
-
     flag->post();
 
     AddressPort ap(&addr);
