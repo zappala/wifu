@@ -96,7 +96,7 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
                 response->set_return_value(-1);
                 response->set_errno(EPROTONOSUPPORT);
                 response->set_default_length();
-                response->set_destination(sm->source);
+                response->set_destination(&(sm->source));
                 u_int64_t time;
                 send_to(response->get_destination(), response->get_buffer(), response->get_length(), &time);
                 ObjectPool<ResponseEvent>::instance().release(response);
