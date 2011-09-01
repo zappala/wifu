@@ -168,17 +168,13 @@ void SimpleTCP::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
 
     // TODO: return error, if necessary
     ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
-    response_event->set_default_length();
     response_event->set_socket(s);
     response_event->set_message_type(e->get_message_type());
-    response_event->set_destination(e->get_source());
+    response_event->set_fd(e->get_fd());
     response_event->set_return_value(0);
     response_event->set_errno(0);
-    response_event->set_fd(e->get_fd());
-
-    //    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-    //    response->put(RETURN_VALUE_STRING, Utils::itoa(0));
-    //    response->put(ERRNO, Utils::itoa(0));
+    response_event->set_default_length();
+    response_event->set_destination(e->get_source());
     dispatch(response_event);
 }
 
@@ -222,17 +218,13 @@ void SimpleTCP::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
         //        cout << "SimpleTCP::send_to(), not connected!" << endl;
 
         ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
-        response_event->set_default_length();
         response_event->set_socket(s);
         response_event->set_message_type(e->get_message_type());
-        response_event->set_destination(e->get_source());
+        response_event->set_fd(e->get_fd());
         response_event->set_return_value(-1);
         response_event->set_errno(ENOTCONN);
-        response_event->set_fd(e->get_fd());
-
-        //        ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-        //        response->put(RETURN_VALUE_STRING, Utils::itoa(-1));
-        //        response->put(ERRNO, Utils::itoa(ENOTCONN));
+        response_event->set_default_length();
+        response_event->set_destination(e->get_source());
         dispatch(response_event);
 
     } else {
@@ -382,17 +374,13 @@ void SimpleTCP::save_in_buffer_and_send_events(SendEvent* e) {
     s->get_send_buffer().append(data, num_bytes_to_send);
 
     ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
-    response_event->set_default_length();
     response_event->set_socket(s);
     response_event->set_message_type(e->get_message_type());
-    response_event->set_destination(e->get_source());
+    response_event->set_fd(e->get_fd());
     response_event->set_return_value(num_bytes_to_send);
     response_event->set_errno(0);
-    response_event->set_fd(e->get_fd());
-
-//    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-//    response->put(RETURN_VALUE_STRING, Utils::itoa(num_bytes_to_send));
-//    response->put(ERRNO, Utils::itoa(0));
+    response_event->set_default_length();
+    response_event->set_destination(e->get_source());
 
     dispatch(response_event);
     dispatch(new SendBufferNotEmptyEvent(s));
@@ -407,25 +395,19 @@ void SimpleTCP::create_and_dispatch_received_data(ReceiveEvent* e) {
     response->set_socket(s);
     response->set_message_type(e->get_message_type());
     response->set_fd(e->get_fd());
-    response->set_destination(e->get_source());
-    response->set_addr(s->get_remote_address_port()->get_network_struct_ptr(), sizeof(struct sockaddr_in));
-    // done in set length
-    //response->set_return_value(length);
+    // done in set_return_buffer()
+    // response->set_return_value(length);
     response->set_errno(0);
+    // done in set_return_buffer()
+    // response->set_return_value(length);
+    response->set_destination(e->get_source());
+    response->set_addr(s->get_remote_address_port()->get_network_struct_ptr(), sizeof (struct sockaddr_in));
 
     int length = min(s->get_receive_buffer().size(), buffer_size);
     response->set_return_buffer((unsigned char*) s->get_receive_buffer().data(), length);
     s->get_receive_buffer().erase(0, length);
 
-//    ResponseEvent* response = new ResponseEvent(s, e->get_name(), e->get_map()[FILE_STRING]);
-//    response->put(BUFFER_STRING, data);
-//    response->put(ADDRESS_STRING, s->get_remote_address_port()->get_address());
-//    response->put(PORT_STRING, Utils::itoa(s->get_remote_address_port()->get_port()));
-//    response->put(RETURN_VALUE_STRING, Utils::itoa(data.size()));
-//    response->put(ERRNO, Utils::itoa(0));
-
     dispatch(response);
-    //    cout << "SimpleTCP::create_and_dispatch_received_data(), dispatching receive buffer not full event" << endl;
     dispatch(new ReceiveBufferNotFullEvent(s));
 }
 

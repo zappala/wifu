@@ -91,13 +91,14 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
                 SocketCollection::instance().push(socket);
             } else {
                 ResponseEvent* response = ObjectPool<ResponseEvent>::instance().get();
-                response->set_default_length();
+                response->set_message_type(sm->message_type);
                 response->set_fd(sm->fd);
                 response->set_return_value(-1);
                 response->set_errno(EPROTONOSUPPORT);
-                response->set_message_type(sm->message_type);
+                response->set_default_length();
+                response->set_destination(sm->source);
                 u_int64_t time;
-                send_to(&(sm->source), response->get_buffer(), response->get_length(), &time);
+                send_to(response->get_destination(), response->get_buffer(), response->get_length(), &time);
                 ObjectPool<ResponseEvent>::instance().release(response);
                 return;
             }
@@ -138,11 +139,11 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 
     assert(socket);
 
-    
+
     if (e) {
 
         event_map_[socket->get_socket_id()] = e;
-//        memset(e->get_buffer(), 0, UNIX_SOCKET_MAX_BUFFER_SIZE);
+        //        memset(e->get_buffer(), 0, UNIX_SOCKET_MAX_BUFFER_SIZE);
         e->set_socket(socket);
         e->save_buffer(message, length);
         dispatch(e);
@@ -151,52 +152,59 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 }
 
 void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
-    
+
     ResponseEvent* event = (ResponseEvent*) e;
-    cout << "WifuEndBackEndLibrary::imodule_library_response(), writing to: " << event->get_destination()->sun_path << endl;
+//    cout << "WifuEndBackEndLibrary::imodule_library_response(), writing to: " << event->get_destination()->sun_path << endl;
 
     u_int64_t time;
 
     ssize_t sent = send_to(event->get_destination(), event->get_buffer(), event->get_length(), &time);
-    cout << "Hello Travis" << endl;
     assert(sent == event->get_length());
 
     event_map_iterator_ = event_map_.find(event->get_socket()->get_socket_id());
     assert(event_map_iterator_ != event_map_.end());
 
     LibraryEvent* original_event = event_map_iterator_->second;
-    cout << "WifuEndBackEndLibrary::imodule_library_response() message: " << event->get_response()->message_type << endl;
-    cout << "WifuEndBackEndLibrary::imodule_library_response() fd: " << event->get_response()->fd << endl;
 
-    // TODO: switch this to be using the original event's message type instead of the typeid
-
-    if (typeid (*original_event) == typeid (ReceiveEvent)) {
-        recv_response_events_.push_back(time);
-        recv_response_sizes_.push_back(event->get_response()->return_value);
-        ObjectPool<ReceiveEvent>::instance().release((ReceiveEvent*) original_event);
-    } else if (typeid (*original_event) == typeid (SendEvent)) {
-        send_response_events_.push_back(time);
-        send_response_sizes_.push_back(event->get_response()->return_value);
-        ObjectPool<SendEvent>::instance().release((SendEvent*) original_event);
-    } else if (typeid (*original_event) == typeid (SocketEvent)) {
-        ObjectPool<SocketEvent>::instance().release((SocketEvent*) original_event);
-    } else if (typeid (*original_event) == typeid (BindEvent)) {
-        ObjectPool<BindEvent>::instance().release((BindEvent*) original_event);
-    } else if (typeid (*original_event) == typeid (ListenEvent)) {
-        ObjectPool<ListenEvent>::instance().release((ListenEvent*) original_event);
-    } else if (typeid (*original_event) == typeid (AcceptEvent)) {
-        ObjectPool<AcceptEvent>::instance().release((AcceptEvent*) original_event);
-    } else if (typeid (*original_event) == typeid (ConnectEvent)) {
-        ObjectPool<ConnectEvent>::instance().release((ConnectEvent*) original_event);
-    } else if (typeid (*original_event) == typeid (GetSocketOptionEvent)) {
-        ObjectPool<GetSocketOptionEvent>::instance().release((GetSocketOptionEvent*) original_event);
-    } else if (typeid (*original_event) == typeid (SetSocketOptionEvent)) {
-        ObjectPool<SetSocketOptionEvent>::instance().release((SetSocketOptionEvent*) original_event);
-    } else if (typeid (*original_event) == typeid (CloseEvent)) {
-        ObjectPool<CloseEvent>::instance().release((CloseEvent*) original_event);
-    } else {
-        cout << type_name(*original_event) << endl;
-        throw WiFuException("Unknown saved event type");
+    switch (original_event->get_message_type()) {
+        case WIFU_RECVFROM:
+        case WIFU_RECV:
+            recv_response_events_.push_back(time);
+            recv_response_sizes_.push_back(event->get_response()->return_value);
+            ObjectPool<ReceiveEvent>::instance().release((ReceiveEvent*) original_event);
+            break;
+        case WIFU_SENDTO:
+        case WIFU_SEND:
+            send_response_events_.push_back(time);
+            send_response_sizes_.push_back(event->get_response()->return_value);
+            ObjectPool<SendEvent>::instance().release((SendEvent*) original_event);
+            break;
+        case WIFU_SOCKET:
+            ObjectPool<SocketEvent>::instance().release((SocketEvent*) original_event);
+            break;
+        case WIFU_BIND:
+            ObjectPool<BindEvent>::instance().release((BindEvent*) original_event);
+            break;
+        case WIFU_LISTEN:
+            ObjectPool<ListenEvent>::instance().release((ListenEvent*) original_event);
+            break;
+        case WIFU_ACCEPT:
+            ObjectPool<AcceptEvent>::instance().release((AcceptEvent*) original_event);
+            break;
+        case WIFU_CONNECT:
+            ObjectPool<ConnectEvent>::instance().release((ConnectEvent*) original_event);
+            break;
+        case WIFU_GETSOCKOPT:
+            ObjectPool<GetSocketOptionEvent>::instance().release((GetSocketOptionEvent*) original_event);
+            break;
+        case WIFU_SETSOCKOPT:
+            ObjectPool<SetSocketOptionEvent>::instance().release((SetSocketOptionEvent*) original_event);
+            break;
+        case WIFU_CLOSE:
+            ObjectPool<CloseEvent>::instance().release((CloseEvent*) original_event);
+            break;
+        default:
+            throw WiFuException("Unknown message type");
     }
 
     ObjectPool<ResponseEvent>::instance().release(event);
