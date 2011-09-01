@@ -156,6 +156,7 @@ void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
     ResponseEvent* event = (ResponseEvent*) e;
 //    cout << "WifuEndBackEndLibrary::imodule_library_response(), writing to: " << event->get_destination()->sun_path << endl;
 
+    cout << "Back end library return value for message " << event->get_response()->message_type << ": " << event->get_response()->return_value << endl;
     u_int64_t time;
 
     ssize_t sent = send_to(event->get_destination(), event->get_buffer(), event->get_length(), &time);

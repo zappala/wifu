@@ -66,12 +66,17 @@ public:
         return flag_;
     }
 
-    void set_payload(unsigned char* response, int length) {
-        memcpy(payload_, response, length);
+    void set_receive_payload(unsigned char* response, int length) {
+        cout << "Payload changing" << endl;
+        memcpy(receive_payload_, response, length);
     }
 
-    unsigned char* get_payload() {
-        return payload_;
+    unsigned char* get_receive_payload() {
+        return receive_payload_;
+    }
+
+    unsigned char* get_send_payload() {
+        return send_payload_;
     }
 
 private:
@@ -86,8 +91,12 @@ private:
     /**
      * Buffer which will store the payload from the back-end (on calls like recv()).
      */
-    unsigned char payload_[UNIX_SOCKET_MAX_BUFFER_SIZE];
+    unsigned char receive_payload_[UNIX_SOCKET_MAX_BUFFER_SIZE];
 
+    /**
+     * Buffer which will store the data to be sent to the back end
+     */
+     unsigned char send_payload_[UNIX_SOCKET_MAX_BUFFER_SIZE];
     
 
 };

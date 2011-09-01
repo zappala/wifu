@@ -117,13 +117,11 @@ public:
     }
 
     void receive(unsigned char* message, int length, u_int64_t& receive_time) {
-
-
         struct GenericResponseMessage* response = (struct GenericResponseMessage*) message;
-//        cout << "WEAPLS::receive() message type: " << response->message_type << endl;
+        cout << "WEAPLS::receive() Socket: " << response->fd << " message type: " << response->message_type << " return value: " << response->return_value << endl;
 
         if (response->message_type == WIFU_SOCKET) {
-            sockets.get(0)->set_payload(message, length);
+            sockets.get(0)->set_receive_payload(message, length);
             socket_signal_.post();
             return;
         }
@@ -150,8 +148,13 @@ public:
         }
 
         data->get_flag()->wait();
-        data->set_payload(message, length);
+
+        data->set_receive_payload(message, length);
+        struct GenericResponseMessage* temp = (struct GenericResponseMessage*) data->get_receive_payload();
+        cout << "WEAPLS::receive() Socket: " << temp->fd << " message type: " << temp->message_type << " return value: " << temp->return_value << endl;
+
         data->get_semaphore()->post();
+
     }
 
     /**
@@ -172,7 +175,7 @@ public:
         SocketData* d = new SocketData();
         sockets.put(0, d);
 
-        struct SocketMessage* socket_message = (struct SocketMessage*) d->get_payload();
+        struct SocketMessage* socket_message = (struct SocketMessage*) d->get_send_payload();
         socket_message->message_type = WIFU_SOCKET;
         socket_message->length = sizeof (struct SocketMessage);
         memcpy(&(socket_message->source), get_address(), sizeof (struct sockaddr_un));
@@ -192,7 +195,7 @@ public:
         SocketData* data = sockets.get(0);
         assert(data);
 
-        struct SocketResponseMessage* socket_response = (struct SocketResponseMessage*) data->get_payload();
+        struct SocketResponseMessage* socket_response = (struct SocketResponseMessage*) data->get_receive_payload();
         int socket = socket_response->return_value;
         sockets.erase_at(0);
         sockets.put(socket, data);
@@ -227,7 +230,7 @@ public:
 
         SocketData* data = sockets.get(fd);
 
-        struct BindMessage* bind_message = reinterpret_cast<struct BindMessage*> (data->get_payload());
+        struct BindMessage* bind_message = reinterpret_cast<struct BindMessage*> (data->get_send_payload());
         bind_message->message_type = WIFU_BIND;
         bind_message->length = sizeof (struct BindMessage);
         memcpy(&(bind_message->source), get_address(), sizeof (struct sockaddr_un));
@@ -241,7 +244,7 @@ public:
 
         data->get_semaphore()->wait();
 
-        struct BindResponseMessage* bind_response = (struct BindResponseMessage*) data->get_payload();
+        struct BindResponseMessage* bind_response = (struct BindResponseMessage*) data->get_receive_payload();
         if (bind_response->error) {
             errno = bind_response->error;
         }
@@ -267,7 +270,7 @@ public:
 
         SocketData* data = sockets.get(fd);
 
-        struct GetSockOptMessage* getsockopt_message = reinterpret_cast<struct GetSockOptMessage*> (data->get_payload());
+        struct GetSockOptMessage* getsockopt_message = reinterpret_cast<struct GetSockOptMessage*> (data->get_send_payload());
         getsockopt_message->message_type = WIFU_GETSOCKOPT;
         getsockopt_message->length = sizeof (struct GetSockOptMessage);
         memcpy(&(getsockopt_message->source), get_address(), sizeof (struct sockaddr_un));
@@ -282,7 +285,7 @@ public:
 
         data->get_semaphore()->wait();
 
-        struct GetSockOptResponseMessage* getsockopt_response = (struct GetSockOptResponseMessage*) data->get_payload();
+        struct GetSockOptResponseMessage* getsockopt_response = (struct GetSockOptResponseMessage*) data->get_receive_payload();
 
         socklen_t len = getsockopt_response->optlen;
         if (len > 0) {
@@ -312,7 +315,7 @@ public:
 
         SocketData* data = sockets.get(fd);
 
-        struct SetSockOptMessage* setsockopt_message = reinterpret_cast<struct SetSockOptMessage*> (data->get_payload());
+        struct SetSockOptMessage* setsockopt_message = reinterpret_cast<struct SetSockOptMessage*> (data->get_send_payload());
         setsockopt_message->message_type = WIFU_SETSOCKOPT;
         setsockopt_message->length = sizeof (struct SetSockOptMessage) +optlen;
         memcpy(&(setsockopt_message->source), get_address(), sizeof (struct sockaddr_un));
@@ -329,7 +332,7 @@ public:
 
         data->get_semaphore()->wait();
 
-        struct SetSockOptResponseMessage* setsockopt_response = (struct SetSockOptResponseMessage*) data->get_payload();
+        struct SetSockOptResponseMessage* setsockopt_response = (struct SetSockOptResponseMessage*) data->get_receive_payload();
 
         int return_value = setsockopt_response->return_value;
         data->get_flag()->post();
@@ -360,7 +363,7 @@ public:
 
         SocketData* data = sockets.get(fd);
 
-        struct ListenMessage* listen_message = reinterpret_cast<struct ListenMessage*> (data->get_payload());
+        struct ListenMessage* listen_message = reinterpret_cast<struct ListenMessage*> (data->get_send_payload());
         listen_message->message_type = WIFU_LISTEN;
         listen_message->length = sizeof (struct ListenMessage);
         memcpy(&(listen_message->source), get_address(), sizeof (struct sockaddr_un));
@@ -373,7 +376,7 @@ public:
 
         data->get_semaphore()->wait();
 
-        struct ListenResponseMessage* listen_response = (struct ListenResponseMessage*) data->get_payload();
+        struct ListenResponseMessage* listen_response = (struct ListenResponseMessage*) data->get_receive_payload();
         if (listen_response->error) {
             errno = listen_response->error;
         }
@@ -399,7 +402,7 @@ public:
 
         SocketData* data = sockets.get(fd);
 
-        struct AcceptMessage* accept_message = reinterpret_cast<struct AcceptMessage*> (data->get_payload());
+        struct AcceptMessage* accept_message = reinterpret_cast<struct AcceptMessage*> (data->get_send_payload());
         accept_message->message_type = WIFU_ACCEPT;
         accept_message->length = sizeof (struct AcceptMessage);
         memcpy(&(accept_message->source), get_address(), sizeof (struct sockaddr_un));
@@ -418,7 +421,7 @@ public:
 
         data->get_semaphore()->wait();
 
-        struct AcceptResponseMessage* accept_response = (struct AcceptResponseMessage*) data->get_payload();
+        struct AcceptResponseMessage* accept_response = (struct AcceptResponseMessage*) data->get_receive_payload();
 
         if (addr != NULL && addr_len != NULL) {
             memcpy(addr_len, &(accept_response->addr_len), sizeof (socklen_t));
@@ -488,7 +491,7 @@ public:
 
         SocketData* data = sockets.get(fd);
 
-        struct SendToMessage* sendto_message = reinterpret_cast<struct SendToMessage*> (data->get_payload());
+        struct SendToMessage* sendto_message = reinterpret_cast<struct SendToMessage*> (data->get_send_payload());
         sendto_message->message_type = WIFU_SENDTO;
         sendto_message->length = sizeof (struct SendToMessage) +n;
         memcpy(&(sendto_message->source), get_address(), sizeof (struct sockaddr_un));
@@ -510,7 +513,7 @@ public:
 
         data->get_semaphore()->wait();
 
-        struct SendToResponseMessage* sendto_response = (struct SendToResponseMessage*) data->get_payload();
+        struct SendToResponseMessage* sendto_response = (struct SendToResponseMessage*) data->get_receive_payload();
         int return_value = sendto_response->return_value;
         data->get_flag()->post();
         return return_value;
@@ -539,7 +542,7 @@ public:
 
         SocketData* data = sockets.get(fd);
 
-        struct RecvFromMessage* recvfrom_message = reinterpret_cast<struct RecvFromMessage*> (data->get_payload());
+        struct RecvFromMessage* recvfrom_message = reinterpret_cast<struct RecvFromMessage*> (data->get_send_payload());
         recvfrom_message->message_type = WIFU_RECVFROM;
         recvfrom_message->length = sizeof (struct RecvFromMessage);
         memcpy(&(recvfrom_message->source), get_address(), sizeof (struct sockaddr_un));
@@ -563,12 +566,20 @@ public:
 
         data->get_semaphore()->wait();
 
-        struct RecvFromResponseMessage* recvfrom_response = (struct RecvFromResponseMessage*) data->get_payload();
-        ssize_t ret_val = recvfrom_response->return_value;
-        // TODO: fill in the actual vale of addr_len and addr according to man 2 recvfrom()
+        struct GenericResponseMessage* response = (struct GenericResponseMessage*) data->get_receive_payload();
+        cout << "Socket: " << response->fd << " message type: " << response->message_type << " return value: " << response->return_value << endl;
+        int ret_val = response->return_value;
 
-        if (ret_val > 0) {
-            memcpy(buf, recvfrom_response + 1, ret_val);
+        if (response->message_type == WIFU_RECVFROM) {
+            struct RecvFromResponseMessage* recvfrom_response = (struct RecvFromResponseMessage*) data->get_receive_payload();
+            // TODO: fill in the actual vale of addr_len and addr according to man 2 recvfrom()
+            cout << "FD: " << response->fd << endl;
+            cout << "Message type: " << response->message_type << endl;
+            cout << "N: " << n << endl;
+            cout << "Return val: " << ret_val << endl;
+            if (ret_val > 0) {
+                memcpy(buf, recvfrom_response + 1, ret_val);
+            }
         }
 
         data->get_flag()->post();
@@ -594,7 +605,7 @@ public:
 
         SocketData* data = sockets.get(fd);
 
-        struct ConnectMessage* connect_message = reinterpret_cast<struct ConnectMessage*> (data->get_payload());
+        struct ConnectMessage* connect_message = reinterpret_cast<struct ConnectMessage*> (data->get_send_payload());
         connect_message->message_type = WIFU_CONNECT;
         connect_message->length = sizeof (struct ConnectMessage);
         memcpy(&(connect_message->source), get_address(), sizeof (struct sockaddr_un));
@@ -608,7 +619,7 @@ public:
 
         data->get_semaphore()->wait();
 
-        struct ConnectResponseMessage* connect_response = (struct ConnectResponseMessage*) data->get_payload();
+        struct ConnectResponseMessage* connect_response = (struct ConnectResponseMessage*) data->get_receive_payload();
         int return_value = connect_response->return_value;
         data->get_flag()->post();
         return return_value;
@@ -623,7 +634,7 @@ public:
 
         SocketData* data = sockets.get(fd);
 
-        struct CloseMessage* connect_message = reinterpret_cast<struct CloseMessage*> (data->get_payload());
+        struct CloseMessage* connect_message = reinterpret_cast<struct CloseMessage*> (data->get_send_payload());
         connect_message->message_type = WIFU_CLOSE;
         connect_message->length = sizeof (struct CloseMessage);
         memcpy(&(connect_message->source), get_address(), sizeof (struct sockaddr_un));
@@ -635,8 +646,10 @@ public:
 
         data->get_semaphore()->wait();
 
-        struct CloseResponseMessage* close_response = (struct CloseResponseMessage*) data->get_payload();
+        struct CloseResponseMessage* close_response = (struct CloseResponseMessage*) data->get_receive_payload();
         int return_value = close_response->return_value;
+
+        data->get_flag()->post();
 
         sockets.erase_at(fd);
         return return_value;
