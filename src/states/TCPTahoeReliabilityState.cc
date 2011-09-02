@@ -172,9 +172,6 @@ void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, Que
     int length = min(s->get_receive_buffer().size() - rc->get_receive_index(), buffer_size);
     response->set_return_buffer((unsigned char*) s->get_receive_buffer().data() + rc->get_receive_index(), length);
 
-    cout << length << endl;
-    cout << e->get_data_length() << endl;
-    cout << response->get_response()->return_value << endl;
     assert(e->get_data_length() >= response->get_response()->return_value);
     assert(length == response->get_response()->return_value);
 

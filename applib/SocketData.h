@@ -67,7 +67,6 @@ public:
     }
 
     void set_receive_payload(unsigned char* response, int length) {
-        cout << "Payload changing" << endl;
         memcpy(receive_payload_, response, length);
     }
 

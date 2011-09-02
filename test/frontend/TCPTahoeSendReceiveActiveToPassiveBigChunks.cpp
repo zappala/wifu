@@ -60,20 +60,14 @@ void* tahoe_active_to_passive_big_chunks_thread(void* args) {
         all_received.append(buffer);
     }
 
-    cout << "Done receving" << endl;
-
     recv_timer.stop();
 
     cout << "Duration (us) to recv: " << expected.size() << " bytes on localhost: " << recv_timer.get_duration_microseconds() << endl;
 
     wifu_close(connection);
-    cout << "Connection closed" << endl;
     wifu_close(server);
-    cout << "Server closed" << endl;
     EXPECT_EQ(expected, all_received);
-    cout << "Receiver done comparing values" << endl;
     done->post();
-    cout << "Receiver done " << endl;
 }
 
 /**
@@ -142,19 +136,12 @@ void tahoe_active_to_passive_big_chunks(int protocol, gcstring message) {
         index += sent;
     }
     send_timer.stop();
-    cout << "Done sending" << endl;
     cout << "Duration (us) to send: " << message.size() << " bytes on localhost: " << send_timer.get_duration_microseconds() << endl;
-        
 
     EXPECT_EQ(message.length(), num_sent);
-    cout << "Done comparing" << endl;
-
     wifu_close(client);
-    cout << "Done closing" << endl;
     assert(v.done_);
-    cout << "Done with done assert" << endl;
     v.done_->wait();
-    cout << "Done waiting" << endl;
 }
 
 TEST_F(BackEndTest, tahoeSendReceiveTestActiveBigChunks100000) {

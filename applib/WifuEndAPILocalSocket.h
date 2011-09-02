@@ -57,6 +57,9 @@ private:
         memset(&back_end_, 0, sizeof (struct sockaddr_un));
         back_end_.sun_family = AF_LOCAL;
         strcpy(back_end_.sun_path, write_file_.c_str());
+
+        // ensure objects are created ahead of time
+        ObjectPool<SocketData>::instance();
     }
 
     /**
@@ -118,7 +121,7 @@ public:
 
     void receive(unsigned char* message, int length, u_int64_t& receive_time) {
         struct GenericResponseMessage* response = (struct GenericResponseMessage*) message;
-        cout << "WEAPLS::receive() Socket: " << response->fd << " message type: " << response->message_type << " return value: " << response->return_value << endl;
+//        cout << "WEAPLS::receive() Socket: " << response->fd << " message type: " << response->message_type << " return value: " << response->return_value << endl;
 
         if (response->message_type == WIFU_SOCKET) {
             sockets.get(0)->set_receive_payload(message, length);
@@ -150,8 +153,8 @@ public:
         data->get_flag()->wait();
 
         data->set_receive_payload(message, length);
-        struct GenericResponseMessage* temp = (struct GenericResponseMessage*) data->get_receive_payload();
-        cout << "WEAPLS::receive() Socket: " << temp->fd << " message type: " << temp->message_type << " return value: " << temp->return_value << endl;
+//        struct GenericResponseMessage* temp = (struct GenericResponseMessage*) data->get_receive_payload();
+//        cout << "WEAPLS::receive() Socket: " << temp->fd << " message type: " << temp->message_type << " return value: " << temp->return_value << endl;
 
         data->get_semaphore()->post();
 
@@ -172,7 +175,7 @@ public:
     int wifu_socket(int domain, int type, int protocol) {
         socket_mutex_.wait();
 
-        SocketData* d = new SocketData();
+        SocketData* d = ObjectPool<SocketData>::instance().get();
         sockets.put(0, d);
 
         struct SocketMessage* socket_message = (struct SocketMessage*) d->get_send_payload();
@@ -429,7 +432,7 @@ public:
         }
 
         int new_socket = accept_response->return_value;
-        sockets.put(new_socket, new SocketData());
+        sockets.put(new_socket, ObjectPool<SocketData>::instance().get());
         data->get_flag()->post();
         return new_socket;
     }
@@ -567,16 +570,16 @@ public:
         data->get_semaphore()->wait();
 
         struct GenericResponseMessage* response = (struct GenericResponseMessage*) data->get_receive_payload();
-        cout << "Socket: " << response->fd << " message type: " << response->message_type << " return value: " << response->return_value << endl;
+//        cout << "Socket: " << response->fd << " message type: " << response->message_type << " return value: " << response->return_value << endl;
         int ret_val = response->return_value;
 
         if (response->message_type == WIFU_RECVFROM) {
             struct RecvFromResponseMessage* recvfrom_response = (struct RecvFromResponseMessage*) data->get_receive_payload();
             // TODO: fill in the actual vale of addr_len and addr according to man 2 recvfrom()
-            cout << "FD: " << response->fd << endl;
-            cout << "Message type: " << response->message_type << endl;
-            cout << "N: " << n << endl;
-            cout << "Return val: " << ret_val << endl;
+//            cout << "FD: " << response->fd << endl;
+//            cout << "Message type: " << response->message_type << endl;
+//            cout << "N: " << n << endl;
+//            cout << "Return val: " << ret_val << endl;
             if (ret_val > 0) {
                 memcpy(buf, recvfrom_response + 1, ret_val);
             }
@@ -650,6 +653,9 @@ public:
         int return_value = close_response->return_value;
 
         data->get_flag()->post();
+
+        
+        ObjectPool<SocketData>::instance().release(data);
 
         sockets.erase_at(fd);
         return return_value;
