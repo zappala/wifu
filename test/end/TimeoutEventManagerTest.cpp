@@ -342,7 +342,7 @@ namespace {
 
     TEST_F(TimeoutEventManagerTest, CancelManyTimersOutOfMany) {
         Socket* s = new Socket(0, 0, 0);
-        int seconds = 2;
+        int seconds = 3;
         long int nano = 1000;
         int max = 10000;
         vector<Event*, gc_allocator<Event*> > events;
