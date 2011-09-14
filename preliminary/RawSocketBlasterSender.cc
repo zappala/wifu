@@ -20,6 +20,7 @@
 #include "../headers/packet/TCPPacket.h"
 #include "packet/TCPTimestampOption.h"
 #include "../test/headers/RandomStringGenerator.h"
+#include "Timer.h"
 
 using namespace std;
 
@@ -35,6 +36,7 @@ int raw_send(int socket, TCPPacket* p, struct sockaddr* dest) {
         perror("RawSocketSender: Error Sending Packet");
         // TODO: What should we do on a fail?
     }
+    return ret;
 }
 
 /*
@@ -45,40 +47,24 @@ int main(int argc, char** argv) {
 
     int protocol = 250;
     int dest_port = 50000;
-    //gcstring dest_address = "192.168.21.103";
-    gcstring dest_address = "127.0.0.1";
+    gcstring dest_address = "5.0.0.54";
+    //gcstring dest_address = "127.0.0.1";
 
     AddressPort* address = new AddressPort(dest_address, dest_port);
     struct sockaddr* dest = (struct sockaddr*) address->get_network_struct_ptr();
 
-    int num_bytes_to_send = 1000000;
-    gcstring to_send = RandomStringGenerator::get_data(num_bytes_to_send);
     TCPPacket* temp = new TCPPacket();
     temp->insert_tcp_header_option(new TCPTimestampOption);
-    float max_packet_size = temp->max_data_length();
 
-    // create and set the data in all the packets
-    int num_packets = ceil((float) num_bytes_to_send / max_packet_size);
+    TCPPacket* p = new TCPPacket();
+    p->set_ip_protocol(protocol);
+    p->set_destination_port(dest_port);
+    p->set_ip_destination_address_s(dest_address);
+    p->insert_tcp_header_option(new TCPTimestampOption);
 
-    list<TCPPacket*, gc_allocator<TCPPacket*> > packets;
-    for (int i = 0; i < num_packets; ++i) {
+    gcstring to_send = RandomStringGenerator::get_data(p->max_data_length());
+    p->set_data((unsigned char*) to_send.data(), to_send.size());
 
-        TCPPacket* p = new TCPPacket();
-        p->set_ip_protocol(protocol);
-        p->set_destination_port(dest_port);
-        p->set_ip_destination_address_s(dest_address);
-        p->insert_tcp_header_option(new TCPTimestampOption);
-
-        gcstring data = to_send.substr(0, (int) max_packet_size);
-        to_send.erase(0, max_packet_size);
-
-        p->set_data((unsigned char*) data.data(), data.size());
-
-        packets.push_back(p);
-    }
-
-    TCPPacket* fin = *(packets.rbegin());
-    fin->set_tcp_fin(true);
 
     int s = socket(AF_INET, SOCK_RAW, protocol);
     if (s < 0) {
@@ -93,20 +79,40 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
 
-    socklen_t optval = num_bytes_to_send;
-    int value = setsockopt(s, IPPROTO_IP, SO_SNDBUF, &optval, sizeof (optval));
-    if (value) {
-        perror("setsockopt");
-        exit(EXIT_FAILURE);
+
+    long duration = 10.0;   // seconds
+    long rate = 20.0;       // Mbps (goodput)
+    u_int64_t total_bits = ((rate * 1000000) * duration);
+    u_int64_t packet_bits = p->get_data_length_bytes() * 8;
+    u_int64_t total_packets = total_bits / packet_bits;
+    double chunks = 1000.0;
+    double packets_per_chunk = total_packets / chunks;
+    double wait = (duration / chunks) * 1000000;
+
+    cout << total_bits << endl;
+    cout << packet_bits << endl;
+    cout << total_packets << endl;
+    cout << packets_per_chunk << endl;
+    cout << wait << endl;
+
+    int total_bytes_sent = 0;
+
+    Timer timer;
+    timer.start();
+    for (int i = 0; i < chunks; ++i) {
+        for(int j = 0; j < packets_per_chunk; ++j) {
+            raw_send(s, p, dest);
+            total_bytes_sent += p->get_data_length_bytes();
+        }
+        usleep(wait);
     }
+    timer.stop();
 
-    list<TCPPacket*, gc_allocator<TCPPacket*> >::iterator itr = packets.begin();
+    cout << "bytes sent: " << total_bytes_sent << endl;
+    cout << "duration (seconds): " << timer.get_duration_seconds() << endl;
+    double send_rate = ((total_bytes_sent * 8) / timer.get_duration_seconds()) / 1000000;
+    cout << "Send Rate (Mbps): " << send_rate << endl;
 
-    for (; itr != packets.end(); ++itr) {
-        raw_send(s, *itr, dest);
-        //usleep(130);
-
-    }
 
     close(s);
     return 0;

@@ -19,6 +19,7 @@
 #include <signal.h>
 
 #include "../headers/packet/TCPPacket.h"
+#include "Timer.h"
 
 using namespace std;
 
@@ -43,29 +44,44 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
 
+    // set timeout for socket
+    struct timeval tv;
+    tv.tv_usec = 0;
+    tv.tv_sec = 1;
+    if (setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv,  sizeof tv))
+    {
+        perror("setsockopt");
+        return -1;
+    }
+
     
 
-    int num, total_bytes;
-    while (true) {
-        TCPPacket* p = new TCPPacket();
+    Timer timer;
+    int num, total_bytes = 0;
+    TCPPacket* p = new TCPPacket();
+    while (true) {        
         num = recv(fd, p->get_payload(), MTU, 0);
+        timer.start();
+        timer.update_stop();
         if (num < 0) {
             if (errno == EINTR) {
                 continue;
             }
+            else if(errno == EAGAIN) {
+                break;
+            }
             perror("recv()");
             exit(EXIT_FAILURE);
         }
-
         total_bytes += p->get_data_length_bytes();
-        //cout << total_bytes << endl;
-
-        if(p->is_tcp_fin()) {
-            break;
-        }
     }
+    
 
     cout << total_bytes << endl;
+    double time_ = timer.get_duration_seconds() - tv.tv_sec;
+    cout << "duration (seconds): " << time_ << endl;
+    double receive_rate = ((total_bytes * 8) / time_) / 1000000;
+    cout << "Receive Rate (Mbps): " << receive_rate << endl;
 
     close(fd);
 

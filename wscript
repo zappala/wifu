@@ -357,6 +357,7 @@ def build_raw_socket_sender(bld):
 	files += bld.glob('src/AddressPort.cc')
 	files += bld.glob('src/SocketManager.cc')
 	files += bld.glob('src/Math.cc')
+	files += bld.glob('src/Timer.cc')
 
 	if Options.options.bit_32:
 		receiver = bld(features='cxx cprogram',
@@ -388,6 +389,7 @@ def build_raw_socket_receiver(bld):
 	files += bld.glob('src/AddressPort.cc')
 	files += bld.glob('src/SocketManager.cc')
 	files += bld.glob('src/Math.cc')
+	files += bld.glob('src/Timer.cc')
 
 	if Options.options.bit_32:
 		receiver = bld(features='cxx cprogram',

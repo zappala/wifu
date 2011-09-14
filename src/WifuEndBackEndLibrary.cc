@@ -66,7 +66,7 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 
     LibraryEvent* e = NULL;
     Socket* socket = SocketCollection::instance().get_by_id(gm->fd);
-//    cout << "Message Type: " << gm->message_type << endl;
+    //    cout << "Message Type: " << gm->message_type << endl;
 
     switch (gm->message_type) {
         case WIFU_RECVFROM:
@@ -83,10 +83,9 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 
         case WIFU_SOCKET:
         {
-            e = ObjectPool<SocketEvent>::instance().get();
             struct SocketMessage* sm = (struct SocketMessage*) message;
-
             if (ProtocolManager::instance().is_supported(sm->domain, sm->type, sm->protocol)) {
+                e = ObjectPool<SocketEvent>::instance().get();
                 socket = new Socket(sm->domain, sm->type, sm->protocol);
                 SocketCollection::instance().push(socket);
             } else {
@@ -154,18 +153,18 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
 void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
 
     ResponseEvent* event = (ResponseEvent*) e;
-//    cout << "WifuEndBackEndLibrary::imodule_library_response(), writing to: " << event->get_destination()->sun_path << endl;
+    //    cout << "WifuEndBackEndLibrary::imodule_library_response(), writing to: " << event->get_destination()->sun_path << endl;
 
-//    cout << "Back end library return value for message " << event->get_response()->message_type << ": " << event->get_response()->return_value << endl;
+    //    cout << "Back end library return value for message " << event->get_response()->message_type << ": " << event->get_response()->return_value << endl;
     u_int64_t time;
-
-    ssize_t sent = send_to(event->get_destination(), event->get_buffer(), event->get_length(), &time);
-    assert(sent == event->get_length());
 
     event_map_iterator_ = event_map_.find(event->get_socket()->get_socket_id());
     assert(event_map_iterator_ != event_map_.end());
 
     LibraryEvent* original_event = event_map_iterator_->second;
+
+    ssize_t sent = send_to(event->get_destination(), event->get_buffer(), event->get_length(), &time);
+    assert(sent == event->get_length());
 
     switch (original_event->get_message_type()) {
         case WIFU_RECVFROM:

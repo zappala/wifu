@@ -1,0 +1,3 @@
+This code implements a listener and a blaster.  Both are controlled by
+sending them messages via UDP sockets.  The blast.py script provides
+an example of how to control them.

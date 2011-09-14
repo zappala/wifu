@@ -626,6 +626,7 @@ class PreliminaryGrapher:
 		files = self.__get_log_files("sender_wifu_end\.log")
 
 		for file in files:
+			print file
 			lines = parser.parse(file)
 			total_time = 0.0
 			total_bytes = 0
