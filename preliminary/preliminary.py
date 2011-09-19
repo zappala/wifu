@@ -156,6 +156,7 @@ class ExecutableManager():
 		self.port = "port"
 		self.wifu = "wifu"
 		self.kernel = "kernel"
+		self.threads = "threads"
 
 		# sender options
 		self.num = "num"
@@ -266,6 +267,8 @@ class ExecutableManager():
 			sender_command += " --chunk " + self.config.dictionary[self.sendingChunk]
 		if self.num in self.config.dictionary:
 			sender_command += " --num " + self.config.dictionary[self.num]
+		if self.threads in self.config.dictionary:
+			sender_command += " --threads " + self.config.dictionary[self.threads]
 
 		if api == self.kernel and self.kernel in self.config.dictionary:
 			sender_command += " --protocol " + self.config.dictionary[self.kernel]

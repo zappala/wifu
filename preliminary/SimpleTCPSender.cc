@@ -13,6 +13,7 @@
 #include "headers/WiFuSocketAPI.h"
 #include "headers/KernelSocketAPI.h"
 #include "Utils.h"
+#include "Semaphore.h"
 
 #include <list>
 
@@ -20,13 +21,32 @@ using namespace std;
 
 #define optionparser OptionParser::instance()
 
+
+struct sending_data {
+    gcstring dest;
+    int port;
+    ISocketAPI* api;
+    int protocol;
+    int chunk;
+    Semaphore flag;
+    Semaphore go;
+    gcstring message;
+};
+
+
+void* sending_thread(void*);
+
+
+
 int main(int argc, char** argv) {
 
     gcstring destination = "destination";
     gcstring destport = "port";
     gcstring dest = "127.0.0.1";
     gcstring num = "num";
+    gcstring threads = "threads";
     int port = 5002;
+    int num_threads = 1;
 
     gcstring apiarg = "api";
     ISocketAPI* api = new WiFuSocketAPI();
@@ -45,6 +65,7 @@ int main(int argc, char** argv) {
         {apiarg.c_str(), required_argument, NULL, 0},
         {protocolarg.c_str(), required_argument, NULL, 0},
         {chunkarg.c_str(), required_argument, NULL, 0},
+        {threads.c_str(), required_argument, NULL, 0},
         {0, 0, 0, 0}
     };
 
@@ -79,17 +100,74 @@ int main(int argc, char** argv) {
         chunk = atoi(optionparser.argument(chunkarg).c_str());
     }
 
+    if (optionparser.present(threads)) {
+        num_threads = atoi(optionparser.argument(threads).c_str());
+    }
+
     cout << destination << " " << dest << endl;
     cout << destport << " " << port << endl;
     cout << apiarg << " " << api->get_type() << endl;
     cout << protocolarg << " " << protocol << endl;
     cout << num << " " << num_bytes << endl;
     cout << chunkarg << " " << chunk << endl;
+    cout << threads << " " << num_threads << endl;
 
     gcstring message = RandomStringGenerator::get_data(num_bytes);
 
+    pthread_t pthreads[num_threads];
+    struct sending_data data[num_threads];
+
+    // create all threads
+    for(int i = 0; i < num_threads; ++i) {
+        data[i].flag.init(0);
+        data[i].go.init(0);
+        data[i].api = api;
+        data[i].chunk = chunk;
+        data[i].dest = dest;
+        data[i].port = port + i; // this is how we differentiate flows
+        data[i].protocol = protocol;
+        data[i].message = message;
+
+        if (pthread_create(&(pthreads[i]), NULL, &sending_thread, &data) != 0) {
+            perror("Error creating new thread");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // wait for notification that arguments have been copied and a socket has been created
+    for(int i = 0; i < num_threads; ++i) {
+        data[i].flag.wait();
+    }
+
+    // tell all to go
+    for(int i = 0; i < num_threads; ++i) {
+        data[i].go.post();
+    }
+
+    for(int i = 0; i < num_threads; ++i) {
+        pthread_join(pthreads[i], NULL);
+    }
+
+    sleep(1);
+}
+
+void* sending_thread(void* arg) {
+
+    struct sending_data* data = (struct sending_data*) arg;
+    ISocketAPI* api = data->api;
+    int chunk = data->chunk;
+    gcstring dest = data->dest;
+    gcstring message = data->message;
+    int port = data->port;
+    int protocol = data->protocol;
+
+
     AddressPort to_connect(dest, port);
     int client = api->custom_socket(AF_INET, SOCK_STREAM, protocol);
+
+    data->flag.post();
+    data->go.wait();
+
     int result = api->custom_connect(client, (const struct sockaddr*) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     assert(!result);
 
@@ -114,9 +192,6 @@ int main(int argc, char** argv) {
         sent = api->custom_send(client, data, chunk, 0);
         ends.push_back(Utils::get_current_time_microseconds_64());
         sizes.push_back(sent);
-
-
-
         index += sent;
     }
     send_timer.stop();
@@ -130,7 +205,4 @@ int main(int argc, char** argv) {
     }
 
     cout << "Duration (us) to send " << index << " bytes to " << to_connect.to_s() << ": " << send_timer.get_duration_microseconds() << endl;
-
-
-    sleep(1);
 }
