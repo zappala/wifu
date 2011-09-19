@@ -243,6 +243,8 @@ class ExecutableManager():
 			receiver_command += " --port " + self.config.dictionary[self.port]
 		if self.receivingChunk in self.config.dictionary:
 			receiver_command += " --chunk " + self.config.dictionary[self.receivingChunk]
+		if self.threads in self.config.dictionary:
+			receiver_command += " --threads " + self.config.dictionary[self.threads]
 
 		if api == self.kernel and self.kernel in self.config.dictionary:
 			receiver_command += " --protocol " + self.config.dictionary[self.kernel]

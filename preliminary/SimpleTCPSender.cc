@@ -128,25 +128,33 @@ int main(int argc, char** argv) {
         data[i].protocol = protocol;
         data[i].message = message;
 
-        if (pthread_create(&(pthreads[i]), NULL, &sending_thread, &data) != 0) {
+        if (pthread_create(&(pthreads[i]), NULL, &sending_thread, &(data[i])) != 0) {
             perror("Error creating new thread");
             exit(EXIT_FAILURE);
         }
     }
+
+    cout << "Sender A" << endl;
 
     // wait for notification that arguments have been copied and a socket has been created
     for(int i = 0; i < num_threads; ++i) {
         data[i].flag.wait();
     }
 
+    cout << "Sender B" << endl;
+
     // tell all to go
     for(int i = 0; i < num_threads; ++i) {
         data[i].go.post();
     }
 
+    cout << "Sender C" << endl;
+
     for(int i = 0; i < num_threads; ++i) {
         pthread_join(pthreads[i], NULL);
     }
+
+    cout << "Sender D" << endl;
 
     sleep(1);
 }
@@ -165,8 +173,12 @@ void* sending_thread(void* arg) {
     AddressPort to_connect(dest, port);
     int client = api->custom_socket(AF_INET, SOCK_STREAM, protocol);
 
+    cout << "Sender Client: " << client << endl;
+
     data->flag.post();
     data->go.wait();
+
+    cout << "Sender after flags" << endl;
 
     int result = api->custom_connect(client, (const struct sockaddr*) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     assert(!result);

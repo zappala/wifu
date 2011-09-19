@@ -13,10 +13,24 @@
 #include <list>
 #include <algorithm>
 #include "Utils.h"
+#include "Semaphore.h"
 
 using namespace std;
 
 #define optionparser OptionParser::instance()
+
+struct receiving_data {
+    gcstring hostaddr;
+    int port;
+    ISocketAPI* api;
+    int protocol;
+    int chunk;
+    Semaphore flag;
+    Semaphore go;
+
+};
+
+void* receiving_thread(void*);
 
 int main(int argc, char** argv) {
 
@@ -36,12 +50,16 @@ int main(int argc, char** argv) {
     // The number of bytes we are willing to receive each time we call recv().
     int chunk = 10000;
 
+    gcstring threads = "threads";
+    int num_threads = 1;
+
     static struct option long_options[] = {
         {bindaddr.c_str(), required_argument, NULL, 0},
         {portarg.c_str(), required_argument, NULL, 0},
         {apiarg.c_str(), required_argument, NULL, 0},
         {protocolarg.c_str(), required_argument, NULL, 0},
         {chunkarg.c_str(), required_argument, NULL, 0},
+        {threads.c_str(), required_argument, NULL, 0},
         {0, 0, 0, 0}
     };
 
@@ -72,28 +90,96 @@ int main(int argc, char** argv) {
         chunk = atoi(optionparser.argument(chunkarg).c_str());
     }
 
+    if (optionparser.present(threads)) {
+        num_threads = atoi(optionparser.argument(threads).c_str());
+    }
+
     cout << bindaddr << " " << hostaddr << endl;
     cout << portarg << " " << port << endl;
     cout << apiarg << " " << api->get_type() << endl;
     cout << protocolarg << " " << protocol << endl;
     cout << chunkarg << " " << chunk << endl;
+    cout << threads << " " << num_threads << endl;
+
+
+    pthread_t pthreads[num_threads];
+    struct receiving_data data[num_threads];
+
+    for(int i = 0; i < num_threads; ++i) {
+        data[i].flag.init(0);
+        data[i].go.init(0);
+
+        data[i].api = api;
+        data[i].chunk = chunk;
+        data[i].hostaddr = hostaddr;
+        data[i].port = port + i;
+        data[i].protocol = protocol;
+
+        if (pthread_create(&(pthreads[i]), NULL, &receiving_thread, &(data[i])) != 0) {
+            perror("Error creating new thread");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    cout << "Receiver A" << endl;
+
+    // wait for notification that arguments have been copied and a socket has been created
+    for(int i = 0; i < num_threads; ++i) {
+        data[i].flag.wait();
+    }
+
+    cout << "Receiver B" << endl;
+
+    // tell all to go
+    for(int i = 0; i < num_threads; ++i) {
+        data[i].go.post();
+    }
+
+    cout << "Receiver C" << endl;
+
+    for(int i = 0; i < num_threads; ++i) {
+        pthread_join(pthreads[i], NULL);
+    }
+
+    cout << "Receiver D" << endl;
+
+    sleep(1);
+}
+
+void* receiving_thread(void* arg) {
+
+    struct receiving_data* data = (struct receiving_data*) arg;
+    ISocketAPI* api = data->api;
+    gcstring hostaddr = data->hostaddr;
+    int chunk = data->chunk;
+    int port = data->port;
+    int protocol = data->protocol;
+
 
     AddressPort to_bind(hostaddr, port);
+    cout << "Receiver binding to: " << to_bind.to_s() << endl;
 
     int server = api->custom_socket(AF_INET, SOCK_STREAM, protocol);
     if (server <= 0) {
         perror("socket");
     }
 
+    cout << "Receiver Server: " << server << endl;
+
     int result = api->custom_bind(server, (const struct sockaddr*) to_bind.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     if (result < 0) {
         perror("bind");
     }
 
+    cout << "Receiver bind: " << result << endl;
+    cout << "Receiver bind, errno: " << errno << endl;
+
     result = api->custom_listen(server, 5);
     if (result < 0) {
         perror("listen");
     }
+
+    cout << "Receiver listen: " << result << endl;
 
     struct sockaddr_in addr;
     socklen_t length = sizeof (addr);
@@ -109,6 +195,10 @@ int main(int argc, char** argv) {
     list<int, gc_allocator<int> > sizes;
     int return_value;
 
+    data->flag.post();
+    data->go.wait();
+
+    cout << "Receiver after flags" << endl;
 
     while ((connection = api->custom_accept(server, (struct sockaddr*) &addr, &length)) > 0) {
         AddressPort remote(&addr);
@@ -124,9 +214,9 @@ int main(int argc, char** argv) {
             return_value = api->custom_recv(connection, buffer, chunk, 0);
             ends.push_back(Utils::get_current_time_microseconds_64());
             recv_timer.start();
-            
+
             sizes.push_back(return_value);
-            
+
 
             if (return_value == 0) {
                 break;
@@ -136,7 +226,7 @@ int main(int argc, char** argv) {
         }
         recv_timer.stop();
 
-        
+
         while (!starts.empty()) {
             cout << "recv " << starts.front() << " " << ends.front() << " " << sizes.front() << endl;
             starts.pop_front();
@@ -152,6 +242,4 @@ int main(int argc, char** argv) {
     }
 
     api->custom_close(server);
-
-    sleep(1);
 }
