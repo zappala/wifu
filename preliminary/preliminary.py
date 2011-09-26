@@ -63,7 +63,25 @@ class Configuration():
 	def equal_sender_receiver(self):
 		return self.get_sender_node() == self.get_receiver_node()
 
-	
+	def get_rate(self):
+		key = "rate"
+
+		if key not in self.dictionary:
+			return None
+		
+
+		rate = self.dictionary[key]
+		if rate == "1000":
+			return "0x1000"
+		if rate == "100":
+			return "0x008"
+		if rate == "10":
+			return "0x002"
+		if rate == "auto":
+			return "0x3F"
+
+		return "0x3F"
+
 
 class ExecutableCopier():
 	def __init__(self, configuration):
@@ -317,16 +335,22 @@ class ExecutableManager():
 				nodes = []
 
 				sysctl_command = "sudo sysctl -p /tmp/sysctl_wifu.conf"
+				rate = self.config.get_rate()
+				ethtool = "sudo ethtool eth0"
+				if rate is not None:
+					rate_command = "sudo ethtool -s eth0 advertise " + self.config.get_rate()
 
 				# start up the receiver
 				receiver_log = "receiver_" + api + ".log"
 				receiver_command = self.get_receiver_command(api, receiver_log)
 				receiver_commands = []
+				if rate is not None:
+					receiver_commands.append(rate_command)
+					receiver_commands.append(ethtool)
 				receiver_commands.append(chdir_command)
 				receiver_commands.append(sysctl_command)
 				receiver_commands.append(receiver_command)
-
-
+				
 
 				receiver = Command(receiver_node, self.config.username, receiver_commands)
 				nodes.append(receiver)
@@ -338,9 +362,13 @@ class ExecutableManager():
 				sender_log = "sender_" + api + ".log"
 				sender_command = self.get_sender_command(api, sender_log)
 				sender_commands = []
+				if rate is not None:
+					sender_commands.append(rate_command)
+					sender_commands.append(ethtool)
 				sender_commands.append(chdir_command)
 				sender_commands.append(sysctl_command)
 				sender_commands.append(sender_command)
+				
 
 
 				sender = Command(sender_node, self.config.username, sender_commands)
@@ -362,8 +390,14 @@ class ExecutableManager():
 				finalizing_commands = []
 				sysctl_command = "sudo sysctl -p /tmp/sysctl_default.conf"
 				chmod_command = "sudo chmod o+r /tmp/wifu-end.log"
+				# auto is 0x03F
+				rate_command = "sudo ethtool -s eth0 advertise 0x03F"
+				if rate is not None:
+					finalizing_commands.append(rate_command)
+					finalizing_commands.append(ethtool)
 				finalizing_commands.append(sysctl_command)
 				finalizing_commands.append(chmod_command)
+				
 
 				for node in [sender_node, receiver_node]:
 					n = Command(node, self.config.username, finalizing_commands)

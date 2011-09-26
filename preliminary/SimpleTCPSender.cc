@@ -31,6 +31,7 @@ struct sending_data {
     Semaphore flag;
     Semaphore go;
     gcstring message;
+    Semaphore* mutex;
 };
 
 
@@ -117,6 +118,9 @@ int main(int argc, char** argv) {
     pthread_t pthreads[num_threads];
     struct sending_data data[num_threads];
 
+    Semaphore* mutex = new Semaphore();
+    mutex->init(1);
+
     // create all threads
     for(int i = 0; i < num_threads; ++i) {
         data[i].flag.init(0);
@@ -127,6 +131,7 @@ int main(int argc, char** argv) {
         data[i].port = port + i; // this is how we differentiate flows
         data[i].protocol = protocol;
         data[i].message = message;
+        data[i].mutex = mutex;
 
         if (pthread_create(&(pthreads[i]), NULL, &sending_thread, &(data[i])) != 0) {
             perror("Error creating new thread");
@@ -134,27 +139,29 @@ int main(int argc, char** argv) {
         }
     }
 
-    cout << "Sender A" << endl;
-
     // wait for notification that arguments have been copied and a socket has been created
     for(int i = 0; i < num_threads; ++i) {
         data[i].flag.wait();
     }
-
-    cout << "Sender B" << endl;
 
     // tell all to go
     for(int i = 0; i < num_threads; ++i) {
         data[i].go.post();
     }
 
-    cout << "Sender C" << endl;
+    // wait for threads to finish
+    for(int i = 0; i < num_threads; ++i) {
+        data[i].flag.wait();
+    }
+
+    // tell all to write
+    for(int i = 0; i < num_threads; ++i) {
+        data[i].go.post();
+    }
 
     for(int i = 0; i < num_threads; ++i) {
         pthread_join(pthreads[i], NULL);
     }
-
-    cout << "Sender D" << endl;
 
     sleep(1);
 }
@@ -168,20 +175,11 @@ void* sending_thread(void* arg) {
     gcstring message = data->message;
     int port = data->port;
     int protocol = data->protocol;
+    Semaphore* mutex = data->mutex;
 
 
     AddressPort to_connect(dest, port);
     int client = api->custom_socket(AF_INET, SOCK_STREAM, protocol);
-
-    cout << "Sender Client: " << client << endl;
-
-    data->flag.post();
-    data->go.wait();
-
-    cout << "Sender after flags" << endl;
-
-    int result = api->custom_connect(client, (const struct sockaddr*) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
-    assert(!result);
 
     int index = 0;
 
@@ -191,6 +189,14 @@ void* sending_thread(void* arg) {
     int sent;
 
     Timer send_timer;
+
+
+    data->flag.post();
+    data->go.wait();
+
+    int result = api->custom_connect(client, (const struct sockaddr*) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+    assert(!result);
+    
     send_timer.start();
 
     while (index < message.length()) {
@@ -209,7 +215,12 @@ void* sending_thread(void* arg) {
     send_timer.stop();
     api->custom_close(client);
 
+    data->flag.post();
+    data->go.wait();
+
+    mutex->wait();
     while (!starts.empty()) {
+        //cout << "send " << starts.front() << " " << ends.front() << " " << sizes.front() << " " << to_connect.to_s() << endl;
         cout << "send " << starts.front() << " " << ends.front() << " " << sizes.front() << endl;
         starts.pop_front();
         ends.pop_front();
@@ -217,4 +228,5 @@ void* sending_thread(void* arg) {
     }
 
     cout << "Duration (us) to send " << index << " bytes to " << to_connect.to_s() << ": " << send_timer.get_duration_microseconds() << endl;
+    mutex->post();
 }
