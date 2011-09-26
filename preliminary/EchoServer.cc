@@ -194,6 +194,7 @@ void* receiving_thread(void* arg) {
     list<u_int64_t, gc_allocator<u_int64_t> > starts, ends;
     list<int, gc_allocator<int> > sizes;
     int return_value;
+    int num_sent;
 
     Timer recv_timer;
     num_received = 0;
@@ -214,12 +215,13 @@ void* receiving_thread(void* arg) {
 
         sizes.push_back(return_value);
 
-
         if (return_value == 0) {
             break;
         }
         //all_received.append(buffer);
         num_received += return_value;
+
+        num_sent = api->custom_send(connection, buffer, return_value, 0);
     }
     recv_timer.stop();
 

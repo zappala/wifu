@@ -344,6 +344,55 @@ def build_simple_tcp_receiver(bld):
 			uselib_local='wifu-end-api',
 			target='simple-tcp-receiver')
 
+def build_echo_client(bld):
+	files = bld.glob('preliminary/EchoClient.cc')
+	files += bld.glob('preliminary/WiFuSocketAPI.cc')
+	files += bld.glob('preliminary/KernelSocketAPI.cc')
+	files += bld.glob('applib/*.cc')
+	files += bld.glob('src/AddressPort.cc')
+
+	if Options.options.bit_32:
+		sender = bld(features='cxx cprogram',
+			source=files,
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
+			libpath = '../lib/gc/gc_32',
+			staticlib = ['gccpp', 'gc', 'cord'],
+			uselib_local='wifu-end-api',
+			target='echo-client')
+	else:
+		sender = bld(features='cxx cprogram',
+			source=files,
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
+			libpath = '../lib/gc/gc_64',
+			staticlib = ['gccpp', 'gc', 'cord'],
+			uselib_local='wifu-end-api',
+			target='echo-client')
+
+def build_echo_server(bld):
+	files = bld.glob('preliminary/EchoServer.cc')
+	files += bld.glob('preliminary/WiFuSocketAPI.cc')
+	files += bld.glob('preliminary/KernelSocketAPI.cc')
+	files += bld.glob('applib/*.cc')
+	files += bld.glob('src/AddressPort.cc')
+	files += bld.glob('src/Utils.cc')
+
+	if Options.options.bit_32:
+		receiver = bld(features='cxx cprogram',
+			source=files,
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
+			libpath = '../lib/gc/gc_32',
+			staticlib = ['gccpp', 'gc', 'cord'],
+			uselib_local='wifu-end-api',
+			target='echo-server')
+	else:
+		receiver = bld(features='cxx cprogram',
+			source=files,
+			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
+			libpath = '../lib/gc/gc_64',
+			staticlib = ['gccpp', 'gc', 'cord'],
+			uselib_local='wifu-end-api',
+			target='echo-server')
+
 def build_raw_socket_sender(bld):
 	files = bld.glob('preliminary/RawSocketBlasterSender.cc')
 	files += bld.glob('src/packet/*.cc')
@@ -421,6 +470,9 @@ def build(bld):
 	
 	build_simple_tcp_sender(bld)
 	build_simple_tcp_receiver(bld)
+
+	build_echo_server(bld)
+	build_echo_client(bld)
 
 	build_raw_socket_receiver(bld)
 	build_raw_socket_sender(bld)

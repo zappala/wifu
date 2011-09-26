@@ -21,7 +21,6 @@ using namespace std;
 
 #define optionparser OptionParser::instance()
 
-
 struct sending_data {
     gcstring dest;
     int port;
@@ -36,8 +35,6 @@ struct sending_data {
 
 
 void* sending_thread(void*);
-
-
 
 int main(int argc, char** argv) {
 
@@ -113,6 +110,8 @@ int main(int argc, char** argv) {
     cout << chunkarg << " " << chunk << endl;
     cout << threads << " " << num_threads << endl;
 
+    num_bytes = 1000;
+
     gcstring message = RandomStringGenerator::get_data(num_bytes);
 
     pthread_t pthreads[num_threads];
@@ -122,7 +121,7 @@ int main(int argc, char** argv) {
     mutex->init(1);
 
     // create all threads
-    for(int i = 0; i < num_threads; ++i) {
+    for (int i = 0; i < num_threads; ++i) {
         data[i].flag.init(0);
         data[i].go.init(0);
         data[i].api = api;
@@ -140,26 +139,26 @@ int main(int argc, char** argv) {
     }
 
     // wait for notification that arguments have been copied and a socket has been created
-    for(int i = 0; i < num_threads; ++i) {
+    for (int i = 0; i < num_threads; ++i) {
         data[i].flag.wait();
     }
 
     // tell all to go
-    for(int i = 0; i < num_threads; ++i) {
+    for (int i = 0; i < num_threads; ++i) {
         data[i].go.post();
     }
 
     // wait for threads to finish
-    for(int i = 0; i < num_threads; ++i) {
+    for (int i = 0; i < num_threads; ++i) {
         data[i].flag.wait();
     }
 
     // tell all to write
-    for(int i = 0; i < num_threads; ++i) {
+    for (int i = 0; i < num_threads; ++i) {
         data[i].go.post();
     }
 
-    for(int i = 0; i < num_threads; ++i) {
+    for (int i = 0; i < num_threads; ++i) {
         pthread_join(pthreads[i], NULL);
     }
 
@@ -187,33 +186,31 @@ void* sending_thread(void* arg) {
     list<int, gc_allocator<int> > sizes;
 
     int sent;
+    int num_recieved;
 
     Timer send_timer;
 
+    unsigned char received[chunk];
 
     data->flag.post();
     data->go.wait();
 
     int result = api->custom_connect(client, (const struct sockaddr*) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     assert(!result);
-    
+
+    cout << "Send: " << message << endl;
+
     send_timer.start();
-
-    while (index < message.length()) {
-
-        if (index + chunk > message.length()) {
-            chunk = message.length() - index;
-        }
-        const char* data = message.data() + index;
-
-        starts.push_back(Utils::get_current_time_microseconds_64());
-        sent = api->custom_send(client, data, chunk, 0);
-        ends.push_back(Utils::get_current_time_microseconds_64());
-        sizes.push_back(sent);
-        index += sent;
-    }
+    starts.push_back(Utils::get_current_time_microseconds_64());
+    sent = api->custom_send(client, message.data(), message.length(), 0);
+    num_recieved = api->custom_recv(client, received, chunk, 0);
+    ends.push_back(Utils::get_current_time_microseconds_64());
     send_timer.stop();
+
+    sizes.push_back(num_recieved);
     api->custom_close(client);
+
+    cout << "Recv: " << (const char*) received << endl;
 
     data->flag.post();
     data->go.wait();

@@ -26,7 +26,7 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 #define NANOSECONDS_IN_SECONDS 1000000000
 #define MICROSECONDS_IN_SECONDS 1000000
 #define PAYLOAD_SIZE 1500
-#define TWO_MSL 10 // seconds
+#define TWO_MSL 3 // seconds
 #define BUFFER_SIZE PAYLOAD_SIZE * 2
 #define UNIX_SOCKET_MESSAGE_LENGTH 4096
 

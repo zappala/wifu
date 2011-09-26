@@ -89,6 +89,9 @@ Dispatcher::~Dispatcher() {
         send_protocol_queue_sizes_.pop_front();
     }
 
+    log_INFORMATIONAL("dispatcher_after_recv_events_size: ", pantheios::i(end_receive_events_.size()), " dispatcher_after_recv_response_events_size: ", pantheios::i(end_recv_response_events_.size()), " dispatcher_after_recv_response_sizes_size: ", pantheios::i(end_recv_response_sizes_.size()));
+    log_INFORMATIONAL("dispatcher_after_send_events_size: ", pantheios::i(end_send_events_.size()), " dispatcher_after_send_response_events_size: ", pantheios::i(end_send_response_events_.size()), " dispatcher_after_send_response_sizes_size: ", pantheios::i(end_send_response_sizes_.size()));
+
     while (!end_recv_response_events_.empty()) {
 
         int size = 1000;
