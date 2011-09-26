@@ -1,3 +1,4 @@
+import array
 #! /usr/bin/python
 
 # To change this template, choose Tools | Templates
@@ -511,6 +512,42 @@ class PreliminaryGrapher:
 		d.make()
 		savefig(filename)
 
+	def __graph_boxplot_all(self, data, title, filename):
+		fig = plt.figure(figsize=(10, 6))
+		fig.canvas.set_window_title('A Boxplot Example')
+		ax1 = fig.add_subplot(111)
+		plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
+
+		bp = plt.boxplot(data, notch=0, sym='+', vert=1, whis=1.5)
+		plt.setp(bp['boxes'], color='black')
+		plt.setp(bp['whiskers'], color='black')
+		plt.setp(bp['fliers'], color='red', marker='+')
+
+		# Add a horizontal grid to the plot, but make it very light in color
+		# so we can use it for reading data values but not be distracting
+		ax1.yaxis.grid(True, linestyle='-', which='major', color='lightgrey', alpha=0.5)
+
+		# Hide these grid behind plot objects
+		ax1.set_axisbelow(True)
+		ax1.set_title(title)
+		ax1.set_xlabel('Type')
+		ax1.set_ylabel('Rate (Mbps)')
+
+		# Set the axes ranges and axes labels
+		ax1.set_xlim(0.5, len(data) + 0.5)
+#		top = 2000
+#		bottom = 0
+#		ax1.set_ylim(bottom, top)
+		ax1.set_ylim(xmin=0)
+
+		xtickNames = plt.setp(ax1, xticklabels=["Kernel/Loop", "WiFu/Tahoe", "WiFu/Dispatcher After", "WiFu/Dispatcher Before", "WiFu/Inside Unix Socket", "WiFu/Outside Unix Socket", "WiFu/Function", "WiFu/Loop"])
+		#plt.setp(xtickNames, rotation=45, fontsize=8)
+		plt.setp(xtickNames, fontsize=10)
+
+		d = Directory(self.graph_path)
+		d.make()
+		savefig(filename)
+
 	def graph_loop_goodputs(self):
 		num_bytes = float(self.configuration.dictionary["num"])
 
@@ -957,6 +994,66 @@ class PreliminaryGrapher:
 		self.__graph_boxplot(data, title, filename)
 		return data
 
+
+
+	def graph_all_sends(self, loop, function, outside_socket, inside_socket, tahoe, dispatcher, dispatcher_after):
+		"""
+		Each argument is a 2D array with each element being an array of actual values of goodputs
+		Each array within is arranged as follows
+		Kernel Send, WiFu Send, Kernel Receive, WiFu Receive
+		"""
+
+		# get all of the wifu sends
+		index = 1
+		data = []
+
+		# We will use the kernel loop results to compare against
+		data.append(loop[0])
+
+		# go from innermost to outermost
+		data.append(tahoe[index])
+		data.append(dispatcher_after[index])
+		data.append(dispatcher[index])
+		data.append(inside_socket[index])
+		data.append(outside_socket[index])
+		data.append(function[index])
+		data.append(loop[index])
+
+		title = 'Comparison of WiFu and Kernel Sending Rates'
+		filename = self.graph_path + 'send_rates_boxplot.png'
+		self.__graph_boxplot_all(data, title, filename)
+		return data
+
+		
+
+	def graph_all_receives(self, loop, function, outside_socket, inside_socket, tahoe, dispatcher, dispatcher_after):
+		"""
+		Each argument is a 2D array with each element being an array of actual values of goodputs
+		Each array within is arranged as follows
+		Kernel Send, WiFu Send, Kernel Receive, WiFu Receive
+		"""
+
+		# get all of the wifu sends
+		index = 3
+		data = []
+
+		# We will use the kernel loop results to compare against
+		data.append(loop[2])
+
+		# go from innermost to outermost
+		data.append(tahoe[index])
+		data.append(dispatcher_after[index])
+		data.append(dispatcher[index])
+		data.append(inside_socket[index])
+		data.append(outside_socket[index])
+		data.append(function[index])
+		data.append(loop[index])
+
+		title = 'Comparison of WiFu and Kernel Receive Rates'
+		filename = self.graph_path + 'receive_rates_boxplot.png'
+		self.__graph_boxplot_all(data, title, filename)
+		return data
+
 	def graph(self):
 		loop_data = self.graph_loop_goodputs()
 		function_data = self.graph_function_goodputs()
@@ -965,6 +1062,9 @@ class PreliminaryGrapher:
 		inside_tahoe_data = self.graph_inside_tahoe_goodputs(function_data)
 		dispatcher_data = self.graph_before_dispatcher_goodputs(function_data)
 		dispatcher_data_after = self.graph_after_dispatcher_goodputs(function_data)
+
+		self.graph_all_sends(loop_data, function_data, outside_unix_socket_data, inside_unix_socket_data, inside_tahoe_data, dispatcher_data, dispatcher_data_after)
+		self.graph_all_receives(loop_data, function_data, outside_unix_socket_data, inside_unix_socket_data, inside_tahoe_data, dispatcher_data, dispatcher_data_after)
 		
 
 		s = Stats()
