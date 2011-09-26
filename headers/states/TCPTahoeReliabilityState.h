@@ -26,10 +26,11 @@
 
 #include "Math.h"
 #include "Logger.h"
+
 class TCPTahoeReliabilityState : public State {
 private:
-    list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
-    list<u_int32_t, gc_allocator<u_int32_t> > recv_response_sizes_;
+    list<u_int64_t, gc_allocator<u_int64_t> > tahoe_receive_events_, tahoe_recv_response_events_;
+    list<u_int32_t, gc_allocator<u_int32_t> > tahoe_recv_response_sizes_;
 public:
     TCPTahoeReliabilityState();
     virtual ~TCPTahoeReliabilityState();

@@ -22,6 +22,7 @@
 #include "events/framework_events/NetworkReceivePacketEvent.h"
 #include "events/framework_events/CloseEvent.h"
 #include "events/protocol_events/ReceiveBufferNotFullEvent.h"
+#include "events/protocol_events/ReceiveBufferNotEmptyEvent.h"
 
 #include "ObjectPool.h"
 

@@ -10,7 +10,7 @@ Established::~Established() {
 
 void Established::state_enter(Context* c) {
     // TODO: spawn new Socket.
-//        cout << "Established::enter()" << endl;
+    //        cout << "Established::enter()" << endl;
 
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     ConnectEvent* event = cmc->get_connect_event();
@@ -19,7 +19,7 @@ void Established::state_enter(Context* c) {
     switch (cmc->get_connection_type()) {
         case ACTIVE_OPEN:
         {
-//                        cout << "Established::enter(), Active Open" << endl;
+            //                        cout << "Established::enter(), Active Open" << endl;
             ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
             response_event->set_socket(event->get_socket());
             response_event->set_message_type(event->get_message_type());
@@ -47,7 +47,7 @@ void Established::state_exit(Context* c) {
 }
 
 void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-//        cout << "Established::receive_packet()" << endl;
+    //        cout << "Established::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();
@@ -89,6 +89,10 @@ void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Ne
         response_event->set_errno(0);
         response_event->set_default_length();
         response_event->set_destination(cmc->get_front_end_socket());
+
+        //TODO: This is only for being able to time the final recv() call
+        q->enqueue(new ReceiveBufferNotEmptyEvent(s));
+
         Dispatcher::instance().enqueue(response_event);
         return;
     }
