@@ -615,10 +615,15 @@ class PreliminaryGrapher:
 		self.send_files = self.__get_send_files()
 
 
-	def __get_log_files(self, regex):
+	def __get_log_files(self, regex, special=None):
 		files = []
 		for i in range (0, self.configuration.iterations):
-			d = Directory(self.data_path + str(i) + "/")
+			s = self.data_path + str(i) + "/"
+			if special is not None:
+				s += special
+			print s
+			d = Directory(s)
+
 			temp = d.get_files_re(regex)
 			files.extend(temp)
 		return files
@@ -1213,6 +1218,71 @@ class PreliminaryGrapher:
 		self.__graph_boxplot_all(data, title, filename)
 		return data
 
+	def graph_all_echos(self):
+		# sender is the client
+		# for each iteration: open up sender_kernel.log and get out the function duration (should be about the same)
+		# I go ahead and record the loop data, but we have removed the loop so it the loop timestamps are taken on the outside of the function ts
+		# for each type: for each iteration: open up sender_wifu_end.log and sender_wifu.log and extract out each value
+		# we will need to take the send start time and match it with the receive finish time at each level of measurement
+
+		kernel_app = []
+		wifu_app = []
+		wifu_outside_unix_socket = []
+
+		parser = FileParser()
+
+		for file in self.__get_log_files("sender_(kernel|wifu)\.log", "echo"):
+			print file
+			lines = parser.parse(file)
+			wifu = "sender_wifu.log" in file
+			outside_unix_start = 0
+			outside_unix_end = 0
+			for line in lines:
+				values = line.split(' ')
+				if line.startswith("send "):
+					assert len(values) == 4
+					start = int(values[1])
+					end = int(values[2])
+					bytes = int(values[3])
+					duration = end - start
+					assert duration > 0
+					assert bytes == 1000
+					if wifu:
+						wifu_app.append(duration)
+					else:
+						kernel_app.append(duration)
+
+				if line.startswith("send_unix_socket"):
+					assert len(values) == 4
+					start = int(values[1])
+					end = int(values[2])
+					bytes = int(values[3])
+					duration = end - start
+					assert duration > 0
+					assert bytes == 1000
+					outside_unix_start = start
+				if line.startswith("recv_unix_socket"):
+					assert len(values) == 4
+					start = int(values[1])
+					end = int(values[2])
+					bytes = int(values[3])
+					duration = end - start
+					assert duration > 0
+					assert bytes == 1000
+					outside_unix_end = end
+			duration = outside_unix_end - outside_unix_start
+			if wifu:
+				wifu_outside_unix_socket.append(duration)
+
+
+		data = [kernel_app, wifu_app, wifu_outside_unix_socket, wifu_outside_unix_socket]
+		print "Function data: ", data
+		title = 'Echo Server Latency'
+		filename = self.graph_path + 'echo_server_latency.png'
+		self.__graph_boxplot(data, title, filename)
+		return data
+
+
 	def graph(self):
 		loop_data = self.graph_loop_goodputs()
 		function_data = self.graph_function_goodputs()
@@ -1224,7 +1294,9 @@ class PreliminaryGrapher:
 
 		self.graph_all_sends(loop_data, function_data, outside_unix_socket_data, inside_unix_socket_data, inside_tahoe_data, dispatcher_data, dispatcher_data_after)
 		self.graph_all_receives(loop_data, function_data, outside_unix_socket_data, inside_unix_socket_data, inside_tahoe_data, dispatcher_data, dispatcher_data_after)
-		
+
+		self.graph_all_echos()
+		return
 
 		s = Stats()
 		print "Stats of 25th, 50th, and 75th percentiles in Mbps...\n"
