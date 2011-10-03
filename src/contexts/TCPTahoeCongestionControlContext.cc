@@ -66,7 +66,12 @@ void TCPTahoeCongestionControlContext::set_ssthreshold(u_int16_t ssthreashold) {
 }
 
 u_int32_t TCPTahoeCongestionControlContext::get_max_allowed_to_send() const {
-    return min((u_int32_t) get_snd_wnd(), get_cwnd());
+    // Originally the code looks like this:
+    // return min((u_int32_t) get_snd_wnd(), get_cwnd());
+    
+    // To avoid sending fractional packets, we changed it to:
+    u_int32_t space = min((u_int32_t) get_snd_wnd(), get_cwnd());
+    return space - (space % (u_int32_t) get_mss());
 }
 
 bool TCPTahoeCongestionControlContext::is_data_sent() const {

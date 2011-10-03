@@ -192,6 +192,18 @@ TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks10000000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(10000000));
 }
 
+TEST_F(BackEndMockTestDrop10, tahoeSendReceiveTestActiveBigChunks1000000) {
+    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000000));
+}
+
+TEST_F(BackEndMockTestDropRandom1Percent, tahoeSendReceiveTestActiveBigChunks1000000) {
+    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000000));
+}
+
+TEST_F(BackEndMockTestDropRandom5Percent, tahoeSendReceiveTestActiveBigChunks1000000) {
+    tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000000));
+}
+
 TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveBigChunks10000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(10000));
 }

@@ -70,7 +70,9 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
     bool between_and_equal_right = between_equal_right(ccc->get_snd_una(), p->get_tcp_ack_number(), ccc->get_snd_max());
 
     if (p->is_tcp_ack() && between_and_equal) {
+
         ccc->set_snd_una(p->get_tcp_ack_number());
+
 
         // In case we get an ack for something later than snd.nxt
         // (we dropped a packet but subsequent packets got through and we received a cumuliative ack)
@@ -94,8 +96,7 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
         }
 
         // check to see if there is room to send data
-        assert(ccc->get_num_outstanding() <= ccc->get_max_allowed_to_send());
-        if (ccc->get_num_outstanding() == ccc->get_max_allowed_to_send()) {
+        if (ccc->get_num_outstanding() >= ccc->get_max_allowed_to_send()) {
             // set timer for probe packet
             if (!ccc->get_probe_timer()) {
                 TimeoutEvent* timer = new TimeoutEvent(e->get_socket(), ccc->get_probe_timer_duration(), 0);
@@ -137,8 +138,7 @@ void TCPTahoeBaseCongestionControl::send_packets(Context* c, QueueProcessor<Even
     Socket* s = e->get_socket();
     gcstring& send_buffer = s->get_send_buffer();
 
-    assert(ccc->get_num_outstanding() <= ccc->get_max_allowed_to_send());
-
+    // while still have data to send && the amount of outstanding data is less than max allowed to send
     while ((int) send_buffer.size() - (int) ccc->get_num_outstanding() > 0 && ccc->get_num_outstanding() < ccc->get_max_allowed_to_send()) {
         send_one_packet(c, q, e);
     }
@@ -247,6 +247,7 @@ int TCPTahoeBaseCongestionControl::get_send_data_length(Context* c, Event* e, Wi
 
     // we do not want to make a packet larger than the window size
     int data_length = min(min(num_unsent, (int) p->max_data_length()), MAX_TCP_RECEIVE_WINDOW_SIZE);
+
     if (!ignore_window) {
         int available_window_space = (int) ccc->get_max_allowed_to_send() - (int) ccc->get_num_outstanding();
         data_length = min(data_length, available_window_space);

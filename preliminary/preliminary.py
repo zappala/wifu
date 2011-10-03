@@ -272,6 +272,25 @@ class ExecutableManager():
 			c.finished.wait()
 			c.join()
 
+	def setup_receiver(self, commands):
+		receiver = self.config.get_receiver_node()
+
+		all = []
+		all.append(receiver)
+
+		threads = []
+
+		for node in all:
+			c = Command(node, self.config.username, commands)
+			threads.append(c)
+			c.start()
+
+		for c in threads:
+			c.done.wait()
+			c.go.set()
+			c.finished.wait()
+			c.join()
+
 
 	def get_receiver_command(self, api, outfile=None, exe="simple-tcp-receiver"):
 		receiver_command = "sudo nice -n -20 ./" + exe
@@ -361,21 +380,24 @@ class ExecutableManager():
 
 				# start up the receiver
 				receiver_log = "receiver_" + api + ".log"
-				receiver_command = self.get_receiver_command(api, receiver_log, "echo-server")
 				receiver_commands = []
 				if rate is not None:
 					receiver_commands.append(rate_command)
 					receiver_commands.append(ethtool)
-				receiver_commands.append(chdir_command)
 				receiver_commands.append(sysctl_command)
+
+				self.setup_receiver(receiver_commands)
+
+				receiver_command = self.get_receiver_command(api, receiver_log, "echo-server")
+				receiver_commands = []
+				receiver_commands.append(chdir_command)
 				receiver_commands.append(receiver_command)
-
-
 				receiver = Command(receiver_node, self.config.username, receiver_commands)
 				nodes.append(receiver)
 				receiver.start()
+
 				receiver.running.wait()
-				time.sleep(1)
+				time.sleep(2)
 
 				# start up the sender
 				sender_log = "sender_" + api + ".log"
@@ -501,21 +523,24 @@ class ExecutableManager():
 
 				# start up the receiver
 				receiver_log = "receiver_" + api + ".log"
-				receiver_command = self.get_receiver_command(api, receiver_log)
 				receiver_commands = []
 				if rate is not None:
 					receiver_commands.append(rate_command)
-					receiver_commands.append(ethtool)
-				receiver_commands.append(chdir_command)
+					receiver_commands.append(ethtool)				
 				receiver_commands.append(sysctl_command)
-				receiver_commands.append(receiver_command)
-				
 
+				self.setup_receiver(receiver_commands)
+				
+				receiver_command = self.get_receiver_command(api, receiver_log)
+				receiver_commands = []
+				receiver_commands.append(chdir_command)
+				receiver_commands.append(receiver_command)
 				receiver = Command(receiver_node, self.config.username, receiver_commands)
 				nodes.append(receiver)
 				receiver.start()
+
 				receiver.running.wait()
-				time.sleep(1)
+				time.sleep(2)
 
 				# start up the sender
 				sender_log = "sender_" + api + ".log"
@@ -621,7 +646,7 @@ class PreliminaryGrapher:
 			s = self.data_path + str(i) + "/"
 			if special is not None:
 				s += special
-			print s
+			
 			d = Directory(s)
 
 			temp = d.get_files_re(regex)
@@ -866,7 +891,7 @@ class PreliminaryGrapher:
 		files = self.__get_log_files("sender_wifu_end\.log")
 
 		for file in files:
-			print file
+#			print file
 			lines = parser.parse(file)
 			total_time = 0.0
 			total_bytes = 0
@@ -882,7 +907,7 @@ class PreliminaryGrapher:
 					total_time += duration
 					total_bytes += bytes
 
-			print total_bytes, " ", num_bytes
+#			print total_bytes, " ", num_bytes
 			assert total_bytes == num_bytes
 			# assuming one kilo == 1000
 			rate = (num_bytes * 8 / 1000000) / (total_time / 1000000)
@@ -947,7 +972,7 @@ class PreliminaryGrapher:
 					total_time += duration
 					total_bytes += bytes
 
-			print total_bytes, " ", num_bytes
+#			print total_bytes, " ", num_bytes
 			assert total_bytes == num_bytes
 			# assuming one kilo == 1000
 			rate = (num_bytes * 8 / 1000000) / (total_time / 1000000)
@@ -989,7 +1014,7 @@ class PreliminaryGrapher:
 					total_time += duration
 					total_bytes += bytes
 
-			print total_bytes, " ", num_bytes
+#			print total_bytes, " ", num_bytes
 			assert total_bytes == num_bytes
 			# assuming one kilo == 1000
 			rate = (num_bytes * 8.0 / 1000000.0) / (total_time / 1000000.0)
@@ -1039,7 +1064,7 @@ class PreliminaryGrapher:
 
 		#create vectors of goodput
 		for file in files:
-			print file
+#			print file
 			lines = parser.parse(file)
 			total_time = 0.0
 			total_bytes = 0
@@ -1055,7 +1080,7 @@ class PreliminaryGrapher:
 					total_time += duration
 					total_bytes += bytes
 
-			print total_bytes, " ", num_bytes
+#			print total_bytes, " ", num_bytes
 			assert total_bytes == num_bytes
 			# assuming one kilo == 1000
 			rate = (num_bytes * 8.0 / 1000000.0) / (total_time / 1000000.0)
@@ -1079,7 +1104,7 @@ class PreliminaryGrapher:
 					total_time += duration
 					total_bytes += bytes
 
-			print total_bytes, " ", num_bytes
+#			print total_bytes, " ", num_bytes
 			assert total_bytes == num_bytes
 			# assuming one kilo == 1000
 			rate = (num_bytes * 8 / 1000000) / (total_time / 1000000)
@@ -1106,7 +1131,7 @@ class PreliminaryGrapher:
 
 		#create vectors of goodput
 		for file in files:
-			print file
+#			print file
 			lines = parser.parse(file)
 			total_time = 0.0
 			total_bytes = 0
@@ -1145,7 +1170,7 @@ class PreliminaryGrapher:
 					total_time += duration
 					total_bytes += bytes
 
-			print total_bytes, " ", num_bytes
+#			print total_bytes, " ", num_bytes
 			assert total_bytes == num_bytes
 			# assuming one kilo == 1000
 			rate = (num_bytes * 8 / 1000000) / (total_time / 1000000)
@@ -1232,13 +1257,14 @@ class PreliminaryGrapher:
 		parser = FileParser()
 
 		for file in self.__get_log_files("sender_(kernel|wifu)\.log", "echo"):
-			print file
+			#print file
 			lines = parser.parse(file)
 			wifu = "sender_wifu.log" in file
 			outside_unix_start = 0
 			outside_unix_end = 0
 			for line in lines:
 				values = line.split(' ')
+				# get the function time
 				if line.startswith("send "):
 					assert len(values) == 4
 					start = int(values[1])
@@ -1252,6 +1278,7 @@ class PreliminaryGrapher:
 					else:
 						kernel_app.append(duration)
 
+				# get the outside socket time
 				if line.startswith("send_unix_socket"):
 					assert len(values) == 4
 					start = int(values[1])
@@ -1275,11 +1302,62 @@ class PreliminaryGrapher:
 				wifu_outside_unix_socket.append(duration)
 
 
-		data = [kernel_app, wifu_app, wifu_outside_unix_socket, wifu_outside_unix_socket]
+		# This whole for loop assumes that the receive is logged first!
+		inside_socket_arr = []
+		dispatcher_before_arr = []
+		dispatcher_after_arr = []
+		tahoe_arr =[]
+
+		for file in self.__get_log_files("sender_wifu_end.log", "echo"):
+			print file
+			lines = parser.parse(file)
+			inside_socket = 0
+			dispatcher_before = 0
+			dispatcher_after = 0
+			tahoe = 0
+			for line in lines:
+				values = line.split(' ')
+				if len(values) == 8:
+					assert int(values[8]) == 1000
+
+				if "recv_tahoe" in line:
+					tahoe = int(values[7])
+				elif "send_tahoe" in line:
+					tahoe -= int(values[6])
+
+				elif "recv_backend" in line:
+					inside_socket = int(values[7])
+				elif "send_backend" in line:
+					inside_socket -= int(values[6])
+
+				elif "recv_before_dispatcher" in line:
+					dispatcher_before = int(values[7])
+				elif "send_before_dispatcher" in line:
+					dispatcher_before -= int(values[6])
+
+				elif "recv_after_dispatcher" in line:
+					dispatcher_after = int(values[7])
+				elif "send_after_dispatcher" in line:
+					dispatcher_after -= int(values[6])
+					
+			inside_socket_arr.append(inside_socket)
+			dispatcher_before_arr.append(dispatcher_before)
+			dispatcher_after_arr.append(dispatcher_after)
+			tahoe_arr.append(tahoe)
+			
+		data = [kernel_app, tahoe_arr, dispatcher_after_arr, dispatcher_before_arr, inside_socket_arr, wifu_outside_unix_socket, wifu_app, wifu_app]
 		print "Function data: ", data
+		s = Stats()
+		print s.median(kernel_app)
+		print s.median(tahoe_arr)
+		print s.median(dispatcher_after_arr)
+		print s.median(dispatcher_before_arr)
+		print s.median(inside_socket_arr)
+		print s.median(wifu_outside_unix_socket)
+		print s.median(wifu_app)
 		title = 'Echo Server Latency'
 		filename = self.graph_path + 'echo_server_latency.png'
-		self.__graph_boxplot(data, title, filename)
+		self.__graph_boxplot_all(data, title, filename)
 		return data
 
 
@@ -1295,8 +1373,9 @@ class PreliminaryGrapher:
 		self.graph_all_sends(loop_data, function_data, outside_unix_socket_data, inside_unix_socket_data, inside_tahoe_data, dispatcher_data, dispatcher_data_after)
 		self.graph_all_receives(loop_data, function_data, outside_unix_socket_data, inside_unix_socket_data, inside_tahoe_data, dispatcher_data, dispatcher_data_after)
 
-		self.graph_all_echos()
-		return
+#		self.graph_all_echos()
+		
+		
 
 		s = Stats()
 		print "Stats of 25th, 50th, and 75th percentiles in Mbps...\n"
@@ -1362,6 +1441,76 @@ class PreliminaryGrapher:
 		print "WiFu Receive:\t", s.get_25th_percentile(inside_tahoe_data[3]), "\t", s.median(inside_tahoe_data[3]), "\t", s.get_75th_percentile(inside_tahoe_data[3])
 		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(inside_tahoe_data[3]) / s.median(inside_tahoe_data[2])
 
+		return loop_data
+
+
+
+class MultipleGrapher:
+	def __init__(self, dirs, data):
+		self.dirs = []
+
+		for dir in dirs:
+			self.dirs.append(dir.replace("data", "graphs"))
+
+		self.data = data
+
+	def graph(self):
+		print "MultipleGrapher::graph()"
+		# data is a 3-d array
+		assert len(self.dirs) == 3
+
+		data = []
+		for item in self.data:
+			# item represents one of the different types (e.g. 10, 100, 1000 Mbps)
+			# kernel is in index 2, wifu in 2
+			data.append(item[2])
+			data.append(item[3])
+
+		assert len(data) == 6
+
+		fig = plt.figure(figsize=(10, 6))
+		fig.canvas.set_window_title('A Boxplot Example')
+		ax1 = fig.add_subplot(111)
+		plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
+
+		bp = plt.boxplot(data, notch=0, sym='+', vert=1, whis=1.5)
+		plt.setp(bp['boxes'], color='black')
+		plt.setp(bp['whiskers'], color='black')
+		plt.setp(bp['fliers'], color='red', marker='+')
+
+		# Add a horizontal grid to the plot, but make it very light in color
+		# so we can use it for reading data values but not be distracting
+		ax1.yaxis.grid(True, linestyle='-', which='major', color='lightgrey', alpha=0.5)
+
+		# Hide these grid behind plot objects
+		ax1.set_axisbelow(True)
+		#title = 'Comparison WiFu and Kernel Receiving Rates'
+		#ax1.set_title(title)
+		#ax1.set_xlabel('Type')
+		ax1.set_ylabel('Goodput (Mbps)')
+
+		# Set the axes ranges and axes labels
+		ax1.set_xlim(0.5, len(data) + 0.5)
+#		top = 2000
+#		bottom = 0
+#		ax1.set_ylim(bottom, top)
+		ax1.set_ylim(xmin=0)
+
+#		xtickNames = plt.setp(ax1, xticklabels=["Kernel 10 Mbps", "WiFu 10 Mbps", "Kernel 100 Mbps", "WiFu 100 Mbps", "Kernel 1000 Mbps", "WiFu 1000 Mbps"])
+		xtickNames = plt.setp(ax1, xticklabels=["Kernel 1-hop", "WiFu 1-hop", "Kernel 2-hops", "WiFu 2-hops", "Kernel 3-hops", "WiFu 3-hops", "Kernel 4-hops", "WiFu 4-hops"])
+		#plt.setp(xtickNames, rotation=45, fontsize=8)
+		plt.setp(xtickNames, fontsize=10)
+
+		print "Saving graph"
+		# save in all directories
+
+		for dir in self.dirs:
+			d = Directory(dir)
+			d.make()
+			filename = dir + 'multiple_compare.png'
+			savefig(filename)
+		
+
 if __name__ == "__main__":
 
 	start = time.time()
@@ -1387,14 +1536,25 @@ if __name__ == "__main__":
 
 		manager = ExecutableManager(c)
 		graph_path = manager.execute()
-		manager.execute_echo()
+#		manager.execute_echo()
 
 		end = time.time()
-
 		print "Duration (seconds) to do " + str(c.iterations) + " run(s): " + str(end - start)
 
 	print "Graphing..."
-	grapher = PreliminaryGrapher(graph_path)
-	grapher.graph()
+
+	# check for multiple directories
+	dirs = graph_path.split(" ")
+
+	loop_datas = []
+	for dir in dirs:
+		grapher = PreliminaryGrapher(dir)
+		data = grapher.graph()
+		loop_datas.append(data)
+
+	if len(dirs) == 4:
+		mg = MultipleGrapher(dirs, loop_datas)
+		mg.graph()
+	
 	
 	print "All done."

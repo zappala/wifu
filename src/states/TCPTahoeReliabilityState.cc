@@ -361,10 +361,10 @@ void TCPTahoeReliabilityState::handle_duplicate_ack(Context* c, QueueProcessor<E
         rc->set_duplicates(rc->get_duplicates() + 1);
     } else {
         rc->set_duplicate_ack_number(p->get_tcp_ack_number());
-        rc->set_duplicates(1);
+        rc->set_duplicates(0);
     }
     if (rc->get_duplicates() == 3) {
-        rc->set_duplicates(0);
+        //rc->set_duplicates(0);
         //        cout << "Three duplicate acks, resending data" << endl;
 
         // I read the following three lines of comments from inet/src/transport/tcp/flavours/TCPTahoe.cc
