@@ -191,14 +191,14 @@ void* receiving_thread(void* arg) {
     gcstring all_received = "";
     int num_received = 0;
 
-    list<u_int64_t, gc_allocator<u_int64_t> > starts, ends;
-    list<int, gc_allocator<int> > sizes;
+//    list<u_int64_t, gc_allocator<u_int64_t> > starts, ends;
+//    list<int, gc_allocator<int> > sizes;
     int return_value;
 
     Timer recv_timer;
     num_received = 0;
-    starts.clear();
-    ends.clear();
+//    starts.clear();
+//    ends.clear();
     
     data->flag.post();
     data->go.wait();
@@ -207,12 +207,12 @@ void* receiving_thread(void* arg) {
     
     while (true) {
         //memset(buffer, 0, size);
-        starts.push_back(Utils::get_current_time_microseconds_64());
+//        starts.push_back(Utils::get_current_time_microseconds_64());
         return_value = api->custom_recv(connection, buffer, chunk, 0);
-        ends.push_back(Utils::get_current_time_microseconds_64());
+//        ends.push_back(Utils::get_current_time_microseconds_64());
         recv_timer.start();
 
-        sizes.push_back(return_value);
+//        sizes.push_back(return_value);
 
 
         if (return_value == 0) {
@@ -232,13 +232,13 @@ void* receiving_thread(void* arg) {
     mutex->wait();
     AddressPort remote(&addr);
 
-    while (!starts.empty()) {
-        //cout << "recv " << starts.front() << " " << ends.front() << " " << sizes.front() << " " << remote.to_s() /*Sender*/ << " " << to_bind.to_s() /*Receiver*/ << endl;
-        cout << "recv " << starts.front() << " " << ends.front() << " " << sizes.front() << endl;
-        starts.pop_front();
-        ends.pop_front();
-        sizes.pop_front();
-    }
+//    while (!starts.empty()) {
+//        //cout << "recv " << starts.front() << " " << ends.front() << " " << sizes.front() << " " << remote.to_s() /*Sender*/ << " " << to_bind.to_s() /*Receiver*/ << endl;
+//        cout << "recv " << starts.front() << " " << ends.front() << " " << sizes.front() << endl;
+//        starts.pop_front();
+//        ends.pop_front();
+//        sizes.pop_front();
+//    }
 
     cout << "Duration (us) to recv " << num_received << " bytes from " << remote.to_s() << ": " << recv_timer.get_duration_microseconds() << endl;
     mutex->post();

@@ -183,8 +183,8 @@ void* sending_thread(void* arg) {
 
     int index = 0;
 
-    list<u_int64_t, gc_allocator<u_int64_t> > starts, ends;
-    list<int, gc_allocator<int> > sizes;
+//    list<u_int64_t, gc_allocator<u_int64_t> > starts, ends;
+//    list<int, gc_allocator<int> > sizes;
 
     int sent;
 
@@ -206,10 +206,10 @@ void* sending_thread(void* arg) {
         }
         const char* data = message.data() + index;
 
-        starts.push_back(Utils::get_current_time_microseconds_64());
+//        starts.push_back(Utils::get_current_time_microseconds_64());
         sent = api->custom_send(client, data, chunk, 0);
-        ends.push_back(Utils::get_current_time_microseconds_64());
-        sizes.push_back(sent);
+//        ends.push_back(Utils::get_current_time_microseconds_64());
+//        sizes.push_back(sent);
         index += sent;
     }
     send_timer.stop();
@@ -219,14 +219,14 @@ void* sending_thread(void* arg) {
     data->go.wait();
 
     mutex->wait();
-    while (!starts.empty()) {
-        //cout << "send " << starts.front() << " " << ends.front() << " " << sizes.front() << " " << to_connect.to_s() << endl;
-        cout << "send " << starts.front() << " " << ends.front() << " " << sizes.front() << endl;
-        starts.pop_front();
-        ends.pop_front();
-        sizes.pop_front();
-    }
-
+//    while (!starts.empty()) {
+//        //cout << "send " << starts.front() << " " << ends.front() << " " << sizes.front() << " " << to_connect.to_s() << endl;
+//        cout << "send " << starts.front() << " " << ends.front() << " " << sizes.front() << endl;
+//        starts.pop_front();
+//        ends.pop_front();
+//        sizes.pop_front();
+//    }
+//
     cout << "Duration (us) to send " << index << " bytes to " << to_connect.to_s() << ": " << send_timer.get_duration_microseconds() << endl;
     mutex->post();
 }

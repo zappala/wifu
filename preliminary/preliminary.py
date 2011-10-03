@@ -1363,15 +1363,15 @@ class PreliminaryGrapher:
 
 	def graph(self):
 		loop_data = self.graph_loop_goodputs()
-		function_data = self.graph_function_goodputs()
-		outside_unix_socket_data = self.graph_outside_unix_socket_goodputs(function_data)
-		inside_unix_socket_data = self.graph_inside_unix_socket_goodputs(function_data)
-		inside_tahoe_data = self.graph_inside_tahoe_goodputs(function_data)
-		dispatcher_data = self.graph_before_dispatcher_goodputs(function_data)
-		dispatcher_data_after = self.graph_after_dispatcher_goodputs(function_data)
-
-		self.graph_all_sends(loop_data, function_data, outside_unix_socket_data, inside_unix_socket_data, inside_tahoe_data, dispatcher_data, dispatcher_data_after)
-		self.graph_all_receives(loop_data, function_data, outside_unix_socket_data, inside_unix_socket_data, inside_tahoe_data, dispatcher_data, dispatcher_data_after)
+#		function_data = self.graph_function_goodputs()
+#		outside_unix_socket_data = self.graph_outside_unix_socket_goodputs(function_data)
+#		inside_unix_socket_data = self.graph_inside_unix_socket_goodputs(function_data)
+#		inside_tahoe_data = self.graph_inside_tahoe_goodputs(function_data)
+#		dispatcher_data = self.graph_before_dispatcher_goodputs(function_data)
+#		dispatcher_data_after = self.graph_after_dispatcher_goodputs(function_data)
+#
+#		self.graph_all_sends(loop_data, function_data, outside_unix_socket_data, inside_unix_socket_data, inside_tahoe_data, dispatcher_data, dispatcher_data_after)
+#		self.graph_all_receives(loop_data, function_data, outside_unix_socket_data, inside_unix_socket_data, inside_tahoe_data, dispatcher_data, dispatcher_data_after)
 
 #		self.graph_all_echos()
 		
@@ -1387,59 +1387,59 @@ class PreliminaryGrapher:
 		print "WiFu Receive:\t", s.get_25th_percentile(loop_data[3]), "\t", s.median(loop_data[3]), "\t", s.get_75th_percentile(loop_data[3])
 		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(loop_data[3]) / s.median(loop_data[2])
 
-		print ""
-		print "Function Call:"
-		print "Kernel Send:\t", s.get_25th_percentile(function_data[0]), "\t", s.median(function_data[0]), "\t", s.get_75th_percentile(function_data[0])
-		print "WiFu Send:\t", s.get_25th_percentile(function_data[1]), "\t", s.median(function_data[1]), "\t", s.get_75th_percentile(function_data[1])
-		print "WiFu / Kernel Send Ratio for median value:\t", s.median(function_data[1]) / s.median(function_data[0])
-		print "Kernel Receive:\t", s.get_25th_percentile(function_data[2]), "\t", s.median(function_data[2]), "\t", s.get_75th_percentile(function_data[2])
-		print "WiFu Receive:\t", s.get_25th_percentile(function_data[3]), "\t", s.median(function_data[3]), "\t", s.get_75th_percentile(function_data[3])
-		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(function_data[3]) / s.median(function_data[2])
-
-		print ""
-		print "Outside Unix Socket Call:"
-		print "Kernel Send:\t", s.get_25th_percentile(outside_unix_socket_data[0]), "\t", s.median(outside_unix_socket_data[0]), "\t", s.get_75th_percentile(outside_unix_socket_data[0])
-		print "WiFu Send:\t", s.get_25th_percentile(outside_unix_socket_data[1]), "\t", s.median(outside_unix_socket_data[1]), "\t", s.get_75th_percentile(outside_unix_socket_data[1])
-		print "WiFu / Kernel Send Ratio for median value:\t", s.median(outside_unix_socket_data[1]) / s.median(outside_unix_socket_data[0])
-		print "Kernel Receive:\t", s.get_25th_percentile(outside_unix_socket_data[2]), "\t", s.median(outside_unix_socket_data[2]), "\t", s.get_75th_percentile(outside_unix_socket_data[2])
-		print "WiFu Receive:\t", s.get_25th_percentile(outside_unix_socket_data[3]), "\t", s.median(outside_unix_socket_data[3]), "\t", s.get_75th_percentile(outside_unix_socket_data[3])
-		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(outside_unix_socket_data[3]) / s.median(outside_unix_socket_data[2])
-
-		print ""
-		print "Inside Unix Socket Call:"
-		print "Kernel Send:\t", s.get_25th_percentile(inside_unix_socket_data[0]), "\t", s.median(inside_unix_socket_data[0]), "\t", s.get_75th_percentile(inside_unix_socket_data[0])
-		print "WiFu Send:\t", s.get_25th_percentile(inside_unix_socket_data[1]), "\t", s.median(inside_unix_socket_data[1]), "\t", s.get_75th_percentile(inside_unix_socket_data[1])
-		print "WiFu / Kernel Send Ratio for median value:\t", s.median(inside_unix_socket_data[1]) / s.median(inside_unix_socket_data[0])
-		print "Kernel Receive:\t", s.get_25th_percentile(inside_unix_socket_data[2]), "\t", s.median(inside_unix_socket_data[2]), "\t", s.get_75th_percentile(inside_unix_socket_data[2])
-		print "WiFu Receive:\t", s.get_25th_percentile(inside_unix_socket_data[3]), "\t", s.median(inside_unix_socket_data[3]), "\t", s.get_75th_percentile(inside_unix_socket_data[3])
-		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(inside_unix_socket_data[3]) / s.median(inside_unix_socket_data[2])
-
-		print ""
-		print "Dispatcher Before Enqueue:"
-		print "Kernel Send:\t", s.get_25th_percentile(dispatcher_data[0]), "\t", s.median(dispatcher_data[0]), "\t", s.get_75th_percentile(dispatcher_data[0])
-		print "WiFu Send:\t", s.get_25th_percentile(dispatcher_data[1]), "\t", s.median(dispatcher_data[1]), "\t", s.get_75th_percentile(dispatcher_data[1])
-		print "WiFu / Kernel Send Ratio for median value:\t", s.median(dispatcher_data[1]) / s.median(dispatcher_data[0])
-		print "Kernel Receive:\t", s.get_25th_percentile(dispatcher_data[2]), "\t", s.median(dispatcher_data[2]), "\t", s.get_75th_percentile(dispatcher_data[2])
-		print "WiFu Receive:\t", s.get_25th_percentile(dispatcher_data[3]), "\t", s.median(dispatcher_data[3]), "\t", s.get_75th_percentile(dispatcher_data[3])
-		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(dispatcher_data[3]) / s.median(dispatcher_data[2])
-
-		print ""
-		print "Dispatcher After Enqueue:"
-		print "Kernel Send:\t", s.get_25th_percentile(dispatcher_data_after[0]), "\t", s.median(dispatcher_data_after[0]), "\t", s.get_75th_percentile(dispatcher_data_after[0])
-		print "WiFu Send:\t", s.get_25th_percentile(dispatcher_data_after[1]), "\t", s.median(dispatcher_data_after[1]), "\t", s.get_75th_percentile(dispatcher_data_after[1])
-		print "WiFu / Kernel Send Ratio for median value:\t", s.median(dispatcher_data_after[1]) / s.median(dispatcher_data_after[0])
-		print "Kernel Receive:\t", s.get_25th_percentile(dispatcher_data_after[2]), "\t", s.median(dispatcher_data_after[2]), "\t", s.get_75th_percentile(dispatcher_data_after[2])
-		print "WiFu Receive:\t", s.get_25th_percentile(dispatcher_data_after[3]), "\t", s.median(dispatcher_data_after[3]), "\t", s.get_75th_percentile(dispatcher_data_after[3])
-		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(dispatcher_data_after[3]) / s.median(dispatcher_data_after[2])
-
-		print ""
-		print "Inside Tahoe:"
-		print "Kernel Send:\t", s.get_25th_percentile(inside_tahoe_data[0]), "\t", s.median(inside_tahoe_data[0]), "\t", s.get_75th_percentile(inside_tahoe_data[0])
-		print "WiFu Send:\t", s.get_25th_percentile(inside_tahoe_data[1]), "\t", s.median(inside_tahoe_data[1]), "\t", s.get_75th_percentile(inside_tahoe_data[1])
-		print "WiFu / Kernel Send Ratio for median value:\t", s.median(inside_tahoe_data[1]) / s.median(inside_tahoe_data[0])
-		print "Kernel Receive:\t", s.get_25th_percentile(inside_tahoe_data[2]), "\t", s.median(inside_tahoe_data[2]), "\t", s.get_75th_percentile(inside_tahoe_data[2])
-		print "WiFu Receive:\t", s.get_25th_percentile(inside_tahoe_data[3]), "\t", s.median(inside_tahoe_data[3]), "\t", s.get_75th_percentile(inside_tahoe_data[3])
-		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(inside_tahoe_data[3]) / s.median(inside_tahoe_data[2])
+#		print ""
+#		print "Function Call:"
+#		print "Kernel Send:\t", s.get_25th_percentile(function_data[0]), "\t", s.median(function_data[0]), "\t", s.get_75th_percentile(function_data[0])
+#		print "WiFu Send:\t", s.get_25th_percentile(function_data[1]), "\t", s.median(function_data[1]), "\t", s.get_75th_percentile(function_data[1])
+#		print "WiFu / Kernel Send Ratio for median value:\t", s.median(function_data[1]) / s.median(function_data[0])
+#		print "Kernel Receive:\t", s.get_25th_percentile(function_data[2]), "\t", s.median(function_data[2]), "\t", s.get_75th_percentile(function_data[2])
+#		print "WiFu Receive:\t", s.get_25th_percentile(function_data[3]), "\t", s.median(function_data[3]), "\t", s.get_75th_percentile(function_data[3])
+#		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(function_data[3]) / s.median(function_data[2])
+#
+#		print ""
+#		print "Outside Unix Socket Call:"
+#		print "Kernel Send:\t", s.get_25th_percentile(outside_unix_socket_data[0]), "\t", s.median(outside_unix_socket_data[0]), "\t", s.get_75th_percentile(outside_unix_socket_data[0])
+#		print "WiFu Send:\t", s.get_25th_percentile(outside_unix_socket_data[1]), "\t", s.median(outside_unix_socket_data[1]), "\t", s.get_75th_percentile(outside_unix_socket_data[1])
+#		print "WiFu / Kernel Send Ratio for median value:\t", s.median(outside_unix_socket_data[1]) / s.median(outside_unix_socket_data[0])
+#		print "Kernel Receive:\t", s.get_25th_percentile(outside_unix_socket_data[2]), "\t", s.median(outside_unix_socket_data[2]), "\t", s.get_75th_percentile(outside_unix_socket_data[2])
+#		print "WiFu Receive:\t", s.get_25th_percentile(outside_unix_socket_data[3]), "\t", s.median(outside_unix_socket_data[3]), "\t", s.get_75th_percentile(outside_unix_socket_data[3])
+#		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(outside_unix_socket_data[3]) / s.median(outside_unix_socket_data[2])
+#
+#		print ""
+#		print "Inside Unix Socket Call:"
+#		print "Kernel Send:\t", s.get_25th_percentile(inside_unix_socket_data[0]), "\t", s.median(inside_unix_socket_data[0]), "\t", s.get_75th_percentile(inside_unix_socket_data[0])
+#		print "WiFu Send:\t", s.get_25th_percentile(inside_unix_socket_data[1]), "\t", s.median(inside_unix_socket_data[1]), "\t", s.get_75th_percentile(inside_unix_socket_data[1])
+#		print "WiFu / Kernel Send Ratio for median value:\t", s.median(inside_unix_socket_data[1]) / s.median(inside_unix_socket_data[0])
+#		print "Kernel Receive:\t", s.get_25th_percentile(inside_unix_socket_data[2]), "\t", s.median(inside_unix_socket_data[2]), "\t", s.get_75th_percentile(inside_unix_socket_data[2])
+#		print "WiFu Receive:\t", s.get_25th_percentile(inside_unix_socket_data[3]), "\t", s.median(inside_unix_socket_data[3]), "\t", s.get_75th_percentile(inside_unix_socket_data[3])
+#		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(inside_unix_socket_data[3]) / s.median(inside_unix_socket_data[2])
+#
+#		print ""
+#		print "Dispatcher Before Enqueue:"
+#		print "Kernel Send:\t", s.get_25th_percentile(dispatcher_data[0]), "\t", s.median(dispatcher_data[0]), "\t", s.get_75th_percentile(dispatcher_data[0])
+#		print "WiFu Send:\t", s.get_25th_percentile(dispatcher_data[1]), "\t", s.median(dispatcher_data[1]), "\t", s.get_75th_percentile(dispatcher_data[1])
+#		print "WiFu / Kernel Send Ratio for median value:\t", s.median(dispatcher_data[1]) / s.median(dispatcher_data[0])
+#		print "Kernel Receive:\t", s.get_25th_percentile(dispatcher_data[2]), "\t", s.median(dispatcher_data[2]), "\t", s.get_75th_percentile(dispatcher_data[2])
+#		print "WiFu Receive:\t", s.get_25th_percentile(dispatcher_data[3]), "\t", s.median(dispatcher_data[3]), "\t", s.get_75th_percentile(dispatcher_data[3])
+#		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(dispatcher_data[3]) / s.median(dispatcher_data[2])
+#
+#		print ""
+#		print "Dispatcher After Enqueue:"
+#		print "Kernel Send:\t", s.get_25th_percentile(dispatcher_data_after[0]), "\t", s.median(dispatcher_data_after[0]), "\t", s.get_75th_percentile(dispatcher_data_after[0])
+#		print "WiFu Send:\t", s.get_25th_percentile(dispatcher_data_after[1]), "\t", s.median(dispatcher_data_after[1]), "\t", s.get_75th_percentile(dispatcher_data_after[1])
+#		print "WiFu / Kernel Send Ratio for median value:\t", s.median(dispatcher_data_after[1]) / s.median(dispatcher_data_after[0])
+#		print "Kernel Receive:\t", s.get_25th_percentile(dispatcher_data_after[2]), "\t", s.median(dispatcher_data_after[2]), "\t", s.get_75th_percentile(dispatcher_data_after[2])
+#		print "WiFu Receive:\t", s.get_25th_percentile(dispatcher_data_after[3]), "\t", s.median(dispatcher_data_after[3]), "\t", s.get_75th_percentile(dispatcher_data_after[3])
+#		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(dispatcher_data_after[3]) / s.median(dispatcher_data_after[2])
+#
+#		print ""
+#		print "Inside Tahoe:"
+#		print "Kernel Send:\t", s.get_25th_percentile(inside_tahoe_data[0]), "\t", s.median(inside_tahoe_data[0]), "\t", s.get_75th_percentile(inside_tahoe_data[0])
+#		print "WiFu Send:\t", s.get_25th_percentile(inside_tahoe_data[1]), "\t", s.median(inside_tahoe_data[1]), "\t", s.get_75th_percentile(inside_tahoe_data[1])
+#		print "WiFu / Kernel Send Ratio for median value:\t", s.median(inside_tahoe_data[1]) / s.median(inside_tahoe_data[0])
+#		print "Kernel Receive:\t", s.get_25th_percentile(inside_tahoe_data[2]), "\t", s.median(inside_tahoe_data[2]), "\t", s.get_75th_percentile(inside_tahoe_data[2])
+#		print "WiFu Receive:\t", s.get_25th_percentile(inside_tahoe_data[3]), "\t", s.median(inside_tahoe_data[3]), "\t", s.get_75th_percentile(inside_tahoe_data[3])
+#		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(inside_tahoe_data[3]) / s.median(inside_tahoe_data[2])
 
 		return loop_data
 
@@ -1497,7 +1497,7 @@ class MultipleGrapher:
 		ax1.set_ylim(xmin=0)
 
 #		xtickNames = plt.setp(ax1, xticklabels=["Kernel 10 Mbps", "WiFu 10 Mbps", "Kernel 100 Mbps", "WiFu 100 Mbps", "Kernel 1000 Mbps", "WiFu 1000 Mbps"])
-		xtickNames = plt.setp(ax1, xticklabels=["Kernel 1-hop", "WiFu 1-hop", "Kernel 2-hops", "WiFu 2-hops", "Kernel 3-hops", "WiFu 3-hops", "Kernel 4-hops", "WiFu 4-hops"])
+		xtickNames = plt.setp(ax1, xticklabels=["Kernel 1-hop", "WiFu 1-hop", "Kernel 2-hops", "WiFu 2-hops", "Kernel 3-hops", "WiFu 3-hops"])
 		#plt.setp(xtickNames, rotation=45, fontsize=8)
 		plt.setp(xtickNames, fontsize=10)
 
@@ -1552,7 +1552,7 @@ if __name__ == "__main__":
 		data = grapher.graph()
 		loop_datas.append(data)
 
-	if len(dirs) == 4:
+	if len(dirs) == 3:
 		mg = MultipleGrapher(dirs, loop_datas)
 		mg.graph()
 	

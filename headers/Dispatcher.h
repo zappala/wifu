@@ -92,23 +92,23 @@ private:
      */
     Dispatcher();
 
-    list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
-    list<u_int32_t, gc_allocator<u_int32_t> > recv_response_sizes_;
+//    list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
+//    list<u_int32_t, gc_allocator<u_int32_t> > recv_response_sizes_;
+//
+//    list<u_int64_t, gc_allocator<u_int64_t> > send_events_, send_response_events_;
+//    list<u_int32_t, gc_allocator<u_int32_t> > send_response_sizes_;
+//
+//    list<u_int64_t, gc_allocator<u_int64_t> > end_receive_events_, end_recv_response_events_;
+//    list<u_int32_t, gc_allocator<u_int32_t> > end_recv_response_sizes_;
+//
+//    list<u_int64_t, gc_allocator<u_int64_t> > end_send_events_, end_send_response_events_;
+//    list<u_int32_t, gc_allocator<u_int32_t> > end_send_response_sizes_;
+//
+//    list<int, gc_allocator<int> > send_protocol_queue_sizes_, receive_protocol_queue_sizes_;
+//    list<int, gc_allocator<int> > send_library_queue_sizes_, receive_library_queue_sizes_;
 
-    list<u_int64_t, gc_allocator<u_int64_t> > send_events_, send_response_events_;
-    list<u_int32_t, gc_allocator<u_int32_t> > send_response_sizes_;
-
-    list<u_int64_t, gc_allocator<u_int64_t> > end_receive_events_, end_recv_response_events_;
-    list<u_int32_t, gc_allocator<u_int32_t> > end_recv_response_sizes_;
-
-    list<u_int64_t, gc_allocator<u_int64_t> > end_send_events_, end_send_response_events_;
-    list<u_int32_t, gc_allocator<u_int32_t> > end_send_response_sizes_;
-
-    list<int, gc_allocator<int> > send_protocol_queue_sizes_, receive_protocol_queue_sizes_;
-    list<int, gc_allocator<int> > send_library_queue_sizes_, receive_library_queue_sizes_;
-
-    u_int64_t start_, end_;
-    int queue_size_;
+//    u_int64_t start_, end_;
+//    int queue_size_;
 
 };
 

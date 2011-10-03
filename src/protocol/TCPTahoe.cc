@@ -12,33 +12,33 @@ TCPTahoe::TCPTahoe(int protocol, IContextContainerFactory* factory) : Protocol(p
 
 TCPTahoe::~TCPTahoe() {
 
-    log_INFORMATIONAL("tahoe_send_events_size: ", pantheios::i(send_events_.size()), " tahoe_send_response_events_size: ", pantheios::i(send_response_events_.size()), " tahoe_send_response_sizes_size: ", pantheios::i(send_response_sizes_.size()));
-
-
-    while (!send_response_events_.empty()) {
-
-        int size = 1000;
-        char start[size];
-        char end[size];
-        char size_i[size];
-        memset(start, 0, size);
-        memset(end, 0, size);
-        memset(size_i, 0, size);
-
-        sprintf(start, "%llu", send_events_.front());
-        sprintf(end, "%llu", send_response_events_.front());
-        sprintf(size_i, "%u", send_response_sizes_.front());
-
-        basic_string<PAN_CHAR_T> start_s(start);
-        basic_string<PAN_CHAR_T> end_s(end);
-        basic_string<PAN_CHAR_T> size_s(size_i);
-
-        log_INFORMATIONAL("send_tahoe ", start_s, " ", end_s, " ", size_s);
-
-        send_events_.pop_front();
-        send_response_events_.pop_front();
-        send_response_sizes_.pop_front();
-    }
+//    log_INFORMATIONAL("tahoe_send_events_size: ", pantheios::i(send_events_.size()), " tahoe_send_response_events_size: ", pantheios::i(send_response_events_.size()), " tahoe_send_response_sizes_size: ", pantheios::i(send_response_sizes_.size()));
+//
+//
+//    while (!send_response_events_.empty()) {
+//
+//        int size = 1000;
+//        char start[size];
+//        char end[size];
+//        char size_i[size];
+//        memset(start, 0, size);
+//        memset(end, 0, size);
+//        memset(size_i, 0, size);
+//
+//        sprintf(start, "%llu", send_events_.front());
+//        sprintf(end, "%llu", send_response_events_.front());
+//        sprintf(size_i, "%u", send_response_sizes_.front());
+//
+//        basic_string<PAN_CHAR_T> start_s(start);
+//        basic_string<PAN_CHAR_T> end_s(end);
+//        basic_string<PAN_CHAR_T> size_s(size_i);
+//
+//        log_INFORMATIONAL("send_tahoe ", start_s, " ", end_s, " ", size_s);
+//
+//        send_events_.pop_front();
+//        send_response_events_.pop_front();
+//        send_response_sizes_.pop_front();
+//    }
 
 
 }
@@ -262,7 +262,7 @@ void TCPTahoe::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEve
 }
 
 void TCPTahoe::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
-    send_events_.push_back(Utils::get_current_time_microseconds_64());
+//    send_events_.push_back(Utils::get_current_time_microseconds_64());
     Socket* s = e->get_socket();
     TCPTahoeIContextContainer* c = (TCPTahoeIContextContainer*) map_.find(s)->second;
 
@@ -403,8 +403,8 @@ void TCPTahoe::save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEve
     response_event->set_default_length();
     response_event->set_destination(e->get_source());
 
-    send_response_events_.push_back(Utils::get_current_time_microseconds_64());
-    send_response_sizes_.push_back(num_to_insert);
+//    send_response_events_.push_back(Utils::get_current_time_microseconds_64());
+//    send_response_sizes_.push_back(num_to_insert);
     dispatch(response_event);
     q->enqueue(new SendBufferNotEmptyEvent(s));
 }

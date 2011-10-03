@@ -10,31 +10,31 @@ TCPTahoeReliabilityState::~TCPTahoeReliabilityState() {
 
 
 void TCPTahoeReliabilityState::state_delete_socket(Context* c, QueueProcessor<Event*>* q, DeleteSocketEvent* e) {
-    log_INFORMATIONAL("tahoe_recv_events_size: ", pantheios::i(tahoe_receive_events_.size()), " tahoe_recv_response_events_size: ", pantheios::i(tahoe_recv_response_events_.size()), " tahoe_recv_response_sizes_size: ", pantheios::i(tahoe_recv_response_sizes_.size()));
-    while (!tahoe_recv_response_events_.empty()) {
-
-        int size = 1000;
-        char start[size];
-        char end[size];
-        char size_i[size];
-        memset(start, 0, size);
-        memset(end, 0, size);
-        memset(size_i, 0, size);
-
-        sprintf(start, "%llu", tahoe_receive_events_.front());
-        sprintf(end, "%llu", tahoe_recv_response_events_.front());
-        sprintf(size_i, "%u", tahoe_recv_response_sizes_.front());
-
-        basic_string<PAN_CHAR_T> start_s(start);
-        basic_string<PAN_CHAR_T> end_s(end);
-        basic_string<PAN_CHAR_T> size_s(size_i);
-
-        log_INFORMATIONAL("recv_tahoe ", start_s, " ", end_s, " ", size_s);
-
-        tahoe_receive_events_.pop_front();
-        tahoe_recv_response_events_.pop_front();
-        tahoe_recv_response_sizes_.pop_front();
-    }
+//    log_INFORMATIONAL("tahoe_recv_events_size: ", pantheios::i(tahoe_receive_events_.size()), " tahoe_recv_response_events_size: ", pantheios::i(tahoe_recv_response_events_.size()), " tahoe_recv_response_sizes_size: ", pantheios::i(tahoe_recv_response_sizes_.size()));
+//    while (!tahoe_recv_response_events_.empty()) {
+//
+//        int size = 1000;
+//        char start[size];
+//        char end[size];
+//        char size_i[size];
+//        memset(start, 0, size);
+//        memset(end, 0, size);
+//        memset(size_i, 0, size);
+//
+//        sprintf(start, "%llu", tahoe_receive_events_.front());
+//        sprintf(end, "%llu", tahoe_recv_response_events_.front());
+//        sprintf(size_i, "%u", tahoe_recv_response_sizes_.front());
+//
+//        basic_string<PAN_CHAR_T> start_s(start);
+//        basic_string<PAN_CHAR_T> end_s(end);
+//        basic_string<PAN_CHAR_T> size_s(size_i);
+//
+//        log_INFORMATIONAL("recv_tahoe ", start_s, " ", end_s, " ", size_s);
+//
+//        tahoe_receive_events_.pop_front();
+//        tahoe_recv_response_events_.pop_front();
+//        tahoe_recv_response_sizes_.pop_front();
+//    }
 }
 
 void TCPTahoeReliabilityState::state_send_packet(Context* c, QueueProcessor<Event*>* q, SendPacketEvent* e) {
@@ -79,16 +79,16 @@ void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, QueueP
         create_and_dispatch_received_data(c, q, rc->get_receive_event());
         rc->set_receive_event(0);
     }
-    else if(rc->get_receive_event()) {
-        // final receive call
-        tahoe_recv_response_events_.push_back(Utils::get_current_time_microseconds_64());
-        tahoe_recv_response_sizes_.push_back(0);
-    }
+//    else if(rc->get_receive_event()) {
+//        // final receive call
+//        tahoe_recv_response_events_.push_back(Utils::get_current_time_microseconds_64());
+//        tahoe_recv_response_sizes_.push_back(0);
+//    }
 }
 
 void TCPTahoeReliabilityState::state_receive(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
 //    cout << "TCPTahoeReliabilityState::state_receive()" << endl;
-    tahoe_receive_events_.push_back(Utils::get_current_time_microseconds_64());
+//    tahoe_receive_events_.push_back(Utils::get_current_time_microseconds_64());
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
 
@@ -193,8 +193,8 @@ void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, Que
         rc->set_receive_index(0);
     }
 
-    tahoe_recv_response_events_.push_back(Utils::get_current_time_microseconds_64());
-    tahoe_recv_response_sizes_.push_back(length);
+//    tahoe_recv_response_events_.push_back(Utils::get_current_time_microseconds_64());
+//    tahoe_recv_response_sizes_.push_back(length);
     Dispatcher::instance().enqueue(response);
     q->enqueue(new ReceiveBufferNotFullEvent(s));
 }

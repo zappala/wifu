@@ -97,7 +97,7 @@ void* unix_receive_handler(void* arg) {
     while (1) {
         //u_int64_t start = Utils::get_current_time_microseconds_64();
         nread = recv(socket, buf, UNIX_SOCKET_MAX_BUFFER_SIZE, 0);
-        time = Utils::get_current_time_microseconds_64();
+//        time = Utils::get_current_time_microseconds_64();
         if (nread < 0) {
             if (errno == EINTR)
                 continue;

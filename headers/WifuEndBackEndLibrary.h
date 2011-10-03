@@ -61,11 +61,11 @@ private:
     map<int, LibraryEvent*, less<int>, gc_allocator<pair<int, LibraryEvent*> > > event_map_;
     map<int, LibraryEvent*, less<int>, gc_allocator<pair<int, LibraryEvent*> > >::iterator event_map_iterator_;
 
-    list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
-    list<u_int32_t, gc_allocator<u_int32_t> > recv_response_sizes_;
-
-    list<u_int64_t, gc_allocator<u_int64_t> > send_events_, send_response_events_;
-    list<u_int32_t, gc_allocator<u_int32_t> > send_response_sizes_;
+//    list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
+//    list<u_int32_t, gc_allocator<u_int32_t> > recv_response_sizes_;
+//
+//    list<u_int64_t, gc_allocator<u_int64_t> > send_events_, send_response_events_;
+//    list<u_int32_t, gc_allocator<u_int32_t> > send_response_sizes_;
 
 };
 
