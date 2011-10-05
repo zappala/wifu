@@ -737,6 +737,54 @@ class PreliminaryGrapher:
 		d.make()
 		savefig(filename)
 
+	def graph_loop_goodputs_scalability(self):
+		num_bytes = float(self.configuration.dictionary["num"])
+
+		kernel_receive = []
+		kernel_send = []
+		wifu_receive = []
+		wifu_send = []
+
+		parser = FileParser()
+
+		#create vectors of goodput
+		for file in self.receive_files:
+			lines = parser.parse(file)
+			wifu = "receiver_wifu.log" in file
+			for line in lines:
+				if line.startswith("Duration"):
+					values = line.split(' ')
+					assert len(values) == 10
+					duration = float(values[9])
+					# assuming one kilo == 1000
+					rate = (num_bytes * 8 / 1000000) / (duration / 1000000)
+					if wifu:
+						wifu_receive.append(rate)
+					else:
+						kernel_receive.append(rate)
+
+		for file in self.send_files:
+			lines = parser.parse(file)
+			wifu = "sender_wifu.log" in file
+			for line in lines:
+				if line.startswith("Duration"):
+					values = line.split(' ')
+					assert len(values) == 10
+					duration = float(values[9])
+					# assuming one kilo == 1000
+					rate = (num_bytes * 8 / 1000000) / (duration / 1000000)
+					if wifu:
+						wifu_send.append(rate)
+					else:
+						kernel_send.append(rate)
+
+		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
+	#		print "Looping data: ", data
+		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Entire Loop)'
+		filename = self.graph_path + 'send_receive_rate_boxplot_loop_scalability.png'
+		self.__graph_boxplot(data, title, filename)
+		return data
+
 	def graph_loop_goodputs(self):
 		num_bytes = float(self.configuration.dictionary["num"])
 
@@ -1360,9 +1408,20 @@ class PreliminaryGrapher:
 		self.__graph_boxplot_all(data, title, filename)
 		return data
 
+	def jain(self, array):
+		numerator = 0
+		denominator = 0
+		for i in range(0, len(array)):
+			numerator += array[i]
+			denominator += math.pow(array[i], 2)
+
+		numerator = math.pow(numerator, 2)
+		denominator = denominator * len(array)
+		return numerator / denominator
 
 	def graph(self):
 		loop_data = self.graph_loop_goodputs()
+		scale_data = self.graph_loop_goodputs_scalability()
 #		function_data = self.graph_function_goodputs()
 #		outside_unix_socket_data = self.graph_outside_unix_socket_goodputs(function_data)
 #		inside_unix_socket_data = self.graph_inside_unix_socket_goodputs(function_data)
@@ -1386,6 +1445,22 @@ class PreliminaryGrapher:
 		print "Kernel Receive:\t", s.get_25th_percentile(loop_data[2]), "\t", s.median(loop_data[2]), "\t", s.get_75th_percentile(loop_data[2])
 		print "WiFu Receive:\t", s.get_25th_percentile(loop_data[3]), "\t", s.median(loop_data[3]), "\t", s.get_75th_percentile(loop_data[3])
 		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(loop_data[3]) / s.median(loop_data[2])
+
+		loop_data[3].sort()
+		l = len(loop_data[3])
+		print "WiFu Receive Max: ", loop_data[3][l-1]
+
+
+		wifu_receiver_scalability = scale_data[3]
+		kernel_receiver_scalability = scale_data[2]
+		print len(wifu_receiver_scalability)
+		print len(kernel_receiver_scalability)
+		# compute jain's fairness
+		print "Jain's Fairness (WiFu)  : ", self.jain(wifu_receiver_scalability)
+		print "Jain's Fairness (Kernel): ", self.jain(kernel_receiver_scalability)
+		
+
+		
 
 #		print ""
 #		print "Function Call:"
@@ -1471,7 +1546,8 @@ class MultipleGrapher:
 		fig = plt.figure(figsize=(10, 6))
 		fig.canvas.set_window_title('A Boxplot Example')
 		ax1 = fig.add_subplot(111)
-		plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
+		ax1.set_yscale('log')
+		#plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
 
 		bp = plt.boxplot(data, notch=0, sym='+', vert=1, whis=1.5)
 		plt.setp(bp['boxes'], color='black')
@@ -1496,8 +1572,8 @@ class MultipleGrapher:
 #		ax1.set_ylim(bottom, top)
 		ax1.set_ylim(xmin=0)
 
-#		xtickNames = plt.setp(ax1, xticklabels=["Kernel 10 Mbps", "WiFu 10 Mbps", "Kernel 100 Mbps", "WiFu 100 Mbps", "Kernel 1000 Mbps", "WiFu 1000 Mbps"])
-		xtickNames = plt.setp(ax1, xticklabels=["Kernel 1-hop", "WiFu 1-hop", "Kernel 2-hops", "WiFu 2-hops", "Kernel 3-hops", "WiFu 3-hops"])
+		xtickNames = plt.setp(ax1, xticklabels=["Kernel 10 Mbps", "WiFu 10 Mbps", "Kernel 100 Mbps", "WiFu 100 Mbps", "Kernel 1000 Mbps", "WiFu 1000 Mbps"])
+#		xtickNames = plt.setp(ax1, xticklabels=["Kernel 1-hop", "WiFu 1-hop", "Kernel 2-hops", "WiFu 2-hops", "Kernel 3-hops", "WiFu 3-hops"])
 		#plt.setp(xtickNames, rotation=45, fontsize=8)
 		plt.setp(xtickNames, fontsize=10)
 
@@ -1507,8 +1583,8 @@ class MultipleGrapher:
 		for dir in self.dirs:
 			d = Directory(dir)
 			d.make()
-			filename = dir + 'multiple_compare.png'
-			savefig(filename)
+			filename = dir + 'multiple_compare_wired_scalability.eps'
+			savefig(filename, format="eps")
 		
 
 if __name__ == "__main__":
