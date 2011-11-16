@@ -21,6 +21,7 @@
 #include "packet/TCPTimestampOption.h"
 #include "../test/headers/RandomStringGenerator.h"
 #include "Timer.h"
+#include "OptionParser.h"
 
 using namespace std;
 
@@ -43,12 +44,41 @@ int raw_send(int socket, TCPPacket* p, struct sockaddr* dest) {
  * 
  */
 int main(int argc, char** argv) {
-    cout << "Sender" << endl;
+//    cout << "Sender" << endl;
+
+    // parameters:
+    // destination address
+    // rate (goodput), long
+    // duration (seconds), long
+
+    gcstring des = "dest";
+    gcstring r = "rate";
+    gcstring dur = "duration";
+
+    static struct option long_options[] = {
+        {des.c_str(), required_argument, NULL, 0},
+        {r.c_str(), required_argument, NULL, 0},
+        {dur.c_str(), required_argument, NULL, 0},
+        {0, 0, 0, 0}
+    };
 
     int protocol = 250;
     int dest_port = 50000;
-    gcstring dest_address = "5.0.0.54";
-    //gcstring dest_address = "127.0.0.1";
+    //    gcstring dest_address = "5.0.0.54";
+    gcstring dest_address = "127.0.0.1";
+    long duration = 10.0; // seconds
+    long rate = 200.0; // Mbps (goodput)
+
+    OptionParser::instance().parse(argc, argv, long_options);
+    if (OptionParser::instance().present(des)) {
+        dest_address = OptionParser::instance().argument(des);
+    }
+    if (OptionParser::instance().present(r)) {
+        rate = atof(OptionParser::instance().argument(r).c_str());
+    }
+    if (OptionParser::instance().present(dur)) {
+        duration = atof(OptionParser::instance().argument(dur).c_str());
+    }
 
     AddressPort* address = new AddressPort(dest_address, dest_port);
     struct sockaddr* dest = (struct sockaddr*) address->get_network_struct_ptr();
@@ -59,7 +89,7 @@ int main(int argc, char** argv) {
     TCPPacket* p = new TCPPacket();
     p->set_ip_protocol(protocol);
     p->set_destination_port(dest_port);
-    p->set_ip_destination_address_s(dest_address);
+    p->set_ip_destination_address_s(dest_address);   
     p->insert_tcp_header_option(new TCPTimestampOption);
 
     gcstring to_send = RandomStringGenerator::get_data(p->max_data_length());
@@ -80,12 +110,11 @@ int main(int argc, char** argv) {
     }
 
 
-    long duration = 10.0;   // seconds
-    long rate = 20.0;       // Mbps (goodput)
+
     u_int64_t total_bits = ((rate * 1000000) * duration);
     u_int64_t packet_bits = p->get_data_length_bytes() * 8;
     u_int64_t total_packets = total_bits / packet_bits;
-    double chunks = 1000.0;
+    double chunks = 100.0;
     double packets_per_chunk = total_packets / chunks;
     double wait = (duration / chunks) * 1000000;
 
@@ -100,18 +129,18 @@ int main(int argc, char** argv) {
     Timer timer;
     timer.start();
     for (int i = 0; i < chunks; ++i) {
-        for(int j = 0; j < packets_per_chunk; ++j) {
+        for (int j = 0; j < packets_per_chunk; ++j) {
             raw_send(s, p, dest);
             total_bytes_sent += p->get_data_length_bytes();
         }
-        usleep(wait);
+        usleep(wait/2);
     }
     timer.stop();
 
-    cout << "bytes sent: " << total_bytes_sent << endl;
-    cout << "duration (seconds): " << timer.get_duration_seconds() << endl;
+    cout << "sent " << total_bytes_sent << endl;
+    cout << "duration " << timer.get_duration_seconds() << endl;
     double send_rate = ((total_bytes_sent * 8) / timer.get_duration_seconds()) / 1000000;
-    cout << "Send Rate (Mbps): " << send_rate << endl;
+    cout << "rate " << send_rate << endl;
 
 
     close(s);

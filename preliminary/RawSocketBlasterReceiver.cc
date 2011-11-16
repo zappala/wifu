@@ -27,7 +27,7 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-    cout << "Receiver" << endl;
+//    cout << "Receiver" << endl;
 
     int protocol = 250;
 
@@ -77,11 +77,11 @@ int main(int argc, char** argv) {
     }
     
 
-    cout << total_bytes << endl;
+    cout << "received " << total_bytes << endl;
     double time_ = timer.get_duration_seconds() - tv.tv_sec;
-    cout << "duration (seconds): " << time_ << endl;
+    cout << "duration " << time_ << endl;
     double receive_rate = ((total_bytes * 8) / time_) / 1000000;
-    cout << "Receive Rate (Mbps): " << receive_rate << endl;
+    cout << "rate " << receive_rate << endl;
 
     close(fd);
 
