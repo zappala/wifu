@@ -63,6 +63,11 @@ class Configuration():
 	def equal_sender_receiver(self):
 		return self.get_sender_node() == self.get_receiver_node()
 
+	def get_interface(self):
+		key = "interface"
+		assert key in self.dictionary
+		return self.dictionary[key]
+
 	def get_rate(self):
 		key = "rate"
 
@@ -374,9 +379,9 @@ class ExecutableManager():
 
 				sysctl_command = "sudo sysctl -p /tmp/sysctl_wifu.conf"
 				rate = self.config.get_rate()
-				ethtool = "sudo ethtool eth0"
+				ethtool = "sudo ethtool " + self.config.get_interface()
 				if rate is not None:
-					rate_command = "sudo ethtool -s eth0 advertise " + self.config.get_rate()
+					rate_command = "sudo ethtool -s " + self.config.get_interface() + " advertise " + self.config.get_rate()
 
 				# start up the receiver
 				receiver_log = "receiver_" + api + ".log"
@@ -431,7 +436,7 @@ class ExecutableManager():
 				sysctl_command = "sudo sysctl -p /tmp/sysctl_default.conf"
 				chmod_command = "sudo chmod o+r /tmp/wifu-end.log"
 				# auto is 0x03F
-				rate_command = "sudo ethtool -s eth0 advertise 0x03F"
+				rate_command = "sudo ethtool -s " + self.config.get_interface() + " advertise 0x03F"
 				if rate is not None:
 					finalizing_commands.append(rate_command)
 					finalizing_commands.append(ethtool)
@@ -516,18 +521,26 @@ class ExecutableManager():
 				nodes = []
 
 				sysctl_command = "sudo sysctl -p /tmp/sysctl_wifu.conf"
+				tso_command = "sudo ethtool -K " + self.config.get_interface() + " tso off"
+				gso_command = "sudo ethtool -K " + self.config.get_interface() + " gso off"
+
 				rate = self.config.get_rate()
-				ethtool = "sudo ethtool eth0"
+				ethtool = "sudo ethtool " + self.config.get_interface()
 				if rate is not None:
-					rate_command = "sudo ethtool -s eth0 advertise " + self.config.get_rate()
+					rate_command = "sudo ethtool -s " + self.config.get_interface() + " advertise " + self.config.get_rate()
 
 				# start up the receiver
 				receiver_log = "receiver_" + api + ".log"
 				receiver_commands = []
 				if rate is not None:
 					receiver_commands.append(rate_command)
-					receiver_commands.append(ethtool)				
+									
 				receiver_commands.append(sysctl_command)
+				if self.config.dictionary["tso"] is not None:
+					receiver_commands.append(tso_command)
+				if self.config.dictionary["gso"] is not None:
+					receiver_commands.append(gso_command)
+				receiver_commands.append(ethtool)
 
 				self.setup_receiver(receiver_commands)
 				
@@ -548,9 +561,16 @@ class ExecutableManager():
 				sender_commands = []
 				if rate is not None:
 					sender_commands.append(rate_command)
-					sender_commands.append(ethtool)
+					
 				sender_commands.append(chdir_command)
 				sender_commands.append(sysctl_command)
+
+				if self.config.dictionary["tso"] is not None:
+					sender_commands.append(tso_command)
+				if self.config.dictionary["gso"] is not None:
+					sender_commands.append(gso_command)
+
+				sender_commands.append(ethtool)
 				sender_commands.append(sender_command)
 				
 
@@ -573,15 +593,23 @@ class ExecutableManager():
 
 				finalizing_commands = []
 				sysctl_command = "sudo sysctl -p /tmp/sysctl_default.conf"
+				tso_command = "sudo ethtool -K " + self.config.get_interface() + " tso on"
+				gso_command = "sudo ethtool -K " + self.config.get_interface() + " gso on"
 				chmod_command = "sudo chmod o+r /tmp/wifu-end.log"
 				# auto is 0x03F
-				rate_command = "sudo ethtool -s eth0 advertise 0x03F"
+				rate_command = "sudo ethtool -s " + self.config.get_interface() + " advertise 0x03F"
 				if rate is not None:
 					finalizing_commands.append(rate_command)
-					finalizing_commands.append(ethtool)
+
 				finalizing_commands.append(sysctl_command)
-				finalizing_commands.append(chmod_command)
-				
+				if self.config.dictionary["tso"] is not None:
+					finalizing_commands.append(tso_command)
+
+				if self.config.dictionary["gso"] is not None:
+					finalizing_commands.append(gso_command)
+
+				finalizing_commands.append(ethtool)
+				finalizing_commands.append(chmod_command)				
 
 				for node in [sender_node, receiver_node]:
 					n = Command(node, self.config.username, finalizing_commands)
@@ -1595,6 +1623,7 @@ if __name__ == "__main__":
 	parser.add_option("-u", "--username", dest="username", help="Username used to copy files to nodes.  Must also be in the sudoers file on the nodes.")
 	parser.add_option("-c", "--config", dest="config", help="Configuration file containing necessary information to run preliminary executables.")
 	parser.add_option("-g", "--graph", dest="graph", help="Only do graphing of the specified path.")
+	
 
 	#TODO: use argparse instead (need python 2.7) as it will allow for variable length args with nargs='?' (nargs='*')
 
