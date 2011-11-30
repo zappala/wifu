@@ -16,6 +16,8 @@
 
 #include "defines.h"
 
+#include "Logger.h"
+
 /**
  * Keeps track of the state for TCP Tahoe's congestion control mechanism.
  *

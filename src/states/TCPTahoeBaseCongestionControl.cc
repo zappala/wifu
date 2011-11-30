@@ -23,9 +23,10 @@ void TCPTahoeBaseCongestionControl::state_timer_fired(Context* c, QueueProcessor
 
     if (ccc->get_probe_timer() && e->get_timeout_event() == ccc->get_probe_timer()) {
         // this is our probe timer
-//        cout << "TCPTahoeBaseCongestionControl::state_timer_fired() Timer Fired" << endl;
+        //        cout << "TCPTahoeBaseCongestionControl::state_timer_fired() Timer Fired" << endl;
 
         // restart the probe timer
+
         ccc->set_probe_timer_duration(ccc->get_probe_timer_duration() * 2);
         TimeoutEvent* event = new TimeoutEvent(e->get_socket(), ccc->get_probe_timer_duration(), 0);
         ccc->set_probe_timer(event);
@@ -55,6 +56,7 @@ void TCPTahoeBaseCongestionControl::state_send_packet(Context* c, QueueProcessor
 
 void TCPTahoeBaseCongestionControl::state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
+    
 
     resend(c, q, e);
     ccc->set_snd_nxt(ccc->get_snd_una());
@@ -62,7 +64,7 @@ void TCPTahoeBaseCongestionControl::state_resend_packet(Context* c, QueueProcess
 }
 
 void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-//    cout << "TCPTahoeBaseCongestionControl::state_receive_packet()" << endl;
+    //    cout << "TCPTahoeBaseCongestionControl::state_receive_packet()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
@@ -118,7 +120,7 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
 }
 
 void TCPTahoeBaseCongestionControl::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
-//    cout << "TCPTahoeBaseCongestionControl::state_send_buffer_not_empty(), sending packets" << endl;
+    //    cout << "TCPTahoeBaseCongestionControl::state_send_buffer_not_empty(), sending packets" << endl;
     send_packets(c, q, e);
 }
 
@@ -133,7 +135,7 @@ void TCPTahoeBaseCongestionControl::resend(Context* c, QueueProcessor<Event*>* q
 }
 
 void TCPTahoeBaseCongestionControl::send_packets(Context* c, QueueProcessor<Event*>* q, Event* e) {
-//    cout << "TCPTahoeBaseCongestionControl::send_packets()" << endl;
+    //    cout << "TCPTahoeBaseCongestionControl::send_packets()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
     gcstring& send_buffer = s->get_send_buffer();
@@ -146,7 +148,7 @@ void TCPTahoeBaseCongestionControl::send_packets(Context* c, QueueProcessor<Even
 
 void TCPTahoeBaseCongestionControl::send_one_packet(Context* c, QueueProcessor<Event*>* q, Event* e, bool ignore_window) {
 
-//    cout << "TCPTahoeBaseCongestionControl::send_one_packet()" << endl;
+    //    cout << "TCPTahoeBaseCongestionControl::send_one_packet()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
 
@@ -186,7 +188,7 @@ void TCPTahoeBaseCongestionControl::send_one_packet(Context* c, QueueProcessor<E
 }
 
 void TCPTahoeBaseCongestionControl::resend_data(Context* c, QueueProcessor<Event*>* q, Event* e) {
-//    cout << "TCPTahoeBaseCongestionControl::resend_data()" << endl;
+    //    cout << "TCPTahoeBaseCongestionControl::resend_data()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
 

@@ -54,6 +54,7 @@ void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Even
     Socket* s = e->get_socket();
 
     if (rc->get_timeout_event() == e->get_timeout_event()) {
+        log_INFORMATIONAL("TCP Timer Fired: ", pantheios::real(rc->get_rto()));
         rc->set_timeout_event(0);
         rc->set_rto(rc->get_rto() * 2);
         resend_data(c, q, s, TIMEOUT);
@@ -125,9 +126,11 @@ void TCPTahoeReliabilityState::start_timer(Context* c, Socket* s) {
     // only start the timer if it is not already running
     if (!rc->get_timeout_event()) {
 //        cout << "TCPTahoeReliabilityState::start_timer() on socket: " << s << endl;
+
         double seconds;
         long int nanoseconds = modf(rc->get_rto(), &seconds) * NANOSECONDS_IN_SECONDS;
         TimeoutEvent* timer = new TimeoutEvent(s, seconds, nanoseconds);
+        log_INFORMATIONAL("starting timer: ", pantheios::pointer(pantheios::pointer((void*)timer, 8, pantheios::fmt::fullHex)), " ", pantheios::real(rc->get_rto()));
         rc->set_timeout_event(timer);
         Dispatcher::instance().enqueue(timer);
     }
@@ -146,6 +149,7 @@ void TCPTahoeReliabilityState::cancel_timer(Context* c, Socket* s) {
     assert(rc->get_timeout_event());
     //    cout << "TCPTahoeReliabilityState::cancel_timer(): " << rc->get_timeout_event() << endl;
     CancelTimerEvent* event = new CancelTimerEvent(rc->get_timeout_event());
+    log_INFORMATIONAL("canceling timer: ", pantheios::pointer((void*)rc->get_timeout_event(), 8, pantheios::fmt::fullHex));
     Dispatcher::instance().enqueue(event);
     rc->set_timeout_event(0);
 }
