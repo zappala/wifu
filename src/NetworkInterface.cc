@@ -18,7 +18,7 @@ void NetworkInterface::register_protocol(int protocol, PacketFactory* pf) {
 
 void NetworkInterface::imodule_network_receive(WiFuPacket* p) {
 
-    usleep(19000);
+    //usleep(19000);
 
     PacketLogger::instance().log(p);
     //    cout << "Network receive packet: \n" << p->to_s_format() << endl << p->to_s() << endl;
@@ -56,7 +56,7 @@ void NetworkInterface::imodule_network_receive(WiFuPacket* p) {
 void NetworkInterface::imodule_network_send(Event* e) {
     NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
 
-    usleep(20000);
+    //usleep(20000);
 
     // TODO: Check return value (bytes sent)?
     WiFuPacket* p = event->get_packet();

@@ -130,7 +130,7 @@ void TCPTahoeReliabilityState::start_timer(Context* c, Socket* s) {
         double seconds;
         long int nanoseconds = modf(rc->get_rto(), &seconds) * NANOSECONDS_IN_SECONDS;
         TimeoutEvent* timer = new TimeoutEvent(s, seconds, nanoseconds);
-        log_INFORMATIONAL("starting timer: ", pantheios::pointer(pantheios::pointer((void*)timer, 8, pantheios::fmt::fullHex)), " ", pantheios::real(rc->get_rto()));
+        //log_INFORMATIONAL("starting timer: ", pantheios::pointer(pantheios::pointer((void*)timer, 8, pantheios::fmt::fullHex)), " ", pantheios::real(rc->get_rto()));
         rc->set_timeout_event(timer);
         Dispatcher::instance().enqueue(timer);
     }
@@ -149,7 +149,7 @@ void TCPTahoeReliabilityState::cancel_timer(Context* c, Socket* s) {
     assert(rc->get_timeout_event());
     //    cout << "TCPTahoeReliabilityState::cancel_timer(): " << rc->get_timeout_event() << endl;
     CancelTimerEvent* event = new CancelTimerEvent(rc->get_timeout_event());
-    log_INFORMATIONAL("canceling timer: ", pantheios::pointer((void*)rc->get_timeout_event(), 8, pantheios::fmt::fullHex));
+    //log_INFORMATIONAL("canceling timer: ", pantheios::pointer((void*)rc->get_timeout_event(), 8, pantheios::fmt::fullHex));
     Dispatcher::instance().enqueue(event);
     rc->set_timeout_event(0);
 }

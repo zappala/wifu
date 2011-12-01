@@ -83,7 +83,7 @@ class NSTraceGrapher():
 
 	def __get_values(self, line):
 		time, packet = line.split()
-		time = float(time)
+		time = float(time) - 1
 		packet = (float(packet) - 1) * 100
 		return time, packet
 
@@ -236,6 +236,9 @@ class PcapConverter():
 #				print "Packet number: ", packet_number
 				if packet_key not in packet_numbers.keys():
 					packet_numbers[sequence_number + length] = packet_number
+
+				
+					
 			else:
 				assert is_ack
 				if ts in s:
@@ -252,6 +255,8 @@ class PcapConverter():
 					self.acks.append(data)
 
 
+			
+
 
 			if length > 1 and sequence_numbers.has_key(sequence_number) and sequence_numbers[sequence_number] != ts:
 				# duplicate
@@ -261,11 +266,17 @@ class PcapConverter():
 					if num == self.__get_packet_number(sequence_number):
 						self.packets.remove(item)
 						self.packet_drops.append(item)
+						
 						break
 				
 
 			s.add(ts)
-			sequence_numbers[sequence_number] = ts
+
+
+			if length > 1 and sequence_numbers.has_key(sequence_number) and sequence_numbers[sequence_number] == ts:
+				del sequence_numbers[sequence_number]
+			else:
+				sequence_numbers[sequence_number] = ts
 
 		
 
