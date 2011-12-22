@@ -1,0 +1,10 @@
+No.     Time        Source                Destination           Protocol Info
+      1 0.000000    192.168.21.101        192.168.21.105        TCP      bl-idm > commplex-main [SYN] Seq=1 Win=65535 Len=0 TSV=990467097 TSER=0
+      2 0.000474    192.168.21.105        192.168.21.101        TCP      commplex-main > bl-idm [SYN, ACK] Seq=1 Ack=2 Win=65535 Len=0 TSV=990467548 TSER=990467097
+      3 0.000554    192.168.21.101        192.168.21.105        TCP      bl-idm > commplex-main [ACK] Seq=2 Ack=2 Win=65535 Len=0 TSV=990467698 TSER=990467548
+      4 0.000641    192.168.21.101        192.168.21.105        TCP      bl-idm > commplex-main [ACK] Seq=2 Ack=2 Win=65535 Len=500 TSV=990467775 TSER=990467548
+      5 0.000861    192.168.21.105        192.168.21.101        TCP      commplex-main > bl-idm [ACK] Seq=2 Ack=502 Win=65035 Len=0 TSV=990467979 TSER=990467775
+      6 0.000944    192.168.21.101        192.168.21.105        TCP      bl-idm > commplex-main [FIN, ACK] Seq=502 Ack=2 Win=65535 Len=0 TSV=990468085 TSER=990467979
+      7 0.001105    192.168.21.105        192.168.21.101        TCP      commplex-main > bl-idm [ACK] Seq=2 Ack=503 Win=65535 Len=0 TSV=990468250 TSER=990468085
+      8 0.001171    192.168.21.105        192.168.21.101        TCP      commplex-main > bl-idm [FIN, ACK] Seq=2 Ack=503 Win=65535 Len=0 TSV=990468309 TSER=990468085
+      9 0.001232    192.168.21.101        192.168.21.105        TCP      bl-idm > commplex-main [ACK] Seq=503 Ack=3 Win=65535 Len=0 TSV=990468371 TSER=990468309
