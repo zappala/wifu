@@ -91,7 +91,7 @@ void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Ne
         response_event->set_destination(cmc->get_front_end_socket());
 
         //TODO: This is only for being able to time the final recv() call
-        q->enqueue(new ReceiveBufferNotEmptyEvent(s));
+        //q->enqueue(new ReceiveBufferNotEmptyEvent(s));
 
         Dispatcher::instance().enqueue(response_event);
         return;

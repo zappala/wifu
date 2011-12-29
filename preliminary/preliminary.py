@@ -347,148 +347,7 @@ class ExecutableManager():
 
 		return sender_command
 	
-	def execute_echo(self):
-
-		current_time = str(time.ctime()).replace(' ', '_')
-		base_path = "data/" + self.config.file + "_" + current_time + "/"
-
-		maker = Directory(base_path)
-		maker.make()
-
-		os.system("cp " + self.config.file + " " + base_path)
-
-		for i in range(0, self.config.iterations):
-
-			for api in ['wifu', 'kernel']:
-
-				data_path = base_path + str(i) + "/echo/"
-
-				# files will be put in a directory with the following format
-				# data/[configfilename.conf]-[current_time]/[iteration]/
-				maker = Directory(data_path)
-				maker.make()
-
-				if api == 'wifu':
-					self.start_wifu()
-
-				sender_node = self.config.get_sender_node()
-				receiver_node = self.config.get_receiver_node()
-				chdir_command = "cd " + self.config.dir
-
-				nodes = []
-
-				sysctl_command = "sudo sysctl -p /tmp/sysctl_wifu.conf"
-				rate = self.config.get_rate()
-				ethtool = "sudo ethtool " + self.config.get_interface()
-				if rate is not None:
-					rate_command = "sudo ethtool -s " + self.config.get_interface() + " advertise " + self.config.get_rate()
-
-				# start up the receiver
-				receiver_log = "receiver_" + api + ".log"
-				receiver_commands = []
-				if rate is not None:
-					receiver_commands.append(rate_command)
-					receiver_commands.append(ethtool)
-				receiver_commands.append(sysctl_command)
-
-				self.setup_receiver(receiver_commands)
-
-				receiver_command = self.get_receiver_command(api, receiver_log, "echo-server")
-				receiver_commands = []
-				receiver_commands.append(chdir_command)
-				receiver_commands.append(receiver_command)
-				receiver = Command(receiver_node, self.config.username, receiver_commands)
-				nodes.append(receiver)
-				receiver.start()
-
-				receiver.running.wait()
-				time.sleep(2)
-
-				# start up the sender
-				sender_log = "sender_" + api + ".log"
-				sender_command = self.get_sender_command(api, sender_log, "echo-client")
-				sender_commands = []
-				if rate is not None:
-					sender_commands.append(rate_command)
-					sender_commands.append(ethtool)
-				sender_commands.append(chdir_command)
-				sender_commands.append(sysctl_command)
-				sender_commands.append(sender_command)
-
-
-				sender = Command(sender_node, self.config.username, sender_commands)
-				nodes.append(sender)
-				sender.start()
-
-				for node in nodes:
-					node.done.wait()
-					node.go.set()
-					node.finished.wait()
-					node.join()
-#					print node.return_values
-
-				if api == 'wifu':
-					self.kill_wifu()
-
-				a = []
-
-				finalizing_commands = []
-				sysctl_command = "sudo sysctl -p /tmp/sysctl_default.conf"
-				chmod_command = "sudo chmod o+r /tmp/wifu-end.log"
-				# auto is 0x03F
-				rate_command = "sudo ethtool -s " + self.config.get_interface() + " advertise 0x03F"
-				if rate is not None:
-					finalizing_commands.append(rate_command)
-					finalizing_commands.append(ethtool)
-				finalizing_commands.append(sysctl_command)
-				finalizing_commands.append(chmod_command)
-
-
-				for node in [sender_node, receiver_node]:
-					n = Command(node, self.config.username, finalizing_commands)
-					a.append(n)
-					n.start()
-
-				for node in a:
-					node.done.wait()
-					node.go.set()
-					node.finished.wait()
-					node.join()
-
-				# get data
-
-				sender_grabber = FileGrabber(sender_node, self.config.dir + sender_log, data_path, self.config.username)
-				sender_grabber.start()
-
-				receiver_grabber = FileGrabber(receiver_node, self.config.dir + receiver_log, data_path, self.config.username)
-				receiver_grabber.start()
-
-				pcap_file = "wifu-log.pcap"
-				wifu_log = "wifu-end.log"
-
-				if api == "wifu":
-					sender_pcap_grabber = FileGrabber(sender_node, self.config.dir + pcap_file, data_path + "sender_wifu_log.pcap", self.config.username)
-					sender_pcap_grabber.start()
-
-					receiver_pcap_grabber = FileGrabber(receiver_node, self.config.dir + pcap_file, data_path + "receiver_wifu_log.pcap", self.config.username)
-					receiver_pcap_grabber.start()
-
-					receiver_wifu_end_log_grabber = FileGrabber(receiver_node, self.config.dir + wifu_log, data_path + "receiver_wifu_end.log", self.config.username)
-					receiver_wifu_end_log_grabber.start()
-
-					sender_wifu_end_log_grabber = FileGrabber(sender_node, self.config.dir + wifu_log, data_path + "sender_wifu_end.log", self.config.username)
-					sender_wifu_end_log_grabber.start()
-
-					sender_pcap_grabber.join()
-					receiver_pcap_grabber.join()
-
-					receiver_wifu_end_log_grabber.join()
-					sender_wifu_end_log_grabber.join()
-
-				sender_grabber.join()
-				receiver_grabber.join()
-
-		return base_path
+	
 
 	def execute(self):
 
@@ -531,6 +390,7 @@ class ExecutableManager():
 
 				# start up the receiver
 				receiver_log = "receiver_" + api + ".log"
+				
 				receiver_commands = []
 				if rate is not None:
 					receiver_commands.append(rate_command)
@@ -543,7 +403,7 @@ class ExecutableManager():
 				receiver_commands.append(ethtool)
 
 				self.setup_receiver(receiver_commands)
-				
+
 				receiver_command = self.get_receiver_command(api, receiver_log)
 				receiver_commands = []
 				receiver_commands.append(chdir_command)

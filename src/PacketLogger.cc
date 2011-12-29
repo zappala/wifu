@@ -17,6 +17,10 @@ PacketLogger::~PacketLogger() {
 }
 
 void PacketLogger::log(WiFuPacket* packet) {
+    if(flush_count_ < 0) {
+        return;
+    }
+    
     lock_.wait();
     items_.push_back(new PacketLoggerItem(packet));
     bool should_flush = items_.size() >= flush_count_;

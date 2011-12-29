@@ -54,7 +54,7 @@ u_int32_t TCPTahoeCongestionControlContext::get_cwnd() const {
 }
 
 void TCPTahoeCongestionControlContext::set_cwnd(u_int32_t cwnd) {
-    log_INFORMATIONAL("set_cwnd: ", pantheios::i(cwnd));
+//    log_INFORMATIONAL("set_cwnd: ", pantheios::i(cwnd));
     cwnd_ = cwnd;
 }
 
@@ -63,7 +63,7 @@ u_int16_t TCPTahoeCongestionControlContext::get_ssthreshold() const {
 }
 
 void TCPTahoeCongestionControlContext::set_ssthreshold(u_int16_t ssthreashold) {
-    log_INFORMATIONAL("set_ssthreshold: ", pantheios::i(ssthreashold));
+//    log_INFORMATIONAL("set_ssthreshold: ", pantheios::i(ssthreashold));
     ssthreshold_ = ssthreashold;
 }
 

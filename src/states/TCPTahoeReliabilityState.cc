@@ -54,7 +54,7 @@ void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Even
     Socket* s = e->get_socket();
 
     if (rc->get_timeout_event() == e->get_timeout_event()) {
-        log_INFORMATIONAL("TCP Timer Fired: ", pantheios::real(rc->get_rto()));
+//        log_INFORMATIONAL("TCP Timer Fired: ", pantheios::real(rc->get_rto()));
         rc->set_timeout_event(0);
         rc->set_rto(rc->get_rto() * 2);
         resend_data(c, q, s, TIMEOUT);
