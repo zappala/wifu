@@ -129,3 +129,12 @@ python ./preliminary.py -u rbuck -c config/ilab_wired_1000_1MB_10_threads.conf
 #python ./preliminary.py -u rbuck -c config/ilab_wired_10_1MB_100_threads.conf
 #python ./preliminary.py -u rbuck -c config/ilab_wired_100_1MB_100_threads.conf
 #python ./preliminary.py -u rbuck -c config/ilab_wired_1000_1MB_100_threads.conf
+
+# ilab big files
+python ./preliminary.py -u rbuck -c config/ilab_wired_10_100MB.conf
+python ./preliminary.py -u rbuck -c config/ilab_wired_100_100MB.conf
+python ./preliminary.py -u rbuck -c config/ilab_wired_1000_100MB.conf
+
+python ./preliminary.py -u rbuck -c config/ilab_wired_10_500MB.conf
+python ./preliminary.py -u rbuck -c config/ilab_wired_100_500MB.conf
+python ./preliminary.py -u rbuck -c config/ilab_wired_1000_500MB.conf
