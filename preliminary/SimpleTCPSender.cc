@@ -147,7 +147,7 @@ int main(int argc, char** argv) {
     message.append(buffer);
     
     cout << message.length() << endl;
-    return;
+    return 0;
 
     pthread_t pthreads[num_threads];
     struct sending_data data[num_threads];
