@@ -142,10 +142,13 @@ int main(int argc, char** argv) {
     
     gcstring message;
     message.reserve(num_bytes);
-    char buffer[num_bytes + 1];
-    FILE* input = fopen(filename, "r");
-    fread(buffer, num_bytes, 1, input);
-    message.append(buffer);
+
+    ifstream myfile(filename);
+    if(myfile.is_open()) {
+        while(myfile.good()) {
+            getline(myfile, message);
+        }
+    }
     
     cout << message.length() << endl;
     return 0;
