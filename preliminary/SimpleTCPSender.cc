@@ -14,7 +14,8 @@
 #include "headers/KernelSocketAPI.h"
 #include "Utils.h"
 #include "Semaphore.h"
-
+#include <stdio.h>
+#include <stdlib.h>
 #include <list>
 
 using namespace std;
@@ -37,6 +38,19 @@ struct sending_data {
 
 void* sending_thread(void*);
 
+void my_itoa(int val, char* buffer) {
+    sprintf(buffer, "%d", val);
+}
+
+
+bool exists(char* filename) {
+    bool val = false;
+    ifstream temp(filename);
+    if(temp) {
+        val = true;
+    }
+    temp.close();
+}
 
 
 int main(int argc, char** argv) {
@@ -113,7 +127,27 @@ int main(int argc, char** argv) {
     cout << chunkarg << " " << chunk << endl;
     cout << threads << " " << num_threads << endl;
 
-    gcstring message = RandomStringGenerator::get_data(num_bytes);
+    // try to open a file containing all the data
+    // if it fails, write the file , then try again
+    char filename[100];
+    my_itoa(num_bytes, filename);
+    strncat(filename, ".data", 5);
+    
+    if(!exists(filename)) {
+        ofstream f(filename);
+        f << RandomStringGenerator::get_data(num_bytes);
+        f.close();
+    }    
+    
+    gcstring message;
+    message.reserve(num_bytes);
+    char buffer[num_bytes + 1];
+    FILE* input = fopen(filename, "r");
+    fread(buffer, num_bytes, 1, input);
+    message.append(buffer);
+    
+    cout << message.length() << endl;
+    return;
 
     pthread_t pthreads[num_threads];
     struct sending_data data[num_threads];
