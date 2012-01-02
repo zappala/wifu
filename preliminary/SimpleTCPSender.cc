@@ -44,13 +44,8 @@ void my_itoa(int val, char* buffer) {
 
 
 bool exists(char* filename) {
-    bool val = false;
     ifstream temp(filename);
-    
-    if(temp) {
-        val = true;
-    }
-    temp.close();
+    return temp;
 }
 
 
@@ -134,11 +129,11 @@ int main(int argc, char** argv) {
     my_itoa(num_bytes, filename);
     strncat(filename, ".data", 5);
     
-//    if(!exists(filename)) {
+    if(!exists(filename)) {
         ofstream f(filename);
         f << RandomStringGenerator::get_data(num_bytes);
         f.close();
-//    }    
+    }    
     
     gcstring message;
     message.reserve(num_bytes);
