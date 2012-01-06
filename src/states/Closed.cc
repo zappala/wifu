@@ -77,5 +77,5 @@ void Closed::state_new_connection_initiated(Context* c, QueueProcessor<Event*>* 
 }
 
 void Closed::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-    cout << "Closed::state_receive_packet()" << endl;
+    //cout << "Closed::state_receive_packet()" << endl;
 }

@@ -196,10 +196,8 @@ void TCPTahoe::icontext_accept(QueueProcessor<Event*>* q, AcceptEvent* e) {
     c->get_congestion_control()->icontext_accept(q, e);
 
     if (!c->get_back_log()->empty()) {
-        cout << "TCPTahoe::icontext_accept(), backlog not empty, sending response to front end" << endl;
         send_accept_response(c, e);
     } else {
-        cout << "TCPTahoe::icontext_accept(), backlog empty, saving accept event" << endl;
         c->set_saved_accept_event(e);
     }
 
@@ -467,7 +465,7 @@ bool TCPTahoe::is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p)
 }
 
 void TCPTahoe::send_accept_response(TCPTahoeIContextContainer* c, AcceptEvent* e) {
-    cout << "TCPTahoe::send_accept_response()" << endl;
+    //cout << "TCPTahoe::send_accept_response()" << endl;
     ConnectionEstablishedEvent* cee = c->get_back_log()->pop();
 
     AcceptResponseEvent* response_event = (AcceptResponseEvent*) ObjectPool<ResponseEvent>::instance().get();
