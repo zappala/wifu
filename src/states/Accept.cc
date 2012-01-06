@@ -35,7 +35,7 @@ void Accept::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Network
                                             listening_socket->get_local_address_port(),
                                             packet->get_source_address_port());
 
-        Event* new_connection = new ConnectionInitiatedEvent(listening_socket, new_socket);
+        Event* new_connection = new ConnectionInitiatedEvent(listening_socket, new_socket, cmc->get_listen_event());
         SocketCollection::instance().push(new_socket);
         q->enqueue(new_connection);
 

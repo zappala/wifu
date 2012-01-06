@@ -47,8 +47,9 @@ NetworkTrace* PacketLogReader::get_trace() {
 
 void PacketLogReader::open_log() {
     filein_.open(filename_, ios::in | ios::binary);
-    if (filein_.fail())
+    if (filein_.fail()) {
         throw IOError();
+    }
 }
 
 void PacketLogReader::close_log() {

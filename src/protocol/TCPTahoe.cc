@@ -71,7 +71,9 @@ void TCPTahoe::icontext_bind(QueueProcessor<Event*>* q, BindEvent* e) {
 
 void TCPTahoe::icontext_listen(QueueProcessor<Event*>* q, ListenEvent* e) {
     Socket* s = e->get_socket();
-    BasicIContextContainer* c = map_.find(s)->second;
+    TCPTahoeIContextContainer* c = (TCPTahoeIContextContainer*) map_.find(s)->second;
+
+    c->set_back_log(new BackLog(e->get_back_log()));
 
     c->get_reliability()->icontext_listen(q, e);
     c->get_connection_manager()->icontext_listen(q, e);
@@ -187,30 +189,47 @@ void TCPTahoe::icontext_connect(QueueProcessor<Event*>* q, ConnectEvent* e) {
 
 void TCPTahoe::icontext_accept(QueueProcessor<Event*>* q, AcceptEvent* e) {
     Socket* s = e->get_socket();
-    BasicIContextContainer* c = map_.find(s)->second;
+    TCPTahoeIContextContainer* c = (TCPTahoeIContextContainer*) map_.find(s)->second;
 
     c->get_reliability()->icontext_accept(q, e);
     c->get_connection_manager()->icontext_accept(q, e);
     c->get_congestion_control()->icontext_accept(q, e);
+
+    if (!c->get_back_log()->empty()) {
+        cout << "TCPTahoe::icontext_accept(), backlog not empty, sending response to front end" << endl;
+        send_accept_response(c, e);
+    } else {
+        cout << "TCPTahoe::icontext_accept(), backlog empty, saving accept event" << endl;
+        c->set_saved_accept_event(e);
+    }
+
+    
 }
 
 void TCPTahoe::icontext_new_connection_established(QueueProcessor<Event*>* q, ConnectionEstablishedEvent* e) {
-    Socket* s = e->get_socket();
-    BasicIContextContainer* c = map_.find(s)->second;
+    // e->get_socket() is the new socket
+    Socket* s = e->get_new_socket();
+    TCPTahoeIContextContainer* c = (TCPTahoeIContextContainer*) map_.find(s)->second;
+    
+    c->get_back_log()->push(e);
 
-    c->get_reliability()->icontext_new_connection_established(q, e);
-    c->get_connection_manager()->icontext_new_connection_established(q, e);
-    c->get_congestion_control()->icontext_new_connection_established(q, e);
+    AcceptEvent* ae = c->get_saved_accept_event();
+
+    if (ae) {
+        send_accept_response(c, ae);
+        c->set_saved_accept_event(0);
+    }
 }
 
 void TCPTahoe::icontext_new_connection_initiated(QueueProcessor<Event*>* q, ConnectionInitiatedEvent* e) {
     Socket* listening_socket = e->get_socket();
     Socket* new_socket = e->get_new_socket();
 
-    BasicIContextContainer* listening_cc = map_.find(listening_socket)->second;
+    TCPTahoeIContextContainer* listening_cc = (TCPTahoeIContextContainer*) map_.find(listening_socket)->second;
     map_[new_socket] = listening_cc;
 
-    BasicIContextContainer* new_cc = factory_->get_icontext_container();
+    TCPTahoeIContextContainer* new_cc = (TCPTahoeIContextContainer*) factory_->get_icontext_container();
+    new_cc->set_back_log(listening_cc->get_back_log());
     map_[listening_socket] = new_cc;
 
     new_cc->get_reliability()->icontext_new_connection_initiated(q, e);
@@ -445,4 +464,20 @@ bool TCPTahoe::is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacke
 bool TCPTahoe::is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p) {
     //    cout << "TCPTahoe::is_valid_ack_number(), checking: " << rc->get_snd_una() << " <= " << p->get_tcp_ack_number() << " <= " << rc->get_snd_max() << endl;
     return between_equal(rc->get_snd_una(), p->get_tcp_ack_number(), rc->get_snd_max());
+}
+
+void TCPTahoe::send_accept_response(TCPTahoeIContextContainer* c, AcceptEvent* e) {
+    cout << "TCPTahoe::send_accept_response()" << endl;
+    ConnectionEstablishedEvent* cee = c->get_back_log()->pop();
+
+    AcceptResponseEvent* response_event = (AcceptResponseEvent*) ObjectPool<ResponseEvent>::instance().get();
+    response_event->set_socket(cee->get_socket());
+    response_event->set_message_type(e->get_message_type());
+    response_event->set_fd(e->get_fd());
+    response_event->set_return_value(cee->get_new_socket()->get_socket_id());
+    response_event->set_errno(0);
+    response_event->set_length(sizeof (struct AcceptResponseMessage));
+    response_event->set_destination(e->get_source());
+    response_event->set_addr(cee->get_new_socket()->get_remote_address_port()->get_network_struct_ptr(), sizeof (struct sockaddr_in));
+    dispatch(response_event);
 }

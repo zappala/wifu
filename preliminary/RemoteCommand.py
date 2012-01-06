@@ -1,4 +1,3 @@
-
 import pxssh
 import threading
 from FileOps import *
@@ -45,8 +44,10 @@ class Command(threading.Thread):
         self.child = pxssh.pxssh()
         OK = False
         tries = 0
-        while not OK and tries < 10:
+        while not OK and tries < 100:
+
             try:
+                time.sleep(1)
                 tries += 1
                 self.child.login(self.host, self.username, login_timeout=6000)
                 OK = True

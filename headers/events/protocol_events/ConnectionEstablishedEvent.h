@@ -26,10 +26,10 @@ public:
 
     /**
      * Constructs a ConnectionEstablishedEvent.
-     * @param e The AcceptEvent that accepted a new connection.
+     * @param listening_socket The socket used to receive the SYN.
      * @param new_socket The new socket to send and receive packets on. (Not the one that accept() is acting on.)
      */
-    ConnectionEstablishedEvent(AcceptEvent* e, Socket* new_socket);
+    ConnectionEstablishedEvent(Socket* listening_socket, Socket* new_socket);
 
     /**
      * Destructor.
@@ -47,14 +47,14 @@ public:
     void execute(IModule* m);
 
     /**
-     * @return The new socket to send and receive packets on. (Not the one that accept() is acting on.)
+     * @return The new socket to send and receive packets on.
      */
     Socket* get_new_socket();
 
     /**
-     * @return The AcceptEvent that accepted a new connection.
+     * @return The socket used to receive the SYN.
      */
-    AcceptEvent* get_accept_event();
+    Socket* get_listening_socket();
 
 private:
 
@@ -62,12 +62,6 @@ private:
      * The new socket to send and receive packets on. (Not the one that accept() is acting on.)
      */
     Socket* new_socket_;
-
-    /**
-     * The AcceptEvent that accepted a new connection.
-     */
-    AcceptEvent* event_;
-
 };
 
 #endif	/* _CONNECTIONESTABLISHEDEVENT_H */

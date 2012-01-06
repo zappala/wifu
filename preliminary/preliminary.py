@@ -189,7 +189,7 @@ class ExecutableManager():
 	def __init__(self, configuration):
 		self.config = configuration
 
-		self.receiverAddress = "receiverAddress"
+		self.senderAddress = "senderAddress"
 
 		# wifu options
 		self.loggerThreshold = "loggerThreshold"
@@ -300,8 +300,8 @@ class ExecutableManager():
 	def get_receiver_command(self, api, outfile=None, exe="simple-tcp-receiver"):
 		receiver_command = "sudo nice -n -20 ./" + exe
 
-		if self.receiverAddress in self.config.dictionary:
-			receiver_command += " --address " + self.config.dictionary[self.receiverAddress]
+		if self.senderAddress in self.config.dictionary:
+			receiver_command += " --destination " + self.config.dictionary[self.senderAddress]
 		if self.port in self.config.dictionary:
 			receiver_command += " --port " + self.config.dictionary[self.port]
 		if self.receivingChunk in self.config.dictionary:
@@ -324,8 +324,8 @@ class ExecutableManager():
 	def get_sender_command(self, api, outfile=None, exe="simple-tcp-sender"):
 		sender_command = "sudo nice -n -20 ./" + exe
 
-		if self.receiverAddress in self.config.dictionary:
-			sender_command += " --destination " + self.config.dictionary[self.receiverAddress]
+		if self.senderAddress in self.config.dictionary:
+			sender_command += " --address " + self.config.dictionary[self.senderAddress]
 		if self.port in self.config.dictionary:
 			sender_command += " --port " + self.config.dictionary[self.port]
 		if self.sendingChunk in self.config.dictionary:
@@ -388,6 +388,31 @@ class ExecutableManager():
 				if rate is not None:
 					rate_command = "sudo ethtool -s " + self.config.get_interface() + " advertise " + self.config.get_rate()
 
+				# start up the sender
+				sender_log = "sender_" + api + ".log"
+				sender_command = self.get_sender_command(api, sender_log)
+				sender_commands = []
+				if rate is not None:
+					sender_commands.append(rate_command)
+
+				sender_commands.append(chdir_command)
+				sender_commands.append(sysctl_command)
+
+				if self.config.dictionary["tso"] is not None:
+					sender_commands.append(tso_command)
+				if self.config.dictionary["gso"] is not None:
+					sender_commands.append(gso_command)
+
+				sender_commands.append(ethtool)
+				sender_commands.append(sender_command)
+
+				sender = Command(sender_node, self.config.username, sender_commands)
+				nodes.append(sender)
+				sender.start()
+
+				sender.running.wait()
+				time.sleep(2)
+
 				# start up the receiver
 				receiver_log = "receiver_" + api + ".log"
 				
@@ -411,33 +436,6 @@ class ExecutableManager():
 				receiver = Command(receiver_node, self.config.username, receiver_commands)
 				nodes.append(receiver)
 				receiver.start()
-
-				receiver.running.wait()
-				time.sleep(2)
-
-				# start up the sender
-				sender_log = "sender_" + api + ".log"
-				sender_command = self.get_sender_command(api, sender_log)
-				sender_commands = []
-				if rate is not None:
-					sender_commands.append(rate_command)
-					
-				sender_commands.append(chdir_command)
-				sender_commands.append(sysctl_command)
-
-				if self.config.dictionary["tso"] is not None:
-					sender_commands.append(tso_command)
-				if self.config.dictionary["gso"] is not None:
-					sender_commands.append(gso_command)
-
-				sender_commands.append(ethtool)
-				sender_commands.append(sender_command)
-				
-
-
-				sender = Command(sender_node, self.config.username, sender_commands)
-				nodes.append(sender)
-				sender.start()
 
 				for node in nodes:
 					node.done.wait()
@@ -1440,7 +1438,8 @@ class MultipleGrapher:
 		bp = plt.boxplot(data, notch=0, sym='+', vert=1, whis=1.5)
 		plt.setp(bp['boxes'], color='black')
 		plt.setp(bp['whiskers'], color='black')
-		plt.setp(bp['fliers'], color='red', marker='+')
+		plt.setp(bp['medians'], color='black')
+		plt.setp(bp['fliers'], color='black', marker='+')
 
 		# Add a horizontal grid to the plot, but make it very light in color
 		# so we can use it for reading data values but not be distracting
@@ -1472,6 +1471,7 @@ class MultipleGrapher:
 			d = Directory(dir)
 			d.make()
 			filename = dir + 'multiple_compare_wired_scalability.eps'
+#			filename = dir + 'multiple_compare_wireless.eps'
 			savefig(filename, format="eps")
 		
 

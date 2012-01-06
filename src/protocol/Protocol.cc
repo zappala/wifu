@@ -229,7 +229,6 @@ void Protocol::imodule_network_receive(Event* e) {
 
 void Protocol::imodule_connection_established(Event* e) {
     //    cout << "Protocol::connection_established()" << endl;
-    // TODO: a lot of this code is the same as in library_socket, refactor later
     ConnectionEstablishedEvent* event = (ConnectionEstablishedEvent*) e;
 
     Socket* socket = event->get_socket();
@@ -239,23 +238,7 @@ void Protocol::imodule_connection_established(Event* e) {
     if (socket->get_protocol() != protocol_) {
         return;
     }
-
-    Socket* new_socket = event->get_new_socket();
-
     icontext_new_connection_established(this, event);
-
-    AcceptEvent* a_event = event->get_accept_event();
-
-    AcceptResponseEvent* response_event = (AcceptResponseEvent*) ObjectPool<ResponseEvent>::instance().get();
-    response_event->set_socket(socket);
-    response_event->set_message_type(a_event->get_message_type());
-    response_event->set_fd(a_event->get_fd());
-    response_event->set_return_value(new_socket->get_socket_id());
-    response_event->set_errno(0);
-    response_event->set_length(sizeof(struct AcceptResponseMessage));
-    response_event->set_destination(a_event->get_source());
-    response_event->set_addr(new_socket->get_remote_address_port()->get_network_struct_ptr(), sizeof(struct sockaddr_in));
-    dispatch(response_event);
 }
 
 void Protocol::imodule_connection_initiated(Event* e) {

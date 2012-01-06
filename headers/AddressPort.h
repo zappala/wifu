@@ -116,6 +116,8 @@ public:
      */
     gcstring to_s();
 
+    static AddressPort* default_address_port();
+
 private:
     /**
      * The (IP) address of a machine.

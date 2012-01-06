@@ -8,7 +8,7 @@ BackLog::~BackLog() {
 
 }
 
-bool BackLog::push(NetworkReceivePacketEvent* e) {
+bool BackLog::push(ConnectionEstablishedEvent* e) {
     if(size() + 1 <= capacity()) {
         back_log_.push(e);
         return true;
@@ -16,8 +16,8 @@ bool BackLog::push(NetworkReceivePacketEvent* e) {
     return false;
 }
 
-NetworkReceivePacketEvent* BackLog::pop() {
-    NetworkReceivePacketEvent* e = back_log_.front();
+ConnectionEstablishedEvent* BackLog::pop() {
+    ConnectionEstablishedEvent* e = back_log_.front();
     back_log_.pop();
     return e;
 }
@@ -28,4 +28,8 @@ int BackLog::size() const {
 
 int BackLog::capacity() const {
     return num_connections_;
+}
+
+bool BackLog::empty() const {
+    return back_log_.empty();
 }

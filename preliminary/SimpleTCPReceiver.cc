@@ -1,45 +1,53 @@
-#include "../applib/wifu_socket.h"
-#include "AddressPort.h"
-#include "defines.h"
+// will call socket, connect, then receive data
+
+//#include "../applib/wifu_socket.h"
+
 #include <iostream>
-#include "OptionParser.h"
 #include <stdlib.h>
 #include <bits/basic_string.h>
+#include "../applib/wifu_socket.h"
+#include "defines.h"
+#include "AddressPort.h"
+#include "OptionParser.h"
+#include "../test/headers/RandomStringGenerator.h"
 #include "Timer.h"
 #include "headers/ISocketAPI.h"
 #include "headers/WiFuSocketAPI.h"
 #include "headers/KernelSocketAPI.h"
-#include <errno.h>
-#include <list>
-#include <algorithm>
 #include "Utils.h"
 #include "Semaphore.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <list>
 
 using namespace std;
 
 #define optionparser OptionParser::instance()
 
 struct receiving_data {
-    gcstring hostaddr;
+    gcstring dest;
     int port;
     ISocketAPI* api;
     int protocol;
     int chunk;
-    Semaphore flag;
-    Semaphore go;
+    pthread_barrier_t* barrier;
     Semaphore* mutex;
-
 };
+
 
 void* receiving_thread(void*);
 
+
+
 int main(int argc, char** argv) {
 
-    gcstring bindaddr = "address";
-    gcstring hostaddr = "127.0.0.1";
-
-    gcstring portarg = "port";
+    gcstring destination = "destination";
+    gcstring destport = "port";
+    gcstring dest = "127.0.0.1";
+    gcstring num = "num";
+    gcstring threads = "threads";
     int port = 5002;
+    int num_threads = 1;
 
     gcstring apiarg = "api";
     ISocketAPI* api = new WiFuSocketAPI();
@@ -51,12 +59,10 @@ int main(int argc, char** argv) {
     // The number of bytes we are willing to receive each time we call recv().
     int chunk = 10000;
 
-    gcstring threads = "threads";
-    int num_threads = 1;
-
     static struct option long_options[] = {
-        {bindaddr.c_str(), required_argument, NULL, 0},
-        {portarg.c_str(), required_argument, NULL, 0},
+        {destination.c_str(), required_argument, NULL, 0},
+        {destport.c_str(), required_argument, NULL, 0},
+        {num.c_str(), required_argument, NULL, 0},
         {apiarg.c_str(), required_argument, NULL, 0},
         {protocolarg.c_str(), required_argument, NULL, 0},
         {chunkarg.c_str(), required_argument, NULL, 0},
@@ -65,15 +71,19 @@ int main(int argc, char** argv) {
     };
 
     optionparser.parse(argc, argv, long_options);
-    if (optionparser.present(bindaddr)) {
-        hostaddr = optionparser.argument(bindaddr);
+    if (optionparser.present(destination)) {
+        dest = optionparser.argument(destination);
     } else {
-        cout << "Binding address required!\n";
-        cout << "Use option --address <addr>\n";
+        cout << "Destination argument required!\n";
+        cout << "Use option --destination <addr>\n";
         return -1;
     }
-    if (optionparser.present(portarg)) {
-        port = atoi(optionparser.argument(portarg).c_str());
+    if (optionparser.present(destport)) {
+        port = atoi(optionparser.argument(destport).c_str());
+    }
+    int num_bytes = 1000;
+    if (optionparser.present(num)) {
+        num_bytes = atoi(optionparser.argument(num).c_str());
     }
 
     if (optionparser.present(apiarg)) {
@@ -95,58 +105,45 @@ int main(int argc, char** argv) {
         num_threads = atoi(optionparser.argument(threads).c_str());
     }
 
-    cout << bindaddr << " " << hostaddr << endl;
-    cout << portarg << " " << port << endl;
+    cout << destination << " " << dest << endl;
+    cout << destport << " " << port << endl;
     cout << apiarg << " " << api->get_type() << endl;
     cout << protocolarg << " " << protocol << endl;
+    cout << num << " " << num_bytes << endl;
     cout << chunkarg << " " << chunk << endl;
     cout << threads << " " << num_threads << endl;
 
-
     pthread_t pthreads[num_threads];
+    pthread_barrier_t barrier;
+
+    if (pthread_barrier_init(&barrier, NULL, num_threads)) {
+        perror("Error creating barrier");
+        exit(EXIT_FAILURE);
+    }
+
     struct receiving_data data[num_threads];
 
     Semaphore* mutex = new Semaphore();
     mutex->init(1);
 
+    // create all threads
     for (int i = 0; i < num_threads; ++i) {
-        data[i].flag.init(0);
-        data[i].go.init(0);
-
+        data[i].barrier = &barrier;
         data[i].api = api;
         data[i].chunk = chunk;
-        data[i].hostaddr = hostaddr;
-        data[i].port = port + i;
+        data[i].dest = dest;
+        data[i].port = port;
         data[i].protocol = protocol;
         data[i].mutex = mutex;
+    }
 
+    for (int i = 0; i < num_threads; ++i) {
         if (pthread_create(&(pthreads[i]), NULL, &receiving_thread, &(data[i])) != 0) {
             perror("Error creating new thread");
             exit(EXIT_FAILURE);
         }
     }
 
-    // wait for notification that arguments have been copied and a socket has been created
-    for (int i = 0; i < num_threads; ++i) {
-        data[i].flag.wait();
-    }
-
-    // tell all to go
-    for (int i = 0; i < num_threads; ++i) {
-        data[i].go.post();
-    }
-
-    // wait for threads to finish
-    for (int i = 0; i < num_threads; ++i) {
-        data[i].flag.wait();
-    }
-
-    // tell all to write
-    for (int i = 0; i < num_threads; ++i) {
-        data[i].go.post();
-    }
-
-    // join threads
     for (int i = 0; i < num_threads; ++i) {
         pthread_join(pthreads[i], NULL);
     }
@@ -158,88 +155,56 @@ void* receiving_thread(void* arg) {
 
     struct receiving_data* data = (struct receiving_data*) arg;
     ISocketAPI* api = data->api;
-    gcstring hostaddr = data->hostaddr;
     int chunk = data->chunk;
+    gcstring dest = data->dest;
     int port = data->port;
     int protocol = data->protocol;
     Semaphore* mutex = data->mutex;
+    pthread_barrier_t* barrier = data->barrier;
 
-
-    AddressPort to_bind(hostaddr, port);
-
-    int server = api->custom_socket(AF_INET, SOCK_STREAM, protocol);
-    if (server <= 0) {
-        perror("socket");
-    }
-
-    int result = api->custom_bind(server, (const struct sockaddr*) to_bind.get_network_struct_ptr(), sizeof (struct sockaddr_in));
-    if (result < 0) {
-        perror("bind");
-    }
-
-    result = api->custom_listen(server, 5);
-    if (result < 0) {
-        perror("listen");
-    }
-
-    struct sockaddr_in addr;
-    socklen_t length = sizeof (addr);
-    int connection;
-
+    Timer receive_timer;
+    int return_value = 0;
     int size = chunk + 1;
     char buffer[size];
-    gcstring all_received = "";
     int num_received = 0;
 
-//    list<u_int64_t, gc_allocator<u_int64_t> > starts, ends;
-//    list<int, gc_allocator<int> > sizes;
-    int return_value;
+    AddressPort to_connect(dest, port);
+    int client = api->custom_socket(AF_INET, SOCK_STREAM, protocol);
 
-    Timer recv_timer;
-    num_received = 0;
-//    starts.clear();
-//    ends.clear();
-    
-    data->flag.post();
-    data->go.wait();
+    int value = pthread_barrier_wait(barrier);
+    if (value != 0 && value != PTHREAD_BARRIER_SERIAL_THREAD) {
+        perror("Could not wait on barrier before connecting");
+        exit(EXIT_FAILURE);
+    }
 
-    connection = api->custom_accept(server, (struct sockaddr*) &addr, &length);
-    
+    int result = api->custom_connect(client, (const struct sockaddr*) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+    assert(!result);
+
     while (true) {
-        //memset(buffer, 0, size);
-//        starts.push_back(Utils::get_current_time_microseconds_64());
-        return_value = api->custom_recv(connection, buffer, chunk, 0);
-//        ends.push_back(Utils::get_current_time_microseconds_64());
-        recv_timer.start();
 
-//        sizes.push_back(return_value);
-
-
+        // This starting and stoping needs to be this way (stop then start):
+        // We don't want to count the last recv() time (that returns 0)
+        // basically, we want to quit when we received all the data
+        // stop() will be updated each time it is called.
+        // We don't want to start counting until we have received data
+        // so we miss the first recv call worth of data in the timer.
+        // start() is only set the first time it is called
+        receive_timer.stop();
+        return_value = api->custom_recv(client, buffer, chunk, 0);
+        receive_timer.start();
+        
+        
         if (return_value == 0) {
             break;
         }
-        //all_received.append(buffer);
+
         num_received += return_value;
     }
-    recv_timer.stop();
+    
+    api->custom_close(client);
 
-    api->custom_close(connection);
-    api->custom_close(server);
-
-    data->flag.post();
-    data->go.wait();
 
     mutex->wait();
-    AddressPort remote(&addr);
-
-//    while (!starts.empty()) {
-//        //cout << "recv " << starts.front() << " " << ends.front() << " " << sizes.front() << " " << remote.to_s() /*Sender*/ << " " << to_bind.to_s() /*Receiver*/ << endl;
-//        cout << "recv " << starts.front() << " " << ends.front() << " " << sizes.front() << endl;
-//        starts.pop_front();
-//        ends.pop_front();
-//        sizes.pop_front();
-//    }
-
-    cout << "Duration (us) to recv " << num_received << " bytes from " << remote.to_s() << ": " << recv_timer.get_duration_microseconds() << endl;
+    cout << "Duration (us) to recv " << num_received << " bytes from " << to_connect.to_s() << ": " << receive_timer.get_duration_microseconds() << endl;
     mutex->post();
 }

@@ -12,6 +12,8 @@
 #include "contexts/ConnectionManagerContext.h"
 #include "Accept.h"
 #include "events/framework_events/AcceptEvent.h"
+#include "events/framework_events/CloseEvent.h"
+#include "events/framework_events/NetworkReceivePacketEvent.h"
 
 using namespace std;
 
@@ -22,7 +24,11 @@ public:
     virtual void state_enter(Context* c);
     virtual void state_exit(Context* c);
 
-    void state_accept(Context* c, QueueProcessor<Event*>* q, AcceptEvent* e);
+    void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
+    void state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent* e);
+
+private:
+    void process_syn(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
 
 };
 

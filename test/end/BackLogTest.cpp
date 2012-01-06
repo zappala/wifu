@@ -12,17 +12,20 @@ namespace {
         int capacity = 2;
         BackLog bl(capacity);
 
-        NetworkReceivePacketEvent e1(new Socket(0,0,0), new WiFuPacket());
-        NetworkReceivePacketEvent e2(new Socket(0,0,0), new WiFuPacket());
+        ConnectionEstablishedEvent e1(new Socket(0,0,0), new Socket(0,0,0));
+        ConnectionEstablishedEvent e2(new Socket(0,0,0), new Socket(0,0,0));
+        ASSERT_TRUE(bl.empty());
         ASSERT_EQ(0, bl.size());
         ASSERT_EQ(capacity, bl.capacity());
 
         ASSERT_TRUE(bl.push(&e1));
+        ASSERT_FALSE(bl.empty());
         ASSERT_TRUE(bl.push(&e2));
 
         ASSERT_FALSE(bl.push(&e2));
         
         ASSERT_EQ(bl.pop(), &e1);
+        ASSERT_FALSE(bl.empty());
         ASSERT_EQ(1, bl.size());
         ASSERT_EQ(capacity, bl.capacity());
 
@@ -32,6 +35,7 @@ namespace {
 
         ASSERT_EQ(bl.pop(), &e2);
         ASSERT_EQ(bl.pop(), &e1);
+        ASSERT_TRUE(bl.empty());
     }
 
 }

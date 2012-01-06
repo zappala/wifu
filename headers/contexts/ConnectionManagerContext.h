@@ -64,18 +64,6 @@ public:
     virtual ~ConnectionManagerContext();
 
     /**
-     * @return The back log value as passed in via the listen() call.
-     * @see WifuEndAPILocalSocket::wifu_listen()
-     */
-    int get_back_log();
-
-    /**
-     * Sets the back log value as passed in via the listen() call.
-     * @see WifuEndAPILocalSocket::wifu_listen()
-     */
-    void set_back_log(int back_log);
-
-    /**
      * @return The ConnectEvent used to create a new connection.
      * @see ConnectEvent
      * @see WifuEndAPILocalSocket::wifu_connect()
@@ -91,19 +79,17 @@ public:
     void set_connect_event(ConnectEvent* e);
 
     /**
-     * @return The AcceptEvent used to accept a new connection.
-     * @see AcceptEvent
-     * @see WifuEndAPILocalSocket::wifu_accept()
+     * @return The ListenEvent used to accept a new connection.
+     * @see ListenEvent
      */
-    AcceptEvent* get_accept_event();
+    ListenEvent* get_listen_event();
 
     /**
-     * Sets the AcceptEvent used to accept a new connection.
-     * @param e The AcceptEvent to save.
-     * @see AcceptEvent
-     * @see WifuEndAPILocalSocket::wifu_accept()
+     * Sets the ListenEvent used to accept a new connection.
+     * @param e The ListenEvent to save.
+     * @see ListenEvent
      */
-    void set_accept_event(AcceptEvent* e);
+    void set_listen_event(ListenEvent* e);
 
     /**
      * @return The type of connection.
@@ -128,12 +114,9 @@ public:
      */
     Socket* get_socket();
 
-private:
+    void set_socket(Socket* s);
 
-    /**
-     * The number of connections that this connection manager is willing to keep back logged.
-     */
-    int back_log_;
+private:
 
     /**
      * The type of connection this FSM is performing or performed.
@@ -146,9 +129,11 @@ private:
     ConnectEvent* c_event_;
 
     /**
-     * The AcceptEvent if this FSM performed a passive open.
+     * The ListenEvent if this FSM performed a passive open.
      */
-    AcceptEvent* a_event_;
+    ListenEvent* l_event_;
+
+    Socket* socket_;
 
 };
 

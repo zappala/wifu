@@ -68,6 +68,10 @@ gcstring AddressPort::to_s() {
     return buffer;
 }
 
+AddressPort* AddressPort::default_address_port() {
+    return new AddressPort("0.0.0.0", 0);
+}
+
 void AddressPort::init(const char* address, uint16_t port) {
     data_.sin_family = AF_INET;
     data_.sin_port = htons(port);

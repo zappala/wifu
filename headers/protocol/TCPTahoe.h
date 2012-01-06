@@ -17,6 +17,8 @@
 #include "TCPTahoeIContextContainerFactory.h"
 #include "contexts/BasicIContextContainer.h"
 #include "Logger.h"
+#include "BackLog.h"
+#include "events/framework_events/AcceptEvent.h"
 
 class TCPTahoe : public Protocol {
 private:
@@ -38,6 +40,8 @@ protected:
 
     bool is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacket* p);
     bool is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p);
+
+    void send_accept_response(TCPTahoeIContextContainer* c, AcceptEvent* e);
 
 public:
     static TCPTahoe& instance();

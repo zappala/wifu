@@ -9,7 +9,7 @@
 #define	BACKLOG_H
 
 #include "GarbageCollector.h"
-#include "events/framework_events/NetworkReceivePacketEvent.h"
+#include "events/protocol_events/ConnectionEstablishedEvent.h"
 #include <queue>
 
 using namespace std;
@@ -19,7 +19,7 @@ public:
 
     /**
      * Constructs a new BackLog
-     * @param num_connections The maximum number of connection requests to hold on to
+     * @param num_connections The maximum number of connection to hold on to
      */
     BackLog(int num_connections);
 
@@ -30,18 +30,18 @@ public:
 
     /**
      * Push e into the queue
-     * @param e An event containing a SYN segment
+     * @param e An event indicating a completed connection
      * @return True if the event was pushed; false indicates that pushing e would result in the size exceeding the capacity
      */
-    bool push(NetworkReceivePacketEvent* e);
+    bool push(ConnectionEstablishedEvent* e);
 
     /**
-     * @return The next SYN packet to process
+     * @return The next connection to return
      */
-    NetworkReceivePacketEvent* pop();
+    ConnectionEstablishedEvent* pop();
 
     /**
-     * @return The number of connections pending
+     * @return The number of connections
      */
     int size() const;
 
@@ -49,6 +49,11 @@ public:
      * @return The maximum number of connections supported
      */
     int capacity() const;
+
+    /**
+     * @return True of the underlying queue is empty, false otherwise
+     */
+    bool empty() const;
     
 
 private:
@@ -58,9 +63,9 @@ private:
     int num_connections_;
 
     /**
-     * Container holding the conneciton request packets
+     * Container holding the connections
      */
-    queue<NetworkReceivePacketEvent*> back_log_;
+    queue<ConnectionEstablishedEvent*, deque<ConnectionEstablishedEvent*, gc_allocator<ConnectionEstablishedEvent*> > > back_log_;
     
 };
 

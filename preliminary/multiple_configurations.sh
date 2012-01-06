@@ -26,13 +26,13 @@
 #cd /home/rbuck/NetBeansProjects/wifu-end/preliminary
 #python ./preliminary.py -u rbuck -c config/mesh_wireless_1_hop.conf
 
-#cd /home/rbuck/NetBeansProjects/mesh-config/custom_config
-#./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
-#./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
-#./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
-#./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
-#cd /home/rbuck/NetBeansProjects/wifu-end/preliminary
-#python ./preliminary.py -u rbuck -c config/mesh_wireless_2_hops.conf
+cd /home/rbuck/NetBeansProjects/mesh-config/custom_config
+./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
+./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
+./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
+./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
+cd /home/rbuck/NetBeansProjects/wifu-end/preliminary
+python ./preliminary.py -u rbuck -c config/mesh_wireless_2_hops.conf
 
 #cd /home/rbuck/NetBeansProjects/mesh-config/custom_config
 #./config.sh -k -r -m "Randy's thesis work" ./conf/other-three-hops.json
@@ -51,13 +51,13 @@
 #cd /home/rbuck/NetBeansProjects/wifu-end/preliminary
 #python ./preliminary.py -u rbuck -c config/mesh_wireless_1_hop_2_threads.conf
 
-#cd /home/rbuck/NetBeansProjects/mesh-config/custom_config
-#./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
-#./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
-#./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
-#./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
-#cd /home/rbuck/NetBeansProjects/wifu-end/preliminary
-#python ./preliminary.py -u rbuck -c config/mesh_wireless_2_hops_2_threads.conf
+cd /home/rbuck/NetBeansProjects/mesh-config/custom_config
+./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
+./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
+./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
+./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
+cd /home/rbuck/NetBeansProjects/wifu-end/preliminary
+python ./preliminary.py -u rbuck -c config/mesh_wireless_2_hops_2_threads.conf
 
 #cd /home/rbuck/NetBeansProjects/mesh-config/custom_config
 #./config.sh -k -r -m "Randy's thesis work" ./conf/other-three-hops.json
@@ -76,13 +76,13 @@
 #cd /home/rbuck/NetBeansProjects/wifu-end/preliminary
 #python ./preliminary.py -u rbuck -c config/mesh_wireless_1_hop_5_threads.conf
 
-#cd /home/rbuck/NetBeansProjects/mesh-config/custom_config
-#./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
-#./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
-#./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
-#./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
-#cd /home/rbuck/NetBeansProjects/wifu-end/preliminary
-#python ./preliminary.py -u rbuck -c config/mesh_wireless_2_hops_5_threads.conf
+cd /home/rbuck/NetBeansProjects/mesh-config/custom_config
+./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
+./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
+./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
+./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
+cd /home/rbuck/NetBeansProjects/wifu-end/preliminary
+python ./preliminary.py -u rbuck -c config/mesh_wireless_2_hops_5_threads.conf
 
 #cd /home/rbuck/NetBeansProjects/mesh-config/custom_config
 #./config.sh -k -r -m "Randy's thesis work" ./conf/other-three-hops.json
@@ -101,13 +101,13 @@
 #cd /home/rbuck/NetBeansProjects/wifu-end/preliminary
 #python ./preliminary.py -u rbuck -c config/mesh_wireless_1_hop_10_threads.conf
 
-#cd /home/rbuck/NetBeansProjects/mesh-config/custom_config
-#./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
-#./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
-#./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
-#./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
-#cd /home/rbuck/NetBeansProjects/wifu-end/preliminary
-#python ./preliminary.py -u rbuck -c config/mesh_wireless_2_hops_10_threads.conf
+cd /home/rbuck/NetBeansProjects/mesh-config/custom_config
+./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
+./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
+./config.sh -k -r -m "Randy's thesis work" ./conf/other-two-hops.json
+./config.sh -k -r -m "Randy's thesis work" ./conf/randy-two-hops.json
+cd /home/rbuck/NetBeansProjects/wifu-end/preliminary
+python ./preliminary.py -u rbuck -c config/mesh_wireless_2_hops_10_threads.conf
 
 #cd /home/rbuck/NetBeansProjects/mesh-config/custom_config
 #./config.sh -k -r -m "Randy's thesis work" ./conf/other-three-hops.json
@@ -133,16 +133,16 @@
 # ilab big files
 #python ./preliminary.py -u rbuck -c config/ilab_wired_10_100MB.conf
 #python ./preliminary.py -u rbuck -c config/ilab_wired_100_100MB.conf
-python ./preliminary.py -u rbuck -c config/ilab_wired_1000_100MB.conf
+#python ./preliminary.py -u rbuck -c config/ilab_wired_1000_100MB.conf
 
-#python ./preliminary.py -u rbuck -c config/ilab_wired_10_500MB.conf
-#python ./preliminary.py -u rbuck -c config/ilab_wired_100_500MB.conf
-#python ./preliminary.py -u rbuck -c config/ilab_wired_1000_500MB.conf
+##python ./preliminary.py -u rbuck -c config/ilab_wired_10_500MB.conf
+##python ./preliminary.py -u rbuck -c config/ilab_wired_100_500MB.conf
+##python ./preliminary.py -u rbuck -c config/ilab_wired_1000_500MB.conf
 
 # ilab scalability
-python ./preliminary.py -u rbuck -c config/ilab_wired_1000_1MB_10_threads.conf
-python ./preliminary.py -u rbuck -c config/ilab_wired_100_1MB_10_threads.conf
-python ./preliminary.py -u rbuck -c config/ilab_wired_10_1MB_10_threads.conf
+##python ./preliminary.py -u rbuck -c config/ilab_wired_1000_1MB_10_threads.conf
+##python ./preliminary.py -u rbuck -c config/ilab_wired_100_1MB_10_threads.conf
+##python ./preliminary.py -u rbuck -c config/ilab_wired_10_1MB_10_threads.conf
 
 #python ./preliminary.py -u rbuck -c config/ilab_wired_10_1MB_50_threads.conf
 #python ./preliminary.py -u rbuck -c config/ilab_wired_100_1MB_50_threads.conf

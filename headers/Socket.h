@@ -32,7 +32,7 @@ public:
             int type,
             int protocol,
             AddressPort* local = new AddressPort("0.0.0.0", PortManagerFactory::instance().create().get()),
-            AddressPort* remote = new AddressPort("0.0.0.0", PortManagerFactory::instance().create().get()));
+            AddressPort* remote = AddressPort::default_address_port());
 
     /**
      * Cleans up this Socket object.

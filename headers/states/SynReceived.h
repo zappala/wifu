@@ -25,7 +25,6 @@ public:
     virtual void state_exit(Context* c);
 
     void state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e);
-
 };
 
 #endif	/* SYNRECEIVED_H */

@@ -9,6 +9,8 @@
 #define	_CONNECTIONINITIATEDEVENT_H
 
 #include "ProtocolEvent.h"
+#include "Socket.h"
+#include "events/framework_events/ListenEvent.h"
 
 using namespace std;
 
@@ -25,8 +27,9 @@ public:
      * Constructs a new ConnectionInitiatedEvent
      * @param listening_socket The socket that is listening for and accepting new connections.
      * @param new_socket A newely created socket because a remote host sent a SYN packet.
+     * @param listen_event The original listen event used to make this a passive connection
      */
-    ConnectionInitiatedEvent(Socket* listening_socket, Socket* new_socket);
+    ConnectionInitiatedEvent(Socket* listening_socket, Socket* new_socket, ListenEvent* listen_event);
 
     /**
      * Destructor.
@@ -48,6 +51,7 @@ public:
      */
     Socket* get_new_socket();
 
+    ListenEvent* get_listen_event();
 
 private:
 
@@ -55,6 +59,11 @@ private:
      * Pointer to a Socket object that is in the process of connecting to a remote host.
      */
     Socket* new_socket_;
+
+    /**
+     * Original ListenEvent (so we know who to respond to when we close())
+     */
+    ListenEvent* listen_event_;
 
 };
 

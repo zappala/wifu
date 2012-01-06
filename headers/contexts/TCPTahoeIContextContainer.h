@@ -17,6 +17,7 @@
 #include "events/framework_events/NetworkReceivePacketEvent.h"
 
 #include "BasicIContextContainer.h"
+#include "BackLog.h"
 
 /**
  * Keeps track of the state for each connection.
@@ -74,6 +75,14 @@ public:
      */
     void set_saved_fin(NetworkReceivePacketEvent* e);
 
+    BackLog* get_back_log();
+
+    void set_back_log(BackLog* bl);
+
+    AcceptEvent* get_saved_accept_event();
+
+    void set_saved_accept_event(AcceptEvent* e);
+
 private:
     /**
      * When an application calls send() or sendto(), a SendEvent is generated on the back-end.
@@ -93,6 +102,13 @@ private:
      * However, we do not want to process the received FIN until the receive buffer is empty so we don't notify the application that we should close before we have delivered all data to the application.
      */
     NetworkReceivePacketEvent* fin_;
+
+    /**
+     * Ojbect to hold back logged connections, waiting for accept()
+     */
+    BackLog* back_log_;
+
+    AcceptEvent* saved_accept_event_;
 };
 
 #endif	/* TCPTAHOEICONTEXTCONTAINER_H */
