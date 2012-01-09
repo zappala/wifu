@@ -150,7 +150,7 @@ public:
 //            send_response_sizes_.push_back(response->return_value);
 //        }
 
-        //data->get_flag()->wait();
+        data->get_flag()->wait();
 
         data->set_receive_payload(message, length);
 //        struct GenericResponseMessage* temp = (struct GenericResponseMessage*) data->get_receive_payload();
@@ -252,7 +252,7 @@ public:
             errno = bind_response->error;
         }
         int return_value = bind_response->return_value;
-//        data->get_flag()->post();
+        data->get_flag()->post();
 
         return return_value;
     }
@@ -297,7 +297,7 @@ public:
         }
 
         int return_value = getsockopt_response->return_value;
-//        data->get_flag()->post();
+        data->get_flag()->post();
         return return_value;
     }
 
@@ -338,7 +338,7 @@ public:
         struct SetSockOptResponseMessage* setsockopt_response = (struct SetSockOptResponseMessage*) data->get_receive_payload();
 
         int return_value = setsockopt_response->return_value;
-//        data->get_flag()->post();
+        data->get_flag()->post();
         return return_value;
     }
 
@@ -384,7 +384,7 @@ public:
             errno = listen_response->error;
         }
         int return_value = listen_response->return_value;
-//        data->get_flag()->post();
+        data->get_flag()->post();
         return return_value;
     }
 
@@ -433,7 +433,7 @@ public:
 
         int new_socket = accept_response->return_value;
         sockets.put(new_socket, ObjectPool<SocketData>::instance().get());
-//        data->get_flag()->post();
+        data->get_flag()->post();
         return new_socket;
     }
 
@@ -518,7 +518,7 @@ public:
 
         struct SendToResponseMessage* sendto_response = (struct SendToResponseMessage*) data->get_receive_payload();
         int return_value = sendto_response->return_value;
-//        data->get_flag()->post();
+        data->get_flag()->post();
         return return_value;
     }
 
@@ -585,7 +585,7 @@ public:
             }
         }
 
-//        data->get_flag()->post();
+        data->get_flag()->post();
         return ret_val;
     }
 
@@ -624,7 +624,7 @@ public:
 
         struct ConnectResponseMessage* connect_response = (struct ConnectResponseMessage*) data->get_receive_payload();
         int return_value = connect_response->return_value;
-//        data->get_flag()->post();
+        data->get_flag()->post();
         return return_value;
     }
 
@@ -652,7 +652,7 @@ public:
         struct CloseResponseMessage* close_response = (struct CloseResponseMessage*) data->get_receive_payload();
         int return_value = close_response->return_value;
 
-//        data->get_flag()->post();
+        data->get_flag()->post();
 
         
         ObjectPool<SocketData>::instance().release(data);
