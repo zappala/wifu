@@ -235,15 +235,15 @@ void register_udp() {
     dispatcher.map_event(type_name(NetworkReceivePacketEvent), &SimpleUDP::instance());
     dispatcher.map_event(type_name(ReceiveEvent), &SimpleUDP::instance());
     dispatcher.map_event(type_name(SendEvent), &SimpleUDP::instance());
-    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &SimpleUDP::instance());
-    dispatcher.map_event(type_name(SendBufferNotFullEvent), &SimpleUDP::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &SimpleUDP::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &SimpleUDP::instance());
+    //    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &SimpleUDP::instance());
+    //    dispatcher.map_event(type_name(SendBufferNotFullEvent), &SimpleUDP::instance());
+    //    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &SimpleUDP::instance());
+    //    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &SimpleUDP::instance());
     dispatcher.map_event(type_name(CloseEvent), &SimpleUDP::instance());
     dispatcher.map_event(type_name(DeleteSocketEvent), &SimpleUDP::instance());
     dispatcher.map_event(type_name(SetSocketOptionEvent), &SimpleUDP::instance());
     dispatcher.map_event(type_name(GetSocketOptionEvent), &SimpleUDP::instance());
-    dispatcher.map_event(type_name(TimerFiredEvent), &SimpleUDP::instance());
+    //    dispatcher.map_event(type_name(TimerFiredEvent), &SimpleUDP::instance());
 }
 
 void register_delayed_ack() {
@@ -332,11 +332,11 @@ void register_protocols() {
     //    register_simple_tcp();
     register_tcp_tahoe();
     //    register_tcp_atp();
-    //    register_udp();
+    register_udp();
     //    register_delayed_ack();
     //    register_few();
     //    register_ap();
-//    register_dummy_proto();
+    //    register_dummy_proto();
 }
 
 void setup_network_interface(gcstring& type) {

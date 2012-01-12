@@ -42,18 +42,9 @@ int UDPPacket::get_data_length_bytes() {
 }
 
 void UDPPacket::set_data(unsigned char* data, int length) {
-    if (data_set_) {
-        // Can not set the data twice
-        throw IllegalStateException();
-    }
-
     memcpy(get_data(), data, length);
-    data_set_ = true;
-
-    u_int8_t udp_len = UDP_HEADER_LENGTH_BYTES;
-    u_int8_t ip_len = get_ip_header_length_bytes();
-    set_udp_length_bytes(udp_len + length);
-    set_ip_tot_length(ip_len + udp_len + length);
+    set_udp_length_bytes(UDP_HEADER_LENGTH_BYTES + length);
+    set_ip_tot_length(get_ip_header_length_bytes() + UDP_HEADER_LENGTH_BYTES + length);
     calculate_and_set_udp_checksum();
 }
 

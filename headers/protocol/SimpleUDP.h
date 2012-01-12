@@ -1,31 +1,32 @@
 /* 
  * File:   UDP.h
- * Author: leer
+ * Author: rbuck
  *
- * Created on June 20, 2011, 4:51 PM
+ * Created on January 11, 2012, 3:31 PM
  */
 
-#ifndef _SIMPLE_UDP_H
-#define	_SIMPLE_UDP_H
+#ifndef SIMPLEUDP_H
+#define	SIMPLEUDP_H
 
 #include "Protocol.h"
-#include "contexts/IContext.h"
-#include "contexts/SimpleUDPIContextContainer.h"
+#include "packet/UDPPacket.h"
+#include "SourceGetter.h"
+#include "SimpleUDPContainer.h"
+#include "events/framework_events/RecvFromResponseEvent.h"
+
 
 class SimpleUDP : public Protocol {
 private:
-    SimpleUDP(int protocol = UDP);
+    map<Socket*, SimpleUDPContainer*, std::less<Socket*>, gc_allocator<std::pair<Socket*, SimpleUDPContainer*> > > map_;
 
-    map<Socket*, SimpleUDPIContextContainer*, std::less<Socket*>, gc_allocator<std::pair<Socket*, SimpleUDPIContextContainer*> > > map_;
+    void send_receive_response(SimpleUDPContainer* c);
 
-    bool is_room_in_send_buffer(SendEvent* e);
-    void save_in_buffer_and_send_events(QueueProcessor<Event*>* q, SendEvent* e);
-    void create_and_dispatch_received_data(QueueProcessor<Event*>* q, ReceiveEvent* e);
+protected:
+    SimpleUDP();
 
-    //bool is_valid_sequence_number(TCPTahoeReliabilityContext* rc, TCPPacket* p);
-    //bool is_valid_ack_number(TCPTahoeReliabilityContext* rc, TCPPacket* p);
 
 public:
+
     static SimpleUDP& instance();
     virtual ~SimpleUDP();
 
@@ -78,5 +79,5 @@ public:
     virtual void icontext_get_socket_option(QueueProcessor<Event*>* q, GetSocketOptionEvent* e);
 };
 
-#endif	/* _SIMPLE_UDP_H */
+#endif	/* SIMPLEUDP_H */
 

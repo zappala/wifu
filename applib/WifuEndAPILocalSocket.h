@@ -104,24 +104,24 @@ public:
      * Destructor
      */
     virtual ~WifuEndAPILocalSocket() {
-//        while (!recv_response_sizes_.empty()) {
-//            cout << "recv_unix_socket " << receive_events_.front() << " " << recv_response_events_.front() << " " << recv_response_sizes_.front() << endl;
-//            receive_events_.pop_front();
-//            recv_response_events_.pop_front();
-//            recv_response_sizes_.pop_front();
-//        }
-//
-//        while (!send_response_sizes_.empty()) {
-//            cout << "send_unix_socket " << send_events_.front() << " " << send_response_events_.front() << " " << send_response_sizes_.front() << endl;
-//            send_events_.pop_front();
-//            send_response_events_.pop_front();
-//            send_response_sizes_.pop_front();
-//        }
+        //        while (!recv_response_sizes_.empty()) {
+        //            cout << "recv_unix_socket " << receive_events_.front() << " " << recv_response_events_.front() << " " << recv_response_sizes_.front() << endl;
+        //            receive_events_.pop_front();
+        //            recv_response_events_.pop_front();
+        //            recv_response_sizes_.pop_front();
+        //        }
+        //
+        //        while (!send_response_sizes_.empty()) {
+        //            cout << "send_unix_socket " << send_events_.front() << " " << send_response_events_.front() << " " << send_response_sizes_.front() << endl;
+        //            send_events_.pop_front();
+        //            send_response_events_.pop_front();
+        //            send_response_sizes_.pop_front();
+        //        }
     }
 
     void receive(unsigned char* message, int length, u_int64_t& receive_time) {
         struct GenericResponseMessage* response = (struct GenericResponseMessage*) message;
-//        cout << "WEAPLS::receive() Socket: " << response->fd << " message type: " << response->message_type << " return value: " << response->return_value << endl;
+        //        cout << "WEAPLS::receive() Socket: " << response->fd << " message type: " << response->message_type << " return value: " << response->return_value << endl;
 
         if (response->message_type == WIFU_SOCKET) {
             sockets.get(0)->set_receive_payload(message, length);
@@ -142,19 +142,19 @@ public:
             return;
         }
 
-//        if (response->message_type == WIFU_RECVFROM || response->message_type == WIFU_PRECLOSE) {
-//            recv_response_events_.push_back(receive_time);
-//            recv_response_sizes_.push_back(response->return_value);
-//        } else if (response->message_type == WIFU_SENDTO) {
-//            send_response_events_.push_back(receive_time);
-//            send_response_sizes_.push_back(response->return_value);
-//        }
+        //        if (response->message_type == WIFU_RECVFROM || response->message_type == WIFU_PRECLOSE) {
+        //            recv_response_events_.push_back(receive_time);
+        //            recv_response_sizes_.push_back(response->return_value);
+        //        } else if (response->message_type == WIFU_SENDTO) {
+        //            send_response_events_.push_back(receive_time);
+        //            send_response_sizes_.push_back(response->return_value);
+        //        }
 
         data->get_flag()->wait();
 
         data->set_receive_payload(message, length);
-//        struct GenericResponseMessage* temp = (struct GenericResponseMessage*) data->get_receive_payload();
-//        cout << "WEAPLS::receive() Socket: " << temp->fd << " message type: " << temp->message_type << " return value: " << temp->return_value << endl;
+        //        struct GenericResponseMessage* temp = (struct GenericResponseMessage*) data->get_receive_payload();
+        //        cout << "WEAPLS::receive() Socket: " << temp->fd << " message type: " << temp->message_type << " return value: " << temp->return_value << endl;
 
         data->get_semaphore()->post();
 
@@ -283,7 +283,7 @@ public:
         getsockopt_message->optname = optname;
         getsockopt_message->optlen = *optlen;
 
-//        u_int64_t time;
+        //        u_int64_t time;
         send_to(&back_end_, getsockopt_message, getsockopt_message->length, 0);
 
         data->get_semaphore()->wait();
@@ -374,7 +374,7 @@ public:
         listen_message->fd = fd;
         listen_message->n = n;
 
-//        u_int64_t time;
+        //        u_int64_t time;
         send_to(&back_end_, listen_message, listen_message->length, 0);
 
         data->get_semaphore()->wait();
@@ -419,7 +419,7 @@ public:
             accept_message->len = 0;
         }
 
-//        u_int64_t time;
+        //        u_int64_t time;
         send_to(&back_end_, accept_message, accept_message->length, 0);
 
         data->get_semaphore()->wait();
@@ -496,7 +496,7 @@ public:
 
         struct SendToMessage* sendto_message = reinterpret_cast<struct SendToMessage*> (data->get_send_payload());
         sendto_message->message_type = WIFU_SENDTO;
-        sendto_message->length = sizeof (struct SendToMessage) + n;
+        sendto_message->length = sizeof (struct SendToMessage) +n;
         memcpy(&(sendto_message->source), get_address(), sizeof (struct sockaddr_un));
 
         sendto_message->fd = fd;
@@ -510,9 +510,9 @@ public:
         sendto_message->flags = flags;
         memcpy(sendto_message + 1, buf, n);
 
-//        u_int64_t time;
+        //        u_int64_t time;
         send_to(&back_end_, sendto_message, sendto_message->length, 0);
-//        send_events_.push_back(time);
+        //        send_events_.push_back(time);
 
         data->get_semaphore()->wait();
 
@@ -560,7 +560,7 @@ public:
         recvfrom_message->buffer_length = n;
         recvfrom_message->flags = flags;
 
-//        u_int64_t time;
+        //        u_int64_t time;
         send_to(&back_end_, recvfrom_message, recvfrom_message->length, 0);
         //receive_events_.push_back(time);
 
@@ -570,18 +570,23 @@ public:
         data->get_semaphore()->wait();
 
         struct GenericResponseMessage* response = (struct GenericResponseMessage*) data->get_receive_payload();
-//        cout << "Socket: " << response->fd << " message type: " << response->message_type << " return value: " << response->return_value << endl;
+        //        cout << "Socket: " << response->fd << " message type: " << response->message_type << " return value: " << response->return_value << endl;
         int ret_val = response->return_value;
 
         if (response->message_type == WIFU_RECVFROM) {
             struct RecvFromResponseMessage* recvfrom_response = (struct RecvFromResponseMessage*) data->get_receive_payload();
             // TODO: fill in the actual vale of addr_len and addr according to man 2 recvfrom()
-//            cout << "FD: " << response->fd << endl;
-//            cout << "Message type: " << response->message_type << endl;
-//            cout << "N: " << n << endl;
-//            cout << "Return val: " << ret_val << endl;
+
+            //            cout << "FD: " << response->fd << endl;
+            //            cout << "Message type: " << response->message_type << endl;
+            //            cout << "N: " << n << endl;
+            //            cout << "Return val: " << ret_val << endl;
             if (ret_val > 0) {
                 memcpy(buf, recvfrom_response + 1, ret_val);
+                if (addr != 0 && addr_len != 0) {
+                    memcpy(addr_len, &recvfrom_response->addr_len, sizeof (socklen_t));
+                    memcpy(addr, &recvfrom_response->addr, *addr_len);
+                }
             }
         }
 
@@ -617,7 +622,7 @@ public:
         memcpy(&(connect_message->addr), addr, len);
         connect_message->len = len;
 
-//        u_int64_t time;
+        //        u_int64_t time;
         send_to(&back_end_, connect_message, connect_message->length, 0);
 
         data->get_semaphore()->wait();
@@ -644,7 +649,7 @@ public:
 
         connect_message->fd = fd;
 
-//        u_int64_t time;
+        //        u_int64_t time;
         send_to(&back_end_, connect_message, connect_message->length, 0);
 
         data->get_semaphore()->wait();
@@ -654,7 +659,7 @@ public:
 
         data->get_flag()->post();
 
-        
+
         ObjectPool<SocketData>::instance().release(data);
 
         sockets.erase_at(fd);
@@ -679,11 +684,11 @@ private:
      */
     BinarySemaphore socket_mutex_;
 
-//    list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
-//    list<int, gc_allocator<int> > recv_response_sizes_;
-//
-//    list<u_int64_t, gc_allocator<u_int64_t> > send_events_, send_response_events_;
-//    list<int, gc_allocator<int> > send_response_sizes_;
+    //    list<u_int64_t, gc_allocator<u_int64_t> > receive_events_, recv_response_events_;
+    //    list<int, gc_allocator<int> > recv_response_sizes_;
+    //
+    //    list<u_int64_t, gc_allocator<u_int64_t> > send_events_, send_response_events_;
+    //    list<int, gc_allocator<int> > send_response_sizes_;
 };
 
 #endif	/* _WIFUENDAPILOCALSOCKET_H */
