@@ -49,6 +49,15 @@ RawSocketListener::RawSocketListener() : started_(false) {
     epfd_ = epoll_create(1);
 }
 
+RawSocketListener::~RawSocketListener() {
+    while (!fds_.empty()) {
+        int fd = fds_.front();
+        fds_.pop_front();
+        close(fd);
+    }
+    close(epfd_);
+}
+
 void RawSocketListener::register_protocol(int protocol, PacketFactory* pf) {
     if (started_) {
         cout << "Cannot register anymore protocols" << endl;
@@ -62,12 +71,13 @@ void RawSocketListener::register_protocol(int protocol, PacketFactory* pf) {
         exit(EXIT_FAILURE);
     }
 
-    static struct epoll_event event;
-    event.events = EPOLLIN;
-    event.data.fd = fd;
+
+    event_.events = EPOLLIN;
+    event_.data.fd = fd;
     epoll_ctl(epfd_, EPOLL_CTL_ADD, fd, &event);
 
     factories_[fd] = pf;
+    fds_.push_back(fd);
 }
 
 void RawSocketListener::start(NetworkCallback* callback) {

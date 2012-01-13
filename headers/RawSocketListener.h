@@ -21,6 +21,7 @@
 #include <errno.h>
 #include <math.h>
 #include <sys/epoll.h>
+#include <list>
 
 #include "NetworkCallback.h"
 #include "Semaphore.h"
@@ -44,6 +45,7 @@ class RawSocketListener {
 public:
 
     RawSocketListener();
+    ~RawSocketListener();
 
     void register_protocol(int protocol, PacketFactory* pf);
 
@@ -55,6 +57,8 @@ private:
     Semaphore* sem_;
     bool started_;
     pthread_t thread_;
+    list<int> fds_;
+    struct epoll_event event_;
 };
 
 #endif	/* _RAWSOCKETLISTENER_H */

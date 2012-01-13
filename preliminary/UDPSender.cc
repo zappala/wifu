@@ -13,6 +13,8 @@
 #include "OptionParser.h"
 #include "AddressPort.h"
 #include "Timer.h"
+#include "packet/UDPPacket.h"
+#include "../test/headers/RandomStringGenerator.h"
 
 #include <sys/types.h>
 #include <stdlib.h>
@@ -46,11 +48,12 @@ int main(int argc, char** argv) {
     gcstring protocolarg = "protocol";
     int protocol = UDP;
 
-    gcstring bindaddr = "address";
-    gcstring hostaddr = "127.0.0.1";
+    gcstring destination = "destination";
+    gcstring dest = "127.0.0.1";
+    
 
     static struct option long_options[] = {
-        {bindaddr.c_str(), required_argument, NULL, 0},
+        {destination.c_str(), required_argument, NULL, 0},
         {apiarg.c_str(), required_argument, NULL, 0},
         {portarg.c_str(), required_argument, NULL, 0},
         {protocolarg.c_str(), required_argument, NULL, 0},
@@ -73,40 +76,40 @@ int main(int argc, char** argv) {
         protocol = atoi(optionparser.argument(protocolarg).c_str());
     }
 
-    if (optionparser.present(bindaddr)) {
-        hostaddr = optionparser.argument(bindaddr);
+    if (optionparser.present(destination)) {
+        dest = optionparser.argument(destination);
     } else {
-        cout << "Binding address required!\n";
-        cout << "Use option --address <addr>\n";
+        cout << "Destination argument required!\n";
+        cout << "Use option --destination <addr>\n";
         return -1;
     }
 
-    int sock, length, n;
-    socklen_t fromlen;
-    struct sockaddr_in server;
-    struct sockaddr_in from;
-    char buf[1024];
+   
 
-    if (argc < 2) {
-        fprintf(stderr, "ERROR, no port provided\n");
-        exit(0);
-    }
+    int sock, n;
 
     sock = api->custom_socket(AF_INET, SOCK_DGRAM, protocol);
     if (sock < 0) error("Opening socket");
-    length = sizeof (server);
-    bzero(&server, length);
-    AddressPort ap(hostaddr, port);
-    if (api->custom_bind(sock, (struct sockaddr *) ap.get_network_struct_ptr(), length) < 0) {
-        error("binding");
-    }
-    fromlen = sizeof (struct sockaddr_in);
-    while (1) {
-        n = api->custom_recvfrom(sock, buf, 1024, 0, (struct sockaddr *) &from, &fromlen);
+
+    int length = 1472;
+    gcstring message = RandomStringGenerator::get_data(length);
+
+    AddressPort receiver(dest, port);
+    socklen_t size = sizeof(struct sockaddr_in);
+
+    int total = 0;
+
+    Timer t;
+    t.start();
+    for (int i = 0; i < 10000; ++i) {
+        n = api->custom_sendto(sock, message.data(), length, 0, (struct sockaddr *) receiver.get_network_struct_ptr(), size);
         if (n < 0) error("recvfrom");
-        n = api->custom_sendto(sock, "Got your message\n", 17, 0, (struct sockaddr *) &from, fromlen);
-        if (n < 0) error("sendto");
+        total += n;
     }
+    t.stop();
+
+    cout << "Time to send " << total << " bytes: " << t.get_duration_microseconds() << endl;
+
     return 0;
 }
 

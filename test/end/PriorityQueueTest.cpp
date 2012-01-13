@@ -244,7 +244,7 @@ namespace {
         Socket* s = new Socket(0, 0, 0);
         WiFuPacket* p = new WiFuPacket;
 
-        Event* a = new ConnectionInitiatedEvent(s,s);
+        Event* a = new ConnectionInitiatedEvent(new Socket(0, 0, 0),new Socket(0, 0, 0), new ListenEvent());
         Event* b = new SendPacketEvent(s, p);
 
         ASSERT_EQ(HIGH, a->get_priority());

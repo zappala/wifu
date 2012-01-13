@@ -1,7 +1,10 @@
 #include "protocol/SimpleUDP.h"
+#include "Timer.h"
 
+int sent, received;
 SimpleUDP::SimpleUDP() : Protocol(UDP) {
-
+    sent = 0;
+    received = 0;
 }
 
 SimpleUDP& SimpleUDP::instance() {
@@ -10,8 +13,10 @@ SimpleUDP& SimpleUDP::instance() {
 }
 
 SimpleUDP::~SimpleUDP() {
-
+    cout << "PR: " << received << endl;
+    cout << "PS: " << sent << endl;
 }
+
 
 // IContext methods
 
@@ -33,6 +38,7 @@ void SimpleUDP::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceiv
     SimpleUDPContainer* c = map_.find(e->get_socket())->second;
     c->get_packet_queue().push(e);
     send_receive_response(c);
+    ++received;
 }
 
 void SimpleUDP::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent* e) {
@@ -116,6 +122,7 @@ void SimpleUDP::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
     response_event->set_default_length();
     response_event->set_destination(e->get_source());
     dispatch(response_event);
+    ++sent;
 }
 
 bool SimpleUDP::icontext_can_send(Socket* s) {
@@ -193,7 +200,7 @@ void SimpleUDP::send_receive_response(SimpleUDPContainer* c) {
     response->set_destination(e->get_source());
     response->set_addr(p->get_source_address_port()->get_network_struct_ptr(), sizeof(struct sockaddr_in));
 //    cout << "Setting response address to: " << p->get_source_address_port()->to_s() << endl;
-    response->set_return_buffer(p->get_data(), p->get_udp_length_bytes());
+    response->set_return_buffer(p->get_data(), p->get_data_length_bytes());
     
     dispatch(response);
     c->set_receive_event(0);
