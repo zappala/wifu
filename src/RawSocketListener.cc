@@ -74,7 +74,7 @@ void RawSocketListener::register_protocol(int protocol, PacketFactory* pf) {
 
     event_.events = EPOLLIN;
     event_.data.fd = fd;
-    epoll_ctl(epfd_, EPOLL_CTL_ADD, fd, &event);
+    epoll_ctl(epfd_, EPOLL_CTL_ADD, fd, &event_);
 
     factories_[fd] = pf;
     fds_.push_back(fd);

@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
 
     Timer t;
     t.start();
-    for (int i = 0; i < 10000; ++i) {
+    for (int i = 0; i < 100000; ++i) {
         n = api->custom_sendto(sock, message.data(), length, 0, (struct sockaddr *) receiver.get_network_struct_ptr(), size);
         if (n < 0) error("recvfrom");
         total += n;

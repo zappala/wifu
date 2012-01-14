@@ -27,73 +27,22 @@ void MockNetworkInterface::imodule_network_send(Event* e) {
 
     p->calculate_and_set_ip_checksum();
 
-    if (p->get_ip_protocol() == UDP) {
-        ++udp_seq_;
-        //UDPPacket* udp_packet = (UDPPacket*) p;
 
-        if (percent_ > 0) {
-            int random = rand() % 100 + 1;
-            if (random <= percent_) {
-                delay = -1;
-            }
-        } else if (!control_nums_to_delay_.empty()) {
-            pair<pair<int, int>, int> numbers = control_nums_to_delay_.front();
-            int seq = numbers.first.first;
-            //UDP will simply ignore ACKs and repurpose the seq num to be which packets the sender drops (first, second, etc.).
-            //int ack = numbers.first.second;
+    TCPPacket* tcp_packet = (TCPPacket*) p;
+    tcp_packet->pack();
 
-            if (seq == -1) {
-                percent_ = numbers.second;
-            }
+    delay = get_delay(tcp_packet);
 
-            if (udp_seq_ == seq) {
-                // erase front
-                control_nums_to_delay_.erase(control_nums_to_delay_.begin());
-                delay = numbers.second;
-            }
-        }
-    } else if (p->get_ip_protocol() == TCP_ATP) {
-        ATPPacket* packet = dynamic_cast<ATPPacket *> (p);
-        assert(packet != 0);
-
-        // max delay > 250 seems to work always
-        packet->set_atp_max_delay(rand() % 1000 + 250);
-        packet->calculate_and_set_tcp_checksum();
-
-        delay = get_delay(packet);
-
-    } else {
-        TCPPacket* tcp_packet = (TCPPacket*) p;
-        tcp_packet->pack();
-
-        delay = get_delay(tcp_packet);
-    }
-
-    //        cout << "MockNetworkInterface::network_send(), sending on socket: " << e->get_socket() << endl;
     assert(p);
-//            cout << p->to_s_format() << endl;
-//    cout << Utils::get_current_time_microseconds_64() << endl;
-//    cout << p->to_s() << endl;
-    //usleep(0);
 
     logger.log(p);
 
-    // drop the packet
-    //    cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
     if (delay == -1) {
-        //cout << "MockNetworkInterface::network_send(), Dropping packet" << endl;
         return;
     }
 
-    //    cout << "MockNetworkInterface::network_send(), Before sleep" << endl;
-
     if (delay > 0) {
-        //cout << "MockNetowrkInterface::network_send(), Delay: " << delay << endl;
-
-        // delay is in microseconds
         TimeoutEvent* timer = new TimeoutEvent(fake_socket_, 0, delay * 1000);
-        //delayed_[timer] = tcp_packet;
-        //delayed_[timer] = (TCPPacket*)p;
         delayed_[timer] = p;
         Dispatcher::instance().enqueue(timer);
         return;

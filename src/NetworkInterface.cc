@@ -56,15 +56,11 @@ void NetworkInterface::imodule_network_receive(WiFuPacket* p) {
 void NetworkInterface::imodule_network_send(Event* e) {
     NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
 
-    //usleep(20000);
-
     // TODO: Check return value (bytes sent)?
     WiFuPacket* p = event->get_packet();
     p->calculate_and_set_ip_checksum();
-    //    cout << "Network sending packet: \n" << p->to_s_format() << endl << p->to_s() << endl;
     sender_.send(p);
     PacketLogger::instance().log(p);
-    
 }
 
 NetworkInterface::NetworkInterface() : INetworkInterface() {
