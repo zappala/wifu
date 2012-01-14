@@ -330,9 +330,9 @@ void register_ap() {
 void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
     //    register_simple_tcp();
-//    register_tcp_tahoe();
+    register_tcp_tahoe();
     //    register_tcp_atp();
-    register_udp();
+//    register_udp();
     //    register_delayed_ack();
     //    register_few();
     //    register_ap();
