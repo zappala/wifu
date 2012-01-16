@@ -360,6 +360,7 @@ class ExecutableManager():
 		os.system("cp " + self.config.file + " " + base_path)
 
 		for i in range(0, self.config.iterations):
+			time.sleep(30)
 
 			for api in ['wifu', 'kernel']:
 

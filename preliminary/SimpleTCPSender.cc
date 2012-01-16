@@ -92,10 +92,13 @@ int main(int argc, char** argv) {
         port = atoi(optionparser.argument(portarg).c_str());
     }
 
+	bool reuseaddr = false;
     if (optionparser.present(apiarg)) {
         gcstring api_type = optionparser.argument(apiarg);
         if (!api_type.compare("kernel")) {
             api = new KernelSocketAPI();
+		reuseaddr = true;
+		
         }
     }
 
@@ -153,12 +156,31 @@ int main(int argc, char** argv) {
     AddressPort to_bind(hostaddr, port);
     int result = api->custom_bind(server, (const struct sockaddr*) to_bind.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     if (result < 0) {
+	cout << "error in bind: " << errno << endl;
         perror("bind");
+	exit(-1);
     }
+
+	
+
+	// only do for kernel because we kill wifu each time so there are no bind issues
+	// wifu doesn't support reuse anyway
+	if(reuseaddr) {
+		
+		int optval = 1;
+		int result = api->custom_setsockopt(server, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
+		if(result < 0) {
+			cout << "error in sockopt: " << errno << endl;
+        		perror("setsockopt");
+			exit(-1);
+		}
+	}
 
     result = api->custom_listen(server, num_threads);
     if (result < 0) {
+	cout << "error in listen: " << errno << endl;
         perror("listen");
+	exit(-1);
     }
 
     pthread_t pthreads[num_threads];
@@ -194,6 +216,12 @@ int main(int argc, char** argv) {
     socklen_t length = sizeof (addr);
     int connection;
     while (connection = api->custom_accept(server, (struct sockaddr*) &addr, &length)) {
+	if(connection < 0) {
+		cout << "error in accept: " << errno << endl;
+        	perror("accept");
+		exit(-1);
+	}
+
         data[i].peer = new AddressPort(&addr);
         data[i].connection = connection;
         data[i].flag->post();
@@ -252,7 +280,13 @@ void* sending_thread(void* arg) {
         ptr = message.data() + index;
 
         sent = api->custom_send(connection, ptr, chunk, 0);
-        index += sent;
+	if(sent < 0) {
+		cout << "error in send: " << errno << endl;
+		exit(-1);
+	}
+	else {
+	        index += sent;
+	}
     }
     send_timer.stop();
     api->custom_close(connection);

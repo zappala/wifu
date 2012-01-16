@@ -144,11 +144,14 @@ int main(int argc, char** argv) {
         }
     }
 
+
     for (int i = 0; i < num_threads; ++i) {
         pthread_join(pthreads[i], NULL);
     }
 
+
     sleep(4);
+
 }
 
 void* receiving_thread(void* arg) {
@@ -171,6 +174,11 @@ void* receiving_thread(void* arg) {
     AddressPort to_connect(dest, port);
     int client = api->custom_socket(AF_INET, SOCK_STREAM, protocol);
 
+	if(client < 0) {
+		cout << "Error creating socket: " << errno << endl;
+		exit(-1);
+	}
+
     int value = pthread_barrier_wait(barrier);
     if (value != 0 && value != PTHREAD_BARRIER_SERIAL_THREAD) {
         perror("Could not wait on barrier before connecting");
@@ -178,7 +186,13 @@ void* receiving_thread(void* arg) {
     }
 
     int result = api->custom_connect(client, (const struct sockaddr*) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+	if(result < 0) {
+		cout << "Error connecting: " << errno << endl;
+		exit(-1);
+	}
+
     assert(!result);
+
 
     while (true) {
 
@@ -193,12 +207,17 @@ void* receiving_thread(void* arg) {
         return_value = api->custom_recv(client, buffer, chunk, 0);
         receive_timer.start();
         
-        
-        if (return_value == 0) {
-            break;
-        }
 
-        num_received += return_value;
+
+	if (return_value > 0) {
+		num_received += return_value;
+	}
+	else if (return_value == 0) {	
+		break;
+	}
+	else {
+		cout << "error in receiving: " << errno << endl;
+	}        
     }
     
     api->custom_close(client);
