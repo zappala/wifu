@@ -31,6 +31,7 @@ struct sending_data {
     Semaphore* flag;
     gcstring message;
     pthread_barrier_t* barrier;
+	int sleep_time;
 };
 
 void my_itoa(int val, char* buffer) {
@@ -204,6 +205,7 @@ int main(int argc, char** argv) {
         data[i].mutex = mutex;
         data[i].flag = new Semaphore();
         data[i].flag->init(0);
+	data[i].sleep_time = i * 3 * 100000;
         if (pthread_create(&(pthreads[i]), NULL, &sending_thread, &(data[i])) != 0) {
             perror("Error creating new thread");
             exit(EXIT_FAILURE);
@@ -251,6 +253,7 @@ void* sending_thread(void* arg) {
     Semaphore* mutex = data->mutex;
     gcstring message = data->message;
     pthread_barrier_t* barrier = data->barrier;
+	int sleep_time = data->sleep_time;
 
     Timer send_timer;
     int index = 0;
@@ -266,6 +269,10 @@ void* sending_thread(void* arg) {
         perror("Could not wait on barrier before connecting");
         exit(EXIT_FAILURE);
     }
+
+
+	usleep(sleep_time);
+
 
     AddressPort* peer = data->peer;
     int connection = data->connection;
