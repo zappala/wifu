@@ -10,9 +10,18 @@
 
 #include "PacketFactory.h"
 #include "packet/TCPPacket.h"
+#include <vector>
 
 class TCPPacketFactory : public PacketFactory {
+public:
+    
+    TCPPacketFactory();
+
     WiFuPacket* create();
+
+private:
+    vector<TCPPacket*, gc_allocator<TCPPacket*> > packets_;
+    WiFuPacket* p_;
 };
 
 #endif	/* _TCPPACKETFACTORY_H */
