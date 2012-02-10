@@ -10,8 +10,9 @@ SlowStart::~SlowStart() {
 
 void SlowStart::state_enter(Context* c) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
-    
-    ccc->set_cwnd(ccc->get_mss());
+
+    // RFC 3390
+    ccc->set_cwnd(min(4 * ccc->get_mss(), max(2 * ccc->get_mss(), 4380)));
 }
 
 void SlowStart::set_cwnd(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
