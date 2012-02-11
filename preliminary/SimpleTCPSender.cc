@@ -17,7 +17,7 @@
 #include "Utils.h"
 #include "Semaphore.h"
 #include "../test/headers/RandomStringGenerator.h"
-
+#include <netinet/tcp.h>
 using namespace std;
 
 #define optionparser OptionParser::instance()
@@ -214,6 +214,7 @@ int main(int argc, char** argv) {
 
     int i = 0;
 
+
     struct sockaddr_in addr;
     socklen_t length = sizeof (addr);
     int connection;
@@ -223,6 +224,15 @@ int main(int argc, char** argv) {
         	perror("accept");
 		exit(-1);
 	}
+
+        // kernel running
+        if(reuseaddr) {
+            struct tcp_info info;
+            socklen_t length = sizeof(info);
+            if(!api->custom_getsockopt(connection, SOL_TCP, TCP_INFO, &info, &length ) ) {
+                cout << "Send CWND: " << info.tcpi_snd_cwnd << endl;
+            }
+        }
 
         data[i].peer = new AddressPort(&addr);
         data[i].connection = connection;
@@ -276,6 +286,8 @@ void* sending_thread(void* arg) {
 
     AddressPort* peer = data->peer;
     int connection = data->connection;
+
+    
 
     send_timer.start();
 

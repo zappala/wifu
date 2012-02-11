@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <list>
+#include <netinet/tcp.h>
 
 using namespace std;
 
@@ -174,10 +175,10 @@ void* receiving_thread(void* arg) {
     AddressPort to_connect(dest, port);
     int client = api->custom_socket(AF_INET, SOCK_STREAM, protocol);
 
-	if(client < 0) {
-		cout << "Error creating socket: " << errno << endl;
-		exit(-1);
-	}
+    if (client < 0) {
+        cout << "Error creating socket: " << errno << endl;
+        exit(-1);
+    }
 
     int value = pthread_barrier_wait(barrier);
     if (value != 0 && value != PTHREAD_BARRIER_SERIAL_THREAD) {
@@ -186,13 +187,15 @@ void* receiving_thread(void* arg) {
     }
 
     int result = api->custom_connect(client, (const struct sockaddr*) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
-	if(result < 0) {
-		cout << "Error connecting: " << errno << endl;
-		exit(-1);
-	}
+    if (result < 0) {
+        cout << "Error connecting: " << errno << endl;
+        exit(-1);
+    }
 
     assert(!result);
 
+    int i = 1;
+    bool kernel = !api->get_type().compare("kernel");
 
     while (true) {
 
@@ -206,20 +209,25 @@ void* receiving_thread(void* arg) {
         receive_timer.stop();
         return_value = api->custom_recv(client, buffer, chunk, 0);
         receive_timer.start();
-        
 
 
-	if (return_value > 0) {
-		num_received += return_value;
-	}
-	else if (return_value == 0) {	
-		break;
-	}
-	else {
-		cout << "error in receiving: " << errno << endl;
-	}        
+        if (kernel) {
+            result = api->custom_setsockopt(client, IPPROTO_TCP, TCP_QUICKACK, &i, sizeof (i));
+            if(result < 0) {
+                cout << "error in setting quickack" << endl;
+            }
+        }
+
+
+        if (return_value > 0) {
+            num_received += return_value;
+        } else if (return_value == 0) {
+            break;
+        } else {
+            cout << "error in receiving: " << errno << endl;
+        }
     }
-    
+
     api->custom_close(client);
 
 

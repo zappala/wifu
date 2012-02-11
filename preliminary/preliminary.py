@@ -415,17 +415,27 @@ class ExecutableManager():
 				time.sleep(2)
 
 				# start tcp dump
-				tcpdump_command = "sudo tcpdump -w /tmp/" + api + "_tcpdump.pcap -i " + self.config.get_interface() + " src " + self.config.dictionary[self.senderAddress]
+				
 
 				tcpdump = None
 				if self.config.dictionary.has_key("tcpdump"):
 					tcpdump =  self.config.dictionary["tcpdump"]
 					
 				receiver_tcpdump = None
+				sender_tcpdump = None
 				if tcpdump is not None and tcpdump == "on":
+					
+					tcpdump_command = "sudo tcpdump -w /tmp/" + api + "_receiver_tcpdump.pcap -i " + self.config.get_interface() + " src " + self.config.dictionary[self.senderAddress]
+
 					receiver_tcpdump = Command(receiver_node, self.config.username, tcpdump_command)
 					receiver_tcpdump.start()
 					receiver_tcpdump.running.wait()
+
+					tcpdump_command = "sudo tcpdump -w /tmp/" + api + "_sender_tcpdump.pcap -i " + self.config.get_interface()
+					sender_tcpdump = Command(sender_node, self.config.username, tcpdump_command)
+					sender_tcpdump.start()
+					sender_tcpdump.running.wait()
+
 					
 
 				# start up the receiver
@@ -503,9 +513,16 @@ class ExecutableManager():
 
 				if receiver_tcpdump is not None:
 					receiver_tcpdump.done.wait()
+					sender_tcpdump.done.wait()
+					
 					receiver_tcpdump.go.set()
+					sender_tcpdump.go.set()
+
 					receiver_tcpdump.finished.wait()
+					sender_tcpdump.finished.wait()
+
 					receiver_tcpdump.join()
+					sender_tcpdump.join()
 
 				# get data
 
@@ -517,9 +534,12 @@ class ExecutableManager():
 
 				tcpdump_grabber = None
 				if receiver_tcpdump is not None:
-					tcpdump_grabber = FileGrabber(receiver_node, "/tmp/" + api + "_tcpdump.pcap", data_path, self.config.username)
+					tcpdump_grabber = FileGrabber(receiver_node, "/tmp/" + api + "_receiver_tcpdump.pcap", data_path, self.config.username)
+					sender_tcpdump_grabber = FileGrabber(sender_node, "/tmp/" + api + "_sender_tcpdump.pcap", data_path, self.config.username)
 					tcpdump_grabber.start()
+					sender_tcpdump_grabber.start()
 					tcpdump_grabber.join()
+					sender_tcpdump_grabber.join()
 
 				pcap_file = "wifu-log.pcap"
 				wifu_log = "wifu-end.log"
@@ -1347,7 +1367,17 @@ class PreliminaryGrapher:
 			return
 
 		# convert pcap file to something instantaneous.py can use
-		files = self.__get_log_files("(kernel|wifu)_tcpdump\.pcap")
+		files = self.__get_log_files("(kernel|wifu)_receiver_tcpdump\.pcap")
+		print files
+
+		files_string = ""
+		for file in files:
+			files_string = file + " " + files_string
+
+		command = "/home/rbuck/NetBeansProjects/wireshark/wireshark-1.2.7/mergecap -a " + files_string + "-w merged.pcap"
+		os.system(command)
+
+		files.append("merged.pcap")
 
 		for file in files:
 			print file
@@ -1360,14 +1390,19 @@ class PreliminaryGrapher:
 			d = Directory(self.graph_path)
 			d.make()
 			
-			api = "wifu"
+			api = "merged"
 			if "kernel" in file:
 				api = "kernel"
+			elif "wifu" in file:
+				api = "wifu"
 			
 			outfile = self.graph_path + "instantaneous_" + api + ".eps"
 			command = "python intantaneous.py -f temp.txt -o" + outfile
 			os.system(command)
 			os.system("rm temp.txt")
+
+		# graph all files together
+		
 
 			
 
@@ -1502,7 +1537,7 @@ class MultipleGrapher:
 		fig = plt.figure(figsize=(10, 6))
 		fig.canvas.set_window_title('A Boxplot Example')
 		ax1 = fig.add_subplot(111)
-		#ax1.set_yscale('log')
+		ax1.set_yscale('log')
 		#plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
 
 		bp = plt.boxplot(data, notch=0, sym='+', vert=1, whis=1.5)
@@ -1529,8 +1564,8 @@ class MultipleGrapher:
 #		ax1.set_ylim(bottom, top)
 		ax1.set_ylim(xmin=0)
 
-#		xtickNames = plt.setp(ax1, xticklabels=["Kernel 10 Mbps", "WiFu 10 Mbps", "Kernel 100 Mbps", "WiFu 100 Mbps", "Kernel 1000 Mbps", "WiFu 1000 Mbps"])
-		xtickNames = plt.setp(ax1, xticklabels=["Kernel 1-hop", "WiFu 1-hop", "Kernel 2-hops", "WiFu 2-hops", "Kernel 3-hops", "WiFu 3-hops"])
+		xtickNames = plt.setp(ax1, xticklabels=["Kernel 10 Mbps", "WiFu 10 Mbps", "Kernel 100 Mbps", "WiFu 100 Mbps", "Kernel 1000 Mbps", "WiFu 1000 Mbps"])
+#		xtickNames = plt.setp(ax1, xticklabels=["Kernel 1-hop", "WiFu 1-hop", "Kernel 2-hops", "WiFu 2-hops", "Kernel 3-hops", "WiFu 3-hops"])
 		#plt.setp(xtickNames, rotation=45, fontsize=8)
 		plt.setp(xtickNames, fontsize=10)
 
@@ -1540,8 +1575,8 @@ class MultipleGrapher:
 		for dir in self.dirs:
 			d = Directory(dir)
 			d.make()
-#			filename = dir + 'multiple_compare_wired_scalability.eps'
-			filename = dir + 'multiple_compare_wireless.eps'
+			filename = dir + 'multiple_compare_wired_.eps'
+#			filename = dir + 'multiple_compare_wireless.eps'
 			savefig(filename, format="eps")
 		
 

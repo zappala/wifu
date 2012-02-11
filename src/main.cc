@@ -362,6 +362,11 @@ void change_dir() {
 int main(int argc, char** argv) {
     GC_INIT();
 
+    GC_expand_hp(100 * 1000 * 1000);
+    GC_set_free_space_divisor(1);
+    GC_use_entire_heap = 1;
+
+
     //only needs to be on if logging to file
     pantheios_be_file_setFilePath(PantheiosString("wifu-end.log"), PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BEID_ALL);
     log_DEBUG("Command line arguments: ", pantheios::args(argc, argv));

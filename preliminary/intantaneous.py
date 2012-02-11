@@ -138,6 +138,7 @@ class InstantaneousGrapher:
 					break
 
 			self.flows[key].append((time, length))
+			
 
 	def __get_rate(self, begin_time, end_time, flow):
 		bytes = 0
@@ -172,8 +173,8 @@ class InstantaneousGrapher:
 		print "Creating data arrays..."
 		self.data = []
 		# window is in seconds
-		self.window = 0.001
-		self.interval = 0.0001
+		self.window = 0.01
+		self.interval = 0.001
 		self.window = 0.1
 		self.interval = 0.01
 
@@ -182,6 +183,7 @@ class InstantaneousGrapher:
 
 
 		for key in self.flows.keys():
+			
 			flow = self.flows[key]
 			x = []
 			y = []
@@ -191,15 +193,21 @@ class InstantaneousGrapher:
 			first_time = begin
 			end = begin + self.window
 			while end < max_time:
-				x_val = begin - first_time + diff
+				
+				x_val = begin - first_time # + diff
+
+				# put diff in when doing concurrent flows (multi-threaded)
+				# leave out when not (but wish to compare multiple flows)
+				x_val += diff
 				y_val = self.__get_rate(begin, min([max_time, end]), flow)
 				x.append(x_val)
 				y.append(y_val)
 
 				begin += self.interval
 				end = begin + self.window
-
+				
 			self.data.append((x, y))
+			
 				
 	def graph(self):
 		print "Graphing..."
@@ -208,9 +216,13 @@ class InstantaneousGrapher:
 		#ax.set_title("Smoothed rate over time")
 		ax.set_xlabel("Time (seconds)")
 		ax.set_ylabel("Smoothed Goodput (Mbps)")
+
 		
+
 		for (x, y) in self.data:
 			ax.plot(x, y)
+
+		ax.set_ylim(0, 100)
 
 		savefig(self.output, format="eps")
 
