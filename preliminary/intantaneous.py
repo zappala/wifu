@@ -175,8 +175,8 @@ class InstantaneousGrapher:
 		# window is in seconds
 		self.window = 0.01
 		self.interval = 0.001
-		self.window = 0.1
-		self.interval = 0.01
+		#self.window = 0.1
+		#self.interval = 0.01
 
 
 		absolute_begin = self._get_flows_begin_time()
@@ -198,7 +198,7 @@ class InstantaneousGrapher:
 
 				# put diff in when doing concurrent flows (multi-threaded)
 				# leave out when not (but wish to compare multiple flows)
-				x_val += diff
+				#x_val += diff
 				y_val = self.__get_rate(begin, min([max_time, end]), flow)
 				x.append(x_val)
 				y.append(y_val)
