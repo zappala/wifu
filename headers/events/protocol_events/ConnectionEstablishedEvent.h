@@ -51,11 +51,6 @@ public:
      */
     Socket* get_new_socket();
 
-    /**
-     * @return The socket used to receive the SYN.
-     */
-    Socket* get_listening_socket();
-
 private:
 
     /**

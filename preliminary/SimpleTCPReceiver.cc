@@ -172,6 +172,9 @@ void* receiving_thread(void* arg) {
     char buffer[size];
     int num_received = 0;
 
+    int i = 1;
+    bool kernel = !api->get_type().compare("kernel");
+
     AddressPort to_connect(dest, port);
     int client = api->custom_socket(AF_INET, SOCK_STREAM, protocol);
 
@@ -193,9 +196,6 @@ void* receiving_thread(void* arg) {
     }
 
     assert(!result);
-
-    int i = 1;
-    bool kernel = !api->get_type().compare("kernel");
 
     while (true) {
 
@@ -231,6 +231,7 @@ void* receiving_thread(void* arg) {
     api->custom_close(client);
 
 
+    sleep(2);
     mutex->wait();
     cout << "Duration (us) to recv " << num_received << " bytes from " << to_connect.to_s() << ": " << receive_timer.get_duration_microseconds() << endl;
     mutex->post();

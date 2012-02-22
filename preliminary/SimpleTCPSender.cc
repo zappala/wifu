@@ -31,7 +31,7 @@ struct sending_data {
     Semaphore* flag;
     gcstring message;
     pthread_barrier_t* barrier;
-	int sleep_time;
+    int sleep_time;
 };
 
 void my_itoa(int val, char* buffer) {
@@ -93,13 +93,13 @@ int main(int argc, char** argv) {
         port = atoi(optionparser.argument(portarg).c_str());
     }
 
-	bool reuseaddr = false;
+    bool reuseaddr = false;
     if (optionparser.present(apiarg)) {
         gcstring api_type = optionparser.argument(apiarg);
         if (!api_type.compare("kernel")) {
             api = new KernelSocketAPI();
-		reuseaddr = true;
-		
+            reuseaddr = true;
+
         }
     }
 
@@ -157,31 +157,31 @@ int main(int argc, char** argv) {
     AddressPort to_bind(hostaddr, port);
     int result = api->custom_bind(server, (const struct sockaddr*) to_bind.get_network_struct_ptr(), sizeof (struct sockaddr_in));
     if (result < 0) {
-	cout << "error in bind: " << errno << endl;
+        cout << "error in bind: " << errno << endl;
         perror("bind");
-	exit(-1);
+        exit(-1);
     }
 
-	
 
-	// only do for kernel because we kill wifu each time so there are no bind issues
-	// wifu doesn't support reuse anyway
-	if(reuseaddr) {
-		
-		int optval = 1;
-		int result = api->custom_setsockopt(server, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
-		if(result < 0) {
-			cout << "error in sockopt: " << errno << endl;
-        		perror("setsockopt");
-			exit(-1);
-		}
-	}
+
+    // only do for kernel because we kill wifu each time so there are no bind issues
+    // wifu doesn't support reuse anyway
+    if (reuseaddr) {
+
+        int optval = 1;
+        int result = api->custom_setsockopt(server, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof (optval));
+        if (result < 0) {
+            cout << "error in sockopt: " << errno << endl;
+            perror("setsockopt");
+            exit(-1);
+        }
+    }
 
     result = api->custom_listen(server, num_threads);
     if (result < 0) {
-	cout << "error in listen: " << errno << endl;
+        cout << "error in listen: " << errno << endl;
         perror("listen");
-	exit(-1);
+        exit(-1);
     }
 
     pthread_t pthreads[num_threads];
@@ -190,7 +190,7 @@ int main(int argc, char** argv) {
         perror("Error creating barrier");
         exit(EXIT_FAILURE);
     }
-    
+
     struct sending_data data[num_threads];
 
 
@@ -205,7 +205,7 @@ int main(int argc, char** argv) {
         data[i].mutex = mutex;
         data[i].flag = new Semaphore();
         data[i].flag->init(0);
-	data[i].sleep_time = i * 3 * 100000;
+        data[i].sleep_time = i * 0 * 1000;
         if (pthread_create(&(pthreads[i]), NULL, &sending_thread, &(data[i])) != 0) {
             perror("Error creating new thread");
             exit(EXIT_FAILURE);
@@ -219,19 +219,10 @@ int main(int argc, char** argv) {
     socklen_t length = sizeof (addr);
     int connection;
     while (connection = api->custom_accept(server, (struct sockaddr*) &addr, &length)) {
-	if(connection < 0) {
-		cout << "error in accept: " << errno << endl;
-        	perror("accept");
-		exit(-1);
-	}
-
-        // kernel running
-        if(reuseaddr) {
-            struct tcp_info info;
-            socklen_t length = sizeof(info);
-            if(!api->custom_getsockopt(connection, SOL_TCP, TCP_INFO, &info, &length ) ) {
-                cout << "Send CWND: " << info.tcpi_snd_cwnd << endl;
-            }
+        if (connection < 0) {
+            cout << "error in accept: " << errno << endl;
+            perror("accept");
+            exit(-1);
         }
 
         data[i].peer = new AddressPort(&addr);
@@ -263,7 +254,7 @@ void* sending_thread(void* arg) {
     Semaphore* mutex = data->mutex;
     gcstring message = data->message;
     pthread_barrier_t* barrier = data->barrier;
-	int sleep_time = data->sleep_time;
+    int sleep_time = data->sleep_time;
 
     Timer send_timer;
     int index = 0;
@@ -274,6 +265,10 @@ void* sending_thread(void* arg) {
     // Wait for notification to start sending
     data->flag->wait();
 
+
+    AddressPort* peer = data->peer;
+    int connection = data->connection;
+
     int value = pthread_barrier_wait(barrier);
     if (value != 0 && value != PTHREAD_BARRIER_SERIAL_THREAD) {
         perror("Could not wait on barrier before connecting");
@@ -281,13 +276,7 @@ void* sending_thread(void* arg) {
     }
 
 
-	usleep(sleep_time);
-
-
-    AddressPort* peer = data->peer;
-    int connection = data->connection;
-
-    
+    //usleep(sleep_time);
 
     send_timer.start();
 
@@ -299,17 +288,16 @@ void* sending_thread(void* arg) {
         ptr = message.data() + index;
 
         sent = api->custom_send(connection, ptr, chunk, 0);
-	if(sent < 0) {
-		cout << "error in send: " << errno << endl;
-		exit(-1);
-	}
-	else {
-	        index += sent;
-	}
+        if (sent < 0) {
+            cout << "error in send: " << errno << endl;
+            exit(-1);
+        } else {
+            index += sent;
+        }
     }
     send_timer.stop();
     api->custom_close(connection);
-
+    sleep(2);
     mutex->wait();
     cout << "Duration (us) to send " << index << " bytes to " << peer->to_s() << ": " << send_timer.get_duration_microseconds() << endl;
     mutex->post();

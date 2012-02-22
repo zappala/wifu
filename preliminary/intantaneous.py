@@ -24,6 +24,17 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from pylab import *
 
+def myComp(a, b):
+	(a_x, a_y) = a
+	(b_x, b_y) = b
+
+	if a_x[0] < b_x[0]:
+		return -1
+	elif a_x[0] > b_x[0]:
+		return 1
+	else:
+		return 0
+
 class InstantaneousGrapher:
 	def __init__(self, file, output):
 		self.file = file
@@ -177,6 +188,8 @@ class InstantaneousGrapher:
 		self.interval = 0.001
 		#self.window = 0.1
 		#self.interval = 0.01
+		self.window = 0.05
+		self.interval = 0.002
 
 
 		absolute_begin = self._get_flows_begin_time()
@@ -198,7 +211,7 @@ class InstantaneousGrapher:
 
 				# put diff in when doing concurrent flows (multi-threaded)
 				# leave out when not (but wish to compare multiple flows)
-				#x_val += diff
+				x_val += diff
 				y_val = self.__get_rate(begin, min([max_time, end]), flow)
 				x.append(x_val)
 				y.append(y_val)
@@ -207,7 +220,8 @@ class InstantaneousGrapher:
 				end = begin + self.window
 				
 			self.data.append((x, y))
-			
+
+		self.data.sort(myComp)			
 				
 	def graph(self):
 		print "Graphing..."
@@ -217,10 +231,13 @@ class InstantaneousGrapher:
 		ax.set_xlabel("Time (seconds)")
 		ax.set_ylabel("Smoothed Goodput (Mbps)")
 
-		
+		colors = ["blue", "green", "red", "yellow", "black", "cyan", "magenta", "burlywood", "chartreuse", "brown"]
+
+		i = 0
 
 		for (x, y) in self.data:
-			ax.plot(x, y)
+			ax.plot(x, y, color=colors[i % len(colors)])
+			i += 1
 
 		ax.set_ylim(0, 100)
 

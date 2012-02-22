@@ -332,7 +332,7 @@ void register_protocols() {
     //    register_simple_tcp();
     register_tcp_tahoe();
     //    register_tcp_atp();
-//    register_udp();
+    register_udp();
     //    register_delayed_ack();
     //    register_few();
     //    register_ap();

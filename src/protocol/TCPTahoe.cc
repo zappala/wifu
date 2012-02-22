@@ -228,6 +228,7 @@ void TCPTahoe::icontext_new_connection_initiated(QueueProcessor<Event*>* q, Conn
 
     TCPTahoeIContextContainer* new_cc = (TCPTahoeIContextContainer*) factory_->get_icontext_container();
     new_cc->set_back_log(listening_cc->get_back_log());
+    new_cc->set_saved_accept_event(listening_cc->get_saved_accept_event());
     map_[listening_socket] = new_cc;
 
     new_cc->get_reliability()->icontext_new_connection_initiated(q, e);

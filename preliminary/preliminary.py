@@ -685,12 +685,16 @@ class PreliminaryGrapher:
 		wifu_receive = []
 		wifu_send = []
 
+		wifu_fairness = []
+		kernel_fairness = []
+
 		parser = FileParser()
 
 		#create vectors of goodput
 		for file in self.receive_files:
 			lines = parser.parse(file)
 			wifu = "receiver_wifu.log" in file
+			fairness = []
 			for line in lines:
 				if line.startswith("Duration"):
 					values = line.split(' ')
@@ -698,10 +702,20 @@ class PreliminaryGrapher:
 					duration = float(values[9])
 					# assuming one kilo == 1000
 					rate = (num_bytes * 8 / 1000000) / (duration / 1000000)
+					fairness.append(rate)
 					if wifu:
 						wifu_receive.append(rate)
 					else:
 						kernel_receive.append(rate)
+
+
+			jain = self.jain(fairness)
+			if jain < 0.98:
+				print "Jain index: ", jain, " file: ", file
+			if wifu:
+				wifu_fairness.append(jain)
+			else:
+				kernel_fairness.append(jain)
 
 		for file in self.send_files:
 			lines = parser.parse(file)
@@ -717,12 +731,15 @@ class PreliminaryGrapher:
 						wifu_send.append(rate)
 					else:
 						kernel_send.append(rate)
+			
 
 		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
 	#		print "Looping data: ", data
 		title = 'Comparison WiFu and Kernel Sending and Receiving Rates (Entire Loop)'
 		filename = self.graph_path + 'send_receive_rate_boxplot_loop_scalability.png'
 		self.__graph_boxplot(data, title, filename)
+		data.append(kernel_fairness)
+		data.append(wifu_fairness)
 		return data
 
 	def graph_loop_goodputs(self):
@@ -739,6 +756,7 @@ class PreliminaryGrapher:
 		for file in self.receive_files:
 			lines = parser.parse(file)
 			wifu = "receiver_wifu.log" in file
+			aggregate_rate = 0
 			for line in lines:
 				if line.startswith("Duration"):
 					values = line.split(' ')
@@ -746,14 +764,18 @@ class PreliminaryGrapher:
 					duration = float(values[9])
 					# assuming one kilo == 1000
 					rate = (num_bytes * 8 / 1000000) / (duration / 1000000)
-					if wifu:
-						wifu_receive.append(rate)
-					else:
-						kernel_receive.append(rate)
+					aggregate_rate += rate
+			if aggregate_rate > 100:
+				print "Aggregate rate: ", aggregate_rate, " file: ", file
+			if wifu:
+				wifu_receive.append(aggregate_rate)
+			else:
+				kernel_receive.append(aggregate_rate)
 
 		for file in self.send_files:
 			lines = parser.parse(file)
 			wifu = "sender_wifu.log" in file
+			aggregate_rate = 0
 			for line in lines:
 				if line.startswith("Duration"):
 					values = line.split(' ')
@@ -761,10 +783,11 @@ class PreliminaryGrapher:
 					duration = float(values[9])
 					# assuming one kilo == 1000
 					rate = (num_bytes * 8 / 1000000) / (duration / 1000000)
-					if wifu:
-						wifu_send.append(rate)
-					else:
-						kernel_send.append(rate)
+					aggregate_rate += rate
+			if wifu:
+				wifu_send.append(aggregate_rate)
+			else:
+				kernel_send.append(aggregate_rate)
 
 		data = [kernel_send, wifu_send, kernel_receive, wifu_receive]
 	#		print "Looping data: ", data
@@ -1447,9 +1470,23 @@ class PreliminaryGrapher:
 		print len(wifu_receiver_scalability)
 		print len(kernel_receiver_scalability)
 		# compute jain's fairness
-		print "Jain's Fairness (WiFu)  : ", self.jain(wifu_receiver_scalability)
-		print "Jain's Fairness (Kernel): ", self.jain(kernel_receiver_scalability)
-		
+		print "Jain's Fairness for all runs (WiFu)  : ", self.jain(wifu_receiver_scalability)
+		print "Jain's Fairness for all runs (Kernel): ", self.jain(kernel_receiver_scalability)
+
+		#4 is kernel fairness
+		#5 is wifu fairness
+		print len(scale_data[5])
+		print len(scale_data[4])
+		print "Min fairness (WiFu): ", min(scale_data[5])
+		print "Min fairness (Kernel): ", min(scale_data[4])
+		print "25th Percentile Jain's Fairness (WiFu)  : ", s.get_25th_percentile(scale_data[5])
+		print "25th Percentile Jain's Fairness (Kernel): ", s.get_25th_percentile(scale_data[4])
+		print "Median Jain's Fairness (WiFu)  : ", s.median(scale_data[5])
+		print "Meidan Jain's Fairness (Kernel): ", s.median(scale_data[4])
+		print "75th Percentile Jain's Fairness (WiFu)  : ", s.get_75th_percentile(scale_data[5])
+		print "75th Percentile Jain's Fairness (Kernel): ", s.get_75th_percentile(scale_data[4])
+		print "Max fairness (WiFu): ", max(scale_data[5])
+		print "Max fairness (Kernel): ", max(scale_data[4])
 
 		
 
@@ -1507,7 +1544,7 @@ class PreliminaryGrapher:
 #		print "WiFu Receive:\t", s.get_25th_percentile(inside_tahoe_data[3]), "\t", s.median(inside_tahoe_data[3]), "\t", s.get_75th_percentile(inside_tahoe_data[3])
 #		print "WiFu / Kernel Receive Ratio for median value:\t", s.median(inside_tahoe_data[3]) / s.median(inside_tahoe_data[2])
 
-		return loop_data
+		return loop_data, scale_data[4], scale_data[5]
 
 
 
@@ -1528,7 +1565,7 @@ class MultipleGrapher:
 		data = []
 		for item in self.data:
 			# item represents one of the different types (e.g. 10, 100, 1000 Mbps)
-			# kernel is in index 2, wifu in 2
+			# kernel is in index 2, wifu in 3
 			data.append(item[2])
 			data.append(item[3])
 
@@ -1537,7 +1574,7 @@ class MultipleGrapher:
 		fig = plt.figure(figsize=(10, 6))
 		fig.canvas.set_window_title('A Boxplot Example')
 		ax1 = fig.add_subplot(111)
-		ax1.set_yscale('log')
+#		ax1.set_yscale('log')
 		#plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
 
 		bp = plt.boxplot(data, notch=0, sym='+', vert=1, whis=1.5)
@@ -1555,17 +1592,19 @@ class MultipleGrapher:
 		#title = 'Comparison WiFu and Kernel Receiving Rates'
 		#ax1.set_title(title)
 		#ax1.set_xlabel('Type')
-		ax1.set_ylabel('Goodput (Mbps)')
+		ax1.set_ylabel("Jain's Fairness Index")
 
 		# Set the axes ranges and axes labels
 		ax1.set_xlim(0.5, len(data) + 0.5)
-#		top = 2000
-#		bottom = 0
-#		ax1.set_ylim(bottom, top)
+		top = 1.025
+		bottom = 0.85
+		ax1.set_ylim(bottom, top)
 		ax1.set_ylim(xmin=0)
 
-		xtickNames = plt.setp(ax1, xticklabels=["Kernel 10 Mbps", "WiFu 10 Mbps", "Kernel 100 Mbps", "WiFu 100 Mbps", "Kernel 1000 Mbps", "WiFu 1000 Mbps"])
-#		xtickNames = plt.setp(ax1, xticklabels=["Kernel 1-hop", "WiFu 1-hop", "Kernel 2-hops", "WiFu 2-hops", "Kernel 3-hops", "WiFu 3-hops"])
+#		xtickNames = plt.setp(ax1, xticklabels=["Kernel 10 Mbps", "WiFu 10 Mbps", "Kernel 100 Mbps", "WiFu 100 Mbps", "Kernel 1000 Mbps", "WiFu 1000 Mbps"])
+		#xtickNames = plt.setp(ax1, xticklabels=["Kernel 1-hop", "WiFu 1-hop", "Kernel 2-hops", "WiFu 2-hops", "Kernel 3-hops", "WiFu 3-hops"])
+		xtickNames = plt.setp(ax1, xticklabels=["Kernel 2 Threads", "WiFu 2 Threads", "Kernel 5 Threads", "WiFu 5 Threads", "Kernel 10 Threads", "WiFu 10 Threads"])
+		
 		#plt.setp(xtickNames, rotation=45, fontsize=8)
 		plt.setp(xtickNames, fontsize=10)
 
@@ -1617,13 +1656,20 @@ if __name__ == "__main__":
 	dirs = graph_path.split(" ")
 
 	loop_datas = []
+	fairnessess = []
+
 	for dir in dirs:
 		grapher = PreliminaryGrapher(dir)
-		data = grapher.graph()
+		data, kernel_fairness, wifu_fairness = grapher.graph()
 		loop_datas.append(data)
+		temp = [None, None, kernel_fairness, wifu_fairness]
+		fairnessess.append(temp)
 
 	if len(dirs) == 3:
 		mg = MultipleGrapher(dirs, loop_datas)
+		mg.graph()
+
+		mg = MultipleGrapher(dirs, fairnessess)
 		mg.graph()
 	
 	
