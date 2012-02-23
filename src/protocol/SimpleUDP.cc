@@ -21,7 +21,7 @@ SimpleUDP::~SimpleUDP() {
 // IContext methods
 
 void SimpleUDP::icontext_socket(QueueProcessor<Event*>* q, SocketEvent* e) {
-//    cout << "SimpleUCP::icontext_socket()" << endl;
+//    cout << "SimpleUCP::icontext_socket(): " << e->get_socket() << endl;
     map_[e->get_socket()] = new SimpleUDPContainer();
 }
 
@@ -34,10 +34,12 @@ void SimpleUDP::icontext_listen(QueueProcessor<Event*>* q, ListenEvent* e) {
 }
 
 void SimpleUDP::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-//    cout << "SimpleUCP::icontext_receive_packet()" << endl;
+//    cout << "SimpleUCP::icontext_receive_packet(): " << e->get_socket() << endl;
     SimpleUDPContainer* c = map_.find(e->get_socket())->second;
+    
     c->get_packet_queue().push(e);
     send_receive_response(c);
+
     ++received;
 }
 
@@ -65,6 +67,7 @@ void SimpleUDP::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
 //    cout << "SimpleUCP::icontext_close()" << endl;
     map_.erase(e->get_socket());
 
+//    cout << "socket closed: " << e->get_socket() << endl;
     ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
     response_event->set_socket(e->get_socket());
     response_event->set_message_type(e->get_message_type());
@@ -74,6 +77,7 @@ void SimpleUDP::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
     response_event->set_default_length();
     response_event->set_destination(e->get_source());
     dispatch(response_event);
+    
 }
 
 void SimpleUDP::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFiredEvent* e) {
@@ -85,8 +89,9 @@ void SimpleUDP::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEv
 }
 
 void SimpleUDP::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
-//    cout << "SimpleUCP::icontext_send()" << endl;
+//    cout << "SimpleUCP::icontext_send(): " << e->get_socket() << endl;
     Socket* s = e->get_socket();
+
 
     struct SendToMessage* m = (struct SendToMessage*) e->get_buffer();
 
@@ -201,7 +206,8 @@ void SimpleUDP::send_receive_response(SimpleUDPContainer* c) {
     response->set_addr(p->get_source_address_port()->get_network_struct_ptr(), sizeof(struct sockaddr_in));
 //    cout << "Setting response address to: " << p->get_source_address_port()->to_s() << endl;
     response->set_return_buffer(p->get_data(), p->get_data_length_bytes());
-    
-    dispatch(response);
+
     c->set_receive_event(0);
+    dispatch(response);
+    
 }
