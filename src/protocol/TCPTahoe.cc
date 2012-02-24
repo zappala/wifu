@@ -234,6 +234,10 @@ void TCPTahoe::icontext_new_connection_initiated(QueueProcessor<Event*>* q, Conn
     new_cc->get_reliability()->icontext_new_connection_initiated(q, e);
     new_cc->get_connection_manager()->icontext_new_connection_initiated(q, e);
     new_cc->get_congestion_control()->icontext_new_connection_initiated(q, e);
+
+
+    ConnectionManagerContext* sending_cmc = (ConnectionManagerContext*) listening_cc->get_connection_manager();
+    sending_cmc->set_socket(new_socket);
 }
 
 void TCPTahoe::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {

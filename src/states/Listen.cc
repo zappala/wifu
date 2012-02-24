@@ -47,9 +47,13 @@ void Listen::process_syn(Context* c, QueueProcessor<Event*>* q, NetworkReceivePa
             listening_socket->get_local_address_port(),
             packet->get_source_address_port());
 
+
+    cmc->set_accept_socket(listening_socket);
     Event* new_connection = new ConnectionInitiatedEvent(listening_socket, new_socket, cmc->get_listen_event());
     SocketCollection::instance().push(new_socket);
     q->enqueue(new_connection);
+
+
 
 
     unsigned char* data = (unsigned char*) "";
