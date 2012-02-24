@@ -65,7 +65,6 @@ void SimpleUDP::icontext_new_connection_initiated(QueueProcessor<Event*>* q, Con
 
 void SimpleUDP::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
 //    cout << "SimpleUCP::icontext_close()" << endl;
-    map_.erase(e->get_socket());
 
 //    cout << "socket closed: " << e->get_socket() << endl;
     ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
@@ -77,7 +76,8 @@ void SimpleUDP::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
     response_event->set_default_length();
     response_event->set_destination(e->get_source());
     dispatch(response_event);
-    
+
+    q->enqueue(new DeleteSocketEvent(e->get_socket()));
 }
 
 void SimpleUDP::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFiredEvent* e) {
@@ -115,6 +115,8 @@ void SimpleUDP::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
 
     // do this last as it will compute checksum for us
     p->set_data(e->get_data(), e->get_data_length());
+
+    p->calculate_and_set_udp_checksum();
 
     dispatch(new NetworkSendPacketEvent(s, p));
 
@@ -162,7 +164,7 @@ void SimpleUDP::icontext_send_buffer_not_full(QueueProcessor<Event*>* q, SendBuf
 }
 
 void SimpleUDP::icontext_delete_socket(QueueProcessor<Event*>* q, DeleteSocketEvent* e) {
-
+    map_.erase(e->get_socket());    
 }
 
 void SimpleUDP::icontext_set_socket_option(QueueProcessor<Event*>* q, SetSocketOptionEvent* e) {
@@ -176,14 +178,14 @@ void SimpleUDP::icontext_get_socket_option(QueueProcessor<Event*>* q, GetSocketO
 void SimpleUDP::send_receive_response(SimpleUDPContainer* c) {
     ReceiveEvent* e = c->get_receive_event();
     
-    if(!e) {
+    if (!e) {
         //cout << "SimpleUDP::send_receive_response(), no receive event" << endl;
         return;
     }
 
     packet_queue& q = c->get_packet_queue();
 
-    if(q.empty()) {
+    if (q.empty()) {
         //cout << "SimpleUDP::send_receive_response(), queue is empty" << endl;
         return;
     }
@@ -203,11 +205,11 @@ void SimpleUDP::send_receive_response(SimpleUDPContainer* c) {
     // done in set_return_buffer()
     // response->set_lenth();
     response->set_destination(e->get_source());
-    response->set_addr(p->get_source_address_port()->get_network_struct_ptr(), sizeof(struct sockaddr_in));
-//    cout << "Setting response address to: " << p->get_source_address_port()->to_s() << endl;
+    response->set_addr(p->get_source_address_port()->get_network_struct_ptr(), sizeof (struct sockaddr_in));
+    //    cout << "Setting response address to: " << p->get_source_address_port()->to_s() << endl;
     response->set_return_buffer(p->get_data(), p->get_data_length_bytes());
 
     c->set_receive_event(0);
     dispatch(response);
-    
+
 }
