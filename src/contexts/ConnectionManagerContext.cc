@@ -1,6 +1,6 @@
 #include "contexts/ConnectionManagerContext.h"
 
-ConnectionManagerContext::ConnectionManagerContext() : Context(), l_event_(0) {
+ConnectionManagerContext::ConnectionManagerContext() : Context(), l_event_(0), accept_socket_(0) {
     set_state(new Closed());
 }
 
@@ -48,4 +48,12 @@ Socket* ConnectionManagerContext::get_socket() {
 
 void ConnectionManagerContext::set_socket(Socket* s) {
     socket_ = s;
+}
+
+void ConnectionManagerContext::set_accept_socket(Socket* s) {
+    accept_socket_ = s;
+}
+
+Socket* ConnectionManagerContext::get_accept_socket() {
+    return accept_socket_;
 }

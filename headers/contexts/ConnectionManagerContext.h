@@ -116,6 +116,10 @@ public:
 
     void set_socket(Socket* s);
 
+    void set_accept_socket(Socket* s);
+
+    Socket* get_accept_socket();
+
 private:
 
     /**
@@ -134,6 +138,8 @@ private:
     ListenEvent* l_event_;
 
     Socket* socket_;
+
+    Socket* accept_socket_;
 
 };
 
