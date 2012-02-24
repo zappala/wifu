@@ -25,6 +25,8 @@ struct var {
     //int rec_buf_;
     gcstring expected_string;
     int protocol_;
+        pthread_barrier_t* barrier;
+
 };
 
 struct udpvar {
