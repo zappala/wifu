@@ -67,6 +67,12 @@ cout << "tahoe send thread" << endl;
 
 //    cout << "Done Sending data" << endl;
 
+    value = pthread_barrier_wait(barrier);
+    if (value != 0 && value != PTHREAD_BARRIER_SERIAL_THREAD) {
+        perror("Could not wait on barrier before connecting");
+        exit(EXIT_FAILURE);
+    }
+
     wifu_close(connection);
     wifu_close(server);
 }
@@ -186,17 +192,12 @@ cout << "UDP receive thread" << endl;
     
     ready->post();
 
-    for (int i = 0; i < packets; i++) {
+    for (int i = 0; i < (packets / 2) ; i++) {
         ssize_t n = wifu_recvfrom(socket, buffer, size, 0, (struct sockaddr*) ap->get_network_struct_ptr(), & length);
         data.append(buffer, n);
-        if(i > (2/3) * packets) {
-            break;
-        }
     }
 
     wifu_close(socket);
-    //EXPECT_EQ(message, data);
-
 }
 
 void* udp_send_thread(void* arg) {
@@ -254,7 +255,13 @@ void* udp_send_thread(void* arg) {
 
     }
 
-    wifu_close(socket);
+    value = pthread_barrier_wait(barrier);
+    if (value != 0 && value != PTHREAD_BARRIER_SERIAL_THREAD) {
+        perror("Could not wait on barrier before connecting");
+        exit(EXIT_FAILURE);
+    }
+
+//    wifu_close(socket);
 
     EXPECT_EQ(message.size(), total_sent);
 
