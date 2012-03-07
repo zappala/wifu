@@ -8,13 +8,7 @@ void compare_traces(NetworkTrace& expected) {
 }
 
 TCPPacket* get_base_tcp_packet(int protocol) {
-	TCPPacket* p;
-	if(protocol == TCP_ATP){
-		p = new ATPPacket();
-	}
-	else{
-		p = new TCPPacket();
-	}
+    TCPPacket* p = new TCPPacket();
 
     p->set_ip_protocol(protocol);
     gcstring saddr = "127.0.0.1";
@@ -27,7 +21,7 @@ TCPPacket* get_base_tcp_packet(int protocol) {
 TCPPacket* get_base_tcp_packet_ts(int protocol) {
     TCPPacket* p = get_base_tcp_packet(protocol);
     p->insert_tcp_header_option(new TCPTimestampOption());
-    p->set_data((unsigned char*)"", 0);
+    p->set_data((unsigned char*) "", 0);
     return p;
 }
 

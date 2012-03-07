@@ -34,7 +34,6 @@ enum ConnectionType {
 /**
  * Holds all the data for the connection manager FSM that has Closed as its entry point.
  * 
- * @see Accept
  * @see CloseWait
  * @see Closed
  * @see Closing

@@ -99,8 +99,6 @@ WiFuPacket* PacketLogReader::get_new_packet(int protocol) {
             return new TCPPacket();
         case TCP_TAHOE:
             return new TCPPacket();
-        case TCP_ATP:
-            return new ATPPacket();
         case 0:
             throw PacketProtocolNotSetException();
         default:

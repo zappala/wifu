@@ -4,7 +4,6 @@ SimpleTCPIContextContainer::SimpleTCPIContextContainer() : saved_send_event_(0),
     reliability_ = new SimpleTCPReliabilityContext();
     cc_ = new SimpleTCPCongestionControlContext();
     cm_ = new ConnectionManagerContext();
-    rl_ = new RateLimiterContext();
 }
 
 SimpleTCPIContextContainer::SimpleTCPIContextContainer(SimpleTCPIContextContainer const& other) {
@@ -21,10 +20,6 @@ IContext* SimpleTCPIContextContainer::get_reliability() {
 
 IContext* SimpleTCPIContextContainer::get_connection_manager() {
     return cm_;
-}
-
-IContext* SimpleTCPIContextContainer::get_rate_limiter() {
-    return rl_;
 }
 
 SendEvent* SimpleTCPIContextContainer::get_saved_send_event() {

@@ -79,11 +79,6 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 #define LEVEL_STRING "level"
 #define ERRNO "errno"
 
-// ATP parameters
-#define ATP_BETA .75
-#define ATP_K 5
-#define ATP_THETA .1
-
 // Wifu defined socket options
 #define TCP_TIMESTAMP 20
 
@@ -93,18 +88,9 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 #define WIFU_PORT 9438
 
 // must fit in 8 bits
-#define DUMMY_PROTO 205
 #define SIMPLE_TCP 206
 #define TCP_TAHOE 207
-#define TCP_ATP 208
 #define UDP 217
-#define TCP_DELAYEDACK 209
-#define TCP_FEW 210
-#define TCP_AP 211
-#define TCP_AP_FEW 212
-#define TCP_AP_DELAYEDACK 213
-#define TCP_FEW_DELAYEDACK 214
-#define TCP_AP_FEW_DELAYEDACK 215
 
 // TODO: figure out path MTU on the fly.
 // ethernet MTU
@@ -132,9 +118,6 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 #define INITIAL_RTO 3.0
 #define MIN_RTO 1.0
 
-// Delayed ACK timeout value in seconds
-#define INITAL_DELAY_TIMEOUT_INTERVAL 0.1
-
 // in seconds
 #define INITIAL_PROBE_TIMEOUT_DURATION 120
 
@@ -153,9 +136,6 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 #define FIN_BYTE gcstring(1, 23)
 
 typedef const char * event_name;
-
-//Specific to Delayed ACK
-#define DEFAULT_DELAY_COUNT 2
 
 //Specific to UDP
 #define UDP_HEADER_LENGTH_BYTES 8

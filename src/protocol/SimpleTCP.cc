@@ -94,12 +94,11 @@ void SimpleTCP::icontext_send_packet(QueueProcessor<Event*>* q, SendPacketEvent*
     if (c->get_echo_reply()) {
         option->set_echo_reply(c->get_echo_reply());
     }
-    //    cout << "SimpleTCP::send_packet(), TS: " << option->to_s() << endl;
 
     c->get_connection_manager()->icontext_send_packet(q, e);
     c->get_reliability()->icontext_send_packet(q, e);
     c->get_congestion_control()->icontext_send_packet(q, e);
-    c->get_rate_limiter()->icontext_send_packet(q, e);
+    send_network_packet(s, p);
 }
 
 void SimpleTCP::icontext_connect(QueueProcessor<Event*>* q, ConnectEvent* e) {
@@ -185,7 +184,6 @@ void SimpleTCP::icontext_timer_fired_event(QueueProcessor<Event*>* q, TimerFired
     c->get_connection_manager()->icontext_timer_fired_event(q, e);
     c->get_reliability()->icontext_timer_fired_event(q, e);
     c->get_congestion_control()->icontext_timer_fired_event(q, e);
-    c->get_rate_limiter()->icontext_timer_fired_event(q, e);
 }
 
 void SimpleTCP::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEvent* e) {

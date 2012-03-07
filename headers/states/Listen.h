@@ -10,10 +10,11 @@
 
 #include "contexts/Context.h"
 #include "contexts/ConnectionManagerContext.h"
-#include "Accept.h"
 #include "events/framework_events/AcceptEvent.h"
 #include "events/framework_events/CloseEvent.h"
 #include "events/framework_events/NetworkReceivePacketEvent.h"
+#include "states/SynReceived.h"
+#include "SocketCollection.h"
 
 using namespace std;
 
