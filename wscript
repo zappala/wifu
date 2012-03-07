@@ -277,6 +277,8 @@ def build_wifu_frontend_test(bld):
 	test_frontend_files += bld.glob('src/packet/*.cc')
 	test_frontend_files += bld.glob('src/visitors/*.cc')
 	test_frontend_files += bld.glob('src/observer/*.cc')
+	test_frontend_files += bld.glob('src/events/framework_events/*.cc')
+	test_frontend_files += bld.glob('src/events/Event.cc')
 
 	if Options.options.bit_32:
 		test_frontend = bld(features='cxx cprogram',

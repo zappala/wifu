@@ -90,8 +90,6 @@ TEST_F(BackEndTest, connectTest) {
     connect_test();
 }
 
-
-
 void drop_none() {
     connect_test();
     NetworkTrace expected;

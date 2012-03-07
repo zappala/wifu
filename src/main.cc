@@ -161,7 +161,6 @@ void register_tcp_tahoe() {
     dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPTahoe::instance());
 }
 
-
 void register_udp() {
     ProtocolManager::instance().support(UDP);
     NetworkInterfaceFactory::instance().create().register_protocol(UDP, new UDPPacketFactory());
@@ -188,7 +187,7 @@ void register_udp() {
 
 void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
-    //    register_simple_tcp();
+    register_simple_tcp();
     register_tcp_tahoe();
     register_udp();
 }

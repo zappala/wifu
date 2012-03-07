@@ -77,7 +77,7 @@ void* kernel_active_to_passive_big_chunks_thread(void* args) {
         durations.pop_front();
     }
 
-    cout << "Average on wifu to call and return from recv(): " << (total / durations_size) << endl;
+    cout << "Average on kernel to call and return from recv(): " << (total / durations_size) << endl;
 
     cout << "Duration (us) to recv: " << expected.size() << " bytes on localhost: " << recv_timer.get_duration_microseconds() << endl;
 

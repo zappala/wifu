@@ -21,6 +21,7 @@
 #include "Utils.h"
 
 void* close_active_to_passive_thread(void* args) {
+    cout << "close_active_to_passive_thread()" << endl;
 
     struct var* v = (struct var*) args;
     AddressPort* to_bind = v->to_bind_;
@@ -45,6 +46,8 @@ void* close_active_to_passive_thread(void* args) {
         // TODO: we need to check errors and make sure they happen when they should
         ADD_FAILURE() << "Problem in Accept";
     }
+
+    cout << "Connection accepted: " << connection << endl;
 
     flag->post();
 
@@ -89,6 +92,7 @@ void* close_active_to_passive_thread(void* args) {
  */
 void close_active_to_passive_test(gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
+    cout << "close_active_to_passive_test()" << endl;
 
     pthread_t t;
     struct var v;
@@ -118,11 +122,16 @@ void close_active_to_passive_test(gcstring message) {
 
     timer.start();
     client = wifu_socket(AF_INET, SOCK_STREAM, SIMPLE_TCP);
+    cout << "Client Socket: " << client << endl;
     result = wifu_connect(client, (const struct sockaddr *) to_connect.get_network_struct_ptr(), sizeof (struct sockaddr_in));
+    cout << "Connected Socket result: " << result << endl;
     timer.stop();
     ASSERT_EQ(0, result);
 
+    cout << "Waiting on v.flat()" << endl;
     v.flag_->wait();
+
+    cout << "Done Waiting on v.flat()" << endl;
 
 //        cout << "Duration (us) to create a socket and connect on localhost via wifu: " << timer.get_duration_microseconds() << endl;
 
@@ -136,6 +145,7 @@ void close_active_to_passive_test(gcstring message) {
 
     // TODO: this only sends one character at a time
     for (int i = 0; i < message.length(); i++) {
+        cout << "Sending one byte" << endl;
         num_sent += wifu_send(client, &(buffer[i]), count, 0);
     }
 
