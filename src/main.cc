@@ -54,17 +54,11 @@
 #include "ProtocolManager.h"
 #include "protocol/SimpleTCP.h"
 #include "protocol/TCPTahoe.h"
-#include "protocol/TCPATP.h"
 #include "protocol/SimpleUDP.h"
-#include "protocol/TCPTahoe_DelayedACKs.h"
-#include "protocol/TCP_FeW.h"
-#include "protocol/DummyProtocol.h"
-//#include "protocol/TCPAP.h"
 
 //packet types
 #include "TCPPacketFactory.h"
 #include "WiFuPacketFactory.h"
-#include "ATPPacketFactory.h"
 #include "UDPPacketFactory.h"
 
 //other
@@ -167,60 +161,6 @@ void register_tcp_tahoe() {
     dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPTahoe::instance());
 }
 
-void register_dummy_proto() {
-    ProtocolManager::instance().support(DUMMY_PROTO);
-    NetworkInterfaceFactory::instance().create().register_protocol(DUMMY_PROTO, new TCPPacketFactory());
-
-    dispatcher.map_event(type_name(SocketEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(BindEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(ListenEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(ConnectEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(AcceptEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(SendPacketEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(TimerFiredEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(ResendPacketEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(ReceiveEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(SendEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(SendBufferNotFullEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(CloseEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(DeleteSocketEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(SetSocketOptionEvent), &DummyProtocol::instance());
-    dispatcher.map_event(type_name(GetSocketOptionEvent), &DummyProtocol::instance());
-}
-
-void register_tcp_atp() {
-
-    ProtocolManager::instance().support(TCP_ATP);
-    NetworkInterfaceFactory::instance().create().register_protocol(TCP_ATP, new ATPPacketFactory());
-
-    dispatcher.map_event(type_name(SocketEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(BindEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(ListenEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(ConnectEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(AcceptEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(SendPacketEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(TimerFiredEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(ResendPacketEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(ReceiveEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(SendEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(CloseEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(DeleteSocketEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCPATP::instance());
-    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPATP::instance());
-}
 
 void register_udp() {
     ProtocolManager::instance().support(UDP);
@@ -246,97 +186,11 @@ void register_udp() {
     //    dispatcher.map_event(type_name(TimerFiredEvent), &SimpleUDP::instance());
 }
 
-void register_delayed_ack() {
-    ProtocolManager::instance().support(TCP_DELAYEDACK);
-    NetworkInterfaceFactory::instance().create().register_protocol(TCP_DELAYEDACK, new TCPPacketFactory());
-
-    dispatcher.map_event(type_name(SocketEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(BindEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(ListenEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(ConnectEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(AcceptEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(SendPacketEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(TimerFiredEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(ResendPacketEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(ReceiveEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(SendEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(CloseEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(DeleteSocketEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCPDelayedACK::instance());
-    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPDelayedACK::instance());
-}
-
-void register_few() {
-    ProtocolManager::instance().support(TCP_FEW);
-    NetworkInterfaceFactory::instance().create().register_protocol(TCP_FEW, new TCPPacketFactory());
-
-    dispatcher.map_event(type_name(SocketEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(BindEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(ListenEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(ConnectEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(AcceptEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(SendPacketEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(TimerFiredEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(ResendPacketEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(ReceiveEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(SendEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(CloseEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(DeleteSocketEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCP_FeW::instance());
-    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCP_FeW::instance());
-}
-
-void register_ap() {
-    ProtocolManager::instance().support(TCP_AP);
-    NetworkInterfaceFactory::instance().create().register_protocol(TCP_AP, new TCPPacketFactory());
-
-    //    dispatcher.map_event(type_name(SocketEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(BindEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(ListenEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(ConnectEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(AcceptEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(SendPacketEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(TimerFiredEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(ResendPacketEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(ReceiveEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(SendEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(CloseEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(DeleteSocketEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCPAP::instance());
-    //    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPAP::instance());
-}
-
 void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
     //    register_simple_tcp();
     register_tcp_tahoe();
-    //    register_tcp_atp();
     register_udp();
-    //    register_delayed_ack();
-    //    register_few();
-    //    register_ap();
-    //    register_dummy_proto();
 }
 
 void setup_network_interface(gcstring& type) {
@@ -351,17 +205,10 @@ void setup_network_interface(gcstring& type) {
     }
 }
 
-void change_dir() {
-    const char* dir = "wifu-end-output";
-    system("rm -rf wifu-end-output");
-    system("mkdir wifu-end-output");
-    system("chmod -R 777 wifu-end-output");
-    chdir(dir);
-}
-
 int main(int argc, char** argv) {
     GC_INIT();
 
+    // TODO: handle memory better.  See Randy's thesis for details.
     GC_expand_hp(100 * 1000 * 1000);
     GC_set_free_space_divisor(1);
     GC_use_entire_heap = 1;
@@ -443,13 +290,10 @@ int main(int argc, char** argv) {
     MainSemaphore::instance().init(0);
     MainSemaphore::instance().wait();
 
-    // This probably is not be needed but it's here in case it turns out to be
+    // TODO: This probably is not be needed but it's here in case it turns out to be
     // Closes the file by setting the path to NULL
     // pantheios_be_file_setFilePath(NULL, PANTHEIOS_BEID_ALL);
     cout << "Exiting" << endl;
-
-    // this is so we can profile wifu-end
-    //    change_dir();
 
     return (EXIT_SUCCESS);
 }
