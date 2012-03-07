@@ -56,12 +56,14 @@ RawSocketListener::~RawSocketListener() {
         close(fd);
     }
     close(epfd_);
+    pthread_cancel(thread_);
 }
 
 void RawSocketListener::register_protocol(int protocol, PacketFactory* pf) {
     if (started_) {
         cout << "Cannot register anymore protocols" << endl;
         // TODO: throw an exception
+        assert(false);
         return;
     }
 

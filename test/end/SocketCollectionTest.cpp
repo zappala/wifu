@@ -232,21 +232,6 @@ namespace {
             ASSERT_TRUE(NULL == collection.get_by_id(unused));
             SocketManager::instance().remove(unused);
 
-            // get by local
-            expected = sockets[i];
-            AddressPort* temp = sockets[i]->get_local_address_port();
-            result = collection.get_by_local_ap(temp);
-
-            ASSERT_EQ(expected->get_socket_id(), result->get_socket_id());
-            ASSERT_EQ(expected->get_domain(), result->get_domain());
-            ASSERT_EQ(expected->get_type(), result->get_type());
-            ASSERT_EQ(expected->get_protocol(), result->get_protocol());
-            ASSERT_EQ(expected->get_local_address_port()->to_s(), result->get_local_address_port()->to_s());
-            ASSERT_EQ(expected->get_remote_address_port()->to_s(), result->get_remote_address_port()->to_s());
-
-            temp = new AddressPort("192.1.0.1", i);
-            ASSERT_EQ(NULL, collection.get_by_local_ap(temp));
-
             // get by local && remote
             expected = sockets[i];
             AddressPort* local = sockets[i]->get_local_address_port();

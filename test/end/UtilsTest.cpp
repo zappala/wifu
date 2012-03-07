@@ -299,27 +299,6 @@ namespace {
         u_int32_t time = Utils::get_current_time_microseconds_32();
     }
 
-    class C : public gc {
-    public:
-        int a;
-        unsigned char buffer[UNIX_SOCKET_MAX_BUFFER_SIZE];
-    };
-
-    TEST(BigBufferAllocation, A) {
-
-        int count = 1;
-        u_int64_t start = Utils::get_current_time_microseconds_64();
-
-        for(int i = 0; i < count; ++i) {
-            C* c = new C();
-        }
-        u_int64_t end = Utils::get_current_time_microseconds_64();
-
-        cout << end - start << endl;
-
-        
-
-    }
 }
 
 #endif /* UTILSTEST_H_ */
