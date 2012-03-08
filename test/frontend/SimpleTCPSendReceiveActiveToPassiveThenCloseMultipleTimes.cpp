@@ -20,7 +20,7 @@
 #include "../headers/PacketTraceHelper.h"
 #include "Utils.h"
 
-void* active_to_passive_thread_with_close_multiple(void* args) {
+void* simple_tcp_active_to_passive_thread_with_close_multiple(void* args) {
     struct var* v = (struct var*) args;
     AddressPort* to_bind = v->to_bind_;
     Semaphore* sem = v->sem_;
@@ -73,7 +73,7 @@ void* active_to_passive_thread_with_close_multiple(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void active_to_passive_test_with_close_multiple(gcstring message) {
+void simple_tcp_active_to_passive_test_with_close_multiple(gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
     pthread_t t;
@@ -93,7 +93,7 @@ void active_to_passive_test_with_close_multiple(gcstring message) {
     //Specify the number of bytes to send here.
     v.expected_string = message;
 
-    if (pthread_create(&(t), NULL, &active_to_passive_thread_with_close_multiple, &(v)) != 0) {
+    if (pthread_create(&(t), NULL, &simple_tcp_active_to_passive_thread_with_close_multiple, &(v)) != 0) {
         FAIL() << "Error creating new thread in IntegrationTest.h";
     }
 
@@ -129,14 +129,14 @@ void active_to_passive_test_with_close_multiple(gcstring message) {
     sleep(2);
 }
 
-TEST_F(BackEndTest, sendReceiveTestActiveToPassiveWithCloseMultiple0) {
-    active_to_passive_test_with_close_multiple(random_string(0));
+TEST_F(BackEndTest, simple_tcp_sendReceiveTestActiveToPassiveWithCloseMultiple0) {
+    simple_tcp_active_to_passive_test_with_close_multiple(random_string(0));
 }
 
-TEST_F(BackEndTest, sendReceiveTestActiveToPassiveWithCloseMultiple5000) {
-    active_to_passive_test_with_close_multiple(random_string(5000));
+TEST_F(BackEndTest, simple_tcp_sendReceiveTestActiveToPassiveWithCloseMultiple5000) {
+    simple_tcp_active_to_passive_test_with_close_multiple(random_string(5000));
 }
 
-TEST_F(BackEndTest, sendReceiveTestActiveToPassiveWithCloseMultiple10000) {
-    active_to_passive_test_with_close_multiple(random_string(10000));
+TEST_F(BackEndTest, simple_tcp_sendReceiveTestActiveToPassiveWithCloseMultiple10000) {
+    simple_tcp_active_to_passive_test_with_close_multiple(random_string(10000));
 }

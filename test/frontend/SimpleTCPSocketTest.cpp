@@ -16,7 +16,7 @@
 
 #include "../headers/BackEndTest.h"
 
-TEST_F(BackEndTest, socketTest) {
+TEST_F(BackEndTest, simple_tcp_socketTest) {
     // socket
     for (int i = 0; i < 100; i++) {
         // Check valid

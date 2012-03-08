@@ -19,7 +19,7 @@
 #include "../headers/PacketTraceHelper.h"
 #include "Utils.h"
 
-void* passive_to_active_thread_with_close(void* args) {
+void* simple_tcp_passive_to_active_thread_with_close(void* args) {
 
     struct var* v = (struct var*) args;
     AddressPort* to_bind = v->to_bind_;
@@ -74,7 +74,7 @@ void* passive_to_active_thread_with_close(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void send_receive_test_with_close(gcstring message) {
+void simple_tcp_send_receive_test_with_close(gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
 
     pthread_t t;
@@ -91,7 +91,7 @@ void send_receive_test_with_close(gcstring message) {
     v.expected_string = message;
 
 
-    if (pthread_create(&(t), NULL, &passive_to_active_thread_with_close, &(v)) != 0) {
+    if (pthread_create(&(t), NULL, &simple_tcp_passive_to_active_thread_with_close, &(v)) != 0) {
         FAIL() << "Error creating new thread in IntegrationTest.h";
     }
 
@@ -134,34 +134,22 @@ void send_receive_test_with_close(gcstring message) {
 }
 
 
-TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActiveWithClose0) {
-    send_receive_test_with_close(random_string(0));
+TEST_F(BackEndMockTestDropNone, simple_tcp_sendReceiveTestPassiveToActiveWithClose0) {
+    simple_tcp_send_receive_test_with_close(random_string(0));
 }
 
-TEST_F(BackEndMockTestDropNone, sendReceiveTestPassiveToActiveWithClose50000) {
-    send_receive_test_with_close(random_string(50000));
+TEST_F(BackEndMockTestDropNone, simple_tcp_sendReceiveTestPassiveToActiveWithClose50000) {
+    simple_tcp_send_receive_test_with_close(random_string(50000));
 }
 
-TEST_F(BackEndMockTestDropRandom10Percent, sendReceiveTestPassiveToActiveDropRandomWithClose) {
-    send_receive_test_with_close(random_string(20000));
+TEST_F(BackEndMockTestDropRandom10Percent, simple_tcp_sendReceiveTestPassiveToActiveDropRandomWithClose) {
+    simple_tcp_send_receive_test_with_close(random_string(20000));
 }
 
-TEST_F(BackEndMockTestDropRandom20Percent, sendReceiveTestPassiveToActiveDropRandomWithClose) {
-    send_receive_test_with_close(random_string(20000));
+TEST_F(BackEndMockTestDropRandom20Percent, simple_tcp_sendReceiveTestPassiveToActiveDropRandomWithClose) {
+    simple_tcp_send_receive_test_with_close(random_string(20000));
 }
 
-TEST_F(BackEndMockTestDropRandom30Percent, sendReceiveTestPassiveToActiveDropRandomWithClose) {
-    send_receive_test_with_close(random_string(20000));
-}
-
-TEST_F(BackEndMockTestDropRandom40Percent, sendReceiveTestPassiveToActiveDropRandomWithClose) {
-    send_receive_test_with_close(random_string(20000));
-}
-
-TEST_F(BackEndMockTestDropRandom50Percent, sendReceiveTestPassiveToActiveDropRandomWithClose) {
-    send_receive_test_with_close(random_string(20000));
-}
-
-TEST_F(BackEndMockTestDropRandom60Percent, sendReceiveTestPassiveToActiveDropRandomWithClose) {
-    send_receive_test_with_close(random_string(20000));
+TEST_F(BackEndMockTestDropRandom30Percent, simple_tcp_sendReceiveTestPassiveToActiveDropRandomWithClose) {
+    simple_tcp_send_receive_test_with_close(random_string(20000));
 }

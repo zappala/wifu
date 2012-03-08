@@ -20,7 +20,7 @@
 #include "../headers/PacketTraceHelper.h"
 #include "Utils.h"
 
-void* close_active_to_passive_thread(void* args) {
+void* simple_tcp_close_active_to_passive_thread(void* args) {
     cout << "close_active_to_passive_thread()" << endl;
 
     struct var* v = (struct var*) args;
@@ -90,7 +90,7 @@ void* close_active_to_passive_thread(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void close_active_to_passive_test(gcstring message) {
+void simple_tcp_close_active_to_passive_test(gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
     cout << "close_active_to_passive_test()" << endl;
 
@@ -112,7 +112,7 @@ void close_active_to_passive_test(gcstring message) {
     v.expected_string = message;
 
 
-    if (pthread_create(&(t), NULL, &close_active_to_passive_thread, &(v)) != 0) {
+    if (pthread_create(&(t), NULL, &simple_tcp_close_active_to_passive_thread, &(v)) != 0) {
         FAIL() << "Error creating new thread in IntegrationTest.h";
     }
 
@@ -160,10 +160,10 @@ void close_active_to_passive_test(gcstring message) {
     sleep(2);
 }
 
-void close_active_to_passive_drop_none() {
+void simple_tcp_close_active_to_passive_drop_none() {
     // <editor-fold defaultstate="collapsed" desc="setup">
     gcstring data = random_string(1);
-    close_active_to_passive_test(data);
+    simple_tcp_close_active_to_passive_test(data);
 
     NetworkTrace expected;
 
@@ -270,14 +270,14 @@ void close_active_to_passive_drop_none() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDropNone, closeTestActiveToPassive) {
-    close_active_to_passive_drop_none();
+TEST_F(BackEndMockTestDropNone, simple_tcp_closeTestActiveToPassive) {
+    simple_tcp_close_active_to_passive_drop_none();
 }
 
-void close_active_to_passive_drop_first_fin() {
+void simple_tcp_close_active_to_passive_drop_first_fin() {
     // <editor-fold defaultstate="collapsed" desc="setup">
     gcstring data = random_string(1);
-    close_active_to_passive_test(data);
+    simple_tcp_close_active_to_passive_test(data);
 
     NetworkTrace expected;
 
@@ -386,14 +386,14 @@ void close_active_to_passive_drop_first_fin() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop43, closeTestActiveToPassiveDrop43) {
-    close_active_to_passive_drop_first_fin();
+TEST_F(BackEndMockTestDrop43, simple_tcp_closeTestActiveToPassiveDrop43) {
+    simple_tcp_close_active_to_passive_drop_first_fin();
 }
 
-void close_active_to_passive_drop_first_ack() {
+void simple_tcp_close_active_to_passive_drop_first_ack() {
     // <editor-fold defaultstate="collapsed" desc="setup">
     gcstring data = random_string(1);
-    close_active_to_passive_test(data);
+    simple_tcp_close_active_to_passive_test(data);
 
     NetworkTrace expected;
 
@@ -498,14 +498,14 @@ void close_active_to_passive_drop_first_ack() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop35, closeTestActiveToPassiveDrop35) {
-    close_active_to_passive_drop_first_ack();
+TEST_F(BackEndMockTestDrop35, simple_tcp_closeTestActiveToPassiveDrop35) {
+    simple_tcp_close_active_to_passive_drop_first_ack();
 }
 
-void close_active_to_passive_drop_second_fin() {
+void simple_tcp_close_active_to_passive_drop_second_fin() {
     // <editor-fold defaultstate="collapsed" desc="setup">
     gcstring data = random_string(1);
-    close_active_to_passive_test(data);
+    simple_tcp_close_active_to_passive_test(data);
 
     NetworkTrace expected;
 
@@ -612,14 +612,14 @@ void close_active_to_passive_drop_second_fin() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop45, closeTestActiveToPassiveDrop45) {
-    close_active_to_passive_drop_second_fin();
+TEST_F(BackEndMockTestDrop45, simple_tcp_closeTestActiveToPassiveDrop45) {
+    simple_tcp_close_active_to_passive_drop_second_fin();
 }
 
-void close_active_to_passive_drop_second_ack() {
+void simple_tcp_close_active_to_passive_drop_second_ack() {
     // <editor-fold defaultstate="collapsed" desc="setup">
     gcstring data = random_string(1);
-    close_active_to_passive_test(data);
+    simple_tcp_close_active_to_passive_test(data);
 
     NetworkTrace expected;
 
@@ -734,14 +734,14 @@ void close_active_to_passive_drop_second_ack() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop55, closeTestActiveToPassiveDrop55) {
-    close_active_to_passive_drop_second_ack();
+TEST_F(BackEndMockTestDrop55, simple_tcp_closeTestActiveToPassiveDrop55) {
+    simple_tcp_close_active_to_passive_drop_second_ack();
 }
 
-void close_active_to_passive_drop_first_ack_and_second_fin() {
+void simple_tcp_close_active_to_passive_drop_first_ack_and_second_fin() {
     // <editor-fold defaultstate="collapsed" desc="setup">
     gcstring data = random_string(1);
-    close_active_to_passive_test(data);
+    simple_tcp_close_active_to_passive_test(data);
 
     NetworkTrace expected;
 
@@ -853,6 +853,6 @@ void close_active_to_passive_drop_first_ack_and_second_fin() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop35Drop45, closeTestActiveToPassiveDrop35Drop45) {
-    close_active_to_passive_drop_first_ack_and_second_fin();
+TEST_F(BackEndMockTestDrop35Drop45, simple_tcp_closeTestActiveToPassiveDrop35Drop45) {
+    simple_tcp_close_active_to_passive_drop_first_ack_and_second_fin();
 }

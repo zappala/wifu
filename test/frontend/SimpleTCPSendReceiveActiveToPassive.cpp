@@ -20,7 +20,7 @@
 #include "../headers/PacketTraceHelper.h"
 #include "Utils.h"
 
-void* active_to_passive_thread(void* args) {
+void* simple_tcp_active_to_passive_thread(void* args) {
 
     struct var* v = (struct var*) args;
     AddressPort* to_bind = v->to_bind_;
@@ -80,7 +80,7 @@ void* active_to_passive_thread(void* args) {
  * @param num_bytes The number of bytes to send, currently, this is also the number of packets to send (we sent one data byte per packet)
  *
  */
-void active_to_passive_test(gcstring message) {
+void simple_tcp_active_to_passive_test(gcstring message) {
     AddressPort to_connect("127.0.0.1", 5002);
     //use below for over-the-network tests; TODO: break out into separate test function
 //    AddressPort to_connect("192.168.21.103", 5002);
@@ -100,7 +100,7 @@ void active_to_passive_test(gcstring message) {
     v.expected_string = message;
 
 
-    if (pthread_create(&(t), NULL, &active_to_passive_thread, &(v)) != 0) {
+    if (pthread_create(&(t), NULL, &simple_tcp_active_to_passive_thread, &(v)) != 0) {
         FAIL() << "Error creating new thread in IntegrationTest.h";
     }
 
@@ -142,41 +142,41 @@ void active_to_passive_test(gcstring message) {
     v.sem_->timed_wait(&ts);
 }
 
-TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive1) {
-    active_to_passive_test(random_string(1));
+TEST_F(BackEndMockTestDropNone, simple_tcp_sendReceiveTestActiveToPassive1) {
+    simple_tcp_active_to_passive_test(random_string(1));
 }
 
-TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive10) {
-    active_to_passive_test(random_string(10));
+TEST_F(BackEndMockTestDropNone, simple_tcp_sendReceiveTestActiveToPassive10) {
+    simple_tcp_active_to_passive_test(random_string(10));
 }
 
-TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive100) {
-    active_to_passive_test(random_string(100));
+TEST_F(BackEndMockTestDropNone, simple_tcp_sendReceiveTestActiveToPassive100) {
+    simple_tcp_active_to_passive_test(random_string(100));
 }
 
-TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive1000) {
-    active_to_passive_test(random_string(1000));
+TEST_F(BackEndMockTestDropNone, simple_tcp_sendReceiveTestActiveToPassive1000) {
+    simple_tcp_active_to_passive_test(random_string(1000));
 }
 
-TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive2000) {
-    active_to_passive_test(random_string(2000));
+TEST_F(BackEndMockTestDropNone, simple_tcp_sendReceiveTestActiveToPassive2000) {
+    simple_tcp_active_to_passive_test(random_string(2000));
 }
 
-TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive5000) {
-    active_to_passive_test(random_string(5000));
+TEST_F(BackEndMockTestDropNone, simple_tcp_sendReceiveTestActiveToPassive5000) {
+    simple_tcp_active_to_passive_test(random_string(5000));
 }
 
-TEST_F(BackEndMockTestDropNone, sendReceiveTestActiveToPassive50000) {
-    active_to_passive_test(random_string(50000));
+TEST_F(BackEndMockTestDropNone, simple_tcp_sendReceiveTestActiveToPassive50000) {
+    simple_tcp_active_to_passive_test(random_string(50000));
 }
 
-TEST_F(BackEndTest, sendReceiveTestActiveToPassiveReal) {
-    active_to_passive_test(random_string(50000));
+TEST_F(BackEndTest, simple_tcp_sendReceiveTestActiveToPassiveReal) {
+    simple_tcp_active_to_passive_test(random_string(50000));
 }
 
-void drop_ack_send_data() {
+void simple_tcp_drop_ack_send_data() {
     gcstring data = random_string(1);
-    active_to_passive_test(data);
+    simple_tcp_active_to_passive_test(data);
 
     NetworkTrace expected;
 
@@ -224,13 +224,13 @@ void drop_ack_send_data() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop22, sendReceiveTestActiveToPassive22) {
-    drop_ack_send_data();
+TEST_F(BackEndMockTestDrop22, simple_tcp_sendReceiveTestActiveToPassive22) {
+    simple_tcp_drop_ack_send_data();
 }
 
-void drop_ack_and_data() {
+void simple_tcp_drop_ack_and_data() {
     gcstring data = random_string(1);
-    active_to_passive_test(data);
+    simple_tcp_active_to_passive_test(data);
 
     NetworkTrace expected;
 
@@ -285,13 +285,13 @@ void drop_ack_and_data() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop22Drop32, sendReceiveTestActiveToPassive22and32) {
-    drop_ack_and_data();
+TEST_F(BackEndMockTestDrop22Drop32, simple_tcp_sendReceiveTestActiveToPassive22and32) {
+    simple_tcp_drop_ack_and_data();
 }
 
-void drop_first_data_packet() {
+void simple_tcp_drop_first_data_packet() {
     gcstring data = random_string(1);
-    active_to_passive_test(data);
+    simple_tcp_active_to_passive_test(data);
     sleep(2);
 
     NetworkTrace expected;
@@ -343,13 +343,13 @@ void drop_first_data_packet() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop32, sendReceiveTestActiveToPassive32) {
-    drop_first_data_packet();
+TEST_F(BackEndMockTestDrop32, simple_tcp_sendReceiveTestActiveToPassive32) {
+    simple_tcp_drop_first_data_packet();
 }
 
-void drop_first_data_ack() {
+void simple_tcp_drop_first_data_ack() {
     gcstring data = random_string(1);
-    active_to_passive_test(data);
+    simple_tcp_active_to_passive_test(data);
     sleep(2);
 
     NetworkTrace expected;
@@ -411,30 +411,18 @@ void drop_first_data_ack() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop24, sendReceiveTestActiveToPassive24) {
-    drop_first_data_ack();
+TEST_F(BackEndMockTestDrop24, simple_tcp_sendReceiveTestActiveToPassive24) {
+    simple_tcp_drop_first_data_ack();
 }
 
-TEST_F(BackEndMockTestDropRandom10Percent, sendReceiveTestActiveToPassiveDropRandom) {
-    active_to_passive_test(random_string(20000));
+TEST_F(BackEndMockTestDropRandom10Percent, simple_tcp_sendReceiveTestActiveToPassiveDropRandom) {
+    simple_tcp_active_to_passive_test(random_string(20000));
 }
 
-TEST_F(BackEndMockTestDropRandom20Percent, sendReceiveTestActiveToPassiveDropRandom) {
-    active_to_passive_test(random_string(20000));
+TEST_F(BackEndMockTestDropRandom20Percent, simple_tcp_sendReceiveTestActiveToPassiveDropRandom) {
+    simple_tcp_active_to_passive_test(random_string(20000));
 }
 
-TEST_F(BackEndMockTestDropRandom30Percent, sendReceiveTestActiveToPassiveDropRandom) {
-    active_to_passive_test(random_string(20000));
-}
-
-TEST_F(BackEndMockTestDropRandom40Percent, sendReceiveTestActiveToPassiveDropRandom) {
-    active_to_passive_test(random_string(20000));
-}
-
-TEST_F(BackEndMockTestDropRandom50Percent, sendReceiveTestActiveToPassiveDropRandom) {
-    active_to_passive_test(random_string(20000));
-}
-
-TEST_F(BackEndMockTestDropRandom60Percent, sendReceiveTestActiveToPassiveDropRandom) {
-    active_to_passive_test(random_string(20000));
+TEST_F(BackEndMockTestDropRandom30Percent, simple_tcp_sendReceiveTestActiveToPassiveDropRandom) {
+    simple_tcp_active_to_passive_test(random_string(20000));
 }
