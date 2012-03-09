@@ -19,7 +19,6 @@ void CongestionAvoidance::set_cwnd(Context* c, QueueProcessor<Event*>* q, Networ
 
 void CongestionAvoidance::resend(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
-//    log_INFORMATIONAL("ca num_outstanding: ", pantheios::i(ccc->get_num_outstanding()));
     
     ccc->set_ssthreshold(max((u_int32_t) (ccc->get_num_outstanding() / 2), (u_int32_t) ccc->get_mss() * 2));
     ccc->set_state(new SlowStart());

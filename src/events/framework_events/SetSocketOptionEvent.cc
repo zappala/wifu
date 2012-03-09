@@ -12,10 +12,6 @@ void SetSocketOptionEvent::execute(IModule* m) {
     m->imodule_library_set_socket_option(this);
 }
 
-//gcstring& SetSocketOptionEvent::get_option_value() {
-//    return get_map()[OPTION_VALUE_STRING];
-//}
-
 void* SetSocketOptionEvent::get_option_value() {
     return get_buffer() + sizeof(struct SetSockOptMessage);
 }

@@ -194,7 +194,6 @@ void SimpleUDP::send_receive_response(SimpleUDPContainer* c) {
     // response->set_lenth();
     response->set_destination(e->get_source());
     response->set_addr(p->get_source_address_port()->get_network_struct_ptr(), sizeof (struct sockaddr_in));
-    //    cout << "Setting response address to: " << p->get_source_address_port()->to_s() << endl;
     response->set_return_buffer(p->get_data(), p->get_data_length_bytes());
 
     c->set_receive_event(0);

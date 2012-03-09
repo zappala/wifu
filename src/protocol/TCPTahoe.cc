@@ -12,35 +12,6 @@ TCPTahoe::TCPTahoe(int protocol, IContextContainerFactory* factory) : Protocol(p
 
 TCPTahoe::~TCPTahoe() {
 
-//    log_INFORMATIONAL("tahoe_send_events_size: ", pantheios::i(send_events_.size()), " tahoe_send_response_events_size: ", pantheios::i(send_response_events_.size()), " tahoe_send_response_sizes_size: ", pantheios::i(send_response_sizes_.size()));
-//
-//
-//    while (!send_response_events_.empty()) {
-//
-//        int size = 1000;
-//        char start[size];
-//        char end[size];
-//        char size_i[size];
-//        memset(start, 0, size);
-//        memset(end, 0, size);
-//        memset(size_i, 0, size);
-//
-//        sprintf(start, "%llu", send_events_.front());
-//        sprintf(end, "%llu", send_response_events_.front());
-//        sprintf(size_i, "%u", send_response_sizes_.front());
-//
-//        basic_string<PAN_CHAR_T> start_s(start);
-//        basic_string<PAN_CHAR_T> end_s(end);
-//        basic_string<PAN_CHAR_T> size_s(size_i);
-//
-//        log_INFORMATIONAL("send_tahoe ", start_s, " ", end_s, " ", size_s);
-//
-//        send_events_.pop_front();
-//        send_response_events_.pop_front();
-//        send_response_sizes_.pop_front();
-//    }
-
-
 }
 
 TCPTahoe& TCPTahoe::instance() {

@@ -47,7 +47,6 @@ void Timer::set_start_time_to_be_stop_time() {
 }
 
 u_int64_t Timer::get_start_time() {
-    //assert(start_set);
     if (!start_set) {
         return 0;
     }
@@ -56,8 +55,6 @@ u_int64_t Timer::get_start_time() {
 }
 
 u_int64_t Timer::get_stop_time() {
-    //assert(stop_set);
-
     if (!stop_set) {
         return 0;
     }

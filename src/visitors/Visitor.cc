@@ -9,7 +9,7 @@ Visitor::~Visitor() {
 }
 
 void Visitor::visit(Socket* s) {
-    // Should be calling visit on an child class
+    // Should be calling visit on a child class
     throw IllegalStateException();
 }
 

@@ -20,8 +20,6 @@ using namespace std;
 
 class IModule;
 
-//TODO: do we get destructors with gc?
-
 /**
  * Represents an Event which IModule objects will receive and react to.
  * @see IModule
