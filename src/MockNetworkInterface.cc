@@ -19,7 +19,6 @@ void MockNetworkInterface::imodule_network_receive(WiFuPacket* p) {
 }
 
 void MockNetworkInterface::imodule_network_send(Event* e) {
-    //cout << "MockNetworkInterface::network_send()" << endl;
 
     NetworkSendPacketEvent* event = (NetworkSendPacketEvent*) e;
     WiFuPacket* p = event->get_packet();
@@ -73,12 +72,7 @@ void MockNetworkInterface::receive(WiFuPacket* p) {
         return;
     }
 
-    //    cout << "Socket " << s << " received packet: " << endl;
-    //    cout << "MockNetworkInterface::network_send() (mocking a receive)" << endl;
     logger.log(p);
-    //    cout << p->to_s_format() << endl;
-    //    cout << p->to_s() << endl << endl;
-
 
     Event* response = new NetworkReceivePacketEvent(s, p);
     Dispatcher::instance().enqueue(response);
@@ -89,7 +83,6 @@ void MockNetworkInterface::imodule_timer_fired(Event* e) {
 
     map<TimeoutEvent*, WiFuPacket*, std::less<TimeoutEvent*>, gc_allocator<std::pair<TimeoutEvent*, WiFuPacket*> > >::iterator itr = delayed_.find(event->get_timeout_event());
     if (itr != delayed_.end()) {
-        //        cout << "MockNetworkInterface::timer_fired()" << endl;
         receive(itr->second);
         delayed_.erase(itr);
     }

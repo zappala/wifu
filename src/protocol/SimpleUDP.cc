@@ -13,20 +13,17 @@ SimpleUDP& SimpleUDP::instance() {
 }
 
 SimpleUDP::~SimpleUDP() {
-    cout << "PR: " << received << endl;
-    cout << "PS: " << sent << endl;
+
 }
 
 
 // IContext methods
 
 void SimpleUDP::icontext_socket(QueueProcessor<Event*>* q, SocketEvent* e) {
-//    cout << "SimpleUCP::icontext_socket(): " << e->get_socket() << endl;
     map_[e->get_socket()] = new SimpleUDPContainer();
 }
 
 void SimpleUDP::icontext_bind(QueueProcessor<Event*>* q, BindEvent* e) {
-//    cout << "SimpleUCP::icontext_bind()" << endl;
 }
 
 void SimpleUDP::icontext_listen(QueueProcessor<Event*>* q, ListenEvent* e) {
@@ -34,7 +31,6 @@ void SimpleUDP::icontext_listen(QueueProcessor<Event*>* q, ListenEvent* e) {
 }
 
 void SimpleUDP::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-//    cout << "SimpleUCP::icontext_receive_packet(): " << e->get_socket() << endl;
     SimpleUDPContainer* c = map_.find(e->get_socket())->second;
     
     c->get_packet_queue().push(e);
@@ -64,9 +60,6 @@ void SimpleUDP::icontext_new_connection_initiated(QueueProcessor<Event*>* q, Con
 }
 
 void SimpleUDP::icontext_close(QueueProcessor<Event*>* q, CloseEvent* e) {
-//    cout << "SimpleUCP::icontext_close()" << endl;
-
-//    cout << "socket closed: " << e->get_socket() << endl;
     ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
     response_event->set_socket(e->get_socket());
     response_event->set_message_type(e->get_message_type());
@@ -89,9 +82,7 @@ void SimpleUDP::icontext_resend_packet(QueueProcessor<Event*>* q, ResendPacketEv
 }
 
 void SimpleUDP::icontext_send(QueueProcessor<Event*>* q, SendEvent* e) {
-//    cout << "SimpleUCP::icontext_send(): " << e->get_socket() << endl;
     Socket* s = e->get_socket();
-
 
     struct SendToMessage* m = (struct SendToMessage*) e->get_buffer();
 
@@ -141,7 +132,6 @@ bool SimpleUDP::icontext_can_receive(Socket* s) {
 }
 
 void SimpleUDP::icontext_receive(QueueProcessor<Event*>* q, ReceiveEvent* e) {
-//    cout << "SimpleUCP::icontext_receive()" << endl;
     SimpleUDPContainer* c = map_.find(e->get_socket())->second;
     c->set_receive_event(e);
     send_receive_response(c);
@@ -179,14 +169,12 @@ void SimpleUDP::send_receive_response(SimpleUDPContainer* c) {
     ReceiveEvent* e = c->get_receive_event();
     
     if (!e) {
-        //cout << "SimpleUDP::send_receive_response(), no receive event" << endl;
         return;
     }
 
     packet_queue& q = c->get_packet_queue();
 
     if (q.empty()) {
-        //cout << "SimpleUDP::send_receive_response(), queue is empty" << endl;
         return;
     }
 

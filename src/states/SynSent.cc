@@ -17,13 +17,11 @@ void SynSent::state_exit(Context* c) {
 }
 
 void SynSent::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-//    cout << "SynSent::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();
 
 
     if (packet->is_tcp_syn() && packet->is_tcp_ack()) {
-//        cout << "SynSent::receive_packet(): Packet is SYNACK" << endl;
         unsigned char* data = (unsigned char*) "";
         AddressPort* destination = packet->get_source_address_port();
         AddressPort* source = packet->get_dest_address_port();

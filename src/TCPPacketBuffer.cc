@@ -12,7 +12,6 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
     assert(started_);
 
     int before_size = size();
-//    cout << "Before size: " << before_size << endl;
 
     packet_buffer::iterator itr = lower_bound(buffer_.begin(), buffer_.end(), p, comparator_);
     TCPPacket* found_packet = *itr;
@@ -34,7 +33,6 @@ int TCPPacketBuffer::insert(TCPPacket* p) {
 
     int after_size = size();
     int total_inserted = after_size - before_size;
-//    cout << "after size: " << after_size << endl;
 
     assert(total_inserted >= 0);
     if(total_inserted == 0 && !already_inserted) {
@@ -66,6 +64,7 @@ void TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number, gcstring& b
     }
 
     assert(first_expected_sequence_number_ == sequence_number);
+    
 
     while (itr != buffer_.end()) {
         TCPPacket* p = *itr;
@@ -95,7 +94,6 @@ void TCPPacketBuffer::get_continuous_data(u_int32_t sequence_number, gcstring& b
     }
 
     first_expected_sequence_number_ = sequence_number;
-//    cout << "After getting data, first expected seq num: " << first_expected_sequence_number_ << endl;
 
     buffer_.erase(buffer_.begin(), itr);
     mark_dirty();

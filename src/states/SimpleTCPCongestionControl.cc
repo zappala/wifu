@@ -19,20 +19,14 @@ void SimpleTCPCongestionControl::state_send_packet(Context* c, QueueProcessor<Ev
 }
 
 void SimpleTCPCongestionControl::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-//    cout << "SlowStart::receive_packet()" << endl;
     SimpleTCPCongestionControlContext* ccc = (SimpleTCPCongestionControlContext*) c;
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();
-//    cout << "SlowStart::receive_packet(), A" << endl;
     if (ccc->get_num_outstanding() > 0 && p->is_tcp_ack() && p->get_tcp_ack_number() - 1 == ccc->get_last_sent_sequence_number()) {
-//        cout << "SlowStart::receive_packet(), B" << endl;
         ccc->set_num_outstanding(ccc->get_num_outstanding() - 1);
     }
 
-//    cout << "SlowStart::receive_packet(), C" << endl;
-
     if (p->get_data_length_bytes() > 0) {
-//        cout << "SlowStart::receive_packet(), D" << endl;
         // Send ACK
         TCPPacket* p = new TCPPacket();
         p->insert_tcp_header_option(new TCPTimestampOption());
@@ -79,7 +73,6 @@ void SimpleTCPCongestionControl::state_receive_packet(Context* c, QueueProcessor
 }
 
 void SimpleTCPCongestionControl::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
-    //    cout << "SlowStart::state_send_buffer_not_empty()" << endl;
     SimpleTCPCongestionControlContext* ccc = (SimpleTCPCongestionControlContext*) c;
     Socket* s = e->get_socket();
 
@@ -102,11 +95,8 @@ void SimpleTCPCongestionControl::state_send_buffer_not_empty(Context* c, QueuePr
 
         p->set_data((unsigned char*) data.c_str(), data.size());
 
-
         Event* spe = new SendPacketEvent(s, p);
         Event* sbnf = new SendBufferNotFullEvent(s);
-
-        //        cout << "SlowStart::state_send_buffer_not_empty(): Packet: " << p << endl;
 
         ccc->set_num_outstanding(ccc->get_num_outstanding() + 1);
         q->enqueue(spe);

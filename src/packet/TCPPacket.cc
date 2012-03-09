@@ -201,7 +201,6 @@ gcstring TCPPacket::to_s_format() const {
 }
 
 bool TCPPacket::operator ==(const IPPacket& other) const {
-    //    cout << "TCPPacket::operator ==()" << endl;
     if (!WiFuPacket::operator ==(other)) {
         return false;
     }
@@ -232,7 +231,6 @@ bool TCPPacket::operator ==(const IPPacket& other) const {
 }
 
 bool TCPPacket::operator !=(const IPPacket& other) const {
-    //    cout << "TCPPacket::operator !=()" << endl;
     return !(*this == other);
 }
 
