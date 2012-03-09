@@ -107,7 +107,7 @@ public:
        
     }
 
-    void receive(unsigned char* message, int length, u_int64_t& receive_time) {
+    void receive(unsigned char* message, int length) {
         struct GenericResponseMessage* response = (struct GenericResponseMessage*) message;
 
         if (response->message_type == WIFU_SOCKET) {
@@ -163,7 +163,7 @@ public:
         socket_message->type = type;
         socket_message->protocol = protocol;
 
-        send_to(&back_end_, socket_message, socket_message->length, 0);
+        send_to(&back_end_, socket_message, socket_message->length);
 
         socket_signal_.wait();
 
@@ -215,7 +215,7 @@ public:
         memcpy(&(bind_message->addr), addr, len);
         bind_message->len = len;
 
-        send_to(&back_end_, bind_message, bind_message->length, 0);
+        send_to(&back_end_, bind_message, bind_message->length);
 
         data->get_semaphore()->wait();
 
@@ -255,7 +255,7 @@ public:
         getsockopt_message->optname = optname;
         getsockopt_message->optlen = *optlen;
 
-        send_to(&back_end_, getsockopt_message, getsockopt_message->length, 0);
+        send_to(&back_end_, getsockopt_message, getsockopt_message->length);
 
         data->get_semaphore()->wait();
 
@@ -301,7 +301,7 @@ public:
         // struct ptr + 1 increases the pointer by one size of the struct
         memcpy(setsockopt_message + 1, optval, optlen);
 
-        send_to(&back_end_, setsockopt_message, setsockopt_message->length, 0);
+        send_to(&back_end_, setsockopt_message, setsockopt_message->length);
 
         data->get_semaphore()->wait();
 
@@ -344,7 +344,7 @@ public:
         listen_message->fd = fd;
         listen_message->n = n;
 
-        send_to(&back_end_, listen_message, listen_message->length, 0);
+        send_to(&back_end_, listen_message, listen_message->length);
 
         data->get_semaphore()->wait();
 
@@ -388,7 +388,7 @@ public:
             accept_message->len = 0;
         }
 
-        send_to(&back_end_, accept_message, accept_message->length, 0);
+        send_to(&back_end_, accept_message, accept_message->length);
 
         data->get_semaphore()->wait();
 
@@ -478,7 +478,7 @@ public:
         sendto_message->flags = flags;
         memcpy(sendto_message + 1, buf, n);
 
-        send_to(&back_end_, sendto_message, sendto_message->length, 0);
+        send_to(&back_end_, sendto_message, sendto_message->length);
 
         data->get_semaphore()->wait();
 
@@ -523,7 +523,7 @@ public:
         recvfrom_message->buffer_length = n;
         recvfrom_message->flags = flags;
 
-        send_to(&back_end_, recvfrom_message, recvfrom_message->length, 0);
+        send_to(&back_end_, recvfrom_message, recvfrom_message->length);
 
         assert(data != NULL);
         assert(data->get_semaphore() != NULL);
@@ -531,7 +531,6 @@ public:
         data->get_semaphore()->wait();
 
         struct GenericResponseMessage* response = (struct GenericResponseMessage*) data->get_receive_payload();
-        //        cout << "Socket: " << response->fd << " message type: " << response->message_type << " return value: " << response->return_value << endl;
         int ret_val = response->return_value;
 
         if (response->message_type == WIFU_RECVFROM) {
@@ -577,7 +576,7 @@ public:
         memcpy(&(connect_message->addr), addr, len);
         connect_message->len = len;
 
-        send_to(&back_end_, connect_message, connect_message->length, 0);
+        send_to(&back_end_, connect_message, connect_message->length);
 
         data->get_semaphore()->wait();
 
@@ -603,7 +602,7 @@ public:
 
         connect_message->fd = fd;
 
-        send_to(&back_end_, connect_message, connect_message->length, 0);
+        send_to(&back_end_, connect_message, connect_message->length);
 
         data->get_semaphore()->wait();
 

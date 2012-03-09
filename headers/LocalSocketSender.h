@@ -28,7 +28,7 @@ public:
     LocalSocketSender();
     virtual ~LocalSocketSender();
 
-    ssize_t send_to(struct sockaddr_un* destination, void* buffer, size_t length, u_int64_t* send_time);
+    ssize_t send_to(struct sockaddr_un* destination, void* buffer, size_t length);
 
 private:
     int socket_;

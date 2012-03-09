@@ -92,7 +92,6 @@ void* unix_receive_handler(void* arg) {
     unsigned char buf[UNIX_SOCKET_MAX_BUFFER_SIZE];
 
     int nread;
-    u_int64_t time;
 
     while (1) {
         nread = recv(socket, buf, UNIX_SOCKET_MAX_BUFFER_SIZE, 0);
@@ -106,7 +105,7 @@ void* unix_receive_handler(void* arg) {
             break;
         }
 
-        receiver->receive(buf, nread, time);
+        receiver->receive(buf, nread);
     }
 }
 

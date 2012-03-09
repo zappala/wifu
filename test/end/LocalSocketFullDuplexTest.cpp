@@ -38,7 +38,7 @@ namespace {
             last_received_ = message;
         }
 
-        void receive(unsigned char* message, int length, u_int64_t& receive_time) {
+        void receive(unsigned char* message, int length) {
 
         }
 

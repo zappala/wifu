@@ -9,8 +9,7 @@ LocalSocketSender::~LocalSocketSender() {
     close(socket_);
 }
 
-ssize_t LocalSocketSender::send_to(struct sockaddr_un* destination, void* buffer, size_t length, u_int64_t* send_time) {
-//    *send_time = Utils::get_current_time_microseconds_64();
+ssize_t LocalSocketSender::send_to(struct sockaddr_un* destination, void* buffer, size_t length) {
     return sendto(socket_, buffer, length, 0, (struct sockaddr*) destination, SUN_LEN(destination));
 }
 

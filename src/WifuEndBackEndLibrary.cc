@@ -9,7 +9,7 @@ WifuEndBackEndLibrary::~WifuEndBackEndLibrary() {
 
 }
 
-void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_t& receive_time) {
+void WifuEndBackEndLibrary::receive(unsigned char* message, int length) {
     struct GenericMessage* gm = (struct GenericMessage*) message;
 
     LibraryEvent* e = NULL;
@@ -41,8 +41,7 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length, u_int64_
                 response->set_errno(EPROTONOSUPPORT);
                 response->set_default_length();
                 response->set_destination(&(sm->source));
-                u_int64_t time;
-                send_to(response->get_destination(), response->get_buffer(), response->get_length(), &time);
+                send_to(response->get_destination(), response->get_buffer(), response->get_length());
                 ObjectPool<ResponseEvent>::instance().release(response);
                 return;
             }
@@ -101,7 +100,7 @@ void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
 
     LibraryEvent* original_event = event_map_iterator_->second;
 
-    ssize_t sent = send_to(event->get_destination(), event->get_buffer(), event->get_length(), 0);
+    ssize_t sent = send_to(event->get_destination(), event->get_buffer(), event->get_length());
     assert(sent == event->get_length());
 
     switch (original_event->get_message_type()) {

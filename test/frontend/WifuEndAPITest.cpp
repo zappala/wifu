@@ -48,10 +48,8 @@ namespace {
 
         }
 
-        void receive(unsigned char* message, int length, u_int64_t& receive_time) {
+        void receive(unsigned char* message, int length) {
             struct GenericMessage* gm = (struct GenericMessage*) message;
-
-            //        cout << "Message Type: " << gm->message_type << endl;
 
             ResponseEvent* response = new ResponseEvent();
 
@@ -131,8 +129,7 @@ namespace {
                 default:
                     throw WiFuException("Unknown message type");
             }
-            u_int64_t time;
-            send_to(response->get_destination(), response->get_buffer(), response->get_length(), &time);
+            send_to(response->get_destination(), response->get_buffer(), response->get_length());
         }
 
         gcstring& get_last_message() {
