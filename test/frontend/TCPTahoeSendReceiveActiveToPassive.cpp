@@ -197,7 +197,3 @@ TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveToPassiveDr
 TEST_F(BackEndMockTestDropRandom20Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
     tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(50000));
 }
-
-TEST_F(BackEndMockTestDropRandom30Percent, tahoeSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(50000));
-}
