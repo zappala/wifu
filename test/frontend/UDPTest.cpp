@@ -60,13 +60,15 @@ void* udp_thread(void* args) {
     int size = 1500;
     char buffer[size];
     ready->post();
-    for (int i = 0; i < packets; i++) {
+    int count = 0;
+    for (int i = 0; i < packets / 2; i++) {
         ssize_t n = wifu_recvfrom(socket, buffer, size, 0, (struct sockaddr*) ap->get_network_struct_ptr(), & length);
         data.append(buffer, n);
+        ++count;
     }
 
     wifu_close(socket);
-    EXPECT_EQ(message, data);
+    EXPECT_EQ(packets / 2, count);
 
 }
 
