@@ -57,7 +57,6 @@ u_int16_t UDPPacket::get_udp_checksum() const {
 }
 
 void UDPPacket::set_udp_checksum(u_int16_t checksum) {
-    //cout << "UDPPacket::set_udp_checksum(): UDP struct is " << udp_ << endl;
     udp_->check = checksum;
 }
 
@@ -74,7 +73,6 @@ gcstring UDPPacket::to_s_format() const {
 }
 
 bool UDPPacket::operator ==(const IPPacket& other) const {
-    //    cout << "UDPPacket::operator ==()" << endl;
     if (!WiFuPacket::operator ==(other)) {
         return false;
     }
@@ -102,17 +100,9 @@ bool UDPPacket::is_valid_udp_checksum() {
     calculate_and_set_udp_checksum();
     u_int16_t calculated_checksum = get_udp_checksum();
     set_udp_checksum(current_checksum);
-    //cout << "UDPPacket::is_valid_udp_checksum(): current checksum is " << current_checksum << ", calculated is " << calculated_checksum << endl;
     return current_checksum == calculated_checksum;
 }
 
 bool UDPPacket::operator !=(const IPPacket& other) const {
-    //    cout << "UDPPacket::operator !=()" << endl;
     return !(*this == other);
 }
-/*
- * void UDPPacket::init() {
-    udp_ = (struct UDPhdr*) get_next_header();
-    set_udp_data_offset(sizeof (struct UDPhdr) / 4);
-    set_ip_tot_length(get_ip_header_length_bytes() + get_udp_header_length_bytes());
-}*/

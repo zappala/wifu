@@ -32,7 +32,6 @@ void TimeWait::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Netwo
     //    The only thing that can arrive in this state is a
     //    retransmission of the remote FIN. Acknowledge it, and restart
     //    the 2 MSL timeout.
-//    cout << "TimeWait::state_receive_packet()" << endl;
 
     Socket* s = e->get_socket();
     TCPPacket* p = (TCPPacket*) e->get_packet();

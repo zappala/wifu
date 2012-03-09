@@ -49,12 +49,10 @@ void TCPTahoeReliabilityState::state_send_packet(Context* c, QueueProcessor<Even
 }
 
 void TCPTahoeReliabilityState::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
-//    cout << "TCPTahoeReliabilityState::state_timer_fired() on socket: " << e->get_socket() << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
 
     if (rc->get_timeout_event() == e->get_timeout_event()) {
-//        log_INFORMATIONAL("TCP Timer Fired: ", pantheios::real(rc->get_rto()));
         rc->set_timeout_event(0);
         rc->set_rto(rc->get_rto() * 2);
         resend_data(c, q, s, TIMEOUT);
@@ -73,23 +71,13 @@ void TCPTahoeReliabilityState::state_receive_buffer_not_empty(Context* c, QueueP
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
 
-//    cout << "TCPTahoeReliabilityState::state_receive_buffer_not_empty()" << endl;
-
     if (rc->get_receive_event() && !s->get_receive_buffer().empty()) {
-//        cout << "TCPTahoeReliabilityState::state_receive_buffer_not_empty(), receive event exists" << endl;
         create_and_dispatch_received_data(c, q, rc->get_receive_event());
         rc->set_receive_event(0);
     }
-//    else if(rc->get_receive_event()) {
-//        // final receive call
-//        tahoe_recv_response_events_.push_back(Utils::get_current_time_microseconds_64());
-//        tahoe_recv_response_sizes_.push_back(0);
-//    }
 }
 
 void TCPTahoeReliabilityState::state_receive(Context* c, QueueProcessor<Event*>* q, ReceiveEvent* e) {
-//    cout << "TCPTahoeReliabilityState::state_receive()" << endl;
-//    tahoe_receive_events_.push_back(Utils::get_current_time_microseconds_64());
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     Socket* s = e->get_socket();
 
@@ -125,31 +113,24 @@ void TCPTahoeReliabilityState::start_timer(Context* c, Socket* s) {
         
     // only start the timer if it is not already running
     if (!rc->get_timeout_event()) {
-//        cout << "TCPTahoeReliabilityState::start_timer() on socket: " << s << endl;
-
         double seconds;
         long int nanoseconds = modf(rc->get_rto(), &seconds) * NANOSECONDS_IN_SECONDS;
         TimeoutEvent* timer = new TimeoutEvent(s, seconds, nanoseconds);
-        //log_INFORMATIONAL("starting timer: ", pantheios::pointer(pantheios::pointer((void*)timer, 8, pantheios::fmt::fullHex)), " ", pantheios::real(rc->get_rto()));
         rc->set_timeout_event(timer);
         Dispatcher::instance().enqueue(timer);
     }
 }
 
 void TCPTahoeReliabilityState::reset_timer(Context* c, Socket* s) {
-    //    cout << "TCPTahoeReliabilityState::reset_timer() on socket: " << s << endl;
     cancel_timer(c, s);
     start_timer(c, s);
 }
 
 void TCPTahoeReliabilityState::cancel_timer(Context* c, Socket* s) {
-//        cout << "TCPTahoeReliabilityState::cancel_timer() on socket: " << s << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
 
     assert(rc->get_timeout_event());
-    //    cout << "TCPTahoeReliabilityState::cancel_timer(): " << rc->get_timeout_event() << endl;
     CancelTimerEvent* event = new CancelTimerEvent(rc->get_timeout_event());
-    //log_INFORMATIONAL("canceling timer: ", pantheios::pointer((void*)rc->get_timeout_event(), 8, pantheios::fmt::fullHex));
     Dispatcher::instance().enqueue(event);
     rc->set_timeout_event(0);
 }
@@ -197,8 +178,6 @@ void TCPTahoeReliabilityState::create_and_dispatch_received_data(Context* c, Que
         rc->set_receive_index(0);
     }
 
-//    tahoe_recv_response_events_.push_back(Utils::get_current_time_microseconds_64());
-//    tahoe_recv_response_sizes_.push_back(length);
     Dispatcher::instance().enqueue(response);
     q->enqueue(new ReceiveBufferNotFullEvent(s));
 }
@@ -322,11 +301,9 @@ bool TCPTahoeReliabilityState::handle_ack(Context* c, QueueProcessor<Event*>* q,
 }
 
 void TCPTahoeReliabilityState::handle_valid_ack(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent * e) {
-    //    cout << "TCPTahoeReliabilityState::handle_valid_ack() Socket: " << e->get_socket() << endl;
     TCPTahoeReliabilityContext* rc = (TCPTahoeReliabilityContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();
-
 
     u_int32_t num_acked = p->get_tcp_ack_number() - rc->get_snd_una();
     rc->set_snd_una(p->get_tcp_ack_number());
@@ -342,7 +319,6 @@ void TCPTahoeReliabilityState::handle_valid_ack(Context* c, QueueProcessor<Event
 
     // TODO: this may need to move if we decide that we want to open up the send buffer on things other than data acks
     q->enqueue(new SendBufferNotFullEvent(s));
-
 
     // TODO: is this the correct place to update the RTO?
     TCPTimestampOption* ts = (TCPTimestampOption*) p->get_option(TCPOPT_TIMESTAMP);
@@ -368,9 +344,6 @@ void TCPTahoeReliabilityState::handle_duplicate_ack(Context* c, QueueProcessor<E
         rc->set_duplicates(0);
     }
     if (rc->get_duplicates() == 3) {
-        //rc->set_duplicates(0);
-        //        cout << "Three duplicate acks, resending data" << endl;
-
         // I read the following three lines of comments from inet/src/transport/tcp/flavours/TCPTahoe.cc
         // Do not restart REXMIT timer.
         // Note: Restart of REXMIT timer on retransmission is not part of RFC 2581, however optional in RFC 3517 if sent during recovery.
@@ -408,7 +381,6 @@ void TCPTahoeReliabilityState::handle_data(Context* c, QueueProcessor<Event*>* q
     if (rc->get_rcv_wnd() - num_inserted >= 0) {
 
         rc->set_rcv_wnd(rc->get_rcv_wnd() - num_inserted);
-        //        cout << "TCPTahoeReliabilityState::handle_data(), receive window size: " << rc->get_rcv_wnd() << endl;
         gcstring& receive_buffer = s->get_receive_buffer();
         u_int32_t before_rcv_buffer_size = receive_buffer.size();
         rc->get_receive_window().get_continuous_data(rc->get_rcv_nxt(), receive_buffer);

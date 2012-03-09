@@ -79,7 +79,6 @@ gcstring WiFuPacket::to_s_format() const {
 }
 
 bool WiFuPacket::operator ==(const IPPacket& other) const {
-    //    cout << "WiFuPacket::operator ==()" << endl;
     if (!this->IPPacket::operator ==(other)) {
         return false;
     }
@@ -92,6 +91,5 @@ bool WiFuPacket::operator ==(const IPPacket& other) const {
 }
 
 bool WiFuPacket::operator !=(const IPPacket& other) const {
-    //    cout << "WiFuPacket::operator !=()" << endl;
     return !(*this == other);
 }

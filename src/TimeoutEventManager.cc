@@ -25,7 +25,6 @@ TimeoutEventManager::~TimeoutEventManager() {
 }
 
 void TimeoutEventManager::imodule_cancel_timer(Event * e) {
-//    cout << "Cancelling Timer" << endl;
     CancelTimerEvent* event = (CancelTimerEvent*) e;
     canceled_events_.insert(event->get_timeout_event());
 
@@ -34,7 +33,6 @@ void TimeoutEventManager::imodule_cancel_timer(Event * e) {
 }
 
 void TimeoutEventManager::imodule_timeout(Event* e) {
-//    cout << "In timeout() in TimeoutEventManager\n";
     TimeoutEvent* event = (TimeoutEvent*) e;
 
     if (canceled_events_.contains(event)) {
@@ -45,7 +43,6 @@ void TimeoutEventManager::imodule_timeout(Event* e) {
     bool timedout = TimeoutManagerSemaphore.timed_wait(&event->get_timeout_time());
 
     if (timedout) {
-//        cout << "Timed out!\n";
         Dispatcher::instance().enqueue(new TimerFiredEvent(event));
         return;
     }
@@ -55,8 +52,6 @@ void TimeoutEventManager::imodule_timeout(Event* e) {
 }
 
 void TimeoutEventManager::enqueue(Event* e, bool signal) {
-//    cout << "We're enqueuing in TimeoutEventManager.  Signal is: " << signal << endl;
-    
     // TODO: This is cheating... (but currently (as of Feb. 16, 2011) the best thought of solution)
     // We are not enqueuing it to our queue, we are taking it before
     // so the CancelTimerEvent doesn't get stuck behind any
@@ -67,7 +62,6 @@ void TimeoutEventManager::enqueue(Event* e, bool signal) {
     }
 
     this->QueueProcessor<Event*>::enqueue(e, true);
-
 }
 
 void signal_manager(int signal) {

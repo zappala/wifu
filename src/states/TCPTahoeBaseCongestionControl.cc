@@ -22,9 +22,6 @@ void TCPTahoeBaseCongestionControl::state_timer_fired(Context* c, QueueProcessor
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
 
     if (ccc->get_probe_timer() && e->get_timeout_event() == ccc->get_probe_timer()) {
-        // this is our probe timer
-        //        cout << "TCPTahoeBaseCongestionControl::state_timer_fired() Timer Fired" << endl;
-
         // restart the probe timer
 
         ccc->set_probe_timer_duration(ccc->get_probe_timer_duration() * 2);
@@ -56,7 +53,6 @@ void TCPTahoeBaseCongestionControl::state_send_packet(Context* c, QueueProcessor
 
 void TCPTahoeBaseCongestionControl::state_resend_packet(Context* c, QueueProcessor<Event*>* q, ResendPacketEvent* e) {
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
-    
 
     resend(c, q, e);
     ccc->set_snd_nxt(ccc->get_snd_una());
@@ -64,7 +60,6 @@ void TCPTahoeBaseCongestionControl::state_resend_packet(Context* c, QueueProcess
 }
 
 void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-    //    cout << "TCPTahoeBaseCongestionControl::state_receive_packet()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     TCPPacket* p = (TCPPacket*) e->get_packet();
 
@@ -74,7 +69,6 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
     if (p->is_tcp_ack() && between_and_equal) {
 
         ccc->set_snd_una(p->get_tcp_ack_number());
-
 
         // In case we get an ack for something later than snd.nxt
         // (we dropped a packet but subsequent packets got through and we received a cumuliative ack)
@@ -120,7 +114,6 @@ void TCPTahoeBaseCongestionControl::state_receive_packet(Context* c, QueueProces
 }
 
 void TCPTahoeBaseCongestionControl::state_send_buffer_not_empty(Context* c, QueueProcessor<Event*>* q, SendBufferNotEmptyEvent* e) {
-    //    cout << "TCPTahoeBaseCongestionControl::state_send_buffer_not_empty(), sending packets" << endl;
     send_packets(c, q, e);
 }
 
@@ -135,7 +128,6 @@ void TCPTahoeBaseCongestionControl::resend(Context* c, QueueProcessor<Event*>* q
 }
 
 void TCPTahoeBaseCongestionControl::send_packets(Context* c, QueueProcessor<Event*>* q, Event* e) {
-    //    cout << "TCPTahoeBaseCongestionControl::send_packets()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
     gcstring& send_buffer = s->get_send_buffer();
@@ -147,8 +139,6 @@ void TCPTahoeBaseCongestionControl::send_packets(Context* c, QueueProcessor<Even
 }
 
 void TCPTahoeBaseCongestionControl::send_one_packet(Context* c, QueueProcessor<Event*>* q, Event* e, bool ignore_window) {
-
-    //    cout << "TCPTahoeBaseCongestionControl::send_one_packet()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
 
@@ -183,12 +173,9 @@ void TCPTahoeBaseCongestionControl::send_one_packet(Context* c, QueueProcessor<E
     assert(p->get_data_length_bytes() > 0);
 
     q->enqueue(new SendPacketEvent(s, p));
-    // TODO: I moved this to relability when we get an ack
-    //    q->enqueue(new SendBufferNotFullEvent(s));
 }
 
 void TCPTahoeBaseCongestionControl::resend_data(Context* c, QueueProcessor<Event*>* q, Event* e) {
-    //    cout << "TCPTahoeBaseCongestionControl::resend_data()" << endl;
     TCPTahoeCongestionControlContext* ccc = (TCPTahoeCongestionControlContext*) c;
     Socket* s = e->get_socket();
 
@@ -219,7 +206,6 @@ void TCPTahoeBaseCongestionControl::resend_data(Context* c, QueueProcessor<Event
     }
 
     if (control_bit) {
-        //                cout << "Control bit set, setting snd_nxt to snd.una + 1" << endl;
         p->set_data((unsigned char*) "", 0);
     } else {
         // TODO: change this to use the gcstring::data() method instead of substr() so we can avoid the copy
