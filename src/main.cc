@@ -52,7 +52,6 @@
 
 //protocols
 #include "ProtocolManager.h"
-#include "protocol/SimpleTCP.h"
 #include "protocol/TCPTahoe.h"
 #include "protocol/SimpleUDP.h"
 
@@ -105,33 +104,6 @@ void register_signals() {
     signal(SIGQUIT, main_signal_manager);
     signal(SIGTERM, main_signal_manager);
     signal(SIGSEGV, main_signal_manager);
-}
-
-void register_simple_tcp() {
-    ProtocolManager::instance().support(SIMPLE_TCP);
-    NetworkInterfaceFactory::instance().create().register_protocol(SIMPLE_TCP, new TCPPacketFactory());
-
-    dispatcher.map_event(type_name(SocketEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(BindEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ListenEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ConnectEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(AcceptEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(SendPacketEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(TimerFiredEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ResendPacketEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ReceiveEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(SendEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(SendBufferNotFullEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(CloseEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(DeleteSocketEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(SetSocketOptionEvent), &SimpleTCP::instance());
-    dispatcher.map_event(type_name(GetSocketOptionEvent), &SimpleTCP::instance());
 }
 
 void register_tcp_tahoe() {
@@ -187,7 +159,6 @@ void register_udp() {
 
 void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
-    register_simple_tcp();
     register_tcp_tahoe();
     register_udp();
 }
