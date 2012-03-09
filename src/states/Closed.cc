@@ -9,7 +9,6 @@ Closed::~Closed() {
 }
 
 void Closed::state_connect(Context* c, QueueProcessor<Event*>* q, ConnectEvent* e) {
-//    cout << "In Closed::connect()" << endl;
     Socket* s = e->get_socket();
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(ACTIVE_OPEN);
@@ -45,12 +44,10 @@ void Closed::state_connect(Context* c, QueueProcessor<Event*>* q, ConnectEvent* 
 
     // TODO: move this earlier so we don't send and dequeue a packet while still in this (Closed) state
     // We don't want the FSM to be in between changing states either (see set_state).
-    //    cout << "Closed::connect(), switching to SynSent" << endl;
     cmc->set_state(new SynSent());
 }
 
 void Closed::state_listen(Context* c, QueueProcessor<Event*>* q, ListenEvent* e) {
-//    cout << "Closed::listen()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_socket(e->get_socket());
     cmc->set_connection_type(PASSIVE_OPEN);
@@ -61,14 +58,12 @@ void Closed::state_listen(Context* c, QueueProcessor<Event*>* q, ListenEvent* e)
 }
 
 void Closed::state_new_connection_established(Context* c, QueueProcessor<Event*>* q, ConnectionEstablishedEvent* e) {
-    //    cout << "Closed::state_new_connection_established()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(ESTABLISHED);
     c->set_state(new Established());
 }
 
 void Closed::state_new_connection_initiated(Context* c, QueueProcessor<Event*>* q, ConnectionInitiatedEvent* e) {
-    //    cout << "Closed::state_new_connection_initiated()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     cmc->set_connection_type(PASSIVE_OPEN);
     cmc->set_socket(e->get_socket());
@@ -77,5 +72,5 @@ void Closed::state_new_connection_initiated(Context* c, QueueProcessor<Event*>* 
 }
 
 void Closed::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-    //cout << "Closed::state_receive_packet()" << endl;
+
 }

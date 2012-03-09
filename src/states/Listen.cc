@@ -17,7 +17,6 @@ void Listen::state_exit(Context* c) {
 }
 
 void Listen::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-//    cout << "Listen::state_receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();
 
@@ -33,7 +32,6 @@ void Listen::state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent* e) {
 }
 
 void Listen::process_syn(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-//    cout << "Listen::process_syn()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
 
     Socket* listening_socket = e->get_socket();
@@ -52,8 +50,6 @@ void Listen::process_syn(Context* c, QueueProcessor<Event*>* q, NetworkReceivePa
     Event* new_connection = new ConnectionInitiatedEvent(listening_socket, new_socket, cmc->get_listen_event());
     SocketCollection::instance().push(new_socket);
     q->enqueue(new_connection);
-
-
 
 
     unsigned char* data = (unsigned char*) "";

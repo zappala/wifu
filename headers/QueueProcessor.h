@@ -89,7 +89,7 @@ public:
      */
     virtual ~QueueProcessor() {
         if (pthread_cancel(thread_)) {
-            cout << "Error canceling thread: " << errno << endl;
+            cout << "Error canceling thread in Queue Processor: " << errno << endl;
         }
     }
 

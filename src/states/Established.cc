@@ -9,17 +9,12 @@ Established::~Established() {
 }
 
 void Established::state_enter(Context* c) {
-    // TODO: spawn new Socket.
-    //        cout << "Established::enter()" << endl;
-
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     ConnectEvent* event = cmc->get_connect_event();
-
 
     switch (cmc->get_connection_type()) {
         case ACTIVE_OPEN:
         {
-            //                        cout << "Established::enter(), Active Open" << endl;
             ResponseEvent* response_event = ObjectPool<ResponseEvent>::instance().get();
             response_event->set_socket(event->get_socket());
             response_event->set_message_type(event->get_message_type());
@@ -42,16 +37,12 @@ void Established::state_enter(Context* c) {
 }
 
 void Established::state_exit(Context* c) {
-    //    cout << "Established::exit()" << endl;
-
 }
 
 void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
-    //        cout << "Established::receive_packet()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     TCPPacket* packet = (TCPPacket*) e->get_packet();
     Socket* s = e->get_socket();
-
 
     if (packet->is_tcp_syn()) {
         // TODO: this may be deleted after testing it without
@@ -60,8 +51,6 @@ void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Ne
     }
 
     if (packet->is_tcp_fin()) {
-        //        cout << "Established::receive_packet(), FIN" << endl;
-
         unsigned char* data = (unsigned char*) "";
         AddressPort* destination = s->get_remote_address_port();
         AddressPort* source = s->get_local_address_port();
@@ -90,9 +79,6 @@ void Established::state_receive_packet(Context* c, QueueProcessor<Event*>* q, Ne
         response_event->set_default_length();
         response_event->set_destination(cmc->get_front_end_socket());
 
-        //TODO: This is only for being able to time the final recv() call
-        //q->enqueue(new ReceiveBufferNotEmptyEvent(s));
-
         Dispatcher::instance().enqueue(response_event);
         return;
     }
@@ -107,7 +93,6 @@ bool Established::state_can_send(Context*, Socket* s) {
 }
 
 void Established::state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent* e) {
-    //    cout << "Established::state_close()" << endl;
     ConnectionManagerContext* cmc = (ConnectionManagerContext*) c;
     Socket* s = e->get_socket();
 
@@ -131,9 +116,6 @@ void Established::state_close(Context* c, QueueProcessor<Event*>* q, CloseEvent*
 
         SendPacketEvent* event = new SendPacketEvent(s, response);
         q->enqueue(event);
-
-
-
 
         return;
     }

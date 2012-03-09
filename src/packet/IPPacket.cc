@@ -184,7 +184,6 @@ u_int16_t IPPacket::compute_next_checksum() {
 
     // get length of IP payload
     int length = get_ip_tot_length() - get_ip_header_length_bytes();
-    //cout << "IPPacket::compute_next_checksum(): length = " << length << "\n";
 
     struct iphdr ip;
     memcpy(&ip, ip_, sizeof (struct iphdr));
@@ -258,8 +257,6 @@ gcstring IPPacket::to_s_format() const {
 }
 
 bool IPPacket::operator==(const IPPacket& other) const {
-    //cout << "IPPacket::operator ==()" << endl;
-
     IPPacket const* other_ptr = dynamic_cast<IPPacket const*> (&other);
 
     bool equal = other_ptr != NULL;
@@ -278,7 +275,6 @@ bool IPPacket::operator==(const IPPacket& other) const {
 }
 
 bool IPPacket::operator!=(const IPPacket& other) const {
-    //cout << "IPPacket::operator !=()" << endl;
     return !(*this == other);
 }
 

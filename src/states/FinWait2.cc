@@ -9,11 +9,9 @@ FinWait2::~FinWait2() {
 }
 
 void FinWait2::state_enter(Context* c) {
-//    cout << "FinWait2::enter()" << endl;
 }
 
 void FinWait2::state_exit(Context* c) {
-//    cout << "FinWait2::exit()" << endl;
 }
 
 void FinWait2::state_receive_packet(Context* c, QueueProcessor<Event*>* q, NetworkReceivePacketEvent* e) {
