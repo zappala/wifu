@@ -300,7 +300,7 @@ void mutliple_protocols(gcstring message) {
 }
 
 
-TEST_F(BackEndTest, multipleProtocols1000000) {
+TEST_F(WiFuTransportIntegrationTest, multipleProtocols1000000) {
     mutliple_protocols(random_string(1000000));
     sleep(5);
 }

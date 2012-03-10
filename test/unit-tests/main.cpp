@@ -11,7 +11,7 @@
 #include "StandardPortManagerCreator.h"
 #include "Logger.h"
 
-const PAN_CHAR_T PANTHEIOS_FE_PROCESS_IDENTITY[] = "wifu-end-test";
+const PAN_CHAR_T PANTHEIOS_FE_PROCESS_IDENTITY[] = "wifu-unit-tests";
 
 int main(int argc, char** argv) {
     GC_INIT();

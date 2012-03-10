@@ -19,13 +19,13 @@
 using namespace std;
 
 /**
- * Event that is interpreted by WiFuEndBackEndLibrary and converted to a message to be passed over a Unix socket to the front end.
+ * Event that is interpreted by WiFuTransportBackEndTranslator and converted to a message to be passed over a Unix socket to the front end.
  * This Event will cause the BSD socket call to return for a single socket.
  * This is Event is the only Event used to communicate information from the back end to the front end.
  *
  * @see Event
  * @see FrameworkEvent
- * @see WiFuEntBackEndLibrary
+ * @see WiFuTransportBackEndTranslator
  */
 class ResponseEvent : public BufferEvent {
 public:
@@ -52,13 +52,13 @@ public:
 
     /**
      * Calls IModule::imodule_library_response() and passes this ResponseEvent in as the argument.
-     * WifuEndBackEndLibrary should be the only IModule using this method.
+     * WiFuTransportBackEndTranslator should be the only IModule using this method.
      *
      * @param m The module which to call IModule::imodule_library_response() on.
      * @see Event::execute()
      * @see IModule
      * @see IModule::imodule_library_response()
-     * @see WifuEndBackEndLibrary::imodule_library_response()
+     * @see WiFuTransportBackEndTranslator::imodule_library_response()
      */
     void execute(IModule* m);
 

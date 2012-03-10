@@ -18,7 +18,7 @@
  * This object also holds the control mechanism for each respective socket.
  * There is a one-to-one relationship between socket ids (int) and SocketData objects.
  *
- * All internals of this object get set in the WifuEndAPILocalSocket::receive() method
+ * All internals of this object get set in the WiFuTransportFrontEndTranslator::receive() method
  * and will be used in whatever socket API method was called.
  *
  * @see SocketDataMap

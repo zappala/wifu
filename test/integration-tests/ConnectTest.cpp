@@ -14,7 +14,7 @@
 #include "Timer.h"
 #include "../headers/RandomStringGenerator.h"
 
-#include "../headers/BackEndTest.h"
+#include "../headers/WiFuTransportIntegrationTest.h"
 
 #include "../headers/PacketLogReader.h"
 #include "../headers/packet/TCPPacket.h"
@@ -86,7 +86,7 @@ void connect_test() {
     sleep(5);
 }
 
-TEST_F(BackEndTest, connectTest) {
+TEST_F(WiFuTransportIntegrationTest, connectTest) {
     connect_test();
 }
 
@@ -114,7 +114,7 @@ void drop_none() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDropNone, mockConnectTest) {
+TEST_F(WiFuTransportMockTestDropNone, mockConnectTest) {
     drop_none();
 }
 
@@ -147,7 +147,7 @@ void drop_syn() {
 
 // Drop packets
 
-TEST_F(BackEndMockTestDrop10, mockConnectTest10) {
+TEST_F(WiFuTransportMockTestDrop10, mockConnectTest10) {
     drop_syn();
 }
 
@@ -182,7 +182,7 @@ void drop_synack12_delay_synack12() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop12Delay12, mockConnectTestDrop12Delay12) {
+TEST_F(WiFuTransportMockTestDrop12Delay12, mockConnectTestDrop12Delay12) {
     drop_synack12_delay_synack12();
 }
 
@@ -229,7 +229,7 @@ void drop_synack12_delay_syn10() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop12Delay10, mockConnectTestDrop12Delay10) {
+TEST_F(WiFuTransportMockTestDrop12Delay10, mockConnectTestDrop12Delay10) {
     drop_synack12_delay_syn10();
 }
 
@@ -265,6 +265,6 @@ void drop_ack() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop22, mockConnectTest22) {
+TEST_F(WiFuTransportMockTestDrop22, mockConnectTest22) {
     drop_ack();
 }

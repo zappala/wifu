@@ -14,9 +14,9 @@
 #include "Timer.h"
 #include "../headers/RandomStringGenerator.h"
 
-#include "../headers/BackEndTest.h"
+#include "../headers/WiFuTransportIntegrationTest.h"
 
-TEST_F(BackEndTest, bindTest) {
+TEST_F(WiFuTransportIntegrationTest, bindTest) {
     struct sockaddr_in to_bind;
     socklen_t length = sizeof (struct sockaddr_in);
     memset(&to_bind, 0, length);

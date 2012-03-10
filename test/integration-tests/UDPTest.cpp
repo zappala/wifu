@@ -7,12 +7,12 @@
 #include "../applib/wifu_socket.h"
 #include "../headers/defines.h"
 
-#include "../headers/BackEndTest.h"
+#include "../headers/WiFuTransportIntegrationTest.h"
 #include "../headers/RandomStringGenerator.h"
 #include "../headers/Utils.h"
 #include <stdio.h>
 
-TEST_F(BackEndTest, UDPSocketTest) {
+TEST_F(WiFuTransportIntegrationTest, UDPSocketTest) {
     ASSERT_TRUE(sizeof (struct udphdr) == UDP_HEADER_LENGTH_BYTES);
 
     for (int i = 0; i < 100; i++) {
@@ -72,7 +72,7 @@ void* udp_thread(void* args) {
 
 }
 
-TEST_F(BackEndTest, UDPTransfer) {
+TEST_F(WiFuTransportIntegrationTest, UDPTransfer) {
     Semaphore* ready = new Semaphore();
     ready->init(0);
     int packets = 1000;

@@ -15,7 +15,7 @@
 #include "../headers/RandomStringGenerator.h"
 #include "../headers/packet/TCPPacket.h"
 
-#include "../headers/BackEndTest.h"
+#include "../headers/WiFuTransportIntegrationTest.h"
 
 #include "../headers/PacketTraceHelper.h"
 #include "Utils.h"
@@ -300,7 +300,7 @@ void tcp_tahoe_close_active_to_passive_drop_none() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeCloseTestActiveToPassive) {
+TEST_F(WiFuTransportMockTestDropNone, tahoeCloseTestActiveToPassive) {
     tcp_tahoe_close_active_to_passive_drop_none();
 }
 
@@ -438,7 +438,7 @@ void tcp_tahoe_close_active_to_passive_drop_first_fin() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop32, tahoeCloseTestActiveToPassiveDropFirstFin) {
+TEST_F(WiFuTransportMockTestDrop32, tahoeCloseTestActiveToPassiveDropFirstFin) {
     tcp_tahoe_close_active_to_passive_drop_first_fin();
 }
 
@@ -572,7 +572,7 @@ void tcp_tahoe_close_active_to_passive_drop_first_ack() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop24, tahoeCloseTestActiveToPassiveDropFirstAck) {
+TEST_F(WiFuTransportMockTestDrop24, tahoeCloseTestActiveToPassiveDropFirstAck) {
     tcp_tahoe_close_active_to_passive_drop_first_ack();
 }
 
@@ -710,7 +710,7 @@ void tcp_tahoe_close_active_to_passive_drop_second_fin() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDropSecond24, tahoeCloseTestActiveToPassiveDropSecondFin) {
+TEST_F(WiFuTransportMockTestDropSecond24, tahoeCloseTestActiveToPassiveDropSecondFin) {
     tcp_tahoe_close_active_to_passive_drop_second_fin();
 }
 
@@ -854,7 +854,7 @@ void tcp_tahoe_close_active_to_passive_drop_second_ack() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop43, tahoeCloseTestActiveToPassiveDropSecondAck) {
+TEST_F(WiFuTransportMockTestDrop43, tahoeCloseTestActiveToPassiveDropSecondAck) {
     tcp_tahoe_close_active_to_passive_drop_second_ack();
 }
 
@@ -1010,6 +1010,6 @@ void tcp_tahoe_close_active_to_passive_drop_first_ack_and_second_fin() {
 //    compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop24Drop24, tahoeCloseTestActiveToPassiveDropFirstAckAndSecondFin) {
+TEST_F(WiFuTransportMockTestDrop24Drop24, tahoeCloseTestActiveToPassiveDropFirstAckAndSecondFin) {
     tcp_tahoe_close_active_to_passive_drop_first_ack_and_second_fin();
 }

@@ -1,12 +1,12 @@
 /* 
- * File:   WifuEndAPITest.h
+ * File:   WiFuTransportAPITest.h
  * Author: rbuck
  *
  * Created on November 20, 2010, 1:29 PM
  */
 
-#ifndef _WIFUENDAPITEST_H
-#define	_WIFUENDAPITEST_H
+#ifndef _WIFUTRANSPORTAPITEST_H
+#define	_WIFUTRANSPORTAPITEST_H
 
 #include <iostream>
 #include <unistd.h>
@@ -267,5 +267,5 @@ namespace {
 }
 
 
-#endif	/* _WIFUENDAPITEST_H */
+#endif	/* _WIFUTRANSPORTAPITEST_H */
 

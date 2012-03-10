@@ -1,12 +1,12 @@
 /* 
- * File:   WifuEndBackEndLibrary.h
+ * File:   WiFuTransportBackEndTranslator.h
  * Author: rbuck
  *
  * Created on November 26, 2010, 2:19 PM
  */
 
-#ifndef WIFUENDBACKENDLIBRARY_H
-#define	WIFUENDBACKENDLIBRARY_H
+#ifndef WIFUTRANSPORTBACKENDTRANSLATOR_H
+#define	WIFUTRANSPORTBACKENDTRANSLATOR_H
 
 
 #include "LocalSocketFullDuplex.h"
@@ -39,11 +39,11 @@
  * Translates string messages received from the front-end library into Event objects
  * and enqueues them to the dispatcher (and visa-versa).
  */
-class WifuEndBackEndLibrary : public LocalSocketFullDuplex, public Module {
+class WiFuTransportBackEndTranslator : public LocalSocketFullDuplex, public Module {
 public:
-    static WifuEndBackEndLibrary& instance();
+    static WiFuTransportBackEndTranslator& instance();
 
-    virtual ~WifuEndBackEndLibrary();
+    virtual ~WiFuTransportBackEndTranslator();
 
     /**
      * Callback function when the Unix socket receives a message
@@ -56,11 +56,11 @@ public:
     void imodule_library_response(Event* e);
 
 private:
-    WifuEndBackEndLibrary();
+    WiFuTransportBackEndTranslator();
 
     map<int, LibraryEvent*, less<int>, gc_allocator<pair<int, LibraryEvent*> > > event_map_;
     map<int, LibraryEvent*, less<int>, gc_allocator<pair<int, LibraryEvent*> > >::iterator event_map_iterator_;
 };
 
-#endif	/* WIFUENDBACKENDLIBRARY_H */
+#endif	/* WIFUTRANSPORTBACKENDTRANSLATOR_H */
 

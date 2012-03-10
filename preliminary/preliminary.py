@@ -91,7 +91,7 @@ class Configuration():
 class ExecutableCopier():
 	def __init__(self, configuration):
 		self.config = configuration
-		self.wifu = "../bin/wifu-end"
+		self.wifu = "../bin/wifu-transport"
 		self.sender_application = "../bin/simple-tcp-sender"
 		self.receiver_application = "../bin/simple-tcp-receiver"
 
@@ -210,7 +210,7 @@ class ExecutableManager():
 		self.receivingChunk = "receivingChunk"
 		
 	def get_wifu_command(self):
-		command = "sudo nice -n -20 ./wifu-end"
+		command = "sudo nice -n -20 ./wifu-transport"
 		
 		if self.loggerThreshold in self.config.dictionary:
 			command += " --logger_threshold " + self.config.dictionary[self.loggerThreshold]
@@ -254,7 +254,7 @@ class ExecutableManager():
 		time.sleep(1)
 
 	def kill_wifu(self):
-		command = "sudo killall wifu-end"
+		command = "sudo killall wifu-transport"
 
 		sender = self.config.get_sender_node()
 		receiver = self.config.get_receiver_node()
@@ -480,7 +480,7 @@ class ExecutableManager():
 				sysctl_command = "sudo sysctl -p /tmp/sysctl_default.conf"
 				tso_command = "sudo ethtool -K " + self.config.get_interface() + " tso on"
 				gso_command = "sudo ethtool -K " + self.config.get_interface() + " gso on"
-				chmod_command = "sudo chmod o+r /tmp/wifu-end.log"
+				chmod_command = "sudo chmod o+r /tmp/wifu-transport.log"
 				# auto is 0x03F
 				rate_command = "sudo ethtool -s " + self.config.get_interface() + " advertise 0x03F"
 				if rate is not None:
@@ -542,7 +542,7 @@ class ExecutableManager():
 					sender_tcpdump_grabber.join()
 
 				pcap_file = "wifu-log.pcap"
-				wifu_log = "wifu-end.log"
+				wifu_log = "wifu-transport.log"
 
 				if api == "wifu":
 					sender_pcap_grabber = FileGrabber(sender_node, self.config.dir + pcap_file, data_path + "sender_wifu_log.pcap", self.config.username)
@@ -551,17 +551,17 @@ class ExecutableManager():
 					receiver_pcap_grabber = FileGrabber(receiver_node, self.config.dir + pcap_file, data_path + "receiver_wifu_log.pcap", self.config.username)
 					receiver_pcap_grabber.start()
 
-					receiver_wifu_end_log_grabber = FileGrabber(receiver_node, self.config.dir + wifu_log, data_path + "receiver_wifu_end.log", self.config.username)
-					receiver_wifu_end_log_grabber.start()
+					receiver_wifu_transport_log_grabber = FileGrabber(receiver_node, self.config.dir + wifu_log, data_path + "receiver_wifu_transport.log", self.config.username)
+					receiver_wifu_transport_log_grabber.start()
 
-					sender_wifu_end_log_grabber = FileGrabber(sender_node, self.config.dir + wifu_log, data_path + "sender_wifu_end.log", self.config.username)
-					sender_wifu_end_log_grabber.start()
+					sender_wifu_transport_log_grabber = FileGrabber(sender_node, self.config.dir + wifu_log, data_path + "sender_wifu_transport.log", self.config.username)
+					sender_wifu_transport_log_grabber.start()
 
 					sender_pcap_grabber.join()
 					receiver_pcap_grabber.join()
 
-					receiver_wifu_end_log_grabber.join()
-					sender_wifu_end_log_grabber.join()
+					receiver_wifu_transport_log_grabber.join()
+					sender_wifu_transport_log_grabber.join()
 
 				sender_grabber.join()
 				receiver_grabber.join()
@@ -875,7 +875,7 @@ class PreliminaryGrapher:
 
 		parser = FileParser()
 
-		files = self.__get_log_files("receiver_wifu_end\.log")
+		files = self.__get_log_files("receiver_wifu_transport\.log")
 
 		#create vectors of goodput
 		for file in files:
@@ -899,7 +899,7 @@ class PreliminaryGrapher:
 			rate = (num_bytes * 8.0 / 1000000.0) / (total_time / 1000000.0)
 			wifu_receive.append(rate)
 
-		files = self.__get_log_files("sender_wifu_end\.log")
+		files = self.__get_log_files("sender_wifu_transport\.log")
 
 		for file in files:
 #			print file
@@ -941,7 +941,7 @@ class PreliminaryGrapher:
 
 		parser = FileParser()
 
-		files = self.__get_log_files("receiver_wifu_end\.log")
+		files = self.__get_log_files("receiver_wifu_transport\.log")
 
 		#create vectors of goodput
 		for file in files:
@@ -965,7 +965,7 @@ class PreliminaryGrapher:
 			rate = (num_bytes * 8.0 / 1000000.0) / (total_time / 1000000.0)
 			wifu_receive.append(rate)
 
-		files = self.__get_log_files("sender_wifu_end\.log")
+		files = self.__get_log_files("sender_wifu_transport\.log")
 
 		for file in files:
 			lines = parser.parse(file)
@@ -1071,7 +1071,7 @@ class PreliminaryGrapher:
 
 		parser = FileParser()
 
-		files = self.__get_log_files("receiver_wifu_end\.log")
+		files = self.__get_log_files("receiver_wifu_transport\.log")
 
 		#create vectors of goodput
 		for file in files:
@@ -1097,7 +1097,7 @@ class PreliminaryGrapher:
 			rate = (num_bytes * 8.0 / 1000000.0) / (total_time / 1000000.0)
 			wifu_receive.append(rate)
 
-		files = self.__get_log_files("sender_wifu_end\.log")
+		files = self.__get_log_files("sender_wifu_transport\.log")
 
 		for file in files:
 			lines = parser.parse(file)
@@ -1138,7 +1138,7 @@ class PreliminaryGrapher:
 
 		parser = FileParser()
 
-		files = self.__get_log_files("receiver_wifu_end\.log")
+		files = self.__get_log_files("receiver_wifu_transport\.log")
 
 		#create vectors of goodput
 		for file in files:
@@ -1163,7 +1163,7 @@ class PreliminaryGrapher:
 			rate = (num_bytes * 8.0 / 1000000.0) / (total_time / 1000000.0)
 			wifu_receive.append(rate)
 
-		files = self.__get_log_files("sender_wifu_end\.log")
+		files = self.__get_log_files("sender_wifu_transport\.log")
 
 		for file in files:
 			lines = parser.parse(file)
@@ -1258,7 +1258,7 @@ class PreliminaryGrapher:
 		# sender is the client
 		# for each iteration: open up sender_kernel.log and get out the function duration (should be about the same)
 		# I go ahead and record the loop data, but we have removed the loop so it the loop timestamps are taken on the outside of the function ts
-		# for each type: for each iteration: open up sender_wifu_end.log and sender_wifu.log and extract out each value
+		# for each type: for each iteration: open up sender_wifu_transport.log and sender_wifu.log and extract out each value
 		# we will need to take the send start time and match it with the receive finish time at each level of measurement
 
 		kernel_app = []
@@ -1319,7 +1319,7 @@ class PreliminaryGrapher:
 		dispatcher_after_arr = []
 		tahoe_arr =[]
 
-		for file in self.__get_log_files("sender_wifu_end.log", "echo"):
+		for file in self.__get_log_files("sender_wifu_transport.log", "echo"):
 			print file
 			lines = parser.parse(file)
 			inside_socket = 0

@@ -26,7 +26,7 @@
 #include "../headers/RandomStringGenerator.h"
 #include "../headers/packet/TCPPacket.h"
 
-#include "../headers/BackEndTest.h"
+#include "../headers/WiFuTransportIntegrationTest.h"
 
 #include "../headers/PacketTraceHelper.h"
 #include "Utils.h"

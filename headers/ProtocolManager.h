@@ -13,7 +13,7 @@
 
 /**
  * Keeps track of the set of protocols (ints) which is supported by
- * wifu end.
+ * WiFu Transport.
  */
 class ProtocolManager : public Set<int> {
 private:

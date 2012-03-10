@@ -1,15 +1,15 @@
-#include "WifuEndBackEndLibrary.h"
+#include "WiFuTransportBackEndTranslator.h"
 
-WifuEndBackEndLibrary& WifuEndBackEndLibrary::instance() {
-    static WifuEndBackEndLibrary instance_;
+WiFuTransportBackEndTranslator& WiFuTransportBackEndTranslator::instance() {
+    static WiFuTransportBackEndTranslator instance_;
     return instance_;
 }
 
-WifuEndBackEndLibrary::~WifuEndBackEndLibrary() {
+WiFuTransportBackEndTranslator::~WiFuTransportBackEndTranslator() {
 
 }
 
-void WifuEndBackEndLibrary::receive(unsigned char* message, int length) {
+void WiFuTransportBackEndTranslator::receive(unsigned char* message, int length) {
     struct GenericMessage* gm = (struct GenericMessage*) message;
 
     LibraryEvent* e = NULL;
@@ -91,7 +91,7 @@ void WifuEndBackEndLibrary::receive(unsigned char* message, int length) {
 
 }
 
-void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
+void WiFuTransportBackEndTranslator::imodule_library_response(Event* e) {
 
     ResponseEvent* event = (ResponseEvent*) e;
 
@@ -143,7 +143,7 @@ void WifuEndBackEndLibrary::imodule_library_response(Event* e) {
     ObjectPool<ResponseEvent>::instance().release(event);
 }
 
-WifuEndBackEndLibrary::WifuEndBackEndLibrary() : LocalSocketFullDuplex("/tmp/WS"), Module() {
+WiFuTransportBackEndTranslator::WiFuTransportBackEndTranslator() : LocalSocketFullDuplex("/tmp/WS"), Module() {
     ObjectPool<SocketEvent>::instance();
     ObjectPool<BindEvent>::instance();
     ObjectPool<ListenEvent>::instance();
@@ -157,5 +157,5 @@ WifuEndBackEndLibrary::WifuEndBackEndLibrary() : LocalSocketFullDuplex("/tmp/WS"
 
     ObjectPool<ResponseEvent>::instance();
 
-    log_INFORMATIONAL("WiFuBackEndLibrary Created");
+    log_INFORMATIONAL("WiFuTransportBackEndTranslator Created");
 }

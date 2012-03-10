@@ -14,7 +14,7 @@
 #include "Timer.h"
 #include "../headers/RandomStringGenerator.h"
 
-#include "../headers/BackEndTest.h"
+#include "../headers/WiFuTransportIntegrationTest.h"
 
 #include "../headers/PacketLogReader.h"
 #include "../headers/packet/TCPPacket.h"
@@ -87,7 +87,7 @@ void tcp_tahoe_connect_test() {
 
 }
 
-TEST_F(BackEndTest, TCPTahoeConnectTest) {
+TEST_F(WiFuTransportIntegrationTest, TCPTahoeConnectTest) {
     tcp_tahoe_connect_test();
 }
 
@@ -122,7 +122,7 @@ void tcp_tahoe_drop_none() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDropNone, TCPTahoeMockConnectTest) {
+TEST_F(WiFuTransportMockTestDropNone, TCPTahoeMockConnectTest) {
     tcp_tahoe_drop_none();
 }
 
@@ -159,7 +159,7 @@ void tcp_tahoe_drop_syn() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop10, TCPTahoeMockConnectTest) {
+TEST_F(WiFuTransportMockTestDrop10, TCPTahoeMockConnectTest) {
     tcp_tahoe_drop_syn();
 }
 
@@ -200,7 +200,7 @@ void tcp_tahoe_drop_12_delay_12() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop12Delay12, TCPTahoeMockConnectTest) {
+TEST_F(WiFuTransportMockTestDrop12Delay12, TCPTahoeMockConnectTest) {
     // need to test with delays
     tcp_tahoe_drop_12_delay_12();
 }
@@ -258,7 +258,7 @@ void tcp_tahoe_drop_12_delay_10() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop12Delay10, TCPTahoeMockConnectTest) {
+TEST_F(WiFuTransportMockTestDrop12Delay10, TCPTahoeMockConnectTest) {
     tcp_tahoe_drop_12_delay_10();
 }
 
@@ -266,7 +266,7 @@ void tcp_tahoe_drop_12() {
     tcp_tahoe_connect_test();
 }
 
-TEST_F(BackEndMockTestDrop12, TCPTahoeMockConnectTest) {
+TEST_F(WiFuTransportMockTestDrop12, TCPTahoeMockConnectTest) {
     // cannot reliably predict which timers will fire when.
     // this is simply to ensure that we get connected
     // without sending a lot of packets
@@ -312,7 +312,7 @@ void tcp_tahoe_drop_final_ack() {
     compare_traces(expected);
 }
 
-TEST_F(BackEndMockTestDrop22, TCPTahoeMockConnectTest) {
+TEST_F(WiFuTransportMockTestDrop22, TCPTahoeMockConnectTest) {
     tcp_tahoe_drop_final_ack();
 }
 

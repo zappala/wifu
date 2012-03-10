@@ -6,9 +6,9 @@
 #include "../applib/wifu_socket.h"
 #include "../headers/defines.h"
 
-#include "../headers/BackEndTest.h"
+#include "../headers/WiFuTransportIntegrationTest.h"
 
-TEST_F(BackEndTest, TCPTahoeSocketTest) {
+TEST_F(WiFuTransportIntegrationTest, TCPTahoeSocketTest) {
 
     for (int i = 0; i < 100; i++) {
         // Check valid

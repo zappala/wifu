@@ -65,7 +65,7 @@ public:
     /**
      * @return The ConnectEvent used to create a new connection.
      * @see ConnectEvent
-     * @see WifuEndAPILocalSocket::wifu_connect()
+     * @see WiFuTransportAPILocalSocket::wifu_connect()
      */
     ConnectEvent* get_connect_event();
 
@@ -73,7 +73,7 @@ public:
      * Sets the ConnectEvent used to create a new connection.
      * @param e The ConnectEvent to save.
      * @see ConnectEvent
-     * @see WifuEndAPILocalSocket::wifu_connect()
+     * @see WiFuTransportAPILocalSocket::wifu_connect()
      */
     void set_connect_event(ConnectEvent* e);
 

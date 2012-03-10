@@ -144,74 +144,74 @@ void tahoe_active_to_passive_big_chunks(int protocol, gcstring message) {
     v.done_->wait();
 }
 
-TEST_F(BackEndTest, tahoeSendReceiveTestActiveBigChunks100000) {
+TEST_F(WiFuTransportIntegrationTest, tahoeSendReceiveTestActiveBigChunks100000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(100000));
 }
 
-TEST_F(BackEndTest, tahoeSendReceiveTestActiveBigChunks1000000) {
+TEST_F(WiFuTransportIntegrationTest, tahoeSendReceiveTestActiveBigChunks1000000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000000));
 }
 
-TEST_F(BackEndTest, tahoeSendReceiveTestActiveBigChunks10000000) {
+TEST_F(WiFuTransportIntegrationTest, tahoeSendReceiveTestActiveBigChunks10000000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(10000000));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks1000) {
+TEST_F(WiFuTransportMockTestDropNone, tahoeSendReceiveTestActiveBigChunks1000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks10000) {
+TEST_F(WiFuTransportMockTestDropNone, tahoeSendReceiveTestActiveBigChunks10000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(10000));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks20000) {
+TEST_F(WiFuTransportMockTestDropNone, tahoeSendReceiveTestActiveBigChunks20000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(20000));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks30000) {
+TEST_F(WiFuTransportMockTestDropNone, tahoeSendReceiveTestActiveBigChunks30000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(30000));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks65535) {
+TEST_F(WiFuTransportMockTestDropNone, tahoeSendReceiveTestActiveBigChunks65535) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(65535));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks87380) {
+TEST_F(WiFuTransportMockTestDropNone, tahoeSendReceiveTestActiveBigChunks87380) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(87380));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks100000) {
+TEST_F(WiFuTransportMockTestDropNone, tahoeSendReceiveTestActiveBigChunks100000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(100000));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks1000000) {
+TEST_F(WiFuTransportMockTestDropNone, tahoeSendReceiveTestActiveBigChunks1000000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000000));
 }
 
-TEST_F(BackEndMockTestDropNone, tahoeSendReceiveTestActiveBigChunks10000000) {
+TEST_F(WiFuTransportMockTestDropNone, tahoeSendReceiveTestActiveBigChunks10000000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(10000000));
 }
 
-TEST_F(BackEndMockTestDrop10, tahoeSendReceiveTestActiveBigChunks1000000) {
+TEST_F(WiFuTransportMockTestDrop10, tahoeSendReceiveTestActiveBigChunks1000000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000000));
 }
 
-TEST_F(BackEndMockTestDropRandom1Percent, tahoeSendReceiveTestActiveBigChunks1000000) {
+TEST_F(WiFuTransportMockTestDropRandom1Percent, tahoeSendReceiveTestActiveBigChunks1000000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000000));
 }
 
-TEST_F(BackEndMockTestDropRandom5Percent, tahoeSendReceiveTestActiveBigChunks1000000) {
+TEST_F(WiFuTransportMockTestDropRandom5Percent, tahoeSendReceiveTestActiveBigChunks1000000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(1000000));
 }
 
-TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveBigChunks10000) {
+TEST_F(WiFuTransportMockTestDropRandom10Percent, tahoeSendReceiveTestActiveBigChunks10000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(10000));
 }
 
-TEST_F(BackEndMockTestDropRandom10Percent, tahoeSendReceiveTestActiveBigChunks100000) {
+TEST_F(WiFuTransportMockTestDropRandom10Percent, tahoeSendReceiveTestActiveBigChunks100000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(100000));
 }
 
-TEST_F(BackEndMockTestDropRandom20Percent, tahoeSendReceiveTestActiveBigChunks100000) {
+TEST_F(WiFuTransportMockTestDropRandom20Percent, tahoeSendReceiveTestActiveBigChunks100000) {
     tahoe_active_to_passive_big_chunks(TCP_TAHOE, random_string(100000));
 }

@@ -9,7 +9,7 @@
 
 #include "gtest/gtest.h"
 #include "../applib/wifu_socket.h"
-#include "../headers/BackEndTest.h"
+#include "../headers/WiFuTransportIntegrationTest.h"
 #include "defines.h"
 #include <netinet/tcp.h>
 
@@ -17,7 +17,7 @@ using namespace std;
 
 namespace {
 
-    TEST_F(BackEndMockTestDropNone, socketOptionsTestCharacterValue) {
+    TEST_F(WiFuTransportMockTestDropNone, socketOptionsTestCharacterValue) {
         int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
 
         int level = 0;
@@ -41,7 +41,7 @@ namespace {
         EXPECT_EQ(optlen, len);
     }
 
-    TEST_F(BackEndMockTestDropNone, socketOptionsTestIntValue) {
+    TEST_F(WiFuTransportMockTestDropNone, socketOptionsTestIntValue) {
         int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
 
         int level = 0;
@@ -64,7 +64,7 @@ namespace {
         EXPECT_EQ(len, optlen);
     }
 
-    TEST_F(BackEndMockTestDropNone, socketOptionsTestDoubleValue) {
+    TEST_F(WiFuTransportMockTestDropNone, socketOptionsTestDoubleValue) {
         int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
 
         int level = 0;
@@ -87,7 +87,7 @@ namespace {
         EXPECT_EQ(len, optlen);
     }
 
-    TEST_F(BackEndMockTestDropNone, socketOptionsTestBoolValue) {
+    TEST_F(WiFuTransportMockTestDropNone, socketOptionsTestBoolValue) {
         int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
 
         int level = 0;
@@ -110,7 +110,7 @@ namespace {
         EXPECT_EQ(len, optlen);
     }
 
-    TEST_F(BackEndMockTestDropNone, socketOptionsTestTimestampValue) {
+    TEST_F(WiFuTransportMockTestDropNone, socketOptionsTestTimestampValue) {
         int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
 
         for (int i = 0; i < 1000; i++) {
@@ -135,7 +135,7 @@ namespace {
         }
     }
 
-    TEST_F(BackEndMockTestDropNone, socketOptionsTestCharStar) {
+    TEST_F(WiFuTransportMockTestDropNone, socketOptionsTestCharStar) {
         int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);
 
         for (int i = 0; i < 1000; i++) {
@@ -158,7 +158,7 @@ namespace {
         }
     }
 
-    TEST_F(BackEndMockTestDropNone, socketOptionsTestManyIntValues) {
+    TEST_F(WiFuTransportMockTestDropNone, socketOptionsTestManyIntValues) {
         // This code fails
 
         //        int fd = wifu_socket(AF_INET, SOCK_STREAM, TCP_TAHOE);

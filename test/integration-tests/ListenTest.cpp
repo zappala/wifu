@@ -14,9 +14,9 @@
 #include "Timer.h"
 #include "../headers/RandomStringGenerator.h"
 
-#include "../headers/BackEndTest.h"
+#include "../headers/WiFuTransportIntegrationTest.h"
 
-TEST_F(BackEndTest, listenTest) {
+TEST_F(WiFuTransportIntegrationTest, listenTest) {
     // Bad fd
     // (badfd may actually have been created above)
     int badfd = 4000;

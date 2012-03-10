@@ -67,14 +67,14 @@
 #include "MainSemaphore.h"
 #include "Dispatcher.h"
 #include "Socket.h"
-#include "WifuEndBackEndLibrary.h"
+#include "WiFuTransportBackEndTranslator.h"
 #include "PortManagerFactory.h"
 
 // logging
 #include "Logger.h"
 
 // Global Pantheios Variable(s)
-const PAN_CHAR_T PANTHEIOS_FE_PROCESS_IDENTITY[] = "wifu-end";
+const PAN_CHAR_T PANTHEIOS_FE_PROCESS_IDENTITY[] = "wifu-transport";
 
 
 using namespace std;
@@ -91,7 +91,7 @@ void main_signal_manager(int sig) {
             break;
         case SIGSEGV:
             signal(SIGSEGV, SIG_DFL);
-            cout << "wifu-end Segmentation Fault" << endl;
+            cout << "wifu-transport Segmentation Fault" << endl;
             abort();
             break;
         default:
@@ -185,7 +185,7 @@ int main(int argc, char** argv) {
 
 
     //only needs to be on if logging to file
-    pantheios_be_file_setFilePath(PantheiosString("wifu-end.log"), PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BEID_ALL);
+    pantheios_be_file_setFilePath(PantheiosString("wifu-transport.log"), PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BE_FILE_F_TRUNCATE, PANTHEIOS_BEID_ALL);
     log_DEBUG("Command line arguments: ", pantheios::args(argc, argv));
 
     gcstring network_type = "standard";
@@ -230,14 +230,14 @@ int main(int argc, char** argv) {
     dispatcher.start_processing();
 
     // Start Back end
-    WifuEndBackEndLibrary::instance();
+    WiFuTransportBackEndTranslator::instance();
 
     // Load Modules
     dispatcher.map_event(type_name(NetworkSendPacketEvent), &NetworkInterfaceFactory::instance().create());
     dispatcher.map_event(type_name(TimerFiredEvent), &NetworkInterfaceFactory::instance().create());
     dispatcher.map_event(type_name(TimeoutEvent), &TimeoutEventManager::instance());
     dispatcher.map_event(type_name(CancelTimerEvent), &TimeoutEventManager::instance());
-    dispatcher.map_event(type_name(ResponseEvent), &WifuEndBackEndLibrary::instance());
+    dispatcher.map_event(type_name(ResponseEvent), &WiFuTransportBackEndTranslator::instance());
     dispatcher.map_event(type_name(TimerFiredEvent), &PacketLogger::instance());
 
     //     Packet Logger

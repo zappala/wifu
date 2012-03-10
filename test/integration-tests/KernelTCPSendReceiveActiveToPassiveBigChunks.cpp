@@ -162,14 +162,14 @@ void kernel_active_to_passive_big_chunks(int protocol, gcstring message) {
     v.done_->wait();
 }
 
-TEST_F(BackEndTest, kernelSendReceiveTestActiveBigChunks100000) {
+TEST_F(WiFuTransportIntegrationTest, kernelSendReceiveTestActiveBigChunks100000) {
     kernel_active_to_passive_big_chunks(6, random_string(100000));
 }
 
-TEST_F(BackEndTest, kernelSendReceiveTestActiveBigChunks1000000) {
+TEST_F(WiFuTransportIntegrationTest, kernelSendReceiveTestActiveBigChunks1000000) {
     kernel_active_to_passive_big_chunks(6, random_string(1000000));
 }
 
-TEST_F(BackEndTest, kernelSendReceiveTestActiveBigChunks10000000) {
+TEST_F(WiFuTransportIntegrationTest, kernelSendReceiveTestActiveBigChunks10000000) {
     kernel_active_to_passive_big_chunks(6, random_string(10000000));
 }

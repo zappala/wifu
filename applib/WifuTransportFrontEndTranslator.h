@@ -1,12 +1,12 @@
 /* 
- * File:   WifuEndAPILocalSocket.h
+ * File:   WifuTransportFrontEndTranslator.h
  * Author: rbuck
  *
  * Created on November 22, 2010, 3:10 PM
  */
 
-#ifndef _WIFUENDAPILOCALSOCKET_H
-#define	_WIFUENDAPILOCALSOCKET_H
+#ifndef _WIFUTRANSPORTFRONTENDTRANSLATOR_H
+#define	_WIFUTRANSPORTFRONTENDTRANSLATOR_H
 
 
 
@@ -39,18 +39,17 @@
 /**
  * Communicates (sends messages) with the back-end over a Unix Socket, writing to the file /tmp/WS.
  * Receives messages from the back-end over a Unix Socket.  This class receives on the file /tmp/LS plus a random number.
- * Messages are of the format: method_name?key0=value0&key1=value1&.
  *
  */
-class WifuEndAPILocalSocket : public LocalSocketFullDuplex {
+class WifuTransportFrontEndTranslator : public LocalSocketFullDuplex {
 private:
 
     /**
-     * Constructs a WifuEndAPILocalSocket for use in communicating with the Wifu End process.
+     * Constructs a WiFuTransportAPILocalSocket for use in communicating with the WiFu Transport daemon.
      *
      * @param file The file which this object listens on (other local sockets can write to this file).
      */
-    WifuEndAPILocalSocket() : LocalSocketFullDuplex(get_filename().c_str()), write_file_("/tmp/WS") {
+    WifuTransportFrontEndTranslator() : LocalSocketFullDuplex(get_filename().c_str()), write_file_("/tmp/WS") {
         socket_signal_.init(0);
         socket_mutex_.init(1);
 
@@ -64,22 +63,22 @@ private:
 
     /**
      * Copy constructor.  Should never be called.
-     * @param other The WifuEndAPILocalSocket to copy.
+     * @param other The WiFuTransportAPILocalSocket to copy.
      */
-    WifuEndAPILocalSocket(WifuEndAPILocalSocket const& other) : LocalSocketFullDuplex(get_file()), write_file_("/tmp/WS") {
+    WifuTransportFrontEndTranslator(WifuTransportFrontEndTranslator const& other) : LocalSocketFullDuplex(get_file()), write_file_("/tmp/WS") {
         assert(false);
     }
 
     /**
      * Assignment operator.  Should never be called.
-     * @param other The WifuEndAPILocalSocket to copy.
+     * @param other The WiFuTransportAPILocalSocket to copy.
      */
-    WifuEndAPILocalSocket & operator=(WifuEndAPILocalSocket const&) {
+    WifuTransportFrontEndTranslator & operator=(WifuTransportFrontEndTranslator const&) {
         assert(false);
     }
 
     /**
-     * @return A filename that is WifuEndAPILocalSocket will listen on for messages from the back-end.
+     * @return A filename that this WiFuTransportFrontEndTranslator will listen on for messages from the back-end.
      * The file will be of the format /tmp/LS plus a random number.  For example /tmp/LS123456789.
      */
     gcstring get_filename() {
@@ -93,17 +92,17 @@ private:
 public:
 
     /**
-     * @return Static instance of this WifuEndAPILocalSocket.
+     * @return Static instance of this WiFuTransportAPILocalSocket.
      */
-    static WifuEndAPILocalSocket& instance() {
-        static WifuEndAPILocalSocket instance_;
+    static WifuTransportFrontEndTranslator& instance() {
+        static WifuTransportFrontEndTranslator instance_;
         return instance_;
     }
 
     /**
      * Destructor
      */
-    virtual ~WifuEndAPILocalSocket() {
+    virtual ~WifuTransportFrontEndTranslator() {
        
     }
 
@@ -619,7 +618,7 @@ public:
 
 private:
     /**
-     * The file this WifuEndAPILocalSocket will write to in order to send messages to the back-end (/tmp/WS).
+     * The file this WiFuTransportFrontEndTranslator will write to in order to send messages to the back-end (/tmp/WS).
      */
     gcstring write_file_;
 
@@ -636,6 +635,6 @@ private:
     BinarySemaphore socket_mutex_;
 };
 
-#endif	/* _WIFUENDAPILOCALSOCKET_H */
+#endif	/* _WIFUTRANSPORTFRONTENDTRANSLATOR_H */
 
 
