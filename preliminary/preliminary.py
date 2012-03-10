@@ -92,8 +92,8 @@ class ExecutableCopier():
 	def __init__(self, configuration):
 		self.config = configuration
 		self.wifu = "../bin/wifu-transport"
-		self.sender_application = "../bin/simple-tcp-sender"
-		self.receiver_application = "../bin/simple-tcp-receiver"
+		self.sender_application = "../bin/tcp-tahoe-sender"
+		self.receiver_application = "../bin/tcp-tahoe-receiver"
 
 		self.echo_client = "../bin/echo-client"
 		self.echo_server = "../bin/echo-server"
@@ -297,7 +297,7 @@ class ExecutableManager():
 			c.join()
 
 
-	def get_receiver_command(self, api, outfile=None, exe="simple-tcp-receiver"):
+	def get_receiver_command(self, api, outfile=None, exe="tcp-tahoe-receiver"):
 		receiver_command = "sudo nice -n -20 ./" + exe
 
 		if self.senderAddress in self.config.dictionary:
@@ -321,7 +321,7 @@ class ExecutableManager():
 			
 		return receiver_command
 
-	def get_sender_command(self, api, outfile=None, exe="simple-tcp-sender"):
+	def get_sender_command(self, api, outfile=None, exe="tcp-tahoe-sender"):
 		sender_command = "sudo nice -n -20 ./" + exe
 
 		if self.senderAddress in self.config.dictionary:

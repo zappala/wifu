@@ -295,8 +295,8 @@ def build_wifu_transport_integration_test(bld):
 			uselib_local='wifu-transport-api',
 			target='wifu-integration-test')
 
-def build_simple_tcp_sender(bld):
-	files = bld.glob('preliminary/SimpleTCPSender.cc')
+def build_tcp_tahoe_sender(bld):
+	files = bld.glob('preliminary/TCPTahoeSender.cc')
 	files += bld.glob('preliminary/WiFuSocketAPI.cc')
 	files += bld.glob('preliminary/KernelSocketAPI.cc')
 	files += bld.glob('applib/*.cc')
@@ -309,7 +309,7 @@ def build_simple_tcp_sender(bld):
 			libpath = '../lib/gc/gc_32',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-transport-api',
-			target='simple-tcp-sender')
+			target='tcp-tahoe-sender')
 	else:
 		sender = bld(features='cxx cprogram',
 			source=files,
@@ -317,10 +317,10 @@ def build_simple_tcp_sender(bld):
 			libpath = '../lib/gc/gc_64',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-transport-api',
-			target='simple-tcp-sender')
+			target='tcp-tahoe-sender')
 
-def build_simple_tcp_receiver(bld):
-	files = bld.glob('preliminary/SimpleTCPReceiver.cc')
+def build_tcp_tahoe_receiver(bld):
+	files = bld.glob('preliminary/TCPTahoeReceiver.cc')
 	files += bld.glob('preliminary/WiFuSocketAPI.cc')
 	files += bld.glob('preliminary/KernelSocketAPI.cc')
 	files += bld.glob('applib/*.cc')
@@ -334,7 +334,7 @@ def build_simple_tcp_receiver(bld):
 			libpath = '../lib/gc/gc_32',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-transport-api',
-			target='simple-tcp-receiver')
+			target='tcp-tahoe-receiver')
 	else:
 		receiver = bld(features='cxx cprogram',
 			source=files,
@@ -342,7 +342,7 @@ def build_simple_tcp_receiver(bld):
 			libpath = '../lib/gc/gc_64',
 			staticlib = ['gccpp', 'gc', 'cord'],
 			uselib_local='wifu-transport-api',
-			target='simple-tcp-receiver')
+			target='tcp-tahoe-receiver')
 
 def build_echo_client(bld):
 	files = bld.glob('preliminary/EchoClient.cc')
@@ -526,8 +526,8 @@ def build(bld):
 		build_wifu_transport_unit_test(bld)
 		build_wifu_transport_integration_test(bld)
 	
-	build_simple_tcp_sender(bld)
-	build_simple_tcp_receiver(bld)
+	build_tcp_tahoe_sender(bld)
+	build_tcp_tahoe_receiver(bld)
 
 	build_echo_server(bld)
 	build_echo_client(bld)
