@@ -94,25 +94,34 @@ class NSTraceGrapher():
 
 		ax.set_xlabel('Time (seconds)')
 		ax.set_ylabel('Packet Number (Mod 60)')
-		
+
+		data = None
+		ack = None
+		drop = None
 
 		for line in self.packets:
 			time, packet = self.__get_values(line)
-			ax.plot(time, packet, color='black', marker='s', markersize=4)
+			temp, = ax.plot(time, packet, color='black', marker='s', markersize=4, lw=0, label="Data")
+			if data is None:
+				data = temp
 
 		for line in self.acks:
 			time, packet = self.__get_values(line)
-			ax.plot(time, packet, color='black', marker='.', markersize=2)
+			temp, = ax.plot(time, packet, color='black', marker='.', markersize=2, lw=0, label="ACK")
+			if ack is None:
+				ack = temp
 
 		for line in self.packet_drops:
 			time, packet = self.__get_values(line)
-			ax.plot(time, packet, color='black', marker='s', markersize=4)
-			ax.plot(time, packet, color='black', marker='x', markersize=12)
+			ax.plot(time, packet, color='black', marker='s', markersize=4, lw=0)
+			temp, = ax.plot(time, packet, color='black', marker='x', markersize=12, lw=0, label="Drop")
+			if drop is None:
+				drop = temp
 
 		for line in self.ack_drops:
 			time, packet = self.__get_values(line)
-			ax.plot(time, packet, color='black', marker='.', markersize=2)
-			ax.plot(time, packet, color='black', marker='x', markersize=6)
+			ax.plot(time, packet, color='black', marker='.', markersize=2, lw=0)
+			ax.plot(time, packet, color='black', marker='x', markersize=6, lw=0)
 		
 		xmin, xmax, ymin, ymax = ax.axis()
 		
@@ -125,6 +134,11 @@ class NSTraceGrapher():
 		ymin -= yoffset
 		ymax += yoffset
 		ax.axis([xmin, xmax, ymin, ymax])
+
+		if drop is not None:
+			ax.legend([data, ack, drop], ["Data", "ACK", "Drop"], numpoints=1)
+		else:
+			ax.legend([data, ack], ["Data", "ACK"], numpoints=1)
 
 		savefig(self.output, format="eps",bbox_inches='tight',pad_inches=0.05)
 	
