@@ -39,6 +39,8 @@ protected:
 
     void send_accept_response(TCPTahoeIContextContainer* c, AcceptEvent* e);
 
+    bool is_duplicate_ack(TCPTahoeReliabilityContext* rc, TCPPacket* p);
+
 public:
     static TCPTahoe& instance();
     virtual ~TCPTahoe();

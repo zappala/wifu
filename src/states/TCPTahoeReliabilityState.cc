@@ -324,7 +324,7 @@ void TCPTahoeReliabilityState::handle_duplicate_ack(Context* c, QueueProcessor<E
         // Do not restart REXMIT timer.
         // Note: Restart of REXMIT timer on retransmission is not part of RFC 2581, however optional in RFC 3517 if sent during recovery.
         // Resetting the REXMIT timer is discussed in RFC 2582/3782 (NewReno) and RFC 2988.
-        resend_data(c, q, e->get_socket(), TIMEOUT);
+        resend_data(c, q, e->get_socket(), THREE_DUPLICATE_ACKS);
     }
 }
 

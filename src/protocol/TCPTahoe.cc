@@ -109,10 +109,13 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
         return;
     }
 
+    bool dup_ack = is_duplicate_ack(rc, p);
     rc->icontext_receive_packet(q, e);
-    cmc->icontext_receive_packet(q, e);
-    c->get_congestion_control()->icontext_receive_packet(q, e);
 
+    if (!dup_ack) {
+        cmc->icontext_receive_packet(q, e);
+        c->get_congestion_control()->icontext_receive_packet(q, e);
+    }
 
     if (c->get_saved_close_event() && s->get_send_buffer().empty() && !c->get_saved_send_event()) {
         cmc->icontext_close(q, c->get_saved_close_event());
@@ -162,7 +165,7 @@ void TCPTahoe::icontext_new_connection_established(QueueProcessor<Event*>* q, Co
     // e->get_socket() is the new socket
     Socket* s = e->get_new_socket();
     TCPTahoeIContextContainer* c = (TCPTahoeIContextContainer*) map_.find(s)->second;
-    
+
     c->get_back_log()->push(e);
 
     AcceptEvent* ae = c->get_saved_accept_event();
@@ -424,4 +427,11 @@ void TCPTahoe::send_accept_response(TCPTahoeIContextContainer* c, AcceptEvent* e
     response_event->set_destination(e->get_source());
     response_event->set_addr(cee->get_new_socket()->get_remote_address_port()->get_network_struct_ptr(), sizeof (struct sockaddr_in));
     dispatch(response_event);
+}
+
+bool TCPTahoe::is_duplicate_ack(TCPTahoeReliabilityContext* rc, TCPPacket* p) {
+    if (rc->get_duplicate_ack_number() == p->get_tcp_ack_number()) {
+        return rc->get_duplicates() + 1 >= 3;
+    }
+
 }
