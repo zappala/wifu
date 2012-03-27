@@ -170,10 +170,6 @@ TEST_F(WiFuTransportMockTestDropNone, tahoeSendReceiveTestActiveToPassive50000) 
     tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(50000));
 }
 
-TEST_F(WiFuTransportMockTestDropNone, tahoeSendReceiveTestActiveToPassive100000) {
-    tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(100000));
-}
-
 TEST_F(WiFuTransportMockTestDrop32, tahoeSendReceiveTestActiveToPassiveDrop32) {
     tahoe_active_to_passive_test_with_close(TCP_TAHOE, random_string(500));
 }
