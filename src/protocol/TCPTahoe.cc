@@ -111,9 +111,9 @@ void TCPTahoe::icontext_receive_packet(QueueProcessor<Event*>* q, NetworkReceive
 
     bool dup_ack = is_duplicate_ack(rc, p);
     rc->icontext_receive_packet(q, e);
+    cmc->icontext_receive_packet(q, e);
 
     if (!dup_ack) {
-        cmc->icontext_receive_packet(q, e);
         c->get_congestion_control()->icontext_receive_packet(q, e);
     }
 
@@ -430,8 +430,11 @@ void TCPTahoe::send_accept_response(TCPTahoeIContextContainer* c, AcceptEvent* e
 }
 
 bool TCPTahoe::is_duplicate_ack(TCPTahoeReliabilityContext* rc, TCPPacket* p) {
-    if (rc->get_duplicate_ack_number() == p->get_tcp_ack_number()) {
+    if (p->is_tcp_ack() &&
+        rc->get_duplicate_ack_number() == p->get_tcp_ack_number() &&
+        between_equal_left(p->get_tcp_ack_number(), rc->get_snd_una(), rc->get_snd_nxt())) {
+
         return rc->get_duplicates() + 1 >= 3;
     }
-
+    return false;
 }
