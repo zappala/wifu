@@ -91,6 +91,7 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 #define SIMPLE_TCP 206
 #define TCP_TAHOE 207
 #define UDP 217
+#define TCP_AP 211
 
 // TODO: figure out path MTU on the fly.
 // ethernet MTU
