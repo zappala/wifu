@@ -8,7 +8,7 @@ TCPDelayedACKReliabilityState::~TCPDelayedACKReliabilityState() {
 }
 
 void TCPDelayedACKReliabilityState::state_timer_fired(Context* c, QueueProcessor<Event*>* q, TimerFiredEvent* e) {
-    cout << "TCPDelayedACKReliabilityState::state_timer_fired() on socket: " << e->get_socket() << endl;
+    //cout << "TCPDelayedACKReliabilityState::state_timer_fired() on socket: " << e->get_socket() << endl;
     TCPDelayedACKReliabilityContext* rc = (TCPDelayedACKReliabilityContext*) c;
     Socket* s = e->get_socket();
 
@@ -16,7 +16,7 @@ void TCPDelayedACKReliabilityState::state_timer_fired(Context* c, QueueProcessor
 
     if (rc->get_ack_timeout_event() == e->get_timeout_event()) {
         //force sending an ACK
-        cout << "TCPDelayedACKReliabilityState::state_timer_fired(): sending delayed ACK\n";
+        //cout << "TCPDelayedACKReliabilityState::state_timer_fired(): sending delayed ACK\n";
         //TODO: Should we send an ACK immediately, or should we aggregate this with the rest?
         rc->set_ack_timeout_event(0);
         rc->set_cur_ack_count(0);
@@ -26,7 +26,7 @@ void TCPDelayedACKReliabilityState::state_timer_fired(Context* c, QueueProcessor
 
 void TCPDelayedACKReliabilityState::start_ack_timer(Context* c, Socket* s) {
     TCPDelayedACKReliabilityContext* rc = (TCPDelayedACKReliabilityContext*) c;
-    cout << "TCPDelayedACKReliabilityState::start_ack_timer() on socket: " << s << endl;
+    //cout << "TCPDelayedACKReliabilityState::start_ack_timer() on socket: " << s << endl;
     //cout << "TCPDelayedACKReliabilityState::start_ack_timer() using timeout value: " << rc->get_delay_timeout_interval() << "\n";
     // only start the timer if it is not already running
     if (!rc->get_timeout_event()) {
@@ -76,7 +76,7 @@ void TCPDelayedACKReliabilityState::create_and_dispatch_ack(Context* c, QueuePro
     //CHANGE FROM TCP:
     //We delay our ACKs based on delay_count_ OR a timeout value.
 
-    cout << "TCPDelayedACKReliabilityState::handle_data(): entering Delayed ACK section\n";
+    //cout << "TCPDelayedACKReliabilityState::handle_data(): entering Delayed ACK section\n";
     rc->set_cur_ack_count(rc->get_cur_ack_count() + 1);
 
     //Just make sure we're using a delay.
@@ -85,11 +85,11 @@ void TCPDelayedACKReliabilityState::create_and_dispatch_ack(Context* c, QueuePro
         return;
     }*/
 
-    cout << "TCPDelayedACKReliabilityState::create_and_dispatch_ack(): using a delay of " << rc->get_delay_count() << "ACKs.\n";
-    cout << "TCPDelayedACKReliabilityState::create_and_dispatch_ack(): currently have " << rc->get_cur_ack_count() << "\n";
+    //cout << "TCPDelayedACKReliabilityState::create_and_dispatch_ack(): using a delay of " << rc->get_delay_count() << "ACKs.\n";
+    //cout << "TCPDelayedACKReliabilityState::create_and_dispatch_ack(): currently have " << rc->get_cur_ack_count() << "\n";
     //we have enough data packets, send an an ACK
     if(rc->get_cur_ack_count() >= rc->get_delay_count()){
-        cout << "TCPDelayedACKReliabilityState::create_and_dispatch_ack(): count reached, sending ACK\n";
+        //cout << "TCPDelayedACKReliabilityState::create_and_dispatch_ack(): count reached, sending ACK\n";
 
         if(rc->get_delay_count() > 1){
             cancel_ack_timer(c, s);
@@ -100,7 +100,7 @@ void TCPDelayedACKReliabilityState::create_and_dispatch_ack(Context* c, QueuePro
     }
     //Check to see if we have a timer going; if not, we'll need one now
     else if(rc->get_ack_timeout_event() == 0) {
-        cout << "TCPDelayedACKReliabilityState::create_and_dispatch_ack(): starting ACK timer\n";
+        //cout << "TCPDelayedACKReliabilityState::create_and_dispatch_ack(): starting ACK timer\n";
         start_ack_timer(c, s);
     }
 }
@@ -108,7 +108,7 @@ void TCPDelayedACKReliabilityState::create_and_dispatch_ack(Context* c, QueuePro
 u_int16_t TCPDelayedACKReliabilityState::get_delay_based_on_seq_num(Context* c, u_int32_t seqnum) {
     TCPDelayedACKReliabilityContext* rc = (TCPDelayedACKReliabilityContext*) c;
 
-    cout << "get_delay_based_on_seq_num(): seqnum is " << seqnum << endl;
+    //cout << "get_delay_based_on_seq_num(): seqnum is " << seqnum << endl;
 
     if(seqnum < rc->get_l1_threshold()){
         return rc->get_delay1();
@@ -126,7 +126,7 @@ u_int16_t TCPDelayedACKReliabilityState::get_delay_based_on_seq_num(Context* c, 
 
 void TCPDelayedACKReliabilityState::state_set_socket_option(Context* c, QueueProcessor<Event*>* q, SetSocketOptionEvent* e) {
     TCPDelayedACKReliabilityContext* rc = (TCPDelayedACKReliabilityContext*) c;
-    cout << "TCPDelayedACKReliabilityState::state_set_socket_option()" << endl;
+    //cout << "TCPDelayedACKReliabilityState::state_set_socket_option()" << endl;
     if(e->get_level() == TCP_DELAYEDACK) {
         Socket* s = e->get_socket();
         //l1
@@ -134,7 +134,7 @@ void TCPDelayedACKReliabilityState::state_set_socket_option(Context* c, QueuePro
             pair<int,int>* option_name = new pair<int, int>(TCP_DELAYEDACK, 1);
             int l1 = *(int*) (s->get_socket_options().get(*option_name).first.data());
 
-            cout << "TCPDelayedACKReliabilityState::state_set_socket_option(): setting l1 to " << l1 << endl;
+            //cout << "TCPDelayedACKReliabilityState::state_set_socket_option(): setting l1 to " << l1 << endl;
             rc->set_l1_threshold(l1);
         }
         //l2
@@ -142,7 +142,7 @@ void TCPDelayedACKReliabilityState::state_set_socket_option(Context* c, QueuePro
             pair<int,int>* option_name = new pair<int, int>(TCP_DELAYEDACK, 2);
             int l2 = *(int*) (s->get_socket_options().get(*option_name).first.data());
 
-            cout << "TCPDelayedACKReliabilityState::state_set_socket_option(): setting l2 to " << l2 << endl;
+            //cout << "TCPDelayedACKReliabilityState::state_set_socket_option(): setting l2 to " << l2 << endl;
             rc->set_l2_threshold(l2);
         }
         //l3
@@ -150,7 +150,7 @@ void TCPDelayedACKReliabilityState::state_set_socket_option(Context* c, QueuePro
             pair<int,int>* option_name = new pair<int, int>(TCP_DELAYEDACK, 3);
             int l3 = *(int*) (s->get_socket_options().get(*option_name).first.data());
 
-            cout << "TCPDelayedACKReliabilityState::state_set_socket_option(): setting l3 to " << l3 << endl;
+            //cout << "TCPDelayedACKReliabilityState::state_set_socket_option(): setting l3 to " << l3 << endl;
             rc->set_l3_threshold(l3);
         }
     }

@@ -63,7 +63,3 @@ TEST_F(WiFuTransportMockTestDropRandom10Percent, delayedACKSendReceiveTestActive
 TEST_F(WiFuTransportMockTestDropRandom20Percent, delayedACKSendReceiveTestActiveToPassiveDropRandom) {
     tahoe_active_to_passive_test_with_close(TCP_DELAYEDACK, random_string(50000));
 }
-
-TEST_F(WiFuTransportMockTestDropRandom30Percent, delayedACKSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(TCP_DELAYEDACK, random_string(50000));
-}
