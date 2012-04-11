@@ -248,6 +248,7 @@ def build_wifu_transport_unit_test(bld):
 	project_files += bld.glob('src/protocol/*.cc')
 	project_files += bld.glob('src/events/protocol_events/*.cc')
 	project_files += bld.glob('src/events/framework_events/*.cc')
+	project_files += bld.glob('src/states/tcp-ap/*.cc')
 
 	filesToUse = test_files + project_files
 
@@ -277,6 +278,7 @@ def build_wifu_transport_integration_test(bld):
 	integration_test_files += bld.glob('src/observer/*.cc')
 	integration_test_files += bld.glob('src/events/framework_events/*.cc')
 	integration_test_files += bld.glob('src/events/Event.cc')
+
 
 	if Options.options.bit_32:
 		integration_test = bld(features='cxx cprogram',

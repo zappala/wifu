@@ -118,6 +118,8 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 #define INITIAL_RTO 3.0
 #define MIN_RTO 1.0
 
+
+
 // in seconds
 #define INITIAL_PROBE_TIMEOUT_DURATION 120
 
@@ -153,8 +155,15 @@ enum Priority {
     LOW = 2000
 };
 
+// delayed ack defines
+#define TCP_DELAYEDACK 209
 
+// Delayed ACK timeout value in seconds
+//#define INITAL_DELAY_TIMEOUT_INTERVAL 0.0001 //if they meant microseconds
+#define INITAL_DELAY_TIMEOUT_INTERVAL 0.1 //what they said
 
+//Specific to Delayed ACK
+#define DEFAULT_DELAY_COUNT 2
 
 #endif	/* _INCLUDES_H */
 
