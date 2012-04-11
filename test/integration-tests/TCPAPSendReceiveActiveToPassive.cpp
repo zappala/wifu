@@ -63,7 +63,3 @@ TEST_F(WiFuTransportMockTestDropRandom10Percent, APSendReceiveTestActiveToPassiv
 TEST_F(WiFuTransportMockTestDropRandom20Percent, APSendReceiveTestActiveToPassiveDropRandom) {
     tahoe_active_to_passive_test_with_close(TCP_AP, random_string(50000));
 }
-
-TEST_F(WiFuTransportMockTestDropRandom30Percent, APSendReceiveTestActiveToPassiveDropRandom) {
-    tahoe_active_to_passive_test_with_close(TCP_AP, random_string(50000));
-}
