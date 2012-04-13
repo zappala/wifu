@@ -54,6 +54,7 @@
 #include "ProtocolManager.h"
 #include "protocol/TCPTahoe.h"
 #include "protocol/SimpleUDP.h"
+#include "protocol/TCPAP.h"
 
 //packet types
 #include "TCPPacketFactory.h"
@@ -157,10 +158,38 @@ void register_udp() {
     //    dispatcher.map_event(type_name(TimerFiredEvent), &SimpleUDP::instance());
 }
 
+void register_ap() {
+    ProtocolManager::instance().support(TCP_AP);
+    NetworkInterfaceFactory::instance().create().register_protocol(TCP_AP, new TCPPacketFactory());
+
+    dispatcher.map_event(type_name(SocketEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(BindEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ListenEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ConnectEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(AcceptEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(SendPacketEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(TimerFiredEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ResendPacketEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ReceiveEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(SendEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(CloseEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(DeleteSocketEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPAP::instance());
+}
+
 void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
     register_tcp_tahoe();
     register_udp();
+    register_ap();
 }
 
 void setup_network_interface(gcstring& type) {
