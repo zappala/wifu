@@ -280,6 +280,7 @@ def build_wifu_transport_integration_test(bld):
 	integration_test_files += bld.glob('src/events/framework_events/*.cc')
 	integration_test_files += bld.glob('src/events/Event.cc')
 
+
 	if Options.options.bit_32:
 		integration_test = bld(features='cxx cprogram',
 			source=integration_test_files,
