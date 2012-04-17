@@ -14,6 +14,13 @@ using namespace std;
 
 class LocalSocketReceiverCallback {
 public:
+
+    /**
+     * Callback function used to process messages received by a Unix socket.
+     *
+     * @param message Message received from a Unix socket.
+     * @param length Length of message in bytes.
+     */
     virtual void receive(unsigned char* message, int length) = 0;
 };
 

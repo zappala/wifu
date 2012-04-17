@@ -40,6 +40,12 @@
  * Communicates (sends messages) with the back-end over a Unix Socket, writing to the file /tmp/WS.
  * Receives messages from the back-end over a Unix Socket.  This class receives on the file /tmp/LS plus a random number.
  *
+ * Note that all these functions are simply an interface.
+ * I have done the best I can with the time I've had to implement as much of this functionality as possible.
+ * In a lot of cases there is not a clear delineation between what WiFu Transport should support versus what is left to a protocol to implement.
+ * This means that you may not get identical functionality as explained by the man pages.
+ * However, I have consulted them as I have built this software and provide a good reference for what to expect.
+ *
  */
 class WifuTransportFrontEndTranslator : public LocalSocketFullDuplex {
 private:
@@ -106,6 +112,12 @@ public:
        
     }
 
+    /**
+     * Callback function used to receive messages sent by the back end.
+     * 
+     * @param message The message received.  It must be of type GenericResponseMessage (it should be a more specific message).
+     * @param length Length of message in bytes.
+     */
     void receive(unsigned char* message, int length) {
         struct GenericResponseMessage* response = (struct GenericResponseMessage*) message;
 
@@ -135,7 +147,7 @@ public:
 
     /**
      * Non-blocking.
-     * Creates a socket message and sends it to the back end.
+     * Creates a SocketMessage and sends it to the back end.
      * Then waits for a response.
      * See man 2 socket.
      *
@@ -184,7 +196,7 @@ public:
      * Bind a name to a socket
      * See man 2 bind.
      *
-     * Creates a wifu_bind message and passes it to the back-end, then waits for a response on the specified fd.
+     * Creates a BindMessage and passes it to the back end, then waits for a response on the specified fd.
      *
      * @param fd The socket id.
      * @param addr Address to bind to.  This must be a sockaddr_in object.
@@ -229,7 +241,7 @@ public:
     }
 
     /**
-     * Creates and sends a getsockopt message to the back-end, then wait for a response (on a per-socket basis).
+     * Creates and sends a GetSockOptMessage to the back end, then wait for a response (on a per-socket basis).
      * See man 2 getsockopt.
      *
      * @param fd The socket id.
@@ -272,7 +284,7 @@ public:
     }
 
     /**
-     * Creates and sends a wetsockopt message to the back-end, then wait for a response (on a per-socket basis).
+     * Creates and sends a SetSockOptMessage to the back end, then wait for a response (on a per-socket basis).
      * See man 2 setsockopt.
      *
      * @param fd The socket id.
@@ -316,7 +328,7 @@ public:
      * Mark this socket as listening.
      * See man 2 listen.
      *
-     * Creates a wifu_listen message and passes it to the back-end, then waits for a response on the specified fd.
+     * Creates a ListenMessage and passes it to the back end, then waits for a response on the specified fd.
      *
      * @param fd The socket id.
      * @param n The maximum number of connections to which the queue of pending connections for fd may grow.
@@ -361,7 +373,7 @@ public:
      * Accept incomming connections.
      * See man 2 accept.
      *
-     * Creates a wifu_accept message and passes it to the back-end, then waits for a response on the specified fd.
+     * Creates a AcceptMessage and passes it to the back end, then waits for a response on the specified fd.
      *
      * @param fd The socket id.
      * @param addr Pointer to a structure to fill in with the remote address/port to which we connect.
@@ -409,7 +421,7 @@ public:
      * Send data to a remote destination.
      * See man 2 send.
      *
-     * Creates a wifu_send message and passes it to the back-end, then waits for a response on the specified fd.
+     * Creates a SendToMessage and passes it to the back end, then waits for a response on the specified fd.
      *
      * @param fd The socket id.
      * @param buf The buffer to send.
@@ -427,7 +439,7 @@ public:
      * Receive data on a socket.
      * See man 2 send.
      *
-     * Creates a wifu_receive message and passes it to the back-end, then waits for a response on the specified fd.
+     * Creates a RecvFromMessage and passes it to the back end, then waits for a response on the specified fd.
      *
      * @param fd The socket id to receive on.
      * @param buf The buffer to fill upon recept of data.
@@ -446,7 +458,7 @@ public:
      * Send data to a remote destination.
      * See man 2 send.
      *
-     * Creates a wifu_send message and passes it to the back-end, then waits for a response on the specified fd.
+     * Creates a SendToMessage and passes it to the back end, then waits for a response on the specified fd.
      *
      * @param fd The socket id.
      * @param buf The buffer to send.
@@ -492,7 +504,7 @@ public:
      * Receive data on a socket.
      * See man 2 send.
      *
-     * Creates a wifu_receive message and passes it to the back-end, then waits for a response on the specified fd.
+     * Creates a RecvFromMessage and passes it to the back end, then waits for a response on the specified fd.
      *
      * @param fd The socket id to receive on.
      * @param buf The buffer to fill upon recept of data.
@@ -552,7 +564,7 @@ public:
      * Connect to a remote peer.
      * See man 2 connect.
      *
-     * Creates a wifu_connect message and passes it to the back-end, then waits for a response on the specified fd.
+     * Creates a ConnectMessage and passes it to the back end, then waits for a response on the specified fd.
      *
      * @param fd The socket id.
      * @param addr The address/port of the remote peer to connect to.
@@ -587,6 +599,7 @@ public:
 
     /**
      * Closes fd and removes any notion that it existed.
+     * Sends a CloseMessage to the back end and waits for a response.
      * @param fd The file descriptor to close.
      * @return 0 if call was successfull, -1 otherwise (and ERRNO is set appropriately).
      */
@@ -622,6 +635,9 @@ private:
      */
     gcstring write_file_;
 
+    /**
+     * The back-end address (Unix socket)
+     */
     struct sockaddr_un back_end_;
 
     /**

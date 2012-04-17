@@ -15,7 +15,7 @@
 
 /**
  * Object which stores responses from the back-end.
- * This object also holds the control mechanism for each respective socket.
+ * This object also holds the Semaphores to ensure a thread-safety mechanism for each respective socket.
  * There is a one-to-one relationship between socket ids (int) and SocketData objects.
  *
  * All internals of this object get set in the WiFuTransportFrontEndTranslator::receive() method
@@ -50,7 +50,7 @@ public:
     }
 
     /**
-     * @return A pointer to the internal Semaphore.
+     * @return A pointer to the internal Semaphore.  Used to provide thread-safety.
      *
      * @see Semaphore
      */
@@ -60,25 +60,44 @@ public:
 
     /**
      * 
-     * @return A pointer to the internal flag object.
+     * @return A pointer to the internal flag object.  Used to provide thread-safety.
      */
     Semaphore* get_flag() {
         return flag_;
     }
 
+    /**
+     * Copies length bytes from the location pointed to by response into an internal buffer.
+     *
+     * @param response Pointer to a message received from the back end.
+     * @param length Number of bytes to copy.
+     */
     void set_receive_payload(unsigned char* response, int length) {
         memcpy(receive_payload_, response, length);
     }
 
+    /**
+     * @return A pointer to the internal buffer that holds responses from the back end.
+     */
     unsigned char* get_receive_payload() {
         return receive_payload_;
     }
 
+    /**
+     * This is a pointer to an internal buffer so a socket doesn't need to recreate a buffer each time it needs to communicate with the back end.
+     * @return A pointer to the internal buffer used to insert the BSD socket API parameters into to send to the back end.
+     *
+     */
     unsigned char* get_send_payload() {
         return send_payload_;
     }
 
 private:
+
+    /**
+     * Used to coordinate the sending and receiving of messages to and from the back end.
+     * This is used in conjunction with flag_.
+     */
     Semaphore* sem_;
 
     /**

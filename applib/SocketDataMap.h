@@ -129,7 +129,7 @@ public:
     }
 
     /**
-     * Removes the key-value pair from the data structure.
+     * Removes the key-value pair from the data structure, but does not delete the SocketData object.
      *
      * @param key The socket id of the SocketData object to remove.
      */
