@@ -23,7 +23,7 @@
  * Context of the TCP Tahoe Reliability finite state machine.
  * Holds all the state needed to perform TCP Tahoe type reliability.
  * For more information on some of these variables see RFCs 793, 2988.
- * Currently, TCP Tahoe's reliability FSM has only one state: TCPTahoeReliabilityState.
+ * Currently, TCPTahoe's reliability FSM has only one state: TCPTahoeReliabilityState.
  *
  * @see TCPTahoeReliabilityState
  * @see OutstandingDataContext
@@ -51,7 +51,7 @@ public:
     bool is_initialized();
 
     /**
-     * @post is_initialized() will always return true.
+     * After calling this method, is_initialized() will always return true.
      */
     void set_initialized();
 

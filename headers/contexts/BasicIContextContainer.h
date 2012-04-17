@@ -15,6 +15,9 @@
  * Stores three different IContext pointers.
  * Provides getters and setters for a connection manager, reliabiliy, and congestion control IContext implementation.
  *
+ * Inheriting classes may also wish to store protocol-specific data that cannot be stored in the specific Context objects.
+ * However, care should be taken to ensure that as much data as possible is pushed into the Context objects.
+ *
  * @see IContext
  * @see TCPTahoe
  */

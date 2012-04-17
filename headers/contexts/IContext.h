@@ -51,7 +51,7 @@ using namespace std;
  *
  * Context implements this interface and provides default implementations for all methods.
  *
- * For an example of how this is intended to be used, see TCPTahoe which subclasses Protocol and is therefore a IModule and an IContext.
+ * For an example of how this is intended to be used, see TCPTahoe which subclasses Protocol and is therefore an IModule and an IContext.
  *
  * @see Context
  * @see IModule

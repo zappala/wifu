@@ -109,14 +109,28 @@ public:
     sockaddr_un* get_front_end_socket();
 
     /**
-     * @return A pointer to the Socket which is using this conneciton manager FSM.
+     * @return A pointer to the Socket which is using this connection manager FSM.
      */
     Socket* get_socket();
 
+    /**
+     * Sets the Socket which is using this connection manager FSM.
+     * @param s The Socket which is using this conneciton manager FSM.
+     */
     void set_socket(Socket* s);
 
+    /**
+     * Sets the Socket that accept() was called on.
+     *
+     * @param s The Socket that accept() was called on.
+     */
     void set_accept_socket(Socket* s);
 
+    /**
+     * Gets the Socket that accept() was called on.
+     *
+     * @return The Socket that accept() was called on.
+     */
     Socket* get_accept_socket();
 
 private:
@@ -136,8 +150,14 @@ private:
      */
     ListenEvent* l_event_;
 
+    /**
+     * The Socket which is using this conneciton manager FSM.
+     */
     Socket* socket_;
 
+    /**
+     * The Socket that accept() was called on.
+     */
     Socket* accept_socket_;
 
 };

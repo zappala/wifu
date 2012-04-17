@@ -75,12 +75,32 @@ public:
      */
     void set_saved_fin(NetworkReceivePacketEvent* e);
 
+    /**
+     * @return The BackLog object that contains connections already established,
+     * but a notification has yet to be passed to the application.
+     * Continually calling accept() will eventually empty the BackLog.
+     *
+     * @see BackLog
+     * @see man 2 accept
+     */
     BackLog* get_back_log();
 
+    /**
+     * Saves the BackLog object used with a passively connecting socket.
+     * @param bl The BackLog object to save.
+     * @see BackLog
+     */
     void set_back_log(BackLog* bl);
 
+    /**
+     * @return The AcceptEvent used by the application to accept established connections.
+     */
     AcceptEvent* get_saved_accept_event();
 
+    /**
+     * Saves the AcceptEvent used by the application to accept established connections.
+     * @param e The AcceptEvent used by the application to accept established connections.
+     */
     void set_saved_accept_event(AcceptEvent* e);
 
 private:
@@ -108,6 +128,9 @@ private:
      */
     BackLog* back_log_;
 
+    /**
+     * The AcceptEvent used by the application to accept established connections.
+     */
     AcceptEvent* saved_accept_event_;
 };
 
