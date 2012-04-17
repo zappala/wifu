@@ -166,5 +166,8 @@ enum Priority {
 //Specific to Delayed ACK
 #define DEFAULT_DELAY_COUNT 2
 
+// delayed ack + adaptive pacing defines
+#define TCP_AP_DELAYEDACK 213
+
 #endif	/* _INCLUDES_H */
 

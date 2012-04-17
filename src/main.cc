@@ -56,6 +56,7 @@
 #include "protocol/SimpleUDP.h"
 #include "protocol/TCPAP.h"
 #include "protocol/TCPTahoe_DelayedACKs.h"
+#include "protocol/TCP_AP_DelayedACKs.h"
 
 //packet types
 #include "TCPPacketFactory.h"
@@ -214,12 +215,40 @@ void register_delayed_ack() {
     dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPDelayedACK::instance());
 }
 
+void register_ap_delayed_ack() {
+    ProtocolManager::instance().support(TCP_AP_DELAYEDACK);
+    NetworkInterfaceFactory::instance().create().register_protocol(TCP_AP_DELAYEDACK, new TCPPacketFactory());
+
+    dispatcher.map_event(type_name(SocketEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(BindEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ListenEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ConnectEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(AcceptEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(SendPacketEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(TimerFiredEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ResendPacketEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ReceiveEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(SendEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(CloseEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(DeleteSocketEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCP_AP_DelayedACKs::instance());
+}
+
 void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
     register_tcp_tahoe();
     register_udp();
     register_ap();
     register_delayed_ack();
+    register_ap_delayed_ack();
 }
 
 void setup_network_interface(gcstring& type) {
