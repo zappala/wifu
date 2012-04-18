@@ -26,7 +26,8 @@ void WiFuTransportIntegrationTest::kill_backend() {
 }
 
 gcstring WiFuTransportIntegrationTest::get_command() {
-    return "./wifu-transport --logger_threshold 1000000 --logger_timeout 1000000.0 --network standard";
+    //TODO: turn on all supported protocols for now
+    return "./wifu-transport --logger_threshold 1000000 --logger_timeout 1000000.0 --network standard --tahoe --ap --dack --udp --apdack ";
 }
 
 gcstring WiFuTransportIntegrationTest::getOutputFromCommand(char* cmd) {
@@ -45,7 +46,7 @@ gcstring WiFuTransportIntegrationTest::getOutputFromCommand(char* cmd) {
 }
 
 gcstring WiFuTransportIntegrationMockTest::get_command() {
-    gcstring cmd = "./wifu-transport --logger_threshold 1 --logger_timeout 1.0 --network mock --passive_port 1000 --mockfile ";
+    gcstring cmd = "./wifu-transport --logger_threshold 1 --logger_timeout 1.0 --network mock --passive_port 1000 --tahoe --ap --dack --udp --apdack --mockfile ";
     cmd.append(get_mock_file());
     return cmd;
 }

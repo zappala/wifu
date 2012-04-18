@@ -210,7 +210,8 @@ class ExecutableManager():
 		self.receivingChunk = "receivingChunk"
 		
 	def get_wifu_command(self):
-		command = "sudo nice -n -20 ./wifu-transport"
+		# only need tahoe for these tests
+		command = "sudo nice -n -20 ./wifu-transport --tahoe"
 		
 		if self.loggerThreshold in self.config.dictionary:
 			command += " --logger_threshold " + self.config.dictionary[self.loggerThreshold]

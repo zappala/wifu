@@ -160,7 +160,6 @@ void register_udp() {
     //    dispatcher.map_event(type_name(TimerFiredEvent), &SimpleUDP::instance());
 }
 
-
 void register_ap() {
     ProtocolManager::instance().support(TCP_AP);
     NetworkInterfaceFactory::instance().create().register_protocol(TCP_AP, new TCPPacketFactory());
@@ -244,11 +243,28 @@ void register_ap_delayed_ack() {
 
 void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
-    register_tcp_tahoe();
-    register_udp();
-    register_ap();
-    register_delayed_ack();
-    register_ap_delayed_ack();
+
+    gcstring tahoe = "tahoe";
+    gcstring udp = "udp";
+    gcstring ap = "ap";
+    gcstring dack = "dack";
+    gcstring apdack = "ap+dack";
+
+    if (optionparser.present(tahoe)) {
+        register_tcp_tahoe();
+    }
+    if (optionparser.present(udp)) {
+        register_udp();
+    }
+    if (optionparser.present(ap)) {
+        register_ap();
+    }
+    if (optionparser.present(dack)) {
+        register_delayed_ack();
+    }
+    if (optionparser.present(apdack)) {
+        register_ap_delayed_ack();
+    }
 }
 
 void setup_network_interface(gcstring& type) {
@@ -284,6 +300,12 @@ int main(int argc, char** argv) {
     gcstring logger_timeout = "logger_timeout";
     gcstring foreground = "foreground";
 
+    gcstring tahoe = "tahoe";
+    gcstring udp = "udp";
+    gcstring ap = "ap";
+    gcstring dack = "dack";
+    gcstring apdack = "ap+dack";
+
     static struct option long_options[] = {
         {network.c_str(), required_argument, NULL, 0},
         {mockfile.c_str(), required_argument, NULL, 0},
@@ -291,6 +313,13 @@ int main(int argc, char** argv) {
         {logger_threshold.c_str(), required_argument, NULL, 0},
         {logger_timeout.c_str(), required_argument, NULL, 0},
         {foreground.c_str(), no_argument, NULL, 0},
+
+        {tahoe.c_str(), no_argument, NULL, 0},
+        {udp.c_str(), no_argument, NULL, 0},
+        {ap.c_str(), no_argument, NULL, 0},
+        {dack.c_str(), no_argument, NULL, 0},
+        {apdack.c_str(), no_argument, NULL, 0},
+
         {0, 0, 0, 0}
     };
 
