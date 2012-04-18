@@ -7,7 +7,7 @@ import re
 top = '.'
 out = 'build'
 
-def set_options(opt):
+def options(opt):
 	opt.tool_options('compiler_cxx')
 
 	opt.add_option('--32',
@@ -43,37 +43,26 @@ def configure(conf):
 	
 	conf.env['LIB_PTHREAD'] = ['pthread']
 	
-	conf.env['STATICLIB'] += ['gtest']
-	conf.env['STATICLIB'] += ['pantheios.1.core.gcc44']
+	conf.env['LIB'] += ['gtest']
+	conf.env['LIB'] += ['pantheios.1.core.gcc44']
 	
 	#Use the top two for logging to a file, the bottom two for logging to console 
-	conf.env['STATICLIB'] += ['pantheios.1.be.file.gcc44']
-	conf.env['STATICLIB'] += ['pantheios.1.bec.file.gcc44']
-#	conf.env['STATICLIB'] += ['pantheios.1.be.fprintf.gcc44']
-#	conf.env['STATICLIB'] += ['pantheios.1.bec.fprintf.gcc44']
+	conf.env['LIB'] += ['pantheios.1.be.file.gcc44']
+	conf.env['LIB'] += ['pantheios.1.bec.file.gcc44']
+#	conf.env['LIB'] += ['pantheios.1.be.fprintf.gcc44']
+#	conf.env['LIB'] += ['pantheios.1.bec.fprintf.gcc44']
 
 	#Always use these
-	conf.env['STATICLIB'] += ['pantheios.1.fe.all.gcc44']
-	conf.env['STATICLIB'] += ['pantheios.1.util.gcc44']
+	conf.env['LIB'] += ['pantheios.1.fe.all.gcc44']
+	conf.env['LIB'] += ['pantheios.1.util.gcc44']
 
-	conf.env['CPPPATH'] += ['../lib/pantheios/include']
-	conf.env['CPPPATH'] += ['../lib/stlsoft/include']
-	conf.env['CPPPATH'] += ['../lib/gc/include']
+	conf.env['INCLUDES'] += ['../lib/pantheios/include']
+	conf.env['INCLUDES'] += ['../lib/stlsoft/include']
+	conf.env['INCLUDES'] += ['../lib/gc/include']
 	
 	conf.env['LIB_RT'] = ['rt']
 	
-	#gotta turn CS off for 32-bit
-	if Options.options.bit_32:
-		conf.env['CXXFLAGS'] += ['--cs-off']
-		conf.env['LINKFLAGS'] += ['--cs-off']
-	else:	
-		conf.env['CXXFLAGS'] += ['--cs-include-path=../headers']
-		conf.env['LINKFLAGS'] += ['--cs-include-path=../headers']
-	
-		conf.env['CXXFLAGS'] += ['--cs-exclude-path=../test/unit-tests']
-		conf.env['LINKFLAGS'] += ['--cs-exclude-path=../test/unit-tests']
-	
-	conf.env.PREFIX = ".."
+	conf.env['PREFIX'] = ".."
 
 	if Options.options.bit_32:
 		print "Configuring for 32-bit compilation"
@@ -96,16 +85,12 @@ def configure(conf):
 		# Optimizations: -O, -O0 (off), -O1, -O2, -O3 (the higher the number, the more optimization it does, and the harder to debug it)
 		conf.env['CXXFLAGS'] += ['-O0']
 		# turn off coverage scanner
-		conf.env['CXXFLAGS'] += ['--cs-off']
-		conf.env['LINKFLAGS'] += ['--cs-off']
 
 	if Options.options.dist:
 		print "Configuring for distribution!"
 		# Optimizations: -O, -O0 (off), -O1, -O2, -O3 (the higher the number, the more optimization it does, and the harder to debug it)
 		conf.env['CXXFLAGS'] += ['-O3']
 		# turn off coverage scanner
-		conf.env['CXXFLAGS'] += ['--cs-off']
-		conf.env['LINKFLAGS'] += ['--cs-off']
 		# turn off asserts
 		conf.env['CXXFLAGS'] += ['-DNDEBUG']
 
@@ -134,17 +119,17 @@ def post(ctx):
 
 def build_blaster(bld):
     # udp blaster
-	udp_files = bld.glob('preliminary/Timer.cc')
-	udp_files += bld.glob('preliminary/UDPBlaster.cc')
-	udp_files += bld.glob('src/UDPSocket.cc')
-	udp_files += bld.glob('src/Semaphore.cc')
+	udp_files = bld.path.ant_glob('preliminary/Timer.cc')
+	udp_files += bld.path.ant_glob('preliminary/UDPBlaster.cc')
+	udp_files += bld.path.ant_glob('src/UDPSocket.cc')
+	udp_files += bld.path.ant_glob('src/Semaphore.cc')
 
 	if Options.options.bit_32:
 		udp_blaster = bld(features='cxx cprogram',
 		source=udp_files,
 		includes='headers',
 		libpath = ['../lib/gc/gc_32'],
-		staticlib = ['gccpp','gc','cord'],
+		lib = ['gccpp','gc','cord'],
 		uselib='PTHREAD RT',
 			target='udp-blaster')
 	else:
@@ -152,16 +137,16 @@ def build_blaster(bld):
 		source=udp_files,
 		includes='headers',
 		libpath = ['../lib/gc/gc_64'],
-		staticlib = ['gccpp','gc','cord'],
+		lib = ['gccpp','gc','cord'],
 		uselib='PTHREAD RT',
 			target='udp-blaster')
 
 def build_sink(bld):
 	# udp sink
-	udp_sink_files = bld.glob('preliminary/Timer.cc')
-	udp_sink_files += bld.glob('preliminary/UDPSink.cc')
-	udp_sink_files += bld.glob('src/UDPSocket.cc')
-	udp_sink_files += bld.glob('src/Semaphore.cc')
+	udp_sink_files = bld.path.ant_glob('preliminary/Timer.cc')
+	udp_sink_files += bld.path.ant_glob('preliminary/UDPSink.cc')
+	udp_sink_files += bld.path.ant_glob('src/UDPSocket.cc')
+	udp_sink_files += bld.path.ant_glob('src/Semaphore.cc')
 
 	udp_sink = bld(features='cxx cprogram',
         source=udp_sink_files,
@@ -172,49 +157,51 @@ def build_sink(bld):
 
 def build_staticlib(bld):
     # shared files
-	src_files = bld.glob('src/*.cc')
-	src_files.remove('src/main.cc')
-	src_files += bld.glob('src/exceptions/*.cc')
+	src_files = bld.path.ant_glob('src/*.cc')
+	main = bld.path.ant_glob('src/main.cc')
+	src_files.remove(main[0])
+	src_files += bld.path.ant_glob('src/exceptions/*.cc')
 
 	# shared library
-	api_files = bld.glob('applib/*.cc')
+	api_files = bld.path.ant_glob('applib/*.cc')
 	api_files += src_files
 
 	if Options.options.bit_32:
-		lib = bld(features='cxx cstaticlib',
+		lib = bld(features='cxx cxxstlib',
 		source=api_files,
 		includes='applib headers headers/exceptions',
-			ccflags="-c -fPIC",
-			export_incdirs='applib',
+			cflags="-c -fPIC",
+			export_includes='applib',
 			uselib='PTHREAD RT',
 			libpath = ['../lib/gc/gc_32'],
-			staticlib = ['gccpp','gc','cord'],
+			lib = ['gccpp','gc','cord'],
 		target='wifu-transport-api')
 	else:
-		lib = bld(features='cxx cstaticlib',
+		lib = bld(features='cxx cxxstlib',
 		source=api_files,
 		includes='applib headers headers/exceptions',
-			ccflags="-c -fPIC",
-			export_incdirs='applib',
+			cflags="-c -fPIC",
+			export_includes='applib',
 			uselib='PTHREAD RT',
 			libpath = ['../lib/gc/gc_64'],
-			staticlib = ['gccpp','gc','cord'],
+			lib = ['gccpp','gc','cord'],
+			use = ['gccpp','gc','cord'],
 		target='wifu-transport-api')
 
 def build_wifu(bld):
-	src_files = bld.glob('src/*.cc')
-	src_files += bld.glob('src/contexts/*.cc')
-	src_files += bld.glob('src/events/*.cc')
-	src_files += bld.glob('src/states/*.cc')
-	src_files += bld.glob('src/states/tcp-ap/*.cc')
-	src_files += bld.glob('src/states/atp/*.cc')
-	src_files += bld.glob('src/observer/*.cc')
-	src_files += bld.glob('src/packet/*.cc')
-	src_files += bld.glob('src/exceptions/*.cc')
-	src_files += bld.glob('src/visitors/*.cc')
-	src_files += bld.glob('src/protocol/*.cc')
-	src_files += bld.glob('src/events/protocol_events/*.cc')
-	src_files += bld.glob('src/events/framework_events/*.cc')
+	src_files = bld.path.ant_glob('src/*.cc')
+	src_files += bld.path.ant_glob('src/contexts/*.cc')
+	src_files += bld.path.ant_glob('src/events/*.cc')
+	src_files += bld.path.ant_glob('src/states/*.cc')
+	src_files += bld.path.ant_glob('src/states/tcp-ap/*.cc')
+	src_files += bld.path.ant_glob('src/states/atp/*.cc')
+	src_files += bld.path.ant_glob('src/observer/*.cc')
+	src_files += bld.path.ant_glob('src/packet/*.cc')
+	src_files += bld.path.ant_glob('src/exceptions/*.cc')
+	src_files += bld.path.ant_glob('src/visitors/*.cc')
+	src_files += bld.path.ant_glob('src/protocol/*.cc')
+	src_files += bld.path.ant_glob('src/events/protocol_events/*.cc')
+	src_files += bld.path.ant_glob('src/events/framework_events/*.cc')
 
 
 	if Options.options.bit_32:
@@ -223,33 +210,34 @@ def build_wifu(bld):
 		includes='headers  headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors headers/states/tcp-ap headers/states/atp headers/events/protocol_events headers/events/framework_events',
 		uselib='PTHREAD RT',
 			libpath = ['../lib/gc/gc_32'],
-			staticlib = ['gccpp','gc','cord'],
+			lib = ['gccpp','gc','cord'],
 		target='wifu-transport')
 	else:
 		exe = bld(features='cxx cprogram',
 		source=src_files,
 		includes='headers headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors headers/states/tcp-ap headers/states/atp headers/events/protocol_events headers/events/framework_events',
 		uselib='PTHREAD RT',
-			libpath = ['../lib/gc/gc_64'],
-			staticlib = ['gccpp','gc','cord'],
+		libpath = ['../lib/gc/gc_64'],
+		lib = ['gccpp','gc','cord'],
 		target='wifu-transport')
 
 def build_wifu_transport_unit_test(bld):
-	test_files = bld.glob('test/unit-tests/*.cpp')
+	test_files = bld.path.ant_glob('test/unit-tests/*.cpp')
 	
-	project_files = bld.glob('src/*.cc')
-	project_files.remove('src/main.cc')
-	project_files += bld.glob('src/observer/*.cc')
-	project_files += bld.glob('src/contexts/*.cc')
-	project_files += bld.glob('src/events/*.cc')
-	project_files += bld.glob('src/states/*.cc')
-	project_files += bld.glob('src/packet/*.cc')
-	project_files += bld.glob('src/exceptions/*.cc')
-	project_files += bld.glob('src/visitors/*.cc')
-	project_files += bld.glob('src/protocol/*.cc')
-	project_files += bld.glob('src/events/protocol_events/*.cc')
-	project_files += bld.glob('src/events/framework_events/*.cc')
-	project_files += bld.glob('src/states/tcp-ap/*.cc')
+	project_files = bld.path.ant_glob('src/*.cc')
+	main = bld.path.ant_glob('src/main.cc')
+	project_files.remove(main[0])
+	project_files += bld.path.ant_glob('src/observer/*.cc')
+	project_files += bld.path.ant_glob('src/contexts/*.cc')
+	project_files += bld.path.ant_glob('src/events/*.cc')
+	project_files += bld.path.ant_glob('src/states/*.cc')
+	project_files += bld.path.ant_glob('src/packet/*.cc')
+	project_files += bld.path.ant_glob('src/exceptions/*.cc')
+	project_files += bld.path.ant_glob('src/visitors/*.cc')
+	project_files += bld.path.ant_glob('src/protocol/*.cc')
+	project_files += bld.path.ant_glob('src/events/protocol_events/*.cc')
+	project_files += bld.path.ant_glob('src/events/framework_events/*.cc')
+	project_files += bld.path.ant_glob('src/states/tcp-ap/*.cc')
 
 	filesToUse = test_files + project_files
 
@@ -259,7 +247,7 @@ def build_wifu_transport_unit_test(bld):
 		includes='preliminary headers lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/unit-tests/headers headers/states/tcp-ap headers/states/atp headers/events/framework_events headers/events/protocol_events',
 		uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_32',
-			staticlib = ['gccpp','gc','cord'],
+			lib = ['gccpp','gc','cord'],
 			target='wifu-transport-unit-test')
 	else:
 		unit_test = bld(features='cxx cprogram',
@@ -267,18 +255,18 @@ def build_wifu_transport_unit_test(bld):
 		includes='preliminary headers lib/pantheios/include lib/stlsoft/include lib/gtest/include headers/contexts headers/events headers/states headers/observer headers/packet headers/exceptions headers/visitors test/unit-tests/headers headers/states/tcp-ap headers/states/atp headers/events/framework_events headers/events/protocol_events',
 		uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_64',
-			staticlib = ['gccpp','gc','cord'],
+			lib = ['gccpp','gc','cord'],
 			target='wifu-transport-unit-test')
 	
 def build_wifu_transport_integration_test(bld):
-	integration_test_files = bld.glob('test/integration-tests/*.cpp')
-	integration_test_files += bld.glob('preliminary/Timer.cc')
-	integration_test_files += bld.glob('src/exceptions/*.cc')
-	integration_test_files += bld.glob('src/packet/*.cc')
-	integration_test_files += bld.glob('src/visitors/*.cc')
-	integration_test_files += bld.glob('src/observer/*.cc')
-	integration_test_files += bld.glob('src/events/framework_events/*.cc')
-	integration_test_files += bld.glob('src/events/Event.cc')
+	integration_test_files = bld.path.ant_glob('test/integration-tests/*.cpp')
+	integration_test_files += bld.path.ant_glob('preliminary/Timer.cc')
+	integration_test_files += bld.path.ant_glob('src/exceptions/*.cc')
+	integration_test_files += bld.path.ant_glob('src/packet/*.cc')
+	integration_test_files += bld.path.ant_glob('src/visitors/*.cc')
+	integration_test_files += bld.path.ant_glob('src/observer/*.cc')
+	integration_test_files += bld.path.ant_glob('src/events/framework_events/*.cc')
+	integration_test_files += bld.path.ant_glob('src/events/Event.cc')
 
 
 	if Options.options.bit_32:
@@ -286,131 +274,131 @@ def build_wifu_transport_integration_test(bld):
 			source=integration_test_files,
 			includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_32',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='wifu-integration-test')
 	else:
 		integration_test = bld(features='cxx cprogram',
 			source=integration_test_files,
 			includes='preliminary headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_64',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='wifu-integration-test')
 
 def build_tcp_tahoe_sender(bld):
-	files = bld.glob('preliminary/TCPTahoeSender.cc')
-	files += bld.glob('preliminary/WiFuSocketAPI.cc')
-	files += bld.glob('preliminary/KernelSocketAPI.cc')
-	files += bld.glob('applib/*.cc')
-	files += bld.glob('src/AddressPort.cc')
+	files = bld.path.ant_glob('preliminary/TCPTahoeSender.cc')
+	files += bld.path.ant_glob('preliminary/WiFuSocketAPI.cc')
+	files += bld.path.ant_glob('preliminary/KernelSocketAPI.cc')
+	files += bld.path.ant_glob('applib/*.cc')
+	files += bld.path.ant_glob('src/AddressPort.cc')
 
 	if Options.options.bit_32:
 		sender = bld(features='cxx cprogram',
 			source=files,
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_32',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='tcp-tahoe-sender')
 	else:
 		sender = bld(features='cxx cprogram',
 			source=files,
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_64',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='tcp-tahoe-sender')
 
 def build_tcp_tahoe_receiver(bld):
-	files = bld.glob('preliminary/TCPTahoeReceiver.cc')
-	files += bld.glob('preliminary/WiFuSocketAPI.cc')
-	files += bld.glob('preliminary/KernelSocketAPI.cc')
-	files += bld.glob('applib/*.cc')
-	files += bld.glob('src/AddressPort.cc')
-	files += bld.glob('src/Utils.cc')
+	files = bld.path.ant_glob('preliminary/TCPTahoeReceiver.cc')
+	files += bld.path.ant_glob('preliminary/WiFuSocketAPI.cc')
+	files += bld.path.ant_glob('preliminary/KernelSocketAPI.cc')
+	files += bld.path.ant_glob('applib/*.cc')
+	files += bld.path.ant_glob('src/AddressPort.cc')
+	files += bld.path.ant_glob('src/Utils.cc')
 
 	if Options.options.bit_32:
 		receiver = bld(features='cxx cprogram',
 			source=files,
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_32',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='tcp-tahoe-receiver')
 	else:
 		receiver = bld(features='cxx cprogram',
 			source=files,
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_64',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='tcp-tahoe-receiver')
 
 def build_echo_client(bld):
-	files = bld.glob('preliminary/EchoClient.cc')
-	files += bld.glob('preliminary/WiFuSocketAPI.cc')
-	files += bld.glob('preliminary/KernelSocketAPI.cc')
-	files += bld.glob('applib/*.cc')
-	files += bld.glob('src/AddressPort.cc')
+	files = bld.path.ant_glob('preliminary/EchoClient.cc')
+	files += bld.path.ant_glob('preliminary/WiFuSocketAPI.cc')
+	files += bld.path.ant_glob('preliminary/KernelSocketAPI.cc')
+	files += bld.path.ant_glob('applib/*.cc')
+	files += bld.path.ant_glob('src/AddressPort.cc')
 
 	if Options.options.bit_32:
 		sender = bld(features='cxx cprogram',
 			source=files,
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_32',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='echo-client')
 	else:
 		sender = bld(features='cxx cprogram',
 			source=files,
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_64',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='echo-client')
 
 def build_echo_server(bld):
-	files = bld.glob('preliminary/EchoServer.cc')
-	files += bld.glob('preliminary/WiFuSocketAPI.cc')
-	files += bld.glob('preliminary/KernelSocketAPI.cc')
-	files += bld.glob('applib/*.cc')
-	files += bld.glob('src/AddressPort.cc')
-	files += bld.glob('src/Utils.cc')
+	files = bld.path.ant_glob('preliminary/EchoServer.cc')
+	files += bld.path.ant_glob('preliminary/WiFuSocketAPI.cc')
+	files += bld.path.ant_glob('preliminary/KernelSocketAPI.cc')
+	files += bld.path.ant_glob('applib/*.cc')
+	files += bld.path.ant_glob('src/AddressPort.cc')
+	files += bld.path.ant_glob('src/Utils.cc')
 
 	if Options.options.bit_32:
 		receiver = bld(features='cxx cprogram',
 			source=files,
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_32',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='echo-server')
 	else:
 		receiver = bld(features='cxx cprogram',
 			source=files,
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer lib/gtest/include',
 			libpath = '../lib/gc/gc_64',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='echo-server')
 
 def build_raw_socket_sender(bld):
-	files = bld.glob('preliminary/RawSocketBlasterSender.cc')
-	files += bld.glob('src/packet/*.cc')
-	files += bld.glob('src/visitors/*.cc')
-	files += bld.glob('src/Socket.cc')
-	files += bld.glob('src/observer/*.cc')
-	files += bld.glob('src/exceptions/*.cc')
-	files += bld.glob('src/SocketOptions.cc')
-	files += bld.glob('src/Semaphore.cc')
-	files += bld.glob('src/PortManagerFactory.cc')
-	files += bld.glob('src/AddressPort.cc')
-	files += bld.glob('src/SocketManager.cc')
-	files += bld.glob('src/Math.cc')
-	files += bld.glob('src/Timer.cc')
-	files += bld.glob('src/OptionParser.cc')
+	files = bld.path.ant_glob('preliminary/RawSocketBlasterSender.cc')
+	files += bld.path.ant_glob('src/packet/*.cc')
+	files += bld.path.ant_glob('src/visitors/*.cc')
+	files += bld.path.ant_glob('src/Socket.cc')
+	files += bld.path.ant_glob('src/observer/*.cc')
+	files += bld.path.ant_glob('src/exceptions/*.cc')
+	files += bld.path.ant_glob('src/SocketOptions.cc')
+	files += bld.path.ant_glob('src/Semaphore.cc')
+	files += bld.path.ant_glob('src/PortManagerFactory.cc')
+	files += bld.path.ant_glob('src/AddressPort.cc')
+	files += bld.path.ant_glob('src/SocketManager.cc')
+	files += bld.path.ant_glob('src/Math.cc')
+	files += bld.path.ant_glob('src/Timer.cc')
+	files += bld.path.ant_glob('src/OptionParser.cc')
 
 	if Options.options.bit_32:
 		receiver = bld(features='cxx cprogram',
@@ -418,7 +406,7 @@ def build_raw_socket_sender(bld):
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer',
 			uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_32',
-			staticlib = ['gccpp', 'gc', 'cord'],
+			lib = ['gccpp', 'gc', 'cord'],
 			target='raw-socket-blaster-sender')
 	else:
 		receiver = bld(features='cxx cprogram',
@@ -426,24 +414,24 @@ def build_raw_socket_sender(bld):
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer',
 			uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_64',
-			staticlib = ['gccpp', 'gc', 'cord'],
+			lib = ['gccpp', 'gc', 'cord'],
 			target='raw-socket-blaster-sender')
 
 def build_raw_socket_receiver(bld):
-	files = bld.glob('preliminary/RawSocketBlasterReceiver.cc')
-	files += bld.glob('src/packet/*.cc')
-	files += bld.glob('src/visitors/*.cc')
-	files += bld.glob('src/Socket.cc')
-	files += bld.glob('src/observer/*.cc')
-	files += bld.glob('src/exceptions/*.cc')
-	files += bld.glob('src/SocketOptions.cc')
-	files += bld.glob('src/Semaphore.cc')
-	files += bld.glob('src/PortManagerFactory.cc')
-	files += bld.glob('src/AddressPort.cc')
-	files += bld.glob('src/SocketManager.cc')
-	files += bld.glob('src/Math.cc')
-	files += bld.glob('src/Timer.cc')
-	files += bld.glob('src/OptionParser.cc')
+	files = bld.path.ant_glob('preliminary/RawSocketBlasterReceiver.cc')
+	files += bld.path.ant_glob('src/packet/*.cc')
+	files += bld.path.ant_glob('src/visitors/*.cc')
+	files += bld.path.ant_glob('src/Socket.cc')
+	files += bld.path.ant_glob('src/observer/*.cc')
+	files += bld.path.ant_glob('src/exceptions/*.cc')
+	files += bld.path.ant_glob('src/SocketOptions.cc')
+	files += bld.path.ant_glob('src/Semaphore.cc')
+	files += bld.path.ant_glob('src/PortManagerFactory.cc')
+	files += bld.path.ant_glob('src/AddressPort.cc')
+	files += bld.path.ant_glob('src/SocketManager.cc')
+	files += bld.path.ant_glob('src/Math.cc')
+	files += bld.path.ant_glob('src/Timer.cc')
+	files += bld.path.ant_glob('src/OptionParser.cc')
 
 	if Options.options.bit_32:
 		receiver = bld(features='cxx cprogram',
@@ -451,7 +439,7 @@ def build_raw_socket_receiver(bld):
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer',
 			uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_32',
-			staticlib = ['gccpp', 'gc', 'cord'],
+			lib = ['gccpp', 'gc', 'cord'],
 			target='raw-socket-blaster-receiver')
 	else:
 		receiver = bld(features='cxx cprogram',
@@ -459,18 +447,18 @@ def build_raw_socket_receiver(bld):
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer',
 			uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_64',
-			staticlib = ['gccpp', 'gc', 'cord'],
+			lib = ['gccpp', 'gc', 'cord'],
 			target='raw-socket-blaster-receiver')
 
 
 def build_udp_sender(bld):
-	files = bld.glob('preliminary/UDPSender.cc')
-	files += bld.glob('preliminary/WiFuSocketAPI.cc')
-	files += bld.glob('preliminary/KernelSocketAPI.cc')
-	files += bld.glob('applib/*.cc')
-	files += bld.glob('src/AddressPort.cc')
-	files += bld.glob('src/OptionParser.cc')
-	files += bld.glob('src/Timer.cc')
+	files = bld.path.ant_glob('preliminary/UDPSender.cc')
+	files += bld.path.ant_glob('preliminary/WiFuSocketAPI.cc')
+	files += bld.path.ant_glob('preliminary/KernelSocketAPI.cc')
+	files += bld.path.ant_glob('applib/*.cc')
+	files += bld.path.ant_glob('src/AddressPort.cc')
+	files += bld.path.ant_glob('src/OptionParser.cc')
+	files += bld.path.ant_glob('src/Timer.cc')
 
 	if Options.options.bit_32:
 		receiver = bld(features='cxx cprogram',
@@ -478,8 +466,8 @@ def build_udp_sender(bld):
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer',
 			uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_32',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='udp-sender')
 	else:
 		receiver = bld(features='cxx cprogram',
@@ -487,17 +475,17 @@ def build_udp_sender(bld):
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer',
 			uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_64',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='udp-sender')
 
 def build_udp_receiver(bld):
-	files = bld.glob('preliminary/UDPReceiver.cc')
-	files += bld.glob('preliminary/WiFuSocketAPI.cc')
-	files += bld.glob('preliminary/KernelSocketAPI.cc')
-	files += bld.glob('applib/*.cc')
-	files += bld.glob('src/AddressPort.cc')
-	files += bld.glob('src/OptionParser.cc')
+	files = bld.path.ant_glob('preliminary/UDPReceiver.cc')
+	files += bld.path.ant_glob('preliminary/WiFuSocketAPI.cc')
+	files += bld.path.ant_glob('preliminary/KernelSocketAPI.cc')
+	files += bld.path.ant_glob('applib/*.cc')
+	files += bld.path.ant_glob('src/AddressPort.cc')
+	files += bld.path.ant_glob('src/OptionParser.cc')
 
 	if Options.options.bit_32:
 		receiver = bld(features='cxx cprogram',
@@ -505,8 +493,8 @@ def build_udp_receiver(bld):
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer',
 			uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_32',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='udp-receiver')
 	else:
 		receiver = bld(features='cxx cprogram',
@@ -514,8 +502,8 @@ def build_udp_receiver(bld):
 			includes='preliminary preliminary/headers headers headers/exceptions headers/packet headers/visitors headers/observer',
 			uselib='PTHREAD RT',
 			libpath = '../lib/gc/gc_64',
-			staticlib = ['gccpp', 'gc', 'cord'],
-			uselib_local='wifu-transport-api',
+			lib = ['gccpp', 'gc', 'cord'],
+			use='wifu-transport-api',
 			target='udp-receiver')
 
 def build(bld):
