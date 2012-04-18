@@ -54,6 +54,9 @@
 #include "ProtocolManager.h"
 #include "protocol/TCPTahoe.h"
 #include "protocol/SimpleUDP.h"
+#include "protocol/TCPAP.h"
+#include "protocol/TCPTahoe_DelayedACKs.h"
+#include "protocol/TCP_AP_DelayedACKs.h"
 
 //packet types
 #include "TCPPacketFactory.h"
@@ -157,10 +160,95 @@ void register_udp() {
     //    dispatcher.map_event(type_name(TimerFiredEvent), &SimpleUDP::instance());
 }
 
+
+void register_ap() {
+    ProtocolManager::instance().support(TCP_AP);
+    NetworkInterfaceFactory::instance().create().register_protocol(TCP_AP, new TCPPacketFactory());
+
+    dispatcher.map_event(type_name(SocketEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(BindEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ListenEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ConnectEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(AcceptEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(SendPacketEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(TimerFiredEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ResendPacketEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ReceiveEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(SendEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(CloseEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(DeleteSocketEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCPAP::instance());
+    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPAP::instance());
+}
+
+void register_delayed_ack() {
+    ProtocolManager::instance().support(TCP_DELAYEDACK);
+    NetworkInterfaceFactory::instance().create().register_protocol(TCP_DELAYEDACK, new TCPPacketFactory());
+
+    dispatcher.map_event(type_name(SocketEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(BindEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(ListenEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(ConnectEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(AcceptEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(SendPacketEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(TimerFiredEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(ResendPacketEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(ReceiveEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(SendEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(CloseEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(DeleteSocketEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCPDelayedACK::instance());
+    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCPDelayedACK::instance());
+}
+
+void register_ap_delayed_ack() {
+    ProtocolManager::instance().support(TCP_AP_DELAYEDACK);
+    NetworkInterfaceFactory::instance().create().register_protocol(TCP_AP_DELAYEDACK, new TCPPacketFactory());
+
+    dispatcher.map_event(type_name(SocketEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(BindEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ListenEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ConnectEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(AcceptEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ConnectionEstablishedEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ConnectionInitiatedEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(SendPacketEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(NetworkReceivePacketEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(TimerFiredEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ResendPacketEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ReceiveEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(SendEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(SendBufferNotEmptyEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(SendBufferNotFullEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotEmptyEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(ReceiveBufferNotFullEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(CloseEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(DeleteSocketEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(SetSocketOptionEvent), &TCP_AP_DelayedACKs::instance());
+    dispatcher.map_event(type_name(GetSocketOptionEvent), &TCP_AP_DelayedACKs::instance());
+}
+
 void register_protocols() {
     // TODO: figure out a better way to register protocols via a config file
     register_tcp_tahoe();
     register_udp();
+    register_ap();
+    register_delayed_ack();
+    register_ap_delayed_ack();
 }
 
 void setup_network_interface(gcstring& type) {

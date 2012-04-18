@@ -91,6 +91,7 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 #define SIMPLE_TCP 206
 #define TCP_TAHOE 207
 #define UDP 217
+#define TCP_AP 211
 
 // TODO: figure out path MTU on the fly.
 // ethernet MTU
@@ -117,6 +118,8 @@ typedef std::map<gcstring, gcstring, std::less<gcstring>, gc_allocator<std::pair
 // RTO values are in seconds
 #define INITIAL_RTO 3.0
 #define MIN_RTO 1.0
+
+
 
 // in seconds
 #define INITIAL_PROBE_TIMEOUT_DURATION 120
@@ -153,8 +156,18 @@ enum Priority {
     LOW = 2000
 };
 
+// delayed ack defines
+#define TCP_DELAYEDACK 209
 
+// Delayed ACK timeout value in seconds
+//#define INITAL_DELAY_TIMEOUT_INTERVAL 0.0001 //if they meant microseconds
+#define INITAL_DELAY_TIMEOUT_INTERVAL 0.1 //what they said
 
+//Specific to Delayed ACK
+#define DEFAULT_DELAY_COUNT 2
+
+// delayed ack + adaptive pacing defines
+#define TCP_AP_DELAYEDACK 213
 
 #endif	/* _INCLUDES_H */
 
