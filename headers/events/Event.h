@@ -22,6 +22,9 @@ class IModule;
 
 /**
  * Represents an Event which IModule objects will receive and react to.
+ * Modules (those classes implementing the IModule interface) register with the dispatcher for framework events they wish to receive.
+ * In addition, they may process protocol events (which should not be sent to the dispatcher).
+ * 
  * @see IModule
  */
 class Event : public gc {
