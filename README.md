@@ -18,36 +18,26 @@ implement per-hop retransmission for lossy networks.
 Features
 --------
 
-* Flexibility
+* _Flexibility_: Protocols are built out of components, so it is easy
+to plug-and-play with new reliability or congestion control protocols
 
-Protocols are built out of components, so it is easy to plug-and-play
-with new reliability or congestion control protocols
+* _Code Reuse_: WiFu comes with event handling, timers, packet
+formats, and other functionality so you get the convenience of a
+simulator with the reality of an implementation
 
-* Code Reuse
+* _Performance_: WiFu TCP is as fast as the kernel in wireless
+networks and on 100 Mbps Ethernet, while having identical fairness
+among flows
 
-WiFu comes with event handling, timers, packet formats, and other
-functionality so you get the convenience of a simulator with the
-reality of an implementation
+* _Easy Porting_: WiFu implements the standard BSD socket API, so it
+is simple to port any application for use with WiFu
 
-* Performance
+* _Network Debugging_: WiFu comes with a mock network object and
+Wireshark packet traces, greatly simplifying the process of debugging
+a network protocol
 
-WiFu TCP is as fast as the kernel in wireless networks and on 100 Mbps
-Ethernet, while having identical fairness among flows
-
-* Easy Porting
-
-WiFu implements the standard BSD socket API, so it is simple to port
-any application for use with WiFu
-
-* Network Debugging
-
-WiFu comes with a mock network object and Wireshark packet traces,
-greatly simplifying the process of debugging a network protocol
-
-* Scalability
-
-Support for multiple applications, built with threading, written
-entirely in C++
+* _Scalability_: Support for multiple applications, built with
+threading, written entirely in C++
 
 Papers
 ======
