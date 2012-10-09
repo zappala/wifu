@@ -1,6 +1,5 @@
 #
-# WiFu: A C++ toolkit for writing user-layer transport protocols for
-# wireless networks.
+# WiFu: A Composable Toolkit for Experimental Wireless Transport Protocols
 #
 # Copyright (C) 2009, 2010, 2012 Daniel Zappala, Brigham Young University
 #
