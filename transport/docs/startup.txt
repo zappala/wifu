@@ -1,7 +1,0 @@
-This is a list of things that need to happen on startup of the daemon process.
-No order is present (yet).
-
-1. call fork() and detach
-2. Do we need to create any objects?  will the main ones be singletons?
-3. load appropriate plugins which implement a protocol
-4. Register modules to send events to appropriate places.  Config file to do this?

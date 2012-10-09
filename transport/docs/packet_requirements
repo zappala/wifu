@@ -1,7 +1,0 @@
-This is a list of packet requirements that I can think of:
-
-1. Must have a to_bytes() method (to use when calling send())
-2. Must have a size() method
-3. Must have an (ordered) list of HeaderObjects
-4. SequenceNumber should be a subclass of HeaderObject and be its own class overriding all the signs so we can keep track of circular numbers
-5. Same thing (as #4) for acknowledgement numbers.  Maybe we have a middle class which supports modulo comparisions.
