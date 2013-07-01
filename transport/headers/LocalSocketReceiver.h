@@ -19,6 +19,7 @@
 #include <sys/un.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <unistd.h>
 
 #include "LocalSocketReceiverCallback.h"
 #include "Semaphore.h"

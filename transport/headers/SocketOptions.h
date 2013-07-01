@@ -12,6 +12,7 @@
 #include "defines.h"
 #include <map>
 #include <iostream>
+#include <sys/socket.h>
 using namespace std;
 
 class SocketOptions : public gc {

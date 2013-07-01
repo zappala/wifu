@@ -34,10 +34,10 @@ public:
 
         do {
             random = rand();
-        } while (contains(random));
+        } while (this->contains(random));
 
         // TODO: ensure that we are removing these ids at some point
-        insert(random);
+        this->insert(random);
         mutex_.post();
         return random;
     }

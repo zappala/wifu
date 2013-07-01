@@ -8,6 +8,8 @@
 #ifndef SOCKETINTERFACE_H
 #define	SOCKETINTERFACE_H
 
+#include <sys/socket.h>
+
 #include "GarbageCollector.h"
 #include "defines.h"
 

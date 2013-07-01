@@ -17,6 +17,7 @@
 #include <sys/un.h>
 #include <map>
 #include <assert.h>
+#include <unistd.h>
 
 #include "Semaphore.h"
 #include "defines.h"
